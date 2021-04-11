@@ -1,4 +1,4 @@
-package user
+package models
 
 import (
 	"database/sql"
@@ -14,6 +14,8 @@ type User struct {
 	ProfileImageURL sql.NullString
 	CreatedAt       time.Time `gorm:"autoCreateTime"`
 	UpdatedAt       time.Time `gorm:"autoUpdateTime"`
+
+	Teams []Team `gorm:"many2many:team_members;"`
 }
 
 func NewUser(email string) (*User, error) {

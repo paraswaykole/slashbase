@@ -3,7 +3,7 @@ package views
 import (
 	"time"
 
-	"slashbase.com/backend/models/user"
+	"slashbase.com/backend/models"
 )
 
 type UserView struct {
@@ -24,7 +24,7 @@ type UserSessionView struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-func BuildUser(usr *user.User) UserView {
+func BuildUser(usr *models.User) UserView {
 	userView := UserView{
 		ID:              usr.ID,
 		Name:            nil,
@@ -42,7 +42,7 @@ func BuildUser(usr *user.User) UserView {
 	return userView
 }
 
-func BuildUserSession(userSession *user.UserSession) UserSessionView {
+func BuildUserSession(userSession *models.UserSession) UserSessionView {
 	userSessView := UserSessionView{
 		ID:        userSession.ID,
 		User:      BuildUser(&userSession.User),

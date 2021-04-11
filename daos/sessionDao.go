@@ -1,4 +1,4 @@
-package user
+package daos
 
 import (
 	"database/sql"
@@ -9,26 +9,27 @@ import (
 	"gorm.io/gorm"
 	"slashbase.com/backend/config"
 	"slashbase.com/backend/db"
+	"slashbase.com/backend/models"
 )
 
-func (d Dao) CreateUserSession(session *UserSession) error {
+func (d UserDao) CreateUserSession(session *models.UserSession) error {
 	result := db.GetDB().Create(session)
 	return result.Error
 }
 
-func (d Dao) GetUserSessionByID(sessionID string) (*UserSession, error) {
-	var userSession UserSession
-	err := db.GetDB().Where(&UserSession{ID: sessionID}).Preload("User").First(&userSession).Error
+func (d UserDao) GetUserSessionByID(sessionID string) (*models.UserSession, error) {
+	var userSession models.UserSession
+	err := db.GetDB().Where(&models.UserSession{ID: sessionID}).Preload("User").First(&userSession).Error
 	return &userSession, err
 }
 
-func (d Dao) GetUserSessionBySecret(secret string) (*UserSession, error) {
-	var userSession UserSession
-	err := db.GetDB().Where(&UserSession{Secret: sql.NullString{String: secret, Valid: true}}).Preload("User").First(&userSession).Error
+func (d UserDao) GetUserSessionBySecret(secret string) (*models.UserSession, error) {
+	var userSession models.UserSession
+	err := db.GetDB().Where(&models.UserSession{Secret: sql.NullString{String: secret, Valid: true}}).Preload("User").First(&userSession).Error
 	return &userSession, err
 }
 
-func (d Dao) GetUserSessionFromMagicLinkToken(tokenString string) (*UserSession, error) {
+func (d UserDao) GetUserSessionFromMagicLinkToken(tokenString string) (*models.UserSession, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -52,7 +53,7 @@ func (d Dao) GetUserSessionFromMagicLinkToken(tokenString string) (*UserSession,
 	return nil, errors.New("Invalid Token")
 }
 
-func (d Dao) GetUserSessionFromAuthToken(tokenString string) (*UserSession, error) {
+func (d UserDao) GetUserSessionFromAuthToken(tokenString string) (*models.UserSession, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])

@@ -7,7 +7,7 @@ import (
 
 	"slashbase.com/backend/config"
 	"slashbase.com/backend/db"
-	"slashbase.com/backend/models/user"
+	"slashbase.com/backend/models"
 	"slashbase.com/backend/server"
 )
 
@@ -25,5 +25,9 @@ func main() {
 }
 
 func autoMigrate() {
-	db.GetDB().AutoMigrate(&user.User{}, &user.UserSession{})
+	db.GetDB().AutoMigrate(&models.User{}, &models.UserSession{}, &models.Team{}, &models.TeamMember{})
+	err := db.GetDB().SetupJoinTable(&models.User{}, "Teams", &models.TeamMember{})
+	if err != nil {
+		os.Exit(1)
+	}
 }

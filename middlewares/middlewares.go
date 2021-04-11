@@ -5,10 +5,11 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"slashbase.com/backend/models/user"
+	"slashbase.com/backend/daos"
+	"slashbase.com/backend/models"
 )
 
-var userDao user.Dao
+var userDao daos.UserDao
 
 const (
 	USER_SESSION = "USER_SESSION"
@@ -47,12 +48,12 @@ func AuthUserMiddleware() gin.HandlerFunc {
 	}
 }
 
-func GetAuthSession(c *gin.Context) *user.UserSession {
-	authUserSession := c.MustGet(USER_SESSION).(*user.UserSession)
+func GetAuthSession(c *gin.Context) *models.UserSession {
+	authUserSession := c.MustGet(USER_SESSION).(*models.UserSession)
 	return authUserSession
 }
 
-func GetAuthUser(c *gin.Context) *user.User {
-	authUserSession := c.MustGet(USER_SESSION).(*user.UserSession)
+func GetAuthUser(c *gin.Context) *models.User {
+	authUserSession := c.MustGet(USER_SESSION).(*models.UserSession)
 	return &authUserSession.User
 }

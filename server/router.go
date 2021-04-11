@@ -35,6 +35,14 @@ func NewRouter() *gin.Engine {
 			userGroup.Use(middlewares.AuthUserMiddleware())
 			userGroup.GET("/logout", userController.Logout)
 		}
+		teamGroup := api.Group("team")
+		{
+			teamController := new(controllers.TeamController)
+			teamGroup.Use(middlewares.FindUserMiddleware())
+			teamGroup.Use(middlewares.AuthUserMiddleware())
+			teamGroup.POST("/create", teamController.CreateTeam)
+			teamGroup.GET("/getall", teamController.GetTeams)
+		}
 	}
 	return router
 

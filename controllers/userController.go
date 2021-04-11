@@ -7,15 +7,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"slashbase.com/backend/daos"
 	"slashbase.com/backend/middlewares"
-	"slashbase.com/backend/models/user"
+	"slashbase.com/backend/models"
 	"slashbase.com/backend/views"
 )
 
-// UserController is parent for all methods below
 type UserController struct{}
 
-var userDao user.Dao
+var userDao daos.UserDao
 
 func (uc UserController) LoginUser(c *gin.Context) {
 	var loginCmd struct {
@@ -37,7 +37,7 @@ func (uc UserController) LoginUser(c *gin.Context) {
 		})
 		return
 	}
-	userSession, _ := user.NewUserSession(usr.ID)
+	userSession, _ := models.NewUserSession(usr.ID)
 	err = userDao.CreateUserSession(userSession)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -62,7 +62,7 @@ func (uc UserController) RegisterUser(c *gin.Context) {
 	usr, err := userDao.GetUserByEmail(registerCmd.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			usr, err = user.NewUser(registerCmd.Email)
+			usr, err = models.NewUser(registerCmd.Email)
 			if err == nil {
 				err = userDao.CreateUser(usr)
 				if err != nil {
@@ -87,7 +87,7 @@ func (uc UserController) RegisterUser(c *gin.Context) {
 			return
 		}
 	}
-	userSession, _ := user.NewUserSession(usr.ID)
+	userSession, _ := models.NewUserSession(usr.ID)
 	err = userDao.CreateUserSession(userSession)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
