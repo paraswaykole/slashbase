@@ -4,6 +4,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/config"
+	"slashbase.com/backend/controllers"
+	"slashbase.com/backend/middlewares"
 )
 
 // NewRouter return a gin router for server
@@ -21,10 +23,19 @@ func NewRouter() *gin.Engine {
 		corsConfig.AllowOrigins = []string{"http://localhost:3000"}
 	}
 	router.Use(cors.New(corsConfig))
-	// api := router.Group("/api/v1")
-	// {
-
-	// }
+	api := router.Group("/api/v1")
+	{
+		userGroup := api.Group("user")
+		{
+			userController := new(controllers.UserController)
+			userGroup.POST("/login", userController.LoginUser)
+			userGroup.POST("/register", userController.RegisterUser)
+			userGroup.POST("/verify", userController.VerifySession)
+			userGroup.Use(middlewares.FindUserMiddleware())
+			userGroup.Use(middlewares.AuthUserMiddleware())
+			userGroup.GET("/logout", userController.Logout)
+		}
+	}
 	return router
 
 }

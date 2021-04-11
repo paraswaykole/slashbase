@@ -7,6 +7,7 @@ import (
 
 	"slashbase.com/backend/config"
 	"slashbase.com/backend/db"
+	"slashbase.com/backend/models/user"
 	"slashbase.com/backend/server"
 )
 
@@ -19,5 +20,10 @@ func main() {
 	flag.Parse()
 	config.Init(*environment)
 	db.InitGormDB()
+	autoMigrate()
 	server.Init()
+}
+
+func autoMigrate() {
+	db.GetDB().AutoMigrate(&user.User{}, &user.UserSession{})
 }

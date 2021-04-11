@@ -7,10 +7,9 @@ import (
 
 // Init server
 func Init() {
-	nconfig := config.GetConfig()
 	if config.IsLive() || config.IsStage() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := NewRouter()
-	router.Run(nconfig.GetString("server.port"))
+	router.Run(config.GetServerPort())
 }
