@@ -25,7 +25,7 @@ func main() {
 }
 
 func autoMigrate() {
-	db.GetDB().AutoMigrate(&models.User{}, &models.UserSession{}, &models.Team{}, &models.TeamMember{})
+	db.GetDB().AutoMigrate(&models.User{}, &models.UserSession{}, &models.Team{}, &models.TeamMember{}, &models.DBConnection{})
 	err := db.GetDB().SetupJoinTable(&models.User{}, "Teams", &models.TeamMember{})
 	if err != nil {
 		os.Exit(1)

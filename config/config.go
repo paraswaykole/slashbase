@@ -56,6 +56,10 @@ func GetAuthTokenSecret() []byte {
 	return []byte(tokensecret)
 }
 
+func GetCryptedDataSecretKey() string {
+	return config.GetString("secret.crypted_data_secret_key")
+}
+
 func GetAppHost() string {
 	return config.GetString("constants.app_host")
 }

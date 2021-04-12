@@ -57,3 +57,12 @@ func GetAuthUser(c *gin.Context) *models.User {
 	authUserSession := c.MustGet(USER_SESSION).(*models.UserSession)
 	return &authUserSession.User
 }
+
+func GetAuthUserTeamIds(c *gin.Context) *[]string {
+	authUserSession := c.MustGet(USER_SESSION).(*models.UserSession)
+	teamIds := []string{}
+	for _, team := range authUserSession.User.Teams {
+		teamIds = append(teamIds, team.ID)
+	}
+	return &teamIds
+}
