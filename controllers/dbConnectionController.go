@@ -51,6 +51,7 @@ func (dbcc DBConnectionController) GetDBConnectionsByTeam(c *gin.Context) {
 			"success": false,
 			"error":   errors.New("Not allowed"),
 		})
+		return
 	}
 
 	dbConns, err := dbConnDao.GetDBConnectionsByTeam(teamID)
