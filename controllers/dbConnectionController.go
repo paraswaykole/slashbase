@@ -21,13 +21,14 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 		TeamID   string `json:"teamId"`
 		Name     string `json:"name"`
 		Host     string `json:"host"`
+		Port     string `json:"port"`
 		Password string `json:"password"`
 		User     string `json:"user"`
 		DBName   string `json:"dbname"`
 	}
 	c.BindJSON(&createCmd)
 	authUser := middlewares.GetAuthUser(c)
-	dbConn := models.NewPostgresDBConnection(authUser.ID, createCmd.TeamID, createCmd.Name, createCmd.Host, createCmd.User, createCmd.Password, createCmd.DBName)
+	dbConn := models.NewPostgresDBConnection(authUser.ID, createCmd.TeamID, createCmd.Name, createCmd.Host, createCmd.Port, createCmd.User, createCmd.Password, createCmd.DBName)
 	err := dbConnDao.CreateDBConnection(dbConn)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{

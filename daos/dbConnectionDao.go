@@ -17,3 +17,9 @@ func (d DBConnectionDao) GetDBConnectionsByTeam(teamId string) ([]*models.DBConn
 	err := db.GetDB().Where(&models.DBConnection{TeamID: teamId}).Find(&dbConns).Error
 	return dbConns, err
 }
+
+func (d DBConnectionDao) GetDBConnectionByID(id string) (*models.DBConnection, error) {
+	var dbConn *models.DBConnection
+	err := db.GetDB().Where(&models.DBConnection{ID: id}).Preload("Team").First(&dbConn).Error
+	return dbConn, err
+}

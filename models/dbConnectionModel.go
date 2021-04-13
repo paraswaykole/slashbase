@@ -13,6 +13,7 @@ type DBConnection struct {
 	TeamID        string            `gorm:"not null"`
 	Type          string            `gorm:"not null"`
 	DBHost        sbsql.CryptedData `gorm:"type:text"`
+	DBPort        sbsql.CryptedData `gorm:"type:text"`
 	DBPassword    sbsql.CryptedData `gorm:"type:text"`
 	DBUser        sbsql.CryptedData `gorm:"type:text"`
 	DBName        sbsql.CryptedData `gorm:"type:text"`
@@ -26,19 +27,20 @@ const (
 	DBTYPE_POSTGRES = "POSTGRES"
 )
 
-func newDBConnection(userID string, teamID string, name string, dbtype string, dbhost, dbuser, dbpassword, databaseName string) *DBConnection {
+func newDBConnection(userID string, teamID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName string) *DBConnection {
 	return &DBConnection{
 		Name:       name,
 		CreatedBy:  userID,
 		TeamID:     teamID,
 		Type:       dbtype,
 		DBHost:     sbsql.CryptedData(dbhost),
+		DBPort:     sbsql.CryptedData(dbport),
 		DBPassword: sbsql.CryptedData(dbpassword),
 		DBName:     sbsql.CryptedData(databaseName),
 		DBUser:     sbsql.CryptedData(dbuser),
 	}
 }
 
-func NewPostgresDBConnection(userID string, teamID string, name string, dbhost, dbuser, dbpassword, databaseName string) *DBConnection {
-	return newDBConnection(userID, teamID, name, DBTYPE_POSTGRES, dbhost, dbuser, dbpassword, databaseName)
+func NewPostgresDBConnection(userID string, teamID string, name string, dbhost, dbport, dbuser, dbpassword, databaseName string) *DBConnection {
+	return newDBConnection(userID, teamID, name, DBTYPE_POSTGRES, dbhost, dbport, dbuser, dbpassword, databaseName)
 }

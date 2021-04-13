@@ -63,3 +63,7 @@ func GetCryptedDataSecretKey() string {
 func GetAppHost() string {
 	return config.GetString("constants.app_host")
 }
+
+func GetQueryEngineURLHost() string {
+	return config.GetString("constants.query_engine_url")
+}
