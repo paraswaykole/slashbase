@@ -17,12 +17,17 @@ type PostgresQueryEngine struct{}
 func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
 	port, err := strconv.Atoi(string(dbConn.DBPort))
 	postBody, _ := json.Marshal(map[string]interface{}{
-		"query":    query,
-		"host":     dbConn.DBHost,
-		"port":     port,
-		"database": dbConn.DBName,
-		"user":     dbConn.DBUser,
-		"password": dbConn.DBPassword,
+		"query":       query,
+		"host":        dbConn.DBHost,
+		"port":        port,
+		"database":    dbConn.DBName,
+		"user":        dbConn.DBUser,
+		"password":    dbConn.DBPassword,
+		"useSSH":      dbConn.UseSSH,
+		"sshHost":     dbConn.SSHHost,
+		"sshUser":     dbConn.SSHUser,
+		"sshPassword": dbConn.SSHPassword,
+		"sshKeyFile":  dbConn.SSHKeyFile,
 	})
 	responseBody := bytes.NewBuffer(postBody)
 	resp, err := http.Post(config.GetQueryEngineURLHost(), "application/json", responseBody)
