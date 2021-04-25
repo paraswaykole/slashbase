@@ -18,9 +18,14 @@ const (
 // FindUserMiddleware is find authenticated user before sending the request to next handler
 func FindUserMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var tokenString string
 		auth := c.GetHeader("Authorization")
 		if auth != "" && strings.HasPrefix(auth, "Bearer ") {
-			tokenString := strings.ReplaceAll(auth, "Bearer ", "")
+			tokenString = strings.ReplaceAll(auth, "Bearer ", "")
+		} else {
+			tokenString, _ = c.Cookie("token")
+		}
+		if tokenString != "" {
 			userSession, err := userDao.GetUserSessionFromAuthToken(tokenString)
 			if err != nil {
 				c.Next()
