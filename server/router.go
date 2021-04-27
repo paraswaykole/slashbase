@@ -15,6 +15,7 @@ func NewRouter() *gin.Engine {
 	router.Use(gin.Recovery())
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "Authorization")
+	corsConfig.AllowCredentials = true
 	if config.IsLive() {
 		corsConfig.AllowOrigins = []string{"https://slashbase.com", "https://www.slashbase.com"}
 	} else if config.IsStage() {
