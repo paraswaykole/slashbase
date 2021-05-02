@@ -40,9 +40,17 @@ func (tc TeamController) CreateTeam(c *gin.Context) {
 
 func (tc TeamController) GetTeams(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
+	teamMembers, err := teamDao.GetTeamMembersForUser(authUser.ID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
 	teamViews := []views.TeamView{}
-	for _, t := range authUser.Teams {
-		teamViews = append(teamViews, views.BuildTeam(&t))
+	for _, t := range *teamMembers {
+		teamViews = append(teamViews, views.BuildTeamFromMember(&t))
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,

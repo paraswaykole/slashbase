@@ -9,6 +9,7 @@ import (
 type TeamView struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
+	Role      *string   `json:"role"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -25,8 +26,20 @@ func BuildTeam(pTeam *models.Team) TeamView {
 	teamView := TeamView{
 		ID:        pTeam.ID,
 		Name:      pTeam.Name,
+		Role:      nil,
 		CreatedAt: pTeam.CreatedAt,
 		UpdatedAt: pTeam.UpdatedAt,
+	}
+	return teamView
+}
+
+func BuildTeamFromMember(teamMember *models.TeamMember) TeamView {
+	teamView := TeamView{
+		ID:        teamMember.Team.ID,
+		Name:      teamMember.Team.Name,
+		Role:      &teamMember.Role,
+		CreatedAt: teamMember.Team.CreatedAt,
+		UpdatedAt: teamMember.Team.UpdatedAt,
 	}
 	return teamView
 }
