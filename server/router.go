@@ -43,6 +43,7 @@ func NewRouter() *gin.Engine {
 			teamGroup.Use(middlewares.AuthUserMiddleware())
 			teamGroup.POST("/create", teamController.CreateTeam)
 			teamGroup.GET("/getall", teamController.GetTeams)
+			teamGroup.GET("/getmembers/:teamId", teamController.GetTeamMembers)
 		}
 		dbConnGroup := api.Group("dbconnection")
 		{
