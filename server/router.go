@@ -50,6 +50,7 @@ func NewRouter() *gin.Engine {
 			dbConnGroup.Use(middlewares.FindUserMiddleware())
 			dbConnGroup.Use(middlewares.AuthUserMiddleware())
 			dbConnGroup.POST("/create", dbConnController.CreateDBConnection)
+			dbConnGroup.GET("/getall", dbConnController.GetDBConnections)
 			dbConnGroup.GET("/team/:teamId", dbConnController.GetDBConnectionsByTeam)
 		}
 		queryGroup := api.Group("query")

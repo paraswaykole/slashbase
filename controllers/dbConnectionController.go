@@ -57,10 +57,32 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 	return
 }
 
+func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
+	authUserTeamIds := middlewares.GetAuthUserTeamIds(c)
+
+	dbConns, err := dbConnDao.GetDBConnectionsByTeamIds(*authUserTeamIds)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	dbConnViews := []views.DBConnectionView{}
+	for _, dbConn := range dbConns {
+		dbConnViews = append(dbConnViews, views.BuildDBConnection(dbConn))
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    dbConnViews,
+	})
+	return
+}
+
 func (dbcc DBConnectionController) GetDBConnectionsByTeam(c *gin.Context) {
 	teamID := c.Param("teamId")
-	authUserTeams := middlewares.GetAuthUserTeamIds(c)
-	if !utils.ContainsString(*authUserTeams, teamID) {
+	authUserTeamIds := middlewares.GetAuthUserTeamIds(c)
+	if !utils.ContainsString(*authUserTeamIds, teamID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"error":   errors.New("Not allowed"),

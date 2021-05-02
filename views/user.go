@@ -3,6 +3,7 @@ package views
 import (
 	"time"
 
+	"slashbase.com/backend/config"
 	"slashbase.com/backend/models"
 )
 
@@ -10,7 +11,7 @@ type UserView struct {
 	ID              string    `json:"id"`
 	Email           string    `json:"email"`
 	Name            *string   `json:"name"`
-	ProfileImageURL *string   `json:"profileImageUrl"`
+	ProfileImageURL string    `json:"profileImageUrl"`
 	CreatedAt       time.Time `json:"createdAt"`
 	UpdatedAt       time.Time `json:"updatedAt"`
 }
@@ -29,12 +30,14 @@ func BuildUser(usr *models.User) UserView {
 		ID:              usr.ID,
 		Name:            nil,
 		Email:           usr.Email,
-		ProfileImageURL: nil,
+		ProfileImageURL: "",
 		CreatedAt:       usr.CreatedAt,
 		UpdatedAt:       usr.UpdatedAt,
 	}
 	if usr.ProfileImageURL.Valid {
-		userView.ProfileImageURL = &usr.ProfileImageURL.String
+		userView.ProfileImageURL = usr.ProfileImageURL.String
+	} else {
+		userView.ProfileImageURL = config.GetDefaultProfileImageUrl()
 	}
 	if usr.FullName.Valid {
 		userView.Name = &usr.FullName.String
