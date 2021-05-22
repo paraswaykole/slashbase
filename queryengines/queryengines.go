@@ -12,8 +12,8 @@ func RunQuery(dbConn *models.DBConnection, query string) (map[string]interface{}
 	return postgresQueryEngine.RunQuery(dbConn, query)
 }
 
-func GetTables(dbConn *models.DBConnection) (map[string]interface{}, error) {
-	data, err := postgresQueryEngine.GetTables(dbConn)
+func GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) {
+	data, err := postgresQueryEngine.GetDataModels(dbConn)
 	if err != nil {
 		return data, err
 	}

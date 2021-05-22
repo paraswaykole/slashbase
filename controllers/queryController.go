@@ -50,7 +50,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 	return
 }
 
-func (qc QueryController) GetTables(c *gin.Context) {
+func (qc QueryController) GetDataModels(c *gin.Context) {
 	var runCmd struct {
 		DBConnectionID string `json:"dbConnectionId"`
 	}
@@ -73,7 +73,7 @@ func (qc QueryController) GetTables(c *gin.Context) {
 		return
 	}
 
-	tablesData, err := queryengines.GetTables(dbConn)
+	dataModels, err := queryengines.GetDataModels(dbConn)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -82,9 +82,9 @@ func (qc QueryController) GetTables(c *gin.Context) {
 		return
 	}
 
-	data := []*views.DBTableView{}
-	for _, table := range tablesData["rows"].([]interface{}) {
-		view := views.BuildDBTableView(dbConn, table.(map[string]interface{}))
+	data := []*views.DBDataModel{}
+	for _, table := range dataModels["rows"].([]interface{}) {
+		view := views.BuildDBDataModel(dbConn, table.(map[string]interface{}))
 		if view != nil {
 			data = append(data, view)
 		}

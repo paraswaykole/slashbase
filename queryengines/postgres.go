@@ -44,6 +44,6 @@ func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query stri
 	return data, err
 }
 
-func (pgqe PostgresQueryEngine) GetTables(dbConn *models.DBConnection) (map[string]interface{}, error) {
+func (pgqe PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) {
 	return pgqe.RunQuery(dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
 }
