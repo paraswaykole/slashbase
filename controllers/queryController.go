@@ -51,13 +51,10 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 }
 
 func (qc QueryController) GetDataModels(c *gin.Context) {
-	var runCmd struct {
-		DBConnectionID string `json:"dbConnectionId"`
-	}
-	c.BindJSON(&runCmd)
+	dbConnId := c.Param("dbConnId")
 	authUserTeams := middlewares.GetAuthUserTeamIds(c)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(runCmd.DBConnectionID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
