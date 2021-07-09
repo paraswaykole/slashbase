@@ -8,7 +8,9 @@ import (
 	"slashbase.com/backend/config"
 	"slashbase.com/backend/db"
 	"slashbase.com/backend/models"
+	"slashbase.com/backend/queryengines"
 	"slashbase.com/backend/server"
+	"slashbase.com/backend/sshtunnel"
 )
 
 func main() {
@@ -21,6 +23,7 @@ func main() {
 	config.Init(*environment)
 	db.InitGormDB()
 	autoMigrate()
+	initUnusedRemovalThreads()
 	server.Init()
 }
 
@@ -30,4 +33,9 @@ func autoMigrate() {
 	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func initUnusedRemovalThreads() {
+	go sshtunnel.RemoveUnusedTunnels()
+	go queryengines.RemoveUnusedConnections()
 }

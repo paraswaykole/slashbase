@@ -1,12 +1,11 @@
 package queryengines
 
 import (
-	"errors"
-
 	"slashbase.com/backend/models"
+	"slashbase.com/backend/queryengines/pgqueryengine"
 )
 
-var postgresQueryEngine PostgresQueryEngine
+var postgresQueryEngine pgqueryengine.PostgresQueryEngine
 
 func RunQuery(dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
 	return postgresQueryEngine.RunQuery(dbConn, query)
@@ -17,8 +16,9 @@ func GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) 
 	if err != nil {
 		return data, err
 	}
-	if data["success"] == false {
-		return map[string]interface{}{}, errors.New(data["error"].(string))
-	}
-	return data["data"].(map[string]interface{}), nil
+	return data, nil
+}
+
+func RemoveUnusedConnections() {
+	postgresQueryEngine.RemoveUnusedConnections()
 }

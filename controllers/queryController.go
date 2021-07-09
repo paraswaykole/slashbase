@@ -80,8 +80,8 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 	}
 
 	data := []*views.DBDataModel{}
-	for _, table := range dataModels["rows"].([]interface{}) {
-		view := views.BuildDBDataModel(dbConn, table.(map[string]interface{}))
+	for _, table := range dataModels["rows"].([]map[string]interface{}) {
+		view := views.BuildDBDataModel(dbConn, table)
 		if view != nil {
 			data = append(data, view)
 		}

@@ -64,10 +64,6 @@ func GetAppHost() string {
 	return config.GetString("constants.app_host")
 }
 
-func GetQueryEngineURLHost() string {
-	return config.GetString("constants.query_engine_url")
-}
-
 func GetDefaultProfileImageUrl() string {
 	return config.GetString("constants.default_profile_image_url")
 }
