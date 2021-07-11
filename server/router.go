@@ -30,10 +30,9 @@ func NewRouter() *gin.Engine {
 		{
 			userController := new(controllers.UserController)
 			userGroup.POST("/login", userController.LoginUser)
-			userGroup.POST("/register", userController.RegisterUser)
-			userGroup.POST("/verify", userController.VerifySession)
 			userGroup.Use(middlewares.FindUserMiddleware())
 			userGroup.Use(middlewares.AuthUserMiddleware())
+			userGroup.POST("/add", userController.AddUser)
 			userGroup.GET("/logout", userController.Logout)
 		}
 		teamGroup := api.Group("team")

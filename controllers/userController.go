@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +9,7 @@ import (
 	"slashbase.com/backend/daos"
 	"slashbase.com/backend/middlewares"
 	"slashbase.com/backend/models"
+	"slashbase.com/backend/utils"
 	"slashbase.com/backend/views"
 )
 
@@ -19,7 +19,8 @@ var userDao daos.UserDao
 
 func (uc UserController) LoginUser(c *gin.Context) {
 	var loginCmd struct {
-		Email string `json:"email"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	c.BindJSON(&loginCmd)
 	usr, err := userDao.GetUserByEmail(loginCmd.Email)
@@ -37,32 +38,46 @@ func (uc UserController) LoginUser(c *gin.Context) {
 		})
 		return
 	}
-	userSession, _ := models.NewUserSession(usr.ID)
-	err = userDao.CreateUserSession(userSession)
-	if err != nil {
+	if usr.VerifyPassword(loginCmd.Password) {
+		userSession, _ := models.NewUserSession(usr.ID)
+		err = userDao.CreateUserSession(userSession)
+		userSession.User = *usr
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"error":   "There was some problem",
+			})
+			return
+		}
 		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
+			"success": true,
+			"data":    views.BuildUserSession(userSession),
 		})
 		return
 	}
-	// TODO: send email
-	fmt.Println("Magic Link: " + userSession.GetMagicLink())
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
+		"success": false,
+		"error":   "Invalid Login",
 	})
 	return
 }
 
-func (uc UserController) RegisterUser(c *gin.Context) {
-	var registerCmd struct {
+func (uc UserController) AddUser(c *gin.Context) {
+	authUser := middlewares.GetAuthUser(c)
+	var addUserCmd struct {
 		Email string `json:"email"`
 	}
-	c.BindJSON(&registerCmd)
-	usr, err := userDao.GetUserByEmail(registerCmd.Email)
+	c.BindJSON(&addUserCmd)
+	if !authUser.RootUser {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "Not Allowed.",
+		})
+	}
+	usr, err := userDao.GetUserByEmail(addUserCmd.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			usr, err = models.NewUser(registerCmd.Email)
+			usr, err = models.NewUser(addUserCmd.Email, utils.RandStringUnsafe(10))
 			if err == nil {
 				err = userDao.CreateUser(usr)
 				if err != nil {
@@ -87,40 +102,8 @@ func (uc UserController) RegisterUser(c *gin.Context) {
 			return
 		}
 	}
-	userSession, _ := models.NewUserSession(usr.ID)
-	err = userDao.CreateUserSession(userSession)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
-	}
-	// TODO: send email
-	fmt.Println("Magic Link: " + userSession.GetMagicLink())
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-	})
-	return
-}
-
-func (uc UserController) VerifySession(c *gin.Context) {
-	var verifyCmd struct {
-		Token string `json:"token"`
-	}
-	c.BindJSON(&verifyCmd)
-	userSession, err := userDao.GetUserSessionFromMagicLinkToken(verifyCmd.Token)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
-	}
-	userSession.SetActive()
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildUserSession(userSession),
 	})
 	return
 }

@@ -1,7 +1,6 @@
 package daos
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 
@@ -21,36 +20,6 @@ func (d UserDao) GetUserSessionByID(sessionID string) (*models.UserSession, erro
 	var userSession models.UserSession
 	err := db.GetDB().Where(&models.UserSession{ID: sessionID}).Preload("User.Teams").First(&userSession).Error
 	return &userSession, err
-}
-
-func (d UserDao) GetUserSessionBySecret(secret string) (*models.UserSession, error) {
-	var userSession models.UserSession
-	err := db.GetDB().Where(&models.UserSession{Secret: sql.NullString{String: secret, Valid: true}}).Preload("User").First(&userSession).Error
-	return &userSession, err
-}
-
-func (d UserDao) GetUserSessionFromMagicLinkToken(tokenString string) (*models.UserSession, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(config.GetMagicLinkTokenSecret()), nil
-	})
-	if err != nil {
-		return nil, errors.New("Invalid Token")
-	}
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		sessionSecret := claims["sessionSecret"].(string)
-		session, err := d.GetUserSessionBySecret(sessionSecret)
-		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return nil, errors.New("Invalid Token")
-			}
-			return nil, errors.New("There was some problem")
-		}
-		return session, nil
-	}
-	return nil, errors.New("Invalid Token")
 }
 
 func (d UserDao) GetUserSessionFromAuthToken(tokenString string) (*models.UserSession, error) {
