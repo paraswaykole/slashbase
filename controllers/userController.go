@@ -18,12 +18,12 @@ type UserController struct{}
 var userDao daos.UserDao
 
 func (uc UserController) LoginUser(c *gin.Context) {
-	var loginCmd struct {
+	var loginBody struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-	c.BindJSON(&loginCmd)
-	usr, err := userDao.GetUserByEmail(loginCmd.Email)
+	c.BindJSON(&loginBody)
+	usr, err := userDao.GetUserByEmail(loginBody.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusOK, gin.H{
@@ -38,7 +38,7 @@ func (uc UserController) LoginUser(c *gin.Context) {
 		})
 		return
 	}
-	if usr.VerifyPassword(loginCmd.Password) {
+	if usr.VerifyPassword(loginBody.Password) {
 		userSession, _ := models.NewUserSession(usr.ID)
 		err = userDao.CreateUserSession(userSession)
 		userSession.User = *usr
@@ -64,20 +64,20 @@ func (uc UserController) LoginUser(c *gin.Context) {
 
 func (uc UserController) AddUser(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
-	var addUserCmd struct {
+	var addUserBody struct {
 		Email string `json:"email"`
 	}
-	c.BindJSON(&addUserCmd)
+	c.BindJSON(&addUserBody)
 	if !authUser.RootUser {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"error":   "Not Allowed.",
 		})
 	}
-	usr, err := userDao.GetUserByEmail(addUserCmd.Email)
+	usr, err := userDao.GetUserByEmail(addUserBody.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			usr, err = models.NewUser(addUserCmd.Email, utils.RandStringUnsafe(10))
+			usr, err = models.NewUser(addUserBody.Email, utils.RandStringUnsafe(10))
 			if err == nil {
 				err = userDao.CreateUser(usr)
 				if err != nil {

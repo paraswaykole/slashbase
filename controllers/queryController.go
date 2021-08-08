@@ -14,14 +14,14 @@ import (
 type QueryController struct{}
 
 func (qc QueryController) RunQuery(c *gin.Context) {
-	var runCmd struct {
+	var runBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Query          string `json:"query"`
 	}
-	c.BindJSON(&runCmd)
+	c.BindJSON(&runBody)
 	authUserTeams := middlewares.GetAuthUserTeamIds(c)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(runCmd.DBConnectionID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(runBody.DBConnectionID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -37,7 +37,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.RunQuery(dbConn, runCmd.Query)
+	data, err := queryengines.RunQuery(dbConn, runBody.Query)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

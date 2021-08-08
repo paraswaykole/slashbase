@@ -20,7 +20,8 @@ func (d DBConnectionDao) GetDBConnectionsByTeam(teamId string) ([]*models.DBConn
 
 func (d DBConnectionDao) GetDBConnectionsByTeamIds(teamIds []string) ([]*models.DBConnection, error) {
 	var dbConns []*models.DBConnection
-	err := db.GetDB().Where("team_id IN ?", teamIds).Find(&dbConns).Error
+	sqlQuery := "SELECT * FROM ( SELECT ROW_NUMBER() OVER (PARTITION BY team_id ORDER BY name) AS r, t.* FROM db_connections t where team_id in ?) x WHERE x.r <= 5;"
+	err := db.GetDB().Raw(sqlQuery, teamIds).Find(&dbConns).Error
 	return dbConns, err
 }
 

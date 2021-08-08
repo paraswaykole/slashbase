@@ -25,26 +25,26 @@ func (d UserDao) GetUserSessionByID(sessionID string) (*models.UserSession, erro
 func (d UserDao) GetUserSessionFromAuthToken(tokenString string) (*models.UserSession, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(config.GetAuthTokenSecret()), nil
 	})
 	if err != nil {
-		return nil, errors.New("Invalid Token")
+		return nil, errors.New("invalid token")
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		sessionID := claims["sessionID"].(string)
 		session, err := d.GetUserSessionByID(sessionID)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return nil, errors.New("Invalid Token")
+				return nil, errors.New("invalid token")
 			}
-			return nil, errors.New("There was some problem")
+			return nil, errors.New("there was some problem")
 		}
 		if !session.IsActive {
-			return nil, errors.New("Invalid Token")
+			return nil, errors.New("invalid Token")
 		}
 		return session, nil
 	}
-	return nil, errors.New("Invalid Token")
+	return nil, errors.New("invalid Token")
 }

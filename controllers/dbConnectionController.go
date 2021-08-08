@@ -17,7 +17,7 @@ type DBConnectionController struct{}
 var dbConnDao daos.DBConnectionDao
 
 func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
-	var createCmd struct {
+	var createBody struct {
 		TeamID      string `json:"teamId"`
 		Name        string `json:"name"`
 		Host        string `json:"host"`
@@ -31,10 +31,10 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 		SSHPassword string `json:"sshPassword"`
 		SSHKeyFile  string `json:"sshKeyFile"`
 	}
-	c.BindJSON(&createCmd)
+	c.BindJSON(&createBody)
 	authUser := middlewares.GetAuthUser(c)
-	dbConn, err := models.NewPostgresDBConnection(authUser.ID, createCmd.TeamID, createCmd.Name, createCmd.Host, createCmd.Port,
-		createCmd.User, createCmd.Password, createCmd.DBName, createCmd.UseSSH, createCmd.SSHHost, createCmd.SSHUser, createCmd.SSHPassword, createCmd.SSHKeyFile)
+	dbConn, err := models.NewPostgresDBConnection(authUser.ID, createBody.TeamID, createBody.Name, createBody.Host, createBody.Port,
+		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -54,13 +54,26 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 		"success": true,
 		"data":    views.BuildDBConnection(dbConn),
 	})
-	return
 }
 
 func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
 	authUserTeamIds := middlewares.GetAuthUserTeamIds(c)
+	var getBody struct {
+		TeamIDs []string `json:"teamIds"`
+	}
+	c.BindJSON(&getBody)
 
-	dbConns, err := dbConnDao.GetDBConnectionsByTeamIds(*authUserTeamIds)
+	for _, teamID := range getBody.TeamIDs {
+		if !utils.ContainsString(*authUserTeamIds, teamID) {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"error":   errors.New("teamid " + teamID + "not allowed"),
+			})
+			return
+		}
+	}
+
+	dbConns, err := dbConnDao.GetDBConnectionsByTeamIds(getBody.TeamIDs)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -76,7 +89,6 @@ func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
 		"success": true,
 		"data":    dbConnViews,
 	})
-	return
 }
 
 func (dbcc DBConnectionController) GetDBConnectionsByTeam(c *gin.Context) {
@@ -85,7 +97,7 @@ func (dbcc DBConnectionController) GetDBConnectionsByTeam(c *gin.Context) {
 	if !utils.ContainsString(*authUserTeamIds, teamID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   errors.New("Not allowed"),
+			"error":   errors.New("not allowed"),
 		})
 		return
 	}
@@ -106,5 +118,4 @@ func (dbcc DBConnectionController) GetDBConnectionsByTeam(c *gin.Context) {
 		"success": true,
 		"data":    dbConnViews,
 	})
-	return
 }

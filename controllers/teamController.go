@@ -17,12 +17,12 @@ type TeamController struct{}
 var teamDao daos.TeamDao
 
 func (tc TeamController) CreateTeam(c *gin.Context) {
-	var createCmd struct {
+	var createBody struct {
 		Name string `json:"name"`
 	}
-	c.BindJSON(&createCmd)
+	c.BindJSON(&createBody)
 	authUser := middlewares.GetAuthUser(c)
-	team := models.NewTeam(authUser, createCmd.Name)
+	team := models.NewTeam(authUser, createBody.Name)
 	err := teamDao.CreateTeam(team)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -35,7 +35,6 @@ func (tc TeamController) CreateTeam(c *gin.Context) {
 		"success": true,
 		"data":    views.BuildTeam(team),
 	})
-	return
 }
 
 func (tc TeamController) GetTeams(c *gin.Context) {
@@ -50,13 +49,12 @@ func (tc TeamController) GetTeams(c *gin.Context) {
 	}
 	teamViews := []views.TeamView{}
 	for _, t := range *teamMembers {
-		teamViews = append(teamViews, views.BuildTeamFromMember(&t))
+		teamViews = append(teamViews, views.BuildTeam(&t.Team))
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    teamViews,
 	})
-	return
 }
 
 func (tc TeamController) GetTeamMembers(c *gin.Context) {
@@ -65,7 +63,7 @@ func (tc TeamController) GetTeamMembers(c *gin.Context) {
 	if !utils.ContainsString(*authUserTeamIds, teamID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   errors.New("Not allowed"),
+			"error":   errors.New("not allowed"),
 		})
 		return
 	}
@@ -85,5 +83,4 @@ func (tc TeamController) GetTeamMembers(c *gin.Context) {
 		"success": true,
 		"data":    teamMemberViews,
 	})
-	return
 }
