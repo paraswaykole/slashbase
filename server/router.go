@@ -35,14 +35,14 @@ func NewRouter() *gin.Engine {
 			userGroup.POST("/add", userController.AddUser)
 			userGroup.GET("/logout", userController.Logout)
 		}
-		teamGroup := api.Group("team")
+		projectGroup := api.Group("project")
 		{
-			teamController := new(controllers.TeamController)
-			teamGroup.Use(middlewares.FindUserMiddleware())
-			teamGroup.Use(middlewares.AuthUserMiddleware())
-			teamGroup.POST("/create", teamController.CreateTeam)
-			teamGroup.GET("/getall", teamController.GetTeams)
-			teamGroup.GET("/getmembers/:teamId", teamController.GetTeamMembers)
+			projectController := new(controllers.ProjectController)
+			projectGroup.Use(middlewares.FindUserMiddleware())
+			projectGroup.Use(middlewares.AuthUserMiddleware())
+			projectGroup.POST("/create", projectController.CreateProject)
+			projectGroup.GET("/getall", projectController.GetProjects)
+			projectGroup.GET("/getmembers/:projectId", projectController.GetProjectMembers)
 		}
 		dbConnGroup := api.Group("dbconnection")
 		{
@@ -51,7 +51,7 @@ func NewRouter() *gin.Engine {
 			dbConnGroup.Use(middlewares.AuthUserMiddleware())
 			dbConnGroup.POST("/create", dbConnController.CreateDBConnection)
 			dbConnGroup.GET("/getall", dbConnController.GetDBConnections)
-			dbConnGroup.GET("/team/:teamId", dbConnController.GetDBConnectionsByTeam)
+			dbConnGroup.GET("/project/:projectId", dbConnController.GetDBConnectionsByProject)
 		}
 		queryGroup := api.Group("query")
 		{

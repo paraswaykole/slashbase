@@ -18,7 +18,7 @@ var dbConnDao daos.DBConnectionDao
 
 func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 	var createBody struct {
-		TeamID      string `json:"teamId"`
+		ProjectID   string `json:"projectId"`
 		Name        string `json:"name"`
 		Host        string `json:"host"`
 		Port        string `json:"port"`
@@ -33,7 +33,7 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 	}
 	c.BindJSON(&createBody)
 	authUser := middlewares.GetAuthUser(c)
-	dbConn, err := models.NewPostgresDBConnection(authUser.ID, createBody.TeamID, createBody.Name, createBody.Host, createBody.Port,
+	dbConn, err := models.NewPostgresDBConnection(authUser.ID, createBody.ProjectID, createBody.Name, createBody.Host, createBody.Port,
 		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -57,23 +57,23 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 }
 
 func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
-	authUserTeamIds := middlewares.GetAuthUserTeamIds(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	var getBody struct {
-		TeamIDs []string `json:"teamIds"`
+		ProjectIDs []string `json:"projectIds"`
 	}
 	c.BindJSON(&getBody)
 
-	for _, teamID := range getBody.TeamIDs {
-		if !utils.ContainsString(*authUserTeamIds, teamID) {
+	for _, projectID := range getBody.ProjectIDs {
+		if !utils.ContainsString(*authUserProjectIds, projectID) {
 			c.JSON(http.StatusOK, gin.H{
 				"success": false,
-				"error":   errors.New("teamid " + teamID + "not allowed"),
+				"error":   errors.New("projectID " + projectID + "not allowed"),
 			})
 			return
 		}
 	}
 
-	dbConns, err := dbConnDao.GetDBConnectionsByTeamIds(getBody.TeamIDs)
+	dbConns, err := dbConnDao.GetDBConnectionsByProjectIds(getBody.ProjectIDs)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -91,10 +91,10 @@ func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
 	})
 }
 
-func (dbcc DBConnectionController) GetDBConnectionsByTeam(c *gin.Context) {
-	teamID := c.Param("teamId")
-	authUserTeamIds := middlewares.GetAuthUserTeamIds(c)
-	if !utils.ContainsString(*authUserTeamIds, teamID) {
+func (dbcc DBConnectionController) GetDBConnectionsByProject(c *gin.Context) {
+	projectID := c.Param("projectId")
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+	if !utils.ContainsString(*authUserProjectIds, projectID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"error":   errors.New("not allowed"),
@@ -102,7 +102,7 @@ func (dbcc DBConnectionController) GetDBConnectionsByTeam(c *gin.Context) {
 		return
 	}
 
-	dbConns, err := dbConnDao.GetDBConnectionsByTeam(teamID)
+	dbConns, err := dbConnDao.GetDBConnectionsByProject(projectID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

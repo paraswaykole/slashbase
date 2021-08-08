@@ -20,6 +20,6 @@ func (d UserDao) GetUserByEmail(email string) (*models.User, error) {
 
 func (d UserDao) GetUserByID(userID string) (*models.User, error) {
 	var user models.User
-	err := db.GetDB().Where(&models.User{ID: userID}).Preload("Teams").First(&user).Error
+	err := db.GetDB().Where(&models.User{ID: userID}).Preload("Projects").First(&user).Error
 	return &user, err
 }

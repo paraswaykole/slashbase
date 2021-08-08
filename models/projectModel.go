@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Team struct {
+type Project struct {
 	ID        string    `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Name      string    `gorm:"not null"`
 	CreatedBy string    `gorm:"not null"`
@@ -14,8 +14,8 @@ type Team struct {
 	CreatedByUser User `gorm:"foreignkey:created_by"`
 }
 
-func NewTeam(createdBy *User, name string) *Team {
-	return &Team{
+func NewProject(createdBy *User, name string) *Project {
+	return &Project{
 		Name:      name,
 		CreatedBy: createdBy.ID,
 	}

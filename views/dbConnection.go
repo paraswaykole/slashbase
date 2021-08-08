@@ -10,7 +10,7 @@ type DBConnectionView struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Type      string    `json:"type"`
-	TeamID    string    `json:"teamId"`
+	ProjectID string    `json:"projectId"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -20,7 +20,7 @@ func BuildDBConnection(dbConn *models.DBConnection) DBConnectionView {
 		ID:        dbConn.ID,
 		Name:      dbConn.Name,
 		Type:      dbConn.Type,
-		TeamID:    dbConn.TeamID,
+		ProjectID: dbConn.ProjectID,
 		CreatedAt: dbConn.CreatedAt,
 		UpdatedAt: dbConn.UpdatedAt,
 	}

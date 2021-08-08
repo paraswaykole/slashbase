@@ -28,8 +28,8 @@ func main() {
 }
 
 func autoMigrate() {
-	db.GetDB().AutoMigrate(&models.User{}, &models.UserSession{}, &models.Team{}, &models.TeamMember{}, &models.DBConnection{})
-	err := db.GetDB().SetupJoinTable(&models.User{}, "Teams", &models.TeamMember{})
+	db.GetDB().AutoMigrate(&models.User{}, &models.UserSession{}, &models.Project{}, &models.ProjectMember{}, &models.DBConnection{})
+	err := db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
 	if err != nil {
 		os.Exit(1)
 	}

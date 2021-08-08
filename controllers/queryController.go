@@ -19,7 +19,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		Query          string `json:"query"`
 	}
 	c.BindJSON(&runBody)
-	authUserTeams := middlewares.GetAuthUserTeamIds(c)
+	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(runBody.DBConnectionID)
 	if err != nil {
@@ -29,7 +29,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		})
 		return
 	}
-	if !utils.ContainsString(*authUserTeams, dbConn.TeamID) {
+	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"error":   errors.New("Not allowed to run query"),
@@ -52,7 +52,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 
 func (qc QueryController) GetDataModels(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-	authUserTeams := middlewares.GetAuthUserTeamIds(c)
+	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
@@ -62,7 +62,7 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 		})
 		return
 	}
-	if !utils.ContainsString(*authUserTeams, dbConn.TeamID) {
+	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"error":   errors.New("Not allowed to run query"),

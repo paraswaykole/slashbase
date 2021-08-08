@@ -19,7 +19,7 @@ type User struct {
 	CreatedAt       time.Time `gorm:"autoCreateTime"`
 	UpdatedAt       time.Time `gorm:"autoUpdateTime"`
 
-	Teams []Team `gorm:"many2many:team_members;"`
+	Projects []Project `gorm:"many2many:project_members;"`
 }
 
 func NewUser(email, textPassword string) (*User, error) {

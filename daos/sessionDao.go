@@ -18,7 +18,7 @@ func (d UserDao) CreateUserSession(session *models.UserSession) error {
 
 func (d UserDao) GetUserSessionByID(sessionID string) (*models.UserSession, error) {
 	var userSession models.UserSession
-	err := db.GetDB().Where(&models.UserSession{ID: sessionID}).Preload("User.Teams").First(&userSession).Error
+	err := db.GetDB().Where(&models.UserSession{ID: sessionID}).Preload("User.Projects").First(&userSession).Error
 	return &userSession, err
 }
 
