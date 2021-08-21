@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,14 +24,14 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   err.Error(),
+			"error":   "There was some problem",
 		})
 		return
 	}
 	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   errors.New("Not allowed to run query"),
+			"error":   "Not allowed to run query",
 		})
 		return
 	}
@@ -45,9 +44,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, data)
-	return
 }
 
 func (qc QueryController) GetDataModels(c *gin.Context) {
@@ -58,14 +55,14 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   err.Error(),
+			"error":   "There was some problem",
 		})
 		return
 	}
 	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   errors.New("Not allowed to run query"),
+			"error":   "Not allowed to run query",
 		})
 		return
 	}
@@ -91,5 +88,4 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 		"success": true,
 		"data":    data,
 	})
-	return
 }
