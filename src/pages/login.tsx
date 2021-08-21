@@ -1,19 +1,31 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { useState } from "react"
-import apiService from "../network/apiService"
+import Constants from '../constants'
+import { loginUser } from '../redux/currentUserSlice'
+import { useAppDispatch } from '../redux/hooks'
 
 const LoginPage: NextPage = ()=> {
 
     const [userEmail, setUserEmail] = useState('')
     const [userPassword, setUserPassword] = useState('')
+    const [loginError, setLoginError] = useState(null)
+
+    const dispatch = useAppDispatch()
+    const router = useRouter()
 
 
     const onLoginBtn = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        let response = await apiService.loginUser(userEmail, userPassword)
-        console.log(response)
+        try {
+            await dispatch(loginUser({email: userEmail, password: userPassword})).unwrap()
+            router.replace(Constants.APP_PATHS.HOME.as)            
+        } catch (e){
+            setUserPassword('')
+            setLoginError(e)
+        }
     }
 
     return (
@@ -31,14 +43,14 @@ const LoginPage: NextPage = ()=> {
                             <label className="label">Email</label>
                             <div className="control has-icons-left">
                                 <input 
-                                    className="input" 
+                                    className={`input${loginError ? ' is-danger':''}`} 
                                     type="email" 
                                     placeholder="Enter Email" 
                                     value={userEmail} 
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setUserEmail(e.target.value)}}
                                 />
                                 <span className="icon is-small is-left">
-                                <i className="fas fa-envelope"></i>
+                                    <i className="fas fa-envelope"></i>
                                 </span>
                             </div>
                         </div>
@@ -46,16 +58,18 @@ const LoginPage: NextPage = ()=> {
                             <label className="label">Password</label>
                             <div className="control has-icons-left">
                                 <input 
-                                    className="input" 
+                                    className={`input${loginError ? ' is-danger':''}`} 
                                     type="password" 
                                     placeholder="Enter Password" 
                                     value={userPassword}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setUserPassword(e.target.value)}}/>
                                 <span className="icon is-small is-left">
-                                <i className="fas fa-key"></i>
+                                    <i className="fas fa-key"></i>
                                 </span>
                             </div>
+                            {loginError && <span className="help is-danger">{loginError}</span> }
                         </div>
+                        <br/>
                         <div className="control">
                             <button className="button is-primary">Login</button>
                         </div>
