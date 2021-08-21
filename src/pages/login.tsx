@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from "react"
 import Constants from '../constants'
@@ -36,7 +35,7 @@ const LoginPage: NextPage = ()=> {
         <div className="card card-container">
             <div className="card-content">
                 <div className="content">
-                    <Image src="/logo-icon.svg" width={44} height={50} layout='fixed'/>
+                    <img src="/logo-icon.svg" width={44} height={50} />
                     <h1 className="heading1">Login to Slashbase</h1>
                     <form onSubmit={onLoginBtn}>
                         <div className="field">

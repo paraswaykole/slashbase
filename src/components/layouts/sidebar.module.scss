@@ -1,0 +1,16 @@
+.sidebar {
+    height: 100%;
+    background: #f3f3f3;
+    width: 260px;
+    box-shadow: inset -1px 0px 4px 0px rgb(0 0 0 / 20%);
+    .spacebox{
+        padding: 5px 10px;
+    }
+    .projectMenuItem {
+        padding: 5px 10px;
+        transition: all .2s;
+    }
+    .projectMenuItem:hover {
+        background: #e0e0e8;
+    }
+}

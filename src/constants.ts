@@ -6,6 +6,7 @@ interface ConstantsType {
         [key: string]: {
             href: string
             as: string
+            isAuth: boolean
         }
     }
 }
@@ -19,15 +20,18 @@ const Constants: ConstantsType = {
     APP_PATHS: {
         LOGIN: {
             href: '/login',
-            as: '/login'
+            as: '/login',
+            isAuth: false
         },
         LOGOUT: {
             href: '/logout',
-            as: '/logout'
+            as: '/logout',
+            isAuth: true
         },
         HOME: {
             href: '/',
-            as: '/'
+            as: '/',
+            isAuth: true
         },
     }
 

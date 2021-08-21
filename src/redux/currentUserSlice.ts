@@ -6,12 +6,11 @@ import storage from '../data/storage'
 import apiService from '../network/apiService'
 
 export interface CurrentUserState {
-  user: User | null
+  user?: User
   isAuthenticated: boolean | null
 }
 
 const initialState: CurrentUserState = {
-  user: null,
   isAuthenticated: null
 }
 
@@ -49,7 +48,7 @@ export const logoutUser = createAsyncThunk(
     //TODO: make logout api call
     await storage.logoutUser()
     return {
-      currentUser: null,
+      currentUser: undefined,
       isAuthenticated: false,
     }
   }
@@ -63,7 +62,7 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUser.fulfilled, (state, action) => {
-        state.user = action.payload.currentUser
+        state.user = action.payload.currentUser ? action.payload.currentUser : undefined
         state.isAuthenticated = action.payload.isAuthenticated
       })
       .addCase(loginUser.fulfilled, (state, action) => {
@@ -82,7 +81,7 @@ export const userSlice = createSlice({
 
 export const { } = userSlice.actions
 
-export const selectCurrentUser = (state: AppState) => state.currentUser.user
+export const selectCurrentUser = (state: AppState) => state.currentUser.user!
 
 export const selectIsAuthenticated = (state: AppState) => state.currentUser.isAuthenticated
 

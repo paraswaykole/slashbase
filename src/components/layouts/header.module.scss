@@ -1,0 +1,58 @@
+.header {
+    height: 60px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #262626;
+    color: #ffffff;
+    .home {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        background: #444444;
+        border-radius: 8px;
+        transition: all .2s;
+        color: #ffffff;
+    }
+    .home:hover {
+        background: #000000;
+    }
+    .headerCenter{
+        height: 40px;
+        .headerSelect {
+            background: none;
+            height: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all .2s;
+            cursor: pointer;
+            color: inherit;
+            border: none;
+            option{
+                color: #000000;
+            }
+        }
+        .headerSelect:focus-visible {
+            outline: none;
+        }
+        
+    }
+    .headerMenu {
+        display: flex;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    .profileImage {
+        border-radius: 20px;
+        border: 1px solid snow !important;
+    }
+}
