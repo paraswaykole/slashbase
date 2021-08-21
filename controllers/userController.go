@@ -59,7 +59,6 @@ func (uc UserController) LoginUser(c *gin.Context) {
 		"success": false,
 		"error":   "Invalid Login",
 	})
-	return
 }
 
 func (uc UserController) AddUser(c *gin.Context) {
@@ -78,16 +77,7 @@ func (uc UserController) AddUser(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			usr, err = models.NewUser(addUserBody.Email, utils.RandStringUnsafe(10))
-			if err == nil {
-				err = userDao.CreateUser(usr)
-				if err != nil {
-					c.JSON(http.StatusOK, gin.H{
-						"success": false,
-						"error":   "There was some problem",
-					})
-					return
-				}
-			} else {
+			if err != nil {
 				c.JSON(http.StatusOK, gin.H{
 					"success": false,
 					"error":   err,
@@ -102,10 +92,17 @@ func (uc UserController) AddUser(c *gin.Context) {
 			return
 		}
 	}
+	err = userDao.CreateUser(usr)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 	})
-	return
 }
 
 func (uc UserController) Logout(c *gin.Context) {
@@ -114,5 +111,4 @@ func (uc UserController) Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 	})
-	return
 }
