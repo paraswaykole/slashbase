@@ -14,3 +14,10 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.appcontainer {
+  width: 100%;
+  min-height: 100vh;
+  background: #fcfaf7;
+  position: absolute;
+}

@@ -1,4 +1,6 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
+import Image from 'next/image'
 import { useState } from "react"
 import apiService from "../network/apiService"
 
@@ -16,10 +18,14 @@ const LoginPage: NextPage = ()=> {
 
     return (
     <main>
+        <Head>
+            <title>Login to Slashbase</title>
+        </Head>
         <div className="card card-container">
             <div className="card-content">
                 <div className="content">
-                    <h1>Login to Slashbase</h1>
+                    <Image src="/logo-icon.svg" width={44} height={50} layout='fixed'/>
+                    <h1 className="heading1">Login to Slashbase</h1>
                     <form onSubmit={onLoginBtn}>
                         <div className="field">
                             <label className="label">Email</label>
@@ -61,6 +67,10 @@ const LoginPage: NextPage = ()=> {
             .card-container{
                 max-width: 500px;
                 margin: 100px auto 0px auto;
+            }
+            .heading1 {
+                margin-top: 10px !important;
+                margin-bottom: 20px !important;
             }
          `}</style>
     </main>

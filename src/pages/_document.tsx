@@ -8,8 +8,10 @@ class SlashbaseDocument extends Document {
         <Head>
         </Head>
         <body>
-          <Main />
-          <NextScript />
+          <div className="appcontainer">
+            <Main />
+            <NextScript />
+          </div>
         </body>
       </Html>
     )
