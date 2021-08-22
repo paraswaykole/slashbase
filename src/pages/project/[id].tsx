@@ -14,13 +14,13 @@ const ProjectPage: NextPage = () => {
 
   useEffect(()=>{
     (async () => {
-      const { id } = router.query    
+      const { id } = router.query
       let response = await apiService.getDBConnectionsByProject(String(id))
       if(response.success){
         setDatabases(response.data)
       }
     })()
-  }, [])
+  }, [router])
 
   return (
     <AppLayout title="Home">

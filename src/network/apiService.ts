@@ -17,8 +17,13 @@ const getProjectMembers = async function(teamId: string): Promise<ApiResult<Arra
     return result
 }
 
-const getDBConnections = async function(): Promise<ApiResult<Array<DBConnection>>> {
+const getAllDBConnections = async function(): Promise<ApiResult<Array<DBConnection>>> {
     const result: ApiResult<Array<DBConnection>> = await Request.apiInstance.get('/dbconnection/getall').then(res => res.data)
+    return result
+}
+
+const getSingleDBConnection = async function(dbConnId: string): Promise<ApiResult<DBConnection>> {
+    const result: ApiResult<DBConnection> = await Request.apiInstance.get(`/dbconnection/get/${dbConnId}`).then(res => res.data)
     return result
 }
 
@@ -36,7 +41,8 @@ export default {
     loginUser,
     getProjects,
     getProjectMembers,
-    getDBConnections,
+    getAllDBConnections,
+    getSingleDBConnection,
     getDBConnectionsByProject,
     getDBDataModelsByConnectionId
 }
