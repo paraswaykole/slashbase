@@ -4,6 +4,7 @@ import Constants from '../constants'
 import currentUserReducer from './currentUserSlice'
 import projectsReducer from './projectsSlice'
 import dbConnectionReducer from './dbConnectionSlice'
+import allDBConnectionsReducer from './allDBConnectionsSlice'
 
 export function makeStore() {
   return configureStore({
@@ -11,6 +12,7 @@ export function makeStore() {
       currentUser: currentUserReducer,
       projects: projectsReducer,
       dbConnection: dbConnectionReducer,
+      allDBConnections: allDBConnectionsReducer
     },
     devTools: !Constants.IS_LIVE
   })

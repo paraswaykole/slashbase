@@ -11,6 +11,7 @@ import { getUser, selectIsAuthenticated } from '../redux/currentUserSlice'
 import { useEffect } from 'react'
 import Constants from '../constants'
 import { getProjects } from '../redux/projectsSlice'
+import { getAllDBConnections } from '../redux/allDBConnectionsSlice'
 
 function SlashbaseApp({ Component, pageProps }: AppProps) {
   return <Provider store={store}>
@@ -41,6 +42,7 @@ const SlashbaseAppComponent = ({children}: any) => {
       // prefetch or preload data
       if (isAuthenticated){
         dispatch(getProjects())
+        dispatch(getAllDBConnections())
       }
   }, [dispatch, isAuthenticated])
   
