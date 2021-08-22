@@ -8,22 +8,22 @@ const loginUser = async function(email: string, password: string): Promise<ApiRe
 }
 
 const getProjects = async function(): Promise<ApiResult<Array<Project>>> {
-    const result: ApiResult<Array<Project>> = await Request.apiInstance.get('/project/getall').then(res => res.data)
+    const result: ApiResult<Array<Project>> = await Request.apiInstance.get('/project/all').then(res => res.data)
     return result
 }
 
 const getProjectMembers = async function(teamId: string): Promise<ApiResult<Array<ProjectMember>>> {
-    const result: ApiResult<Array<ProjectMember>> = await Request.apiInstance.get(`/project/getmembers/${teamId}`).then(res => res.data)
+    const result: ApiResult<Array<ProjectMember>> = await Request.apiInstance.get(`/project/members/${teamId}`).then(res => res.data)
     return result
 }
 
 const getAllDBConnections = async function(): Promise<ApiResult<Array<DBConnection>>> {
-    const result: ApiResult<Array<DBConnection>> = await Request.apiInstance.get('/dbconnection/getall').then(res => res.data)
+    const result: ApiResult<Array<DBConnection>> = await Request.apiInstance.get('/dbconnection/all').then(res => res.data)
     return result
 }
 
 const getSingleDBConnection = async function(dbConnId: string): Promise<ApiResult<DBConnection>> {
-    const result: ApiResult<DBConnection> = await Request.apiInstance.get(`/dbconnection/get/${dbConnId}`).then(res => res.data)
+    const result: ApiResult<DBConnection> = await Request.apiInstance.get(`/dbconnection/${dbConnId}`).then(res => res.data)
     return result
 }
 
