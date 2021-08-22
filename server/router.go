@@ -60,6 +60,7 @@ func NewRouter() *gin.Engine {
 			queryGroup.Use(middlewares.FindUserMiddleware())
 			queryGroup.Use(middlewares.AuthUserMiddleware())
 			queryGroup.POST("/run", queryController.RunQuery)
+			queryGroup.GET("/data/:dbConnId", queryController.GetData)
 			queryGroup.GET("/datamodels/:dbConnId", queryController.GetDataModels)
 		}
 	}

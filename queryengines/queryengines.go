@@ -19,6 +19,10 @@ func GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) 
 	return data, nil
 }
 
+func GetData(dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64) (map[string]interface{}, error) {
+	return postgresQueryEngine.GetData(dbConn, schemaName, name, limit, offset)
+}
+
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
 }

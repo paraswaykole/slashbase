@@ -37,10 +37,10 @@ func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query stri
 		if err != nil {
 			return nil, err
 		}
-		cols, rowsData := pgxutils.PgSqlRowsToJson(rows)
+		columns, rowsData := pgxutils.PgSqlRowsToJson(rows)
 		return map[string]interface{}{
-			"cols": cols,
-			"rows": rowsData,
+			"columns": columns,
+			"rows":    rowsData,
 		}, nil
 	} else {
 		cmdTag, err := conn.Exec(query)
@@ -55,4 +55,9 @@ func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query stri
 
 func (pgqe PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) {
 	return pgqe.RunQuery(dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
+}
+
+func (pgqe PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`SELECT * FROM "%s"."%s" LIMIT %d OFFSET %d;`, schema, name, limit, offset)
+	return pgqe.RunQuery(dbConn, query)
 }
