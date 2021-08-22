@@ -7,11 +7,11 @@ import DefaultErrorPage from 'next/error'
 import { getDBConnection, getDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppDispatch } from '../../redux/hooks'
 import DBHomeFragment from '../../components/dbfragments/home'
-import DBDataModelFragment from '../../components/dbfragments/datamodel'
+import DBShowDataFragment from '../../components/dbfragments/showdata'
 
 enum DBFragmentViewType {
     HOME = "HOME",
-    DATAMODEL = "DATAMODEL"
+    SHOWDATA = "SHOWDATA"
 }
 
 const DBPage: NextPage = () => {
@@ -41,7 +41,7 @@ const DBPage: NextPage = () => {
 
     useEffect(()=>{
         if(mschema && mname){
-            setDBFragmentViewType(DBFragmentViewType.DATAMODEL) 
+            setDBFragmentViewType(DBFragmentViewType.SHOWDATA) 
         } else {
             setDBFragmentViewType(DBFragmentViewType.HOME)
         }
@@ -56,8 +56,8 @@ const DBPage: NextPage = () => {
         <main className="maincontainer">
             {dbFragmentViewType === DBFragmentViewType.HOME && 
                 <DBHomeFragment /> }
-            {dbFragmentViewType === DBFragmentViewType.DATAMODEL && 
-                <DBDataModelFragment /> }
+            {dbFragmentViewType === DBFragmentViewType.SHOWDATA && 
+                <DBShowDataFragment /> }
         </main>
         </AppLayout>
     )

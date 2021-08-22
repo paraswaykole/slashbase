@@ -65,4 +65,5 @@ h6 {
 .maincontainer{
   padding: 10px;
   width: calc(100% - 260px);
+  overflow: scroll;
 }

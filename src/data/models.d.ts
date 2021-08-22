@@ -46,6 +46,10 @@ export interface DBDataModel {
     schemaName: string|null
 }
 
+export interface DBQueryData {
+    columns: string[],
+    rows: any[]
+}
 
 // Result Models
 

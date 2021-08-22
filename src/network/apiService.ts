@@ -1,5 +1,5 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel } from '../data/models'
+import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData } from '../data/models'
 
 
 const loginUser = async function(email: string, password: string): Promise<ApiResult<UserSession>> {
@@ -37,6 +37,11 @@ const getDBDataModelsByConnectionId = async function(dbConnId: string): Promise<
     return result
 }
 
+const getDBDataInDataModel = async function(dbConnId: string,schemaName: string, mName: string): Promise<ApiResult<DBQueryData>> {
+    const result: ApiResult<DBQueryData> = await Request.apiInstance.get(`/query/data/${dbConnId}?schema=${schemaName}&name=${mName}`).then(res => res.data)
+    return result
+}
+
 export default {
     loginUser,
     getProjects,
@@ -44,5 +49,6 @@ export default {
     getAllDBConnections,
     getSingleDBConnection,
     getDBConnectionsByProject,
-    getDBDataModelsByConnectionId
+    getDBDataModelsByConnectionId,
+    getDBDataInDataModel
 }
