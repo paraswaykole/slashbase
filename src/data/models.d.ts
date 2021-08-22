@@ -36,7 +36,7 @@ export interface DBConnection {
     id: string
     name: string
     type: DBConnType
-    teamId: string
+    projectId: string
     createdAt: string
     updatedAt: string
 }

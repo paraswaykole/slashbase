@@ -1,12 +1,13 @@
 import styles from './header.module.scss'
 import React, { useEffect } from 'react'
 import Link from 'next/link'
-import { Project, User } from '../../data/models'
+import { DBConnection, Project, User } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
 import { useRouter } from 'next/router'
 import { selectCurrentUser } from '../../redux/currentUserSlice'
 import Constants from '../../constants'
 import { selectProjects } from '../../redux/projectsSlice'
+import { selectDBConnection } from '../../redux/dbConnectionSlice'
 
 type HeaderPropType = {
 
@@ -28,6 +29,15 @@ const Header = (_: HeaderPropType) => {
         router.replace(options.find(x=>x.value === event.target.value)!.path)
     }
 
+    let currentOption = 'home'
+    if (router.pathname === Constants.APP_PATHS.PROJECT.href) {
+        currentOption = String(router.query.id)
+    } else if (router.pathname === Constants.APP_PATHS.DB.href) {
+        const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
+        if (currentDBConnection)
+            currentOption = currentDBConnection?.projectId
+    }
+
     return (
         <header className={styles.header}>
             <Link {...Constants.APP_PATHS.HOME}>
@@ -38,7 +48,7 @@ const Header = (_: HeaderPropType) => {
                 </a>
             </Link>
             <div className={styles.headerCenter}>
-                <select className={styles.headerSelect} value={router.pathname === '/' ? 'home' : 'home'} onChange={onNavigate}>
+                <select className={styles.headerSelect} value={currentOption} onChange={onNavigate}>
                     {options.map((x)=>{
                         return <option key={x.value} value={x.value} label={x.label} />
                     })}
