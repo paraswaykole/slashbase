@@ -37,8 +37,8 @@ const getDBDataModelsByConnectionId = async function(dbConnId: string): Promise<
     return result
 }
 
-const getDBDataInDataModel = async function(dbConnId: string,schemaName: string, mName: string): Promise<ApiResult<DBQueryData>> {
-    const result: ApiResult<DBQueryData> = await Request.apiInstance.get(`/query/data/${dbConnId}?schema=${schemaName}&name=${mName}`).then(res => res.data)
+const getDBDataInDataModel = async function(dbConnId: string,schemaName: string, mName: string, offset: number, fetchCount: boolean): Promise<ApiResult<DBQueryData>> {
+    const result: ApiResult<DBQueryData> = await Request.apiInstance.get(`/query/data/${dbConnId}?schema=${schemaName}&name=${mName}&offset=${offset}&count=${fetchCount}`).then(res => res.data)
     return result
 }
 

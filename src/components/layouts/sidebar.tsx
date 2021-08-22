@@ -41,7 +41,7 @@ const Sidebar = (_: SidebarPropType) => {
                         <ul className="menu-list">
                             {allDBConnections.map((dbConn: DBConnection) => {
                                 return (
-                                    <li>
+                                    <li key={dbConn.id}>
                                         <Link href={Constants.APP_PATHS.DB.href} as={Constants.APP_PATHS.DB.as + dbConn.id}>
                                             <a>{dbConn.name}</a>
                                         </Link>
@@ -59,7 +59,7 @@ const Sidebar = (_: SidebarPropType) => {
                         <ul className="menu-list">
                             {dbDataModels.map((dataModel: DBDataModel) => {
                                 return (
-                                    <li>
+                                    <li  key={dataModel.schemaName+dataModel.name}>
                                         <Link 
                                             href={{pathname: Constants.APP_PATHS.DB.href, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
                                             as={Constants.APP_PATHS.DB.as + dbConnection!.id + "?mschema="+dataModel.schemaName + "&mname="+dataModel.name}>

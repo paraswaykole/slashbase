@@ -56,8 +56,8 @@ const DBPage: NextPage = () => {
         <main className="maincontainer">
             {dbFragmentViewType === DBFragmentViewType.HOME && 
                 <DBHomeFragment /> }
-            {dbFragmentViewType === DBFragmentViewType.SHOWDATA && 
-                <DBShowDataFragment /> }
+            {dbFragmentViewType === DBFragmentViewType.SHOWDATA && mschema && mname && 
+                <DBShowDataFragment key={String(mschema)+String(mname)}/> }
         </main>
         </AppLayout>
     )

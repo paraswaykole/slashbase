@@ -48,7 +48,8 @@ export interface DBDataModel {
 
 export interface DBQueryData {
     columns: string[],
-    rows: any[]
+    rows: any[],
+    count?: number
 }
 
 // Result Models
