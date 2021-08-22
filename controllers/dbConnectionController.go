@@ -58,22 +58,8 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 
 func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
-	var getBody struct {
-		ProjectIDs []string `json:"projectIds"`
-	}
-	c.BindJSON(&getBody)
 
-	for _, projectID := range getBody.ProjectIDs {
-		if !utils.ContainsString(*authUserProjectIds, projectID) {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"error":   errors.New("projectID " + projectID + "not allowed"),
-			})
-			return
-		}
-	}
-
-	dbConns, err := dbConnDao.GetDBConnectionsByProjectIds(getBody.ProjectIDs)
+	dbConns, err := dbConnDao.GetDBConnectionsByProjectIds(*authUserProjectIds)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

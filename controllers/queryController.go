@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/middlewares"
@@ -55,8 +56,13 @@ func (qc QueryController) GetData(c *gin.Context) {
 
 	schema := c.Query("schema")
 	name := c.Query("name")
+	fetchCount := c.Query("count") == "true"
 	limit := 200
-	offset := int64(0)
+	offsetStr := c.Query("offset")
+	offset, err := strconv.ParseInt(offsetStr, 10, 64)
+	if err != nil {
+		offset = int64(0)
+	}
 
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
@@ -76,7 +82,7 @@ func (qc QueryController) GetData(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.GetData(dbConn, schema, name, limit, offset)
+	data, err := queryengines.GetData(dbConn, schema, name, limit, offset, fetchCount)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

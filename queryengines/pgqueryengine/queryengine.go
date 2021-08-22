@@ -57,7 +57,19 @@ func (pgqe PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) (map[
 	return pgqe.RunQuery(dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
 }
 
-func (pgqe PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64) (map[string]interface{}, error) {
+func (pgqe PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`SELECT * FROM "%s"."%s" LIMIT %d OFFSET %d;`, schema, name, limit, offset)
-	return pgqe.RunQuery(dbConn, query)
+	data, err := pgqe.RunQuery(dbConn, query)
+	if err != nil {
+		return nil, err
+	}
+	if fetchCount {
+		countQuery := fmt.Sprintf(`SELECT count(*) FROM "%s"."%s";`, schema, name)
+		countData, err := pgqe.RunQuery(dbConn, countQuery)
+		if err != nil {
+			return nil, err
+		}
+		data["count"] = countData["rows"].([]map[string]interface{})[0]["count"]
+	}
+	return data, err
 }
