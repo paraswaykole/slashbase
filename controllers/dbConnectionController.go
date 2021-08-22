@@ -91,6 +91,24 @@ func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
 	})
 }
 
+func (dbcc DBConnectionController) GetSingleDBConnection(c *gin.Context) {
+	dbConnID := c.Param("dbConnId")
+	_ = middlewares.GetAuthUser(c)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	// TODO: check if authUser is member of project
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    views.BuildDBConnection(dbConn),
+	})
+}
+
 func (dbcc DBConnectionController) GetDBConnectionsByProject(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
