@@ -23,23 +23,38 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const [queryOffset, setQueryOffset] = useState(0)
     const [queryCount, setQueryCount] = useState<number|undefined>(undefined)
     const [queryLimit] = useState(200)
+    const [dataLoading, setDataLoading] = useState(false)
     
     useEffect(()=>{
         const dModel = dbDataModels.find(x => x.schemaName == mschema && x.name == mname)
         if(dModel){
             setDataModel(dModel)
-            {(async () => {
-                const result = await apiService.getDBDataInDataModel(dbConnection!.id, dModel!.schemaName ?? '', dModel!.name, queryOffset, !queryCount)
-                if (result.success) {
-                    setQueryModel(result.data)
-                    if (!queryCount){
-                        setQueryCount(result.data.count)
-                    }
-                }
-            })()}
         }
         // else redirect to home fragment             
-    }, [dbConnection, dbDataModels, queryOffset, queryCount])
+    }, [dbDataModels])
+
+    useEffect(()=>{
+        if (dataModel && !queryCount){ 
+            fetchData(true)
+        }
+    }, [dataModel, queryCount])
+    
+    useEffect(()=>{
+        fetchData(false)
+    }, [queryOffset])
+    
+    const fetchData = async (fetchCount: boolean) => {
+        if(!dataModel || dataLoading) return
+        setDataLoading(true)
+        const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount)
+        if (result.success) {
+            setQueryModel(result.data)
+            if (!queryCount){
+                setQueryCount(result.data.count)
+            }
+        }
+        setDataLoading(false)
+    }
 
     const onPreviousPage = () => {
         let previousOffset = queryOffset - queryLimit
@@ -80,13 +95,17 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                 
             </tbody>
             </table>
-            <nav className="pagination is-centered" role="navigation" aria-label="pagination">
-                <a className="pagination-previous" onClick={onPreviousPage}>Previous</a>
-                <a className="pagination-next" onClick={onNextPage}>Next</a>
-                <ul className="pagination-list">
-                    Showing {queryOffset} - {queryOffsetRangeEnd} of {queryCount}
-                </ul>
-            </nav>
+            {dataLoading ? 
+                <progress className="progress is-primary" max="100">15%</progress>
+                :
+                <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a className="pagination-previous" onClick={onPreviousPage}>Previous</a>
+                    <a className="pagination-next" onClick={onNextPage}>Next</a>
+                    <ul className="pagination-list">
+                        Showing {queryOffset} - {queryOffsetRangeEnd} of {queryCount}
+                    </ul>
+                </nav>
+            }
         </React.Fragment>
     )
 }
