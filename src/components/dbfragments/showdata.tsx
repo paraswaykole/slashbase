@@ -96,7 +96,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
             </tbody>
             </table>
             {dataLoading ? 
-                <progress className="progress is-primary" max="100">15%</progress>
+                <progress className="progress is-primary" max="100">loading</progress>
                 :
                 <nav className="pagination is-centered" role="navigation" aria-label="pagination">
                     <a className="pagination-previous" onClick={onPreviousPage}>Previous</a>
