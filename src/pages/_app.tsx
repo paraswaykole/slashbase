@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { getUser, selectIsAuthenticated } from '../redux/currentUserSlice'
 import { useEffect } from 'react'
 import Constants from '../constants'
+import { getProjects } from '../redux/projectsSlice'
 
 function SlashbaseApp({ Component, pageProps }: AppProps) {
   return <Provider store={store}>
@@ -27,7 +28,7 @@ const SlashbaseAppComponent = ({children}: any) => {
 
   useEffect(() => {
       (async () => {
-          const currentPath = Object.values(Constants.APP_PATHS).find(x => x.as === router.asPath)
+          const currentPath = Object.values(Constants.APP_PATHS).find(x => x.href === router.route)
           if (currentPath){
             const { payload } : any = await dispatch((getUser()))
             if((isAuthenticated === null && payload.isAuthenticated) || !currentPath.isAuth || isAuthenticated){
@@ -37,6 +38,10 @@ const SlashbaseAppComponent = ({children}: any) => {
           if(router.route != '/_error')
             router.replace(Constants.APP_PATHS.LOGIN.as)
       })()
+      // prefetch or preload data
+      if (isAuthenticated){
+        dispatch(getProjects())
+      }
   }, [dispatch, isAuthenticated])
   
   return children

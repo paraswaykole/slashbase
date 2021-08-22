@@ -2,11 +2,13 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import Constants from '../constants'
 
 import currentUserReducer from './currentUserSlice'
+import projectsReducer from './projectsSlice'
 
 export function makeStore() {
   return configureStore({
     reducer: {
       currentUser: currentUserReducer,
+      projects: projectsReducer,
     },
     devTools: !Constants.IS_LIVE
   })

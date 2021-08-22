@@ -28,6 +28,16 @@ const Constants: ConstantsType = {
             as: '/logout',
             isAuth: true
         },
+        PROJECT: {
+            href: '/project/[id]',
+            as: '/project/',
+            isAuth: true
+        },
+        DB: {
+            href: '/db/[id]',
+            as: '/db/',
+            isAuth: true
+        },
         HOME: {
             href: '/',
             as: '/',

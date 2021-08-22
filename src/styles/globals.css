@@ -15,6 +15,39 @@ a {
   box-sizing: border-box;
 }
 
+h1,h2,h3,h4,h5,h6 {
+	font-family: 'PT Sans', 'Source Sans Pro';
+	line-height: 1.1;
+}
+
+h1 {
+  font-weight: 700 !important;
+  font-size: 32px !important;
+}
+
+h2 {
+  font-weight: 700 !important;
+  font-size: 28x !important;
+}
+
+h3 {
+  font-weight: 600 !important;
+  font-size: 24px !important;
+}
+
+h4 {
+  font-weight: 600 !important;
+  font-size: 20px !important;
+}
+
+h5 {
+  font-size: 18px !important;
+}
+
+h6 {
+  font-size: 16px !important;
+}
+
 .appcontainer {
   width: 100%;
   min-height: 100vh;
@@ -29,8 +62,7 @@ a {
   flex-direction: row;
 }
 
-h1,h2,h3,h4,h5,h6 {
-	font-weight: 700;
-	font-family: 'PT Sans', 'Source Sans Pro';
-	line-height: 1.1;
+.maincontainer{
+  padding: 10px;
+  width: calc(100% - 260px);
 }
