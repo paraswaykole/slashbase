@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react'
 import AppLayout from '../../components/layouts/applayout'
 
 import DefaultErrorPage from 'next/error'
-import { getDBConnection, getDBDataModels } from '../../redux/dbConnectionSlice'
-import { useAppDispatch } from '../../redux/hooks'
+import { getDBConnection, getDBDataModels, selectDBConnection } from '../../redux/dbConnectionSlice'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import DBHomeFragment from '../../components/dbfragments/home'
 import DBShowDataFragment from '../../components/dbfragments/showdata'
+import { DBConnection } from '../../data/models'
 
 enum DBFragmentViewType {
     HOME = "HOME",
@@ -21,6 +22,8 @@ const DBPage: NextPage = () => {
 
     const [error404, setError404] = useState(false)
     const dispatch = useAppDispatch()
+
+    const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
     const [dbFragmentViewType, setDBFragmentViewType] = useState<DBFragmentViewType>(DBFragmentViewType.HOME)
 
@@ -52,7 +55,7 @@ const DBPage: NextPage = () => {
     }
 
     return (
-        <AppLayout title="Home">
+        <AppLayout title={dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase"}>
         <main className="maincontainer">
             {dbFragmentViewType === DBFragmentViewType.HOME && 
                 <DBHomeFragment /> }

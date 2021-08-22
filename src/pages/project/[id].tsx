@@ -3,18 +3,23 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import DBConnCard from '../../components/dbconncard/dbconncard'
 import AppLayout from '../../components/layouts/applayout'
-import { DBConnection } from '../../data/models'
+import { DBConnection, Project } from '../../data/models'
 import apiService from '../../network/apiService'
+import { useAppSelector } from '../../redux/hooks'
+import { selectProjects } from '../../redux/projectsSlice'
 
 const ProjectPage: NextPage = () => {
 
   const router = useRouter()
+  const { id } = router.query
 
   const [databases, setDatabases] = useState<DBConnection[]>([])
 
+  const projects: Project[] = useAppSelector(selectProjects)
+  const project: Project | undefined = projects.find(x => x.id === id)
+
   useEffect(()=>{
     (async () => {
-      const { id } = router.query
       let response = await apiService.getDBConnectionsByProject(String(id))
       if(response.success){
         setDatabases(response.data)
@@ -23,7 +28,7 @@ const ProjectPage: NextPage = () => {
   }, [router])
 
   return (
-    <AppLayout title="Home">
+    <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
       <main className="maincontainer">
         <h1>All Databases</h1>
         {databases.map((db: DBConnection) => (
