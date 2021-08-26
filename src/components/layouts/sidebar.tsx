@@ -71,6 +71,9 @@ const Sidebar = (_: SidebarPropType) => {
                                 )
                             })}
                         </ul>
+                        <p className="menu-label">
+                            Queries
+                        </p>
                     </React.Fragment>
                 }
             </div>

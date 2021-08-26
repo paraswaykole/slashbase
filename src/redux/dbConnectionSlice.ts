@@ -6,22 +6,32 @@ import apiService from '../network/apiService'
 
 export interface DBConnectionState {
     dbConnection?: DBConnection,
-    dbDataModels: DBDataModel[]
+    dbDataModels: DBDataModel[],
+    isDBDataModelsFetched: boolean,
 }
 
 const initialState: DBConnectionState = {
   dbConnection: undefined,
-  dbDataModels: []
+  dbDataModels: [],
+  isDBDataModelsFetched: false,
 }
 
 export const getDBConnection = createAsyncThunk(
   'dbConnection/getDBConnection',
-  async (payload: {dbConnId: string}, { rejectWithValue }) => {
+  async (payload: {dbConnId: string}, { rejectWithValue, getState }) => {
+    const { dbConnection } = (getState() as any)['dbConnection'] as DBConnectionState
+    if (dbConnection && dbConnection.id === payload.dbConnId){
+      return {
+        dbConnection: dbConnection,
+        new: false 
+      }
+    }
     const result = await apiService.getSingleDBConnection(payload.dbConnId)
     if(result.success){
       const dbConnection = result.data
       return {
         dbConnection: dbConnection,
+        new: true
       }
     } else {
       return rejectWithValue(result.error)
@@ -42,6 +52,12 @@ export const getDBDataModels = createAsyncThunk(
       return rejectWithValue(result.error)
     }
   },
+  {
+    condition: (_, { getState }: any) => {
+      const { isDBDataModelsFetched } = getState()['dbConnection'] as DBConnectionState
+      return !isDBDataModelsFetched
+    }
+  }
 )
 
 export const projectsSlice = createSlice({
@@ -52,10 +68,15 @@ export const projectsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getDBConnection.fulfilled, (state,  action) => {
+        if (action.payload.new){
+          state.dbDataModels = []
+          state.isDBDataModelsFetched = false
+        }
         state.dbConnection = action.payload.dbConnection
       })
       .addCase(getDBDataModels.fulfilled, (state,  action) => {
         state.dbDataModels = action.payload.dataModels
+        state.isDBDataModelsFetched = true
       })
   },
 })

@@ -33,7 +33,6 @@ const DBPage: NextPage = () => {
                 try {
                     await dispatch((getDBConnection({dbConnId: String(id)}))).unwrap() 
                 } catch (e){
-                    console.log(e)
                     setError404(true)
                     return
                 }
