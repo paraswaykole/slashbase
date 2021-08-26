@@ -67,7 +67,7 @@ func (uc UserController) AddUser(c *gin.Context) {
 		Email string `json:"email"`
 	}
 	c.BindJSON(&addUserBody)
-	if !authUser.RootUser {
+	if !authUser.IsRoot {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"error":   "Not Allowed.",

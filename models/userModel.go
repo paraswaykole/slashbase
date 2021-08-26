@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+	"slashbase.com/backend/config"
 )
 
 type User struct {
 	ID              string `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Email           string `gorm:"unique;not null"`
 	Password        string `gorm:"not null"`
-	RootUser        bool   `gorm:"not null;default:false"`
+	IsRoot          bool   `gorm:"not null;default:false"`
 	FullName        sql.NullString
 	ProfileImageURL sql.NullString
 	CreatedAt       time.Time `gorm:"autoCreateTime"`
@@ -25,11 +26,11 @@ type User struct {
 func NewUser(email, textPassword string) (*User, error) {
 	var err error = nil
 	if email == "" || textPassword == "" {
-		return nil, errors.New("Fields cannot be empty")
+		return nil, errors.New("fields cannot be empty")
 	}
 	re := regexp.MustCompile(`^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w+)+$`)
 	if !re.Match([]byte(email)) {
-		return nil, errors.New("Email id is not valid")
+		return nil, errors.New("email id is not valid")
 	}
 	user := User{
 		Email:    email,
@@ -53,4 +54,11 @@ func (u *User) hashPassword() error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), 10)
 	u.Password = string(bytes)
 	return err
+}
+
+func (u *User) GetUserProfileImage() string {
+	if u.ProfileImageURL.Valid {
+		return u.ProfileImageURL.String
+	}
+	return config.GetDefaultProfileImageUrl()
 }
