@@ -5,7 +5,11 @@ import (
 	"slashbase.com/backend/queryengines/pgqueryengine"
 )
 
-var postgresQueryEngine pgqueryengine.PostgresQueryEngine
+var postgresQueryEngine *pgqueryengine.PostgresQueryEngine
+
+func InitQueryEngines() {
+	postgresQueryEngine = pgqueryengine.InitPostgresQueryEngine()
+}
 
 func RunQuery(dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
 	return postgresQueryEngine.RunQuery(dbConn, query)

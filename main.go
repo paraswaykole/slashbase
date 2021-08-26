@@ -22,6 +22,7 @@ func main() {
 	flag.Parse()
 	config.Init(*environment)
 	db.InitGormDB()
+	queryengines.InitQueryEngines()
 	autoMigrate()
 	initUnusedRemovalThreads()
 	server.Init()

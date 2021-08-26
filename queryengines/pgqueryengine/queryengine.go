@@ -1,6 +1,7 @@
 package pgqueryengine
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -12,11 +13,17 @@ import (
 )
 
 type PostgresQueryEngine struct {
-	openConnections map[string]pgxConnInstance
+	openConnections map[string]pgxConnPoolInstance
 }
 
-func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
-	port, err := strconv.Atoi(string(dbConn.DBPort))
+func InitPostgresQueryEngine() *PostgresQueryEngine {
+	return &PostgresQueryEngine{
+		openConnections: map[string]pgxConnPoolInstance{},
+	}
+}
+
+func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
+	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
 		sshTun := sshtunnel.GetSSHTunnel(dbConn.ID, dbConn.UseSSH,
 			string(dbConn.SSHHost), port, string(dbConn.SSHUser),
@@ -25,7 +32,7 @@ func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query stri
 		dbConn.DBHost = "localhost"
 		dbConn.DBPort = sbsql.CryptedData(fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port))
 	}
-	port, err = strconv.Atoi(string(dbConn.DBPort))
+	port, _ = strconv.Atoi(string(dbConn.DBPort))
 	conn, err := pgqe.getConnection(dbConn.ID, string(dbConn.DBHost), uint16(port), string(dbConn.DBName), string(dbConn.DBUser), string(dbConn.DBPassword))
 	if err != nil {
 		return nil, err
@@ -33,7 +40,7 @@ func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query stri
 
 	filteredQuery := strings.TrimSpace(strings.ToLower(query))
 	if strings.HasPrefix(filteredQuery, "select") {
-		rows, err := conn.Query(query)
+		rows, err := conn.Query(context.Background(), query)
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +50,7 @@ func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query stri
 			"rows":    rowsData,
 		}, nil
 	} else {
-		cmdTag, err := conn.Exec(query)
+		cmdTag, err := conn.Exec(context.Background(), query)
 		if err != nil {
 			return nil, err
 		}
@@ -53,11 +60,11 @@ func (pgqe PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query stri
 	}
 }
 
-func (pgqe PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) {
 	return pgqe.RunQuery(dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
 }
 
-func (pgqe PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`SELECT * FROM "%s"."%s" LIMIT %d OFFSET %d;`, schema, name, limit, offset)
 	data, err := pgqe.RunQuery(dbConn, query)
 	if err != nil {

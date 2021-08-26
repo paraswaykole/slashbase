@@ -4,15 +4,16 @@ import (
 	"database/sql"
 	"reflect"
 
+	"github.com/jackc/pgproto3/v2"
 	"github.com/jackc/pgtype"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v4"
 )
 
-func PgSqlRowsToJson(rows *pgx.Rows) ([]string, []map[string]interface{}) {
+func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 	fieldDescriptions := rows.FieldDescriptions()
 	var columns []string
 	for _, col := range fieldDescriptions {
-		columns = append(columns, col.Name)
+		columns = append(columns, string(col.Name))
 	}
 
 	count := len(columns)
@@ -92,8 +93,8 @@ func PgSqlRowsToJson(rows *pgx.Rows) ([]string, []map[string]interface{}) {
 	return columns, tableData
 }
 
-func FieldType(fd pgx.FieldDescription) reflect.Type {
-	switch fd.DataType {
+func FieldType(fd pgproto3.FieldDescription) reflect.Type {
+	switch fd.DataTypeOID {
 	case pgtype.Float8OID:
 		return reflect.TypeOf(sql.NullFloat64{})
 	case pgtype.Float4OID:

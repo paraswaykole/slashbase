@@ -1,51 +1,41 @@
 package pgqueryengine
 
 import (
-	"errors"
+	"context"
 	"fmt"
+	"strconv"
 	"time"
 
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-type pgxConnInstance struct {
-	pgxConnInstance *pgx.Conn
-	LastUsed        time.Time
+type pgxConnPoolInstance struct {
+	pgxConnPoolInstance *pgxpool.Pool
+	LastUsed            time.Time
 }
 
-func (pxEngine PostgresQueryEngine) getConnection(dbConnectionId, host string, port uint16, database, user, password string) (c *pgx.Conn, err error) {
+func (pxEngine *PostgresQueryEngine) getConnection(dbConnectionId, host string, port uint16, database, user, password string) (c *pgxpool.Pool, err error) {
 	if conn, exists := pxEngine.openConnections[dbConnectionId]; exists {
-		pxEngine.openConnections[dbConnectionId] = pgxConnInstance{
-			pgxConnInstance: conn.pgxConnInstance,
-			LastUsed:        time.Now(),
+		pxEngine.openConnections[dbConnectionId] = pgxConnPoolInstance{
+			pgxConnPoolInstance: conn.pgxConnPoolInstance,
+			LastUsed:            time.Now(),
 		}
-		return conn.pgxConnInstance, nil
+		return conn.pgxConnPoolInstance, nil
 	}
-	conn, err := pgx.Connect(pgx.ConnConfig{
-		Host:     host,
-		Port:     port,
-		Database: database,
-		User:     user,
-		Password: password,
-	})
+	connString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s", host, strconv.Itoa(int(port)), database, user, password)
+	pool, err := pgxpool.Connect(context.Background(), connString)
 	if err != nil {
-		if pgerr, ok := err.(pgx.PgError); ok {
-			err = errors.New(fmt.Sprintf("Unable to connect to database: %v", pgerr.Message))
-		}
-		err = errors.New(fmt.Sprintf("Unable to connect to database: %v", err))
+		err = fmt.Errorf("unable to connect to database: %v", err)
 		return
 	}
-	if pxEngine.openConnections == nil {
-		pxEngine.openConnections = map[string]pgxConnInstance{}
+	pxEngine.openConnections[dbConnectionId] = pgxConnPoolInstance{
+		pgxConnPoolInstance: pool,
+		LastUsed:            time.Now(),
 	}
-	pxEngine.openConnections[dbConnectionId] = pgxConnInstance{
-		pgxConnInstance: conn,
-		LastUsed:        time.Now(),
-	}
-	return conn, err
+	return pool, err
 }
 
-func (pxEngine PostgresQueryEngine) RemoveUnusedConnections() {
+func (pxEngine *PostgresQueryEngine) RemoveUnusedConnections() {
 	for {
 		time.Sleep(time.Minute * time.Duration(5))
 		for dbConnID, instance := range pxEngine.openConnections {
@@ -53,7 +43,7 @@ func (pxEngine PostgresQueryEngine) RemoveUnusedConnections() {
 			diff := now.Sub(instance.LastUsed)
 			if diff.Minutes() > 20 {
 				delete(pxEngine.openConnections, dbConnID)
-				go instance.pgxConnInstance.Close()
+				go instance.pgxConnPoolInstance.Close()
 			}
 		}
 	}
