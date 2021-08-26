@@ -7,6 +7,11 @@ const loginUser = async function(email: string, password: string): Promise<ApiRe
     return result
 }
 
+const createNewProject = async function(projectName: string): Promise<ApiResult<Project>> {
+    const result: ApiResult<Project> = await Request.apiInstance.post('/project/create', {name: projectName}).then(res => res.data)
+    return result
+}
+
 const getProjects = async function(): Promise<ApiResult<Array<Project>>> {
     const result: ApiResult<Array<Project>> = await Request.apiInstance.get('/project/all').then(res => res.data)
     return result
@@ -45,6 +50,7 @@ const getDBDataInDataModel = async function(dbConnId: string,schemaName: string,
 export default {
     loginUser,
     getProjects,
+    createNewProject,
     getProjectMembers,
     getAllDBConnections,
     getSingleDBConnection,

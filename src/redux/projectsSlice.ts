@@ -35,6 +35,17 @@ export const getProjects = createAsyncThunk(
   }
 )
 
+export const createNewProject = createAsyncThunk(
+  'projects/createNewProject',
+  async (payload: {projectName: string}) => {
+    const result = await apiService.createNewProject(payload.projectName)
+    const project = result.success ? result.data : null
+    return {
+      project: project,
+    }
+  }
+)
+
 export const projectsSlice = createSlice({
   name: 'projects',
   initialState,
@@ -48,6 +59,11 @@ export const projectsSlice = createSlice({
       .addCase(getProjects.fulfilled, (state,  action) => {
         state.isFetching = false
         state.projects = state.projects.concat(action.payload.projects)
+      })
+      .addCase(createNewProject.fulfilled, (state,  action) => {
+        if (action.payload.project) {
+          state.projects.push(action.payload.project)
+        }
       })
   },
 })

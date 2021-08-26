@@ -30,7 +30,7 @@ const ProjectPage: NextPage = () => {
   return (
     <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
       <main className="maincontainer">
-        <h1>All Databases</h1>
+        <h1>Showing Databases in {project?.name}</h1>
         {databases.map((db: DBConnection) => (
           <DBConnCard key={db.id} dbConn={db}/>
         ))}

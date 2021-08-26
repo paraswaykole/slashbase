@@ -5,6 +5,7 @@ export interface User{
     name: string
     email: string
     profileImageUrl: string
+    isRoot: bool
     createdAt: string
     updatedAt: string
 }
