@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 
@@ -58,6 +59,37 @@ func (uc UserController) LoginUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": false,
 		"error":   "Invalid Login",
+	})
+}
+
+func (uc UserController) EditAccount(c *gin.Context) {
+	authUser := middlewares.GetAuthUser(c)
+	var userBody struct {
+		Name            string `json:"name"`
+		ProfileImageURL string `json:"profileImageUrl"`
+	}
+	c.BindJSON(&userBody)
+
+	err := userDao.EditUser(authUser.ID, userBody.Name, userBody.ProfileImageURL)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+	authUser.FullName = sql.NullString{
+		String: userBody.Name,
+		Valid:  userBody.Name != "",
+	}
+	authUser.ProfileImageURL = sql.NullString{
+		String: userBody.ProfileImageURL,
+		Valid:  userBody.ProfileImageURL != "",
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    views.BuildUser(authUser),
 	})
 }
 

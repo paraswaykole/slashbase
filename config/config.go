@@ -63,7 +63,3 @@ func GetCryptedDataSecretKey() string {
 func GetAppHost() string {
 	return config.GetString("constants.app_host")
 }
-
-func GetDefaultProfileImageUrl() string {
-	return config.GetString("constants.default_profile_image_url")
-}

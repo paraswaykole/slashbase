@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
-	"slashbase.com/backend/config"
 )
 
 type User struct {
@@ -54,11 +53,4 @@ func (u *User) hashPassword() error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), 10)
 	u.Password = string(bytes)
 	return err
-}
-
-func (u *User) GetUserProfileImage() string {
-	if u.ProfileImageURL.Valid {
-		return u.ProfileImageURL.String
-	}
-	return config.GetDefaultProfileImageUrl()
 }

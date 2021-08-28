@@ -30,13 +30,14 @@ func BuildUser(usr *models.User) UserView {
 		ID:              usr.ID,
 		Name:            nil,
 		Email:           usr.Email,
-		ProfileImageURL: usr.GetUserProfileImage(),
+		ProfileImageURL: usr.ProfileImageURL.String,
 		IsRoot:          usr.IsRoot,
 		CreatedAt:       usr.CreatedAt,
 		UpdatedAt:       usr.UpdatedAt,
 	}
 	if usr.FullName.Valid {
-		userView.Name = &usr.FullName.String
+		name := usr.FullName.String
+		userView.Name = &name
 	}
 	return userView
 }
