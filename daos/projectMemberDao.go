@@ -1,6 +1,9 @@
 package daos
 
 import (
+	"errors"
+
+	"gorm.io/gorm"
 	"slashbase.com/backend/db"
 	"slashbase.com/backend/models"
 )
@@ -27,8 +30,8 @@ func (d ProjectDao) GetProjectMembersForUser(userID string) (*[]models.ProjectMe
 	return &projectMembers, err
 }
 
-func (d ProjectDao) GetUserProjectMembersForProject(projectID string, userID string) (*models.ProjectMember, error) {
+func (d ProjectDao) GetUserProjectMembersForProject(projectID string, userID string) (*models.ProjectMember, bool, error) {
 	var projectMember models.ProjectMember
 	err := db.GetDB().Where(models.ProjectMember{UserID: userID, ProjectID: projectID}).Preload("Project").First(&projectMember).Error
-	return &projectMember, err
+	return &projectMember, errors.Is(err, gorm.ErrRecordNotFound), err
 }

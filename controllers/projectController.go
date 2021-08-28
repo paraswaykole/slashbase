@@ -21,6 +21,14 @@ func (tc ProjectController) CreateProject(c *gin.Context) {
 	}
 	c.BindJSON(&createBody)
 	authUser := middlewares.GetAuthUser(c)
+
+	if !authUser.IsRoot {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "not allowed",
+		})
+	}
+
 	project := models.NewProject(authUser, createBody.Name)
 	projectMember, err := projectDao.CreateProject(project)
 	if err != nil {
@@ -85,35 +93,14 @@ func (tc ProjectController) GetProjectMembers(c *gin.Context) {
 }
 
 func (tc ProjectController) AddProjectMembers(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
 	projectID := c.Param("projectId")
 	var addMemberBody struct {
 		Email string `json:"email"`
 		Role  string `json:"role"`
 	}
 	c.BindJSON(&addMemberBody)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
-	if !utils.ContainsString(*authUserProjectIds, projectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
-		return
-	}
-	authUserProjectMember, err := projectDao.GetUserProjectMembersForProject(projectID, authUser.ID)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
-	}
 
-	if authUserProjectMember.Role != models.ROLE_ADMIN {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
+	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, projectID, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
 		return
 	}
 

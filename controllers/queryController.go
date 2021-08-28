@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/middlewares"
+	"slashbase.com/backend/models"
 	"slashbase.com/backend/queryengines"
 	"slashbase.com/backend/utils"
 	"slashbase.com/backend/views"
@@ -19,7 +20,6 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		Query          string `json:"query"`
 	}
 	c.BindJSON(&runBody)
-	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(runBody.DBConnectionID)
 	if err != nil {
@@ -29,11 +29,8 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		})
 		return
 	}
-	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Not allowed to run query",
-		})
+
+	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
 		return
 	}
 

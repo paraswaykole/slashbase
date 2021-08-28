@@ -102,7 +102,7 @@ func (uc UserController) AddUser(c *gin.Context) {
 	if !authUser.IsRoot {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   "Not Allowed.",
+			"error":   "not allowed",
 		})
 	}
 	usr, err := userDao.GetUserByEmail(addUserBody.Email)

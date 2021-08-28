@@ -5,11 +5,13 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/utils"
 	"slashbase.com/backend/daos"
 	"slashbase.com/backend/models"
 )
 
 var userDao daos.UserDao
+var projectDao daos.ProjectDao
 
 const (
 	USER_SESSION = "USER_SESSION"
@@ -65,9 +67,38 @@ func GetAuthUser(c *gin.Context) *models.User {
 
 func GetAuthUserProjectIds(c *gin.Context) *[]string {
 	authUserSession := c.MustGet(USER_SESSION).(*models.UserSession)
-	projectIds := []string{}
+	projectIDs := []string{}
 	for _, project := range authUserSession.User.Projects {
-		projectIds = append(projectIds, project.ID)
+		projectIDs = append(projectIDs, project.ID)
 	}
-	return &projectIds
+	return &projectIDs
+}
+
+func GetAuthUserHasRolesForProject(c *gin.Context, projectID string, hasRoles []string) (bool, error) {
+	authUser := GetAuthUser(c)
+	projectMembers, err := projectDao.GetProjectMembersForUser(authUser.ID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return false, err
+	}
+	for _, pMember := range *projectMembers {
+		if pMember.ProjectID == projectID {
+			if utils.ExistsIn(pMember.Role, &hasRoles) {
+				return true, nil
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"error":   "not allowed",
+			})
+			return false, nil
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": false,
+		"error":   "not allowed",
+	})
+	return false, nil
 }
