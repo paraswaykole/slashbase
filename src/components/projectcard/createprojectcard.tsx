@@ -60,10 +60,15 @@ const CreateNewProjectCard = (_: CreateNewProjectCardPropType) => {
                                 </div>
                                 <div className="control">
                                     <button className="button is-primary" onClick={startCreatingProject}>
-                                        { loading ? 'Create' : 'Creating'}
+                                        { loading ? 'Creating' : 'Create'}
                                     </button>
                                 </div>
                             </div>
+                            <span
+                                className={styles.cancelBtn}  
+                                onClick={()=>{setCreating(false)}}>
+                                Cancel
+                            </span>
                         </div>
                     </div>
             }

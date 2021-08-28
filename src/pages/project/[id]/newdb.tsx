@@ -38,7 +38,7 @@ const NewDBPage: NextPage = () => {
     }
 
     if (project.currentMember?.role !== ProjectMemberRole.ADMIN){
-        return <DefaultErrorPage statusCode={404} />
+        return <DefaultErrorPage statusCode={401} title="Unauthorized" />
     }
 
     const startAddingDB = async () => {
