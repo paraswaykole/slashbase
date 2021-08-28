@@ -1,6 +1,6 @@
 import styles from './table.module.scss'
 import React from 'react'
-import { DBQueryData } from '../../data/models'
+import { DBQueryData } from '../../../data/models'
 
 
 type ProjectCardPropType = { 

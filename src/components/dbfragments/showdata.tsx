@@ -5,7 +5,7 @@ import { DBConnection, DBDataModel, DBQueryData } from '../../data/models'
 import apiService from '../../network/apiService'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
-import Table from '../table/table'
+import Table from './table/table'
 
 type DBShowDataPropType = { 
 
