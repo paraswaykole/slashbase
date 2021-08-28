@@ -77,28 +77,27 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     return (
         <React.Fragment>
             <h1>Showing {dataModel?.schemaName}.{dataModel?.name}</h1>
-            <table className={"table "+styles.tableContainer}>
-            <thead>
-                <tr>
-                    {queryData?.columns.map(colName => (<th key={colName}>{colName}</th>))}    
-                </tr>
-            </thead>
-            <tbody>
-                {queryData?.rows.map((row,index)=> {
-                    return <tr key={index}>
-                        { queryData?.columns.map((colName, index) => {
-                                return <td key={colName+index}>{row[colName]}</td>
-                            })
-                        }
+            <table className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth "+styles.tableContainer}>
+                <thead>
+                    <tr>
+                        {queryData?.columns.map(colName => (<th key={colName}>{colName}</th>))}    
                     </tr>
-                })}
-                
-            </tbody>
+                </thead>
+                <tbody>
+                    {queryData?.rows.map((row,index)=> {
+                        return <tr key={index}>
+                            { queryData?.columns.map((colName, index) => {
+                                    return <td key={colName+index}>{row[colName] ? row[colName] : <span className={styles.nullValue}>NULL</span>}</td>
+                                })
+                            }
+                        </tr>
+                    })}
+                </tbody>
             </table>
             {dataLoading ? 
                 <progress className="progress is-primary" max="100">loading</progress>
                 :
-                <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+                <nav className="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
                     <a className="pagination-previous" onClick={onPreviousPage}>Previous</a>
                     <a className="pagination-next" onClick={onNextPage}>Next</a>
                     <ul className="pagination-list">
