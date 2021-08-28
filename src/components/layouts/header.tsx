@@ -21,8 +21,8 @@ const Header = (_: HeaderPropType) => {
     const projects: Project[] = useAppSelector(selectProjects)
 
     const options = [
-        { value: 'home', label: 'Home', path: Constants.APP_PATHS.HOME.as },
-        ...projects.map((x: Project) => ({value: x.id, label: x.name, path: Constants.APP_PATHS.PROJECT.as+x.id }))
+        { value: 'home', label: 'Home', path: Constants.APP_PATHS.HOME.path },
+        ...projects.map((x: Project) => ({value: x.id, label: x.name, path: Constants.APP_PATHS.PROJECT.path.replace('[id]', x.id) }))
     ]
 
     const onNavigate = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -30,9 +30,11 @@ const Header = (_: HeaderPropType) => {
     }
 
     let currentOption = 'home'
-    if (router.pathname === Constants.APP_PATHS.PROJECT.href) {
+    if (router.pathname === Constants.APP_PATHS.PROJECT.path) {
         currentOption = String(router.query.id)
-    } else if (router.pathname === Constants.APP_PATHS.DB.href) {
+    } else if (router.pathname === Constants.APP_PATHS.NEW_DB.path) {
+        currentOption = String(router.query.id)
+    } else if (router.pathname === Constants.APP_PATHS.DB.path) {
         const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
         if (currentDBConnection)
             currentOption = currentDBConnection?.projectId
@@ -40,7 +42,7 @@ const Header = (_: HeaderPropType) => {
 
     return (
         <header className={styles.header}>
-            <Link {...Constants.APP_PATHS.HOME}>
+            <Link href={Constants.APP_PATHS.HOME.path} as={Constants.APP_PATHS.HOME.path}>
                 <a>
                     <div className={styles.home}>
                         <i className={"fas fa-home"}/>
@@ -56,7 +58,7 @@ const Header = (_: HeaderPropType) => {
             </div>
             <div className={styles.headerMenu}>
                 { currentUser && 
-                <Link {...Constants.APP_PATHS.LOGOUT}>
+                <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
                     <a>
                         <img className={styles.profileImage} src={currentUser.profileImageUrl} width={40} height={40} /> 
                     </a>

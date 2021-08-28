@@ -23,7 +23,7 @@ const Sidebar = (_: SidebarPropType) => {
     const { mschema, mname } = router.query
 
     let sidebarView: SidebarViewType = 
-        (router.pathname === Constants.APP_PATHS.DB.href) ?
+        (router.pathname === Constants.APP_PATHS.DB.path) ?
         SidebarViewType.DATABASE : SidebarViewType.GENERIC
     
     const allDBConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
@@ -36,13 +36,13 @@ const Sidebar = (_: SidebarPropType) => {
                 {sidebarView === SidebarViewType.GENERIC &&
                     <React.Fragment>
                         <p className="menu-label">
-                            Databases
+                            All Databases
                         </p>
                         <ul className="menu-list">
                             {allDBConnections.map((dbConn: DBConnection) => {
                                 return (
                                     <li key={dbConn.id}>
-                                        <Link href={Constants.APP_PATHS.DB.href} as={Constants.APP_PATHS.DB.as + dbConn.id}>
+                                        <Link href={Constants.APP_PATHS.DB.path} as={Constants.APP_PATHS.DB.path.replace('[id]', dbConn.id)}>
                                             <a>{dbConn.name}</a>
                                         </Link>
                                     </li>
@@ -61,8 +61,8 @@ const Sidebar = (_: SidebarPropType) => {
                                 return (
                                     <li  key={dataModel.schemaName+dataModel.name}>
                                         <Link 
-                                            href={{pathname: Constants.APP_PATHS.DB.href, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
-                                            as={Constants.APP_PATHS.DB.as + dbConnection!.id + "?mschema="+dataModel.schemaName + "&mname="+dataModel.name}>
+                                            href={{pathname: Constants.APP_PATHS.DB.path, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
+                                            as={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection!.id) + "?mschema="+dataModel.schemaName + "&mname="+dataModel.name}>
                                             <a className={dataModel.schemaName == mschema && dataModel.name == mname ? 'is-active' : ''}>
                                                 {dataModel.schemaName}.{dataModel.name}
                                             </a>

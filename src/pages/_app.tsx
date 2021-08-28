@@ -29,7 +29,7 @@ const SlashbaseAppComponent = ({children}: any) => {
 
   useEffect(() => {
       (async () => {
-          const currentPath = Object.values(Constants.APP_PATHS).find(x => x.href === router.route)
+          const currentPath = Object.values(Constants.APP_PATHS).find(x => x.path === router.route)
           if (currentPath){
             const { payload } : any = await dispatch((getUser()))
             if((isAuthenticated === null && payload.isAuthenticated) || !currentPath.isAuth || isAuthenticated){
@@ -37,7 +37,7 @@ const SlashbaseAppComponent = ({children}: any) => {
             }
           }
           if(router.route != '/_error')
-            router.replace(Constants.APP_PATHS.LOGIN.as)
+            router.replace(Constants.APP_PATHS.LOGIN.path)
       })()
       // prefetch or preload data
       if (isAuthenticated){

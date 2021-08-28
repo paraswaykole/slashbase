@@ -20,7 +20,7 @@ export interface UserSession {
 export interface Project {
     id: string
     name: string
-    role: ProjectMemberRole|null
+    currentMember?: ProjectMember
     createdAt: string
     updatedAt: string
 }

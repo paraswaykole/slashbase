@@ -15,7 +15,7 @@ const CreateNewProjectCard = (_: CreateNewProjectCardPropType) => {
     const [projectName, setProjectName] = useState('')
     const [loading, setLoading] = useState(false)
 
-    if (currentUser && !currentUser.isRoot){
+    if (!currentUser || (currentUser && !currentUser.isRoot)){
         return null
     }
 

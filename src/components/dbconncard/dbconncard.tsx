@@ -11,7 +11,7 @@ type DBConnCardPropType = {
 const DBConnCard = ({dbConn}: DBConnCardPropType) => {
 
     return (
-        <Link href={Constants.APP_PATHS.DB.href} as={Constants.APP_PATHS.DB.as+dbConn.id}>
+        <Link href={Constants.APP_PATHS.DB.path} as={Constants.APP_PATHS.DB.path.replace('[id]', dbConn.id)}>
             <a>
                 <div className={"card "+styles.cardContainer}>
                     <div className="card-content">

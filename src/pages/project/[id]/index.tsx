@@ -1,12 +1,13 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import DBConnCard from '../../components/dbconncard/dbconncard'
-import AppLayout from '../../components/layouts/applayout'
-import { DBConnection, Project } from '../../data/models'
-import apiService from '../../network/apiService'
-import { useAppSelector } from '../../redux/hooks'
-import { selectProjects } from '../../redux/projectsSlice'
+import DBConnCard from '../../../components/dbconncard/dbconncard'
+import NewDBConnButton from '../../../components/dbconncard/newdbconnectionbutton'
+import AppLayout from '../../../components/layouts/applayout'
+import { DBConnection, Project } from '../../../data/models'
+import apiService from '../../../network/apiService'
+import { useAppSelector } from '../../../redux/hooks'
+import { selectProjects } from '../../../redux/projectsSlice'
 
 const ProjectPage: NextPage = () => {
 
@@ -34,6 +35,7 @@ const ProjectPage: NextPage = () => {
         {databases.map((db: DBConnection) => (
           <DBConnCard key={db.id} dbConn={db}/>
         ))}
+        { project && <NewDBConnButton project={project}/> }
       </main>
     </AppLayout>
   )

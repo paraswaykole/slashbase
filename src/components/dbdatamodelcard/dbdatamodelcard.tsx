@@ -13,8 +13,8 @@ const DBDataModelCard = ({dataModel, dbConnection}: DBDataModelPropType) => {
 
     return (
         <Link 
-            href={{pathname: Constants.APP_PATHS.DB.href, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
-            as={Constants.APP_PATHS.DB.as+dbConnection.id+"?mschema="+dataModel.schemaName+"&mname="+dataModel.name}
+            href={{pathname: Constants.APP_PATHS.DB.path, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
+            as={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection.id)+"?mschema="+dataModel.schemaName+"&mname="+dataModel.name}
             >
             <a>
                 <div className={"card "+styles.cardContainer}>
