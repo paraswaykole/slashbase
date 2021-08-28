@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -63,7 +62,7 @@ func (tc ProjectController) GetProjectMembers(c *gin.Context) {
 	if !utils.ContainsString(*authUserProjectIds, projectID) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   errors.New("not allowed"),
+			"error":   "not allowed",
 		})
 		return
 	}
@@ -82,5 +81,72 @@ func (tc ProjectController) GetProjectMembers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    projectMemberViews,
+	})
+}
+
+func (tc ProjectController) AddProjectMembers(c *gin.Context) {
+	authUser := middlewares.GetAuthUser(c)
+	projectID := c.Param("projectId")
+	var addMemberBody struct {
+		Email string `json:"email"`
+		Role  string `json:"role"`
+	}
+	c.BindJSON(&addMemberBody)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+	if !utils.ContainsString(*authUserProjectIds, projectID) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "not allowed",
+		})
+		return
+	}
+	authUserProjectMember, err := projectDao.GetUserProjectMembersForProject(projectID, authUser.ID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+
+	if authUserProjectMember.Role != models.ROLE_ADMIN {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "not allowed",
+		})
+		return
+	}
+
+	toAddUser, err := userDao.GetUserByEmail(addMemberBody.Email)
+	if err != nil {
+		// TODO: Create user and send email if doesn't exist in users table.
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "user does not exist",
+		})
+		return
+	}
+
+	newProjectMember, err := models.NewProjectMember(toAddUser.ID, projectID, addMemberBody.Role)
+	if err != nil {
+		// TODO: Create user and send email if doesn't exist in users table.
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	err = projectDao.CreateProjectMember(newProjectMember)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+	newProjectMember.User = *toAddUser
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    views.BuildProjectMember(newProjectMember),
 	})
 }

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 )
 
@@ -39,4 +40,17 @@ func NewProjectDeveloper(userID string, projectID string) *ProjectMember {
 
 func NewProjectAnalyst(userID string, projectID string) *ProjectMember {
 	return newProjectMember(userID, projectID, ROLE_ANALYST)
+}
+
+func NewProjectMember(userID string, projectID string, role string) (*ProjectMember, error) {
+	switch role {
+	case ROLE_ADMIN:
+		return NewProjectAdmin(userID, projectID), nil
+	case ROLE_DEVELOPER:
+		return NewProjectDeveloper(userID, projectID), nil
+	case ROLE_ANALYST:
+		return NewProjectAnalyst(userID, projectID), nil
+	default:
+		return nil, errors.New("invalid role")
+	}
 }

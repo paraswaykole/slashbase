@@ -33,6 +33,7 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 	}
 	c.BindJSON(&createBody)
 	authUser := middlewares.GetAuthUser(c)
+	// TODO: check for admin permssion in project before creating new db
 	dbConn, err := models.NewPostgresDBConnection(authUser.ID, createBody.ProjectID, createBody.Name, createBody.Host, createBody.Port,
 		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
 	if err != nil {

@@ -12,10 +12,10 @@ func (d ProjectDao) CreateProject(project *models.Project) (*models.ProjectMembe
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	projectMember := []models.ProjectMember{*models.NewProjectAdmin(project.CreatedBy, project.ID)}
-	err := d.CreateProjectMembers(&projectMember)
+	projectMember := models.NewProjectAdmin(project.CreatedBy, project.ID)
+	err := d.CreateProjectMember(projectMember)
 	if err != nil {
 		return nil, result.Error
 	}
-	return &projectMember[0], err
+	return projectMember, err
 }

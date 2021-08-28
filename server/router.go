@@ -42,7 +42,8 @@ func NewRouter() *gin.Engine {
 			projectGroup.Use(middlewares.AuthUserMiddleware())
 			projectGroup.POST("/create", projectController.CreateProject)
 			projectGroup.GET("/all", projectController.GetProjects)
-			projectGroup.GET("/members/:projectId", projectController.GetProjectMembers)
+			projectGroup.POST("/:projectId/members/create", projectController.AddProjectMembers)
+			projectGroup.GET("/:projectId/members", projectController.GetProjectMembers)
 		}
 		dbConnGroup := api.Group("dbconnection")
 		{
