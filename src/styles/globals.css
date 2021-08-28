@@ -67,3 +67,24 @@ h6 {
   width: calc(100% - 260px);
   overflow: scroll;
 }
+
+.form-container{
+  max-width: 500px;
+  margin-top: 20px;
+}
+
+.profileImage {
+  border: 1px solid snow !important;
+  border-radius: 100px;
+}
+
+.profileImageDefault {
+  border: 1px solid snow !important;
+  background: #615f9c;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  border-radius: 100px;
+}

@@ -13,6 +13,10 @@ const loginCurrentUser = async function(currentUser: User, token: string): Promi
     return await slashbaseStore.setItem(CURRENT_USER_KEY, currentUser)
 }
 
+const updateCurrentUser = async function(currentUser: User): Promise<User>{
+    return await slashbaseStore.setItem(CURRENT_USER_KEY, currentUser)
+}
+
 const getCurrentUser = async function(): Promise<User|null>{
     return await slashbaseStore.getItem(CURRENT_USER_KEY)
 }
@@ -31,6 +35,7 @@ const logoutUser = async function(): Promise<void> {
 
 export default {
     loginCurrentUser,
+    updateCurrentUser,
     getCurrentUserToken,
     getCurrentUser,
     isUserAuthenticated,

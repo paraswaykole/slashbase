@@ -2,7 +2,7 @@ import { DBConnType, ProjectMemberRole } from "./defaults"
 
 export interface User{
     id: string
-    name: string
+    name: string | null
     email: string
     profileImageUrl: string
     isRoot: bool

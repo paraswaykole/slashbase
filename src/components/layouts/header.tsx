@@ -1,5 +1,5 @@
 import styles from './header.module.scss'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { DBConnection, Project, User } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
@@ -8,6 +8,7 @@ import { selectCurrentUser } from '../../redux/currentUserSlice'
 import Constants from '../../constants'
 import { selectProjects } from '../../redux/projectsSlice'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
+import ProfileImage, { ProfileImageSize } from '../user/profileimage'
 
 type HeaderPropType = {
 
@@ -19,6 +20,8 @@ const Header = (_: HeaderPropType) => {
 
     const currentUser: User = useAppSelector(selectCurrentUser)
     const projects: Project[] = useAppSelector(selectProjects)
+
+    const [isShowingDropDown, setIsShowingDropDown] = useState(false)
 
     const options = [
         { value: 'home', label: 'Home', path: Constants.APP_PATHS.HOME.path },
@@ -60,11 +63,26 @@ const Header = (_: HeaderPropType) => {
             </div>
             <div className={styles.headerMenu}>
                 { currentUser && 
-                <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
-                    <a>
-                        <img className={styles.profileImage} src={currentUser.profileImageUrl} width={40} height={40} /> 
-                    </a>
-                </Link>
+                    <div className={"dropdown is-right"+(isShowingDropDown ? ' is-active' : '')}>
+                        <div className="dropdown-trigger" onClick={()=>{setIsShowingDropDown(!isShowingDropDown)}}>
+                            <ProfileImage imageUrl={currentUser.profileImageUrl} size={ProfileImageSize.SMALL} classes={[styles.profileImage]}/>
+                        </div>
+                        <div className="dropdown-menu" role="menu">
+                            <div className="dropdown-content">
+                                <Link href={Constants.APP_PATHS.ACCOUNT.path} as={Constants.APP_PATHS.ACCOUNT.path}>
+                                    <a className="dropdown-item">
+                                        Account
+                                    </a>
+                                </Link>
+                                <hr className="dropdown-divider"/>
+                                <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
+                                    <a className="dropdown-item">
+                                        Logout
+                                    </a>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>    
                 }
             </div>
         </header>

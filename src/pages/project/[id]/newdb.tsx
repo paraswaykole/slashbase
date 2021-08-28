@@ -219,12 +219,6 @@ const NewDBPage: NextPage = () => {
                     </div>
                 </div>
             </main>
-            <style jsx>{`
-                .form-container{
-                    max-width: 500px;
-                    margin-top: 20px;
-                }
-         `}</style>
         </AppLayout>
     )
 }

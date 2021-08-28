@@ -42,6 +42,21 @@ export const loginUser = createAsyncThunk(
   }
 )
 
+export const editUser = createAsyncThunk(
+  'currentUser/editUser',
+  async (payload: {name: string, profileImageUrl: string}, { rejectWithValue }) => {
+    let response = await apiService.editUser(payload.name, payload.profileImageUrl)
+    if (response.success) {
+      await storage.updateCurrentUser(response.data)
+      return {
+        currentUser: response.data,
+      }
+    } else {
+      return rejectWithValue(response.error)
+    }
+  }
+)
+
 export const logoutUser = createAsyncThunk(
   'currentUser/logoutUser',
   async () => {
@@ -69,6 +84,11 @@ export const userSlice = createSlice({
         if (action.payload){
           state.user = action.payload.currentUser
           state.isAuthenticated = action.payload.isAuthenticated
+        }
+      })
+      .addCase(editUser.fulfilled, (state, action) => {
+        if (action.payload){
+          state.user = action.payload.currentUser
         }
       })
       .addCase(logoutUser.fulfilled, (state, action) => {

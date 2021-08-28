@@ -25,6 +25,10 @@ const Constants: ConstantsType = {
             path: '/logout',
             isAuth: true
         },
+        ACCOUNT: {
+            path: '/account',
+            isAuth: true
+        },
         HOME: {
             path: '/',
             isAuth: true
