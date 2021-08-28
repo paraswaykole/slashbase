@@ -1,7 +1,7 @@
 import styles from './projectmembercard.module.scss'
 import React from 'react'
-import { ProjectMember } from '../../data/models'
-import ProfileImage, { ProfileImageSize } from '../user/profileimage'
+import { ProjectMember } from '../../../data/models'
+import ProfileImage, { ProfileImageSize } from '../../user/profileimage'
 
 type ProjectMemberCardPropType = { 
     member: ProjectMember

@@ -1,7 +1,7 @@
 import styles from './projectcard.module.scss'
 import React from 'react'
-import { Project } from '../../data/models'
-import Constants from '../../constants'
+import { Project } from '../../../data/models'
+import Constants from '../../../constants'
 import Link from 'next/link'
 
 type ProjectCardPropType = { 

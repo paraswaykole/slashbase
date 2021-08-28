@@ -1,7 +1,7 @@
 import styles from './dbconncard.module.scss'
 import React from 'react'
-import { DBConnection } from '../../data/models'
-import Constants from '../../constants'
+import { DBConnection } from '../../../data/models'
+import Constants from '../../../constants'
 import Link from 'next/link'
 
 type DBConnCardPropType = { 

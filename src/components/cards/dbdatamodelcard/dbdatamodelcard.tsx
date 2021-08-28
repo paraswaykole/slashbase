@@ -1,7 +1,7 @@
 import styles from './dbdatamodelcard.module.scss'
 import React from 'react'
-import { DBConnection, DBDataModel } from '../../data/models'
-import Constants from '../../constants'
+import { DBConnection, DBDataModel } from '../../../data/models'
+import Constants from '../../../constants'
 import Link from 'next/link'
 
 type DBDataModelPropType = { 

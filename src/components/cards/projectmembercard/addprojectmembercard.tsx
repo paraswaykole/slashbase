@@ -1,11 +1,11 @@
 import styles from './projectmembercard.module.scss'
 import React, { useState } from 'react'
-import { Project, ProjectMember, User } from '../../data/models'
-import { useAppSelector } from '../../redux/hooks'
-import { selectCurrentUser } from '../../redux/currentUserSlice'
-import { ProjectMemberRole } from '../../data/defaults'
-import apiService from '../../network/apiService'
-import { AddProjectMemberPayload } from '../../network/payloads'
+import { Project, ProjectMember, User } from '../../../data/models'
+import { useAppSelector } from '../../../redux/hooks'
+import { selectCurrentUser } from '../../../redux/currentUserSlice'
+import { ProjectMemberRole } from '../../../data/defaults'
+import apiService from '../../../network/apiService'
+import { AddProjectMemberPayload } from '../../../network/payloads'
 
 type AddNewProjectMemberCardPropType = {
     project: Project

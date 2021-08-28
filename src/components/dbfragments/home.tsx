@@ -3,7 +3,7 @@ import { DBConnection, DBDataModel } from '../../data/models'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
 
-import DBDataModelCard from '../dbdatamodelcard/dbdatamodelcard'
+import DBDataModelCard from '../cards/dbdatamodelcard/dbdatamodelcard'
 
 type DBHomePropType = { 
 }

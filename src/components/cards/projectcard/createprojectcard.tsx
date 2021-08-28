@@ -1,9 +1,9 @@
 import styles from './projectcard.module.scss'
 import React, { useState } from 'react'
-import { User } from '../../data/models'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { selectCurrentUser } from '../../redux/currentUserSlice'
-import { createNewProject } from '../../redux/projectsSlice'
+import { User } from '../../../data/models'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { selectCurrentUser } from '../../../redux/currentUserSlice'
+import { createNewProject } from '../../../redux/projectsSlice'
 
 type CreateNewProjectCardPropType = {}
 

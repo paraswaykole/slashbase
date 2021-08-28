@@ -5,6 +5,7 @@ import { DBConnection, DBDataModel, DBQueryData } from '../../data/models'
 import apiService from '../../network/apiService'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
+import Table from '../table/table'
 
 type DBShowDataPropType = { 
 
@@ -77,23 +78,12 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     return (
         <React.Fragment>
             <h1>Showing {dataModel?.schemaName}.{dataModel?.name}</h1>
-            <table className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth "+styles.tableContainer}>
-                <thead>
-                    <tr>
-                        {queryData?.columns.map(colName => (<th key={colName}>{colName}</th>))}    
-                    </tr>
-                </thead>
-                <tbody>
-                    {queryData?.rows.map((row,index)=> {
-                        return <tr key={index}>
-                            { queryData?.columns.map((colName, index) => {
-                                    return <td key={colName+index}>{row[colName] ? row[colName] : <span className={styles.nullValue}>NULL</span>}</td>
-                                })
-                            }
-                        </tr>
-                    })}
-                </tbody>
-            </table>
+            { queryData && 
+                <div className={styles.tableContainer}>
+                    <Table queryData={queryData}/>
+                </div> 
+            }
+            <br/>
             {dataLoading ? 
                 <progress className="progress is-primary" max="100">loading</progress>
                 :
@@ -105,6 +95,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     </ul>
                 </nav>
             }
+            <br/>
         </React.Fragment>
     )
 }
