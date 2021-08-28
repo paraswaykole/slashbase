@@ -23,7 +23,7 @@ func (tc ProjectController) CreateProject(c *gin.Context) {
 	c.BindJSON(&createBody)
 	authUser := middlewares.GetAuthUser(c)
 	project := models.NewProject(authUser, createBody.Name)
-	err := projectDao.CreateProject(project)
+	projectMember, err := projectDao.CreateProject(project)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -33,7 +33,7 @@ func (tc ProjectController) CreateProject(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"data":    views.BuildProject(project),
+		"data":    views.BuildProject(project, projectMember),
 	})
 }
 
@@ -49,7 +49,7 @@ func (tc ProjectController) GetProjects(c *gin.Context) {
 	}
 	projectViews := []views.ProjectView{}
 	for _, t := range *projectMembers {
-		projectViews = append(projectViews, views.BuildProject(&t.Project))
+		projectViews = append(projectViews, views.BuildProject(&t.Project, &t))
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
