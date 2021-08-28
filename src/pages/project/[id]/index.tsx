@@ -1,9 +1,11 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import DBConnCard from '../../../components/dbconncard/dbconncard'
 import NewDBConnButton from '../../../components/dbconncard/newdbconnectionbutton'
 import AppLayout from '../../../components/layouts/applayout'
+import Constants from '../../../constants'
 import { DBConnection, Project } from '../../../data/models'
 import apiService from '../../../network/apiService'
 import { useAppSelector } from '../../../redux/hooks'
@@ -36,6 +38,16 @@ const ProjectPage: NextPage = () => {
           <DBConnCard key={db.id} dbConn={db}/>
         ))}
         { project && <NewDBConnButton project={project}/> }
+        &nbsp;&nbsp;
+        { project && <Link href={Constants.APP_PATHS.PROJECT_MEMBERS.path} as={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
+          <a>
+            <button className="button" >
+                <i className={"fas fa-users"}/>
+                &nbsp;&nbsp;
+                View Project Members
+            </button>
+          </a>
+        </Link> }
       </main>
     </AppLayout>
   )

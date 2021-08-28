@@ -37,6 +37,10 @@ const Constants: ConstantsType = {
             path: '/project/[id]/newdb',
             isAuth: true
         },
+        PROJECT_MEMBERS: {
+            path: '/project/[id]/members',
+            isAuth: true
+        },
         DB: {
             path: '/db/[id]',
             isAuth: true

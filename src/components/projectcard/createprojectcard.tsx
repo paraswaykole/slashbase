@@ -62,13 +62,9 @@ const CreateNewProjectCard = (_: CreateNewProjectCardPropType) => {
                                     <button className="button is-primary" onClick={startCreatingProject}>
                                         { loading ? 'Creating' : 'Create'}
                                     </button>
+                                    <button className={"delete "+styles.cancelBtn} onClick={()=>{setCreating(false)}}></button>
                                 </div>
                             </div>
-                            <span
-                                className={styles.cancelBtn}  
-                                onClick={()=>{setCreating(false)}}>
-                                Cancel
-                            </span>
                         </div>
                     </div>
             }

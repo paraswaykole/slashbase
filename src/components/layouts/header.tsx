@@ -34,6 +34,8 @@ const Header = (_: HeaderPropType) => {
         currentOption = String(router.query.id)
     } else if (router.pathname === Constants.APP_PATHS.NEW_DB.path) {
         currentOption = String(router.query.id)
+    } else if (router.pathname === Constants.APP_PATHS.PROJECT_MEMBERS.path) {
+        currentOption = String(router.query.id)
     } else if (router.pathname === Constants.APP_PATHS.DB.path) {
         const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
         if (currentDBConnection)

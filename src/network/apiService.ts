@@ -1,6 +1,6 @@
 import Request from './request'
 import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData } from '../data/models'
-import { AddDBConnPayload } from './payloads'
+import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 
 const loginUser = async function(email: string, password: string): Promise<ApiResult<UserSession>> {
     const result: ApiResult<UserSession> = await Request.apiInstance.post('/user/login', { email, password }).then(res => res.data)
@@ -17,8 +17,13 @@ const getProjects = async function(): Promise<ApiResult<Array<Project>>> {
     return result
 }
 
-const getProjectMembers = async function(teamId: string): Promise<ApiResult<Array<ProjectMember>>> {
-    const result: ApiResult<Array<ProjectMember>> = await Request.apiInstance.get(`/project/members/${teamId}`).then(res => res.data)
+const addNewProjectMember = async function(projectId: string, payload: AddProjectMemberPayload): Promise<ApiResult<ProjectMember>> {
+    const result: ApiResult<ProjectMember> = await Request.apiInstance.post(`/project/${projectId}/members/create`, payload).then(res => res.data)
+    return result
+}
+
+const getProjectMembers = async function(projectId: string): Promise<ApiResult<Array<ProjectMember>>> {
+    const result: ApiResult<Array<ProjectMember>> = await Request.apiInstance.get(`/project/${projectId}/members`).then(res => res.data)
     return result
 }
 
@@ -62,5 +67,6 @@ export default {
     getDBConnectionsByProject,
     getDBDataModelsByConnectionId,
     getDBDataInDataModel,
-    addNewDBConn
+    addNewDBConn,
+    addNewProjectMember
 }
