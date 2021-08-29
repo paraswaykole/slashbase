@@ -5,9 +5,11 @@ import AppLayout from '../../../../components/layouts/applayout'
 import DefaultErrorPage from 'next/error'
 import { getDBConnection, getDBDataModels, getDBQueries, selectDBConnection } from '../../../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks'
-import { DBConnection, DBQuery } from '../../../../data/models'
+import { DBConnection, DBQuery, DBQueryData, DBQueryResult } from '../../../../data/models'
 import QueryEditor from '../../../../components/dbfragments/queryeditor/queryeditor'
 import apiService from '../../../../network/apiService'
+import toast from 'react-hot-toast'
+import Table from '../../../../components/dbfragments/table/table'
 
 
 const DBQueryPage: NextPage = () => {
@@ -16,6 +18,8 @@ const DBQueryPage: NextPage = () => {
     const { id, queryId } = router.query
 
     const [dbQuery, setDBQuery] = useState<DBQuery>()
+    const [queryData, setQueryData] = useState<DBQueryData>()
+    const [queryResult, setQueryResult] = useState<DBQueryResult>()
     const [error404, setError404] = useState(false)
     
     const dispatch = useAppDispatch()
@@ -45,8 +49,24 @@ const DBQueryPage: NextPage = () => {
             if (queryId === 'new'){
                 setDBQuery(undefined)
             }
+            setQueryData(undefined)
         })()
     }, [dispatch, router, queryId])
+
+    const runQuery = async (query: string, callback: ()=>void) => {
+        const result = await apiService.runQuery(dbConnection!.id, query)
+        if (result.success){
+            toast.success('Success')
+            if ((result.data as DBQueryResult).message){
+                setQueryResult(result.data as DBQueryResult)
+            } else {
+                setQueryData(result.data as DBQueryData)
+            }
+        } else {
+            toast.error(result.error!)
+        }
+        callback()
+    }
 
     if(error404) {
         return (<DefaultErrorPage statusCode={404} />)
@@ -59,8 +79,20 @@ const DBQueryPage: NextPage = () => {
                 <QueryEditor 
                     initialValue={dbQuery?.query ?? ''} 
                     initQueryName={dbQuery?.name ?? ''} 
-                    queryId={queryId === 'new'? '': String(queryId)}/> 
+                    queryId={queryId === 'new'? '': String(queryId)}
+                    runQuery={runQuery}/> 
             }
+            <br/>
+            { queryData && 
+                <Table 
+                    dbConnection={dbConnection!}
+                    queryData={queryData}
+                    mSchema={''}
+                    mName={''}
+                    updateCellData={()=>{}}
+                    isEditable={false}/>
+            }
+            {queryResult && <span><b>Result of Query: </b>{queryResult.message}</span>}
         </main>
         </AppLayout>
     )

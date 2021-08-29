@@ -53,6 +53,10 @@ export interface DBQueryData {
     count?: number
 }
 
+export interface DBQueryResult {
+    message: string
+}
+
 export interface DBQuery {
     id: string
     name: string,

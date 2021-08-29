@@ -17,16 +17,18 @@ type QueryEditorPropType = {
     initialValue: string,
     initQueryName: string,
     queryId: string,
+    runQuery: (query: string, callback: ()=>void) => void
 }
 
 
-const QueryEditor = ({initialValue, initQueryName, queryId}: QueryEditorPropType) => {
+const QueryEditor = ({initialValue, initQueryName, queryId, runQuery}: QueryEditorPropType) => {
 
     const dispatch = useAppDispatch()
 
     const [value, setValue] = useState(initialValue)
     const [queryName, setQueryName] = useState(initQueryName)
     const [saving, setSaving] = useState(false)
+    const [running, setRunning] = useState(false)
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
@@ -39,6 +41,12 @@ const QueryEditor = ({initialValue, initQueryName, queryId}: QueryEditorPropType
             toast.error("There was some problem saving! Please try again.")
         }
         setSaving(false)
+    }
+
+    const startRunningQuery = () => {
+        runQuery(value, ()=>{
+            setRunning(false)
+        })
     }
 
     return (
@@ -65,7 +73,9 @@ const QueryEditor = ({initialValue, initQueryName, queryId}: QueryEditorPropType
                             />
                     </div>
                     <div className={"column "+styles.buttons}>
-                        <button className="button">Run Query</button>&nbsp;&nbsp;
+                        { !running && <button className="button" onClick={startRunningQuery}>Run Query</button>}
+                        { running && <button className="button is-loading">Running</button>}
+                        &nbsp;&nbsp;
                         { !saving && <button className="button is-primary" onClick={startSaving}>Save Query</button>}
                         { saving && <button className="button is-primary is-loading">Saving</button>}
                     </div>

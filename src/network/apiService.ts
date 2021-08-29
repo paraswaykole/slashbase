@@ -1,5 +1,5 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery } from '../data/models'
+import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult } from '../data/models'
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 
 const loginUser = async function(email: string, password: string): Promise<ApiResult<UserSession>> {
@@ -82,6 +82,11 @@ const getSingleDBQuery = async function(queryId: string,): Promise<ApiResult<DBQ
     return result
 }
 
+const runQuery = async function(dbConnId: string, query: string): Promise<ApiResult<DBQueryData|DBQueryResult>> {
+    const result: ApiResult<DBQueryData|DBQueryResult> = await Request.apiInstance.post("/query/run", {dbConnectionId: dbConnId, query}).then(res => res.data)
+    return result
+}
+
 export default {
     loginUser,
     editUser,
@@ -98,5 +103,6 @@ export default {
     updateDBSingleData,
     saveDBQuery,
     getDBQueriesInDBConn,
-    getSingleDBQuery
+    getSingleDBQuery,
+    runQuery
 }
