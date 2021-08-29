@@ -34,15 +34,20 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		return
 	}
 
-	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-		return
-	}
-
-	data, err := queryengines.RunQuery(dbConn, runBody.Query)
+	authUserProjectMember, err := middlewares.GetAuthUserProjectMemberForProject(c, dbConn.ProjectID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   err,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	data, err := queryengines.RunQuery(dbConn, runBody.Query, authUserProjectMember.Role)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
 		})
 		return
 	}

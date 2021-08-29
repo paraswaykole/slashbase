@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"slashbase.com/backend/models"
 	"slashbase.com/backend/models/sbsql"
@@ -38,8 +37,8 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 		return nil, err
 	}
 
-	filteredQuery := strings.TrimSpace(strings.ToLower(query))
-	if strings.HasPrefix(filteredQuery, "select") || strings.Contains(filteredQuery, "returning") {
+	queryType := pgxutils.GetPSQLQueryType(query)
+	if queryType == pgxutils.QUERY_READ {
 		rows, err := conn.Query(context.Background(), query)
 		if err != nil {
 			return nil, err

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/jackc/pgproto3/v2"
 	"github.com/jackc/pgtype"
@@ -135,3 +136,28 @@ const (
 	ERRCODE_INVALID_PASSWORD                    = "28P01" // worng password
 	ERRCODE_INVALID_AUTHORIZATION_SPECIFICATION = "28000" // db does not exist
 )
+
+const (
+	QUERY_READ   = iota
+	QUERY_WRITE  = iota
+	QUERY_ALTER  = iota
+	QUERY_UNKOWN = -1
+)
+
+func GetPSQLQueryType(query string) int {
+	// TODO: better query parsing method needed
+	filteredQuery := strings.TrimSpace(strings.ToLower(query))
+	if strings.Contains(filteredQuery, "returning") {
+		return QUERY_READ
+	}
+	if strings.Contains(filteredQuery, "update") || strings.Contains(filteredQuery, "insert") || strings.Contains(filteredQuery, "truncate") {
+		return QUERY_WRITE
+	}
+	if strings.Contains(filteredQuery, "alter") || strings.Contains(filteredQuery, "drop") {
+		return QUERY_ALTER
+	}
+	if strings.HasPrefix(filteredQuery, "select") {
+		return QUERY_READ
+	}
+	return QUERY_UNKOWN
+}

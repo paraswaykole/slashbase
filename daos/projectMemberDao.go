@@ -30,7 +30,7 @@ func (d ProjectDao) GetProjectMembersForUser(userID string) (*[]models.ProjectMe
 	return &projectMembers, err
 }
 
-func (d ProjectDao) GetUserProjectMembersForProject(projectID string, userID string) (*models.ProjectMember, bool, error) {
+func (d ProjectDao) GetUserProjectMemberForProject(projectID string, userID string) (*models.ProjectMember, bool, error) {
 	var projectMember models.ProjectMember
 	err := db.GetDB().Where(models.ProjectMember{UserID: userID, ProjectID: projectID}).Preload("Project").First(&projectMember).Error
 	return &projectMember, errors.Is(err, gorm.ErrRecordNotFound), err
