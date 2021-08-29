@@ -46,11 +46,6 @@ func GetDatabaseConfig() *DatabaseConfig {
 	}
 }
 
-func GetMagicLinkTokenSecret() []byte {
-	tokensecret := config.GetString("secret.magic_link_token_secret")
-	return []byte(tokensecret)
-}
-
 func GetAuthTokenSecret() []byte {
 	tokensecret := config.GetString("secret.auth_token_secret")
 	return []byte(tokensecret)
