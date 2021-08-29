@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"slashbase.com/backend/daos"
 	"slashbase.com/backend/middlewares"
 	"slashbase.com/backend/models"
 	"slashbase.com/backend/queryengines"
@@ -13,6 +15,8 @@ import (
 )
 
 type QueryController struct{}
+
+var dbQueryDao daos.DBQueryDao
 
 func (qc QueryController) RunQuery(c *gin.Context) {
 	var runBody struct {
@@ -172,5 +176,133 @@ func (qc QueryController) UpdateSingleData(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    data,
+	})
+}
+
+func (qc QueryController) SaveDBQuery(c *gin.Context) {
+	dbConnId := c.Param("dbConnId")
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjects := middlewares.GetAuthUserProjectIds(c)
+	var createBody struct {
+		Name    string `json:"name"`
+		Query   string `json:"query"`
+		QueryID string `json:"queryId"`
+	}
+	c.BindJSON(&createBody)
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+
+	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "Not allowed to run query",
+		})
+		return
+	}
+
+	var queryObj *models.DBQuery
+	if createBody.QueryID == "" {
+		queryObj = models.NewQuery(authUser, createBody.Name, createBody.Query, dbConn.ID)
+		err = dbQueryDao.CreateQuery(queryObj)
+	} else {
+		queryObj, err = dbQueryDao.GetSingleDBQuery(createBody.QueryID)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"error":   err.Error(),
+			})
+			return
+		}
+		queryObj.Name = createBody.Name
+		queryObj.Query = createBody.Query
+		err = dbQueryDao.UpdateDBQuery(createBody.QueryID, &models.DBQuery{
+			Name:  createBody.Name,
+			Query: createBody.Query,
+		})
+
+	}
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    views.BuildDBQueryView(queryObj),
+	})
+}
+
+func (qc QueryController) GetDBQueriesInDBConnection(c *gin.Context) {
+	dbConnID := c.Param("dbConnId")
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   errors.New("not allowed"),
+		})
+		return
+	}
+
+	dbQueries, err := dbQueryDao.GetDBQueriesByDBConnId(dbConnID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	dbQueryViews := []views.DBQueryView{}
+	for _, dbQuery := range dbQueries {
+		dbQueryViews = append(dbQueryViews, *views.BuildDBQueryView(dbQuery))
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    dbQueryViews,
+	})
+}
+
+func (qc QueryController) GetSingleDBQuery(c *gin.Context) {
+	queryID := c.Param("queryId")
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+
+	dbQuery, err := dbQueryDao.GetSingleDBQuery(queryID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	if !utils.ContainsString(*authUserProjectIds, dbQuery.DBConnection.ProjectID) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   errors.New("not allowed"),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    views.BuildDBQueryView(dbQuery),
 	})
 }
