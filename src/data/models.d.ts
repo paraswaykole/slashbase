@@ -60,3 +60,7 @@ export interface ApiResult<T> {
     success: boolean
     error?: string
 }
+
+export interface CTIDResponse { 
+    ctid: string
+}

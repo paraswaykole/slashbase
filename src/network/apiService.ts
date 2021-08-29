@@ -1,5 +1,5 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User } from '../data/models'
+import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse } from '../data/models'
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 
 const loginUser = async function(email: string, password: string): Promise<ApiResult<UserSession>> {
@@ -57,8 +57,13 @@ const getDBDataModelsByConnectionId = async function(dbConnId: string): Promise<
     return result
 }
 
-const getDBDataInDataModel = async function(dbConnId: string,schemaName: string, mName: string, offset: number, fetchCount: boolean): Promise<ApiResult<DBQueryData>> {
+const getDBDataInDataModel = async function(dbConnId: string, schemaName: string, mName: string, offset: number, fetchCount: boolean): Promise<ApiResult<DBQueryData>> {
     const result: ApiResult<DBQueryData> = await Request.apiInstance.get(`/query/data/${dbConnId}?schema=${schemaName}&name=${mName}&offset=${offset}&count=${fetchCount}`).then(res => res.data)
+    return result
+}
+
+const updateDBSingleData = async function(dbConnId: string, schemaName: string, mName: string, ctid: string, columnName: string, value: string): Promise<ApiResult<CTIDResponse>> {
+    const result: ApiResult<CTIDResponse> = await Request.apiInstance.post(`/query/data/${dbConnId}/single`, {schema: schemaName, name: mName, ctid, columnName, value}).then(res => res.data)
     return result
 }
 
@@ -74,5 +79,6 @@ export default {
     getDBDataModelsByConnectionId,
     getDBDataInDataModel,
     addNewDBConn,
-    addNewProjectMember
+    addNewProjectMember,
+    updateDBSingleData
 }

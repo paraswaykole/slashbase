@@ -1,11 +1,13 @@
 import styles from './showdata.module.scss'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { DBConnection, DBDataModel, DBQueryData } from '../../data/models'
+import { DBConnection, DBDataModel, DBQueryData, Project } from '../../data/models'
 import apiService from '../../network/apiService'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
+import { selectProjects } from '../../redux/projectsSlice'
+import { ProjectMemberRole } from '../../data/defaults'
 
 type DBShowDataPropType = { 
 
@@ -18,9 +20,11 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
+    const projects: Project[] = useAppSelector(selectProjects)
+    const project: Project|undefined = projects.find(x=> x.id === dbConnection?.projectId)
     
     const [dataModel, setDataModel] = useState<DBDataModel>()
-    const [queryData, setQueryModel] = useState<DBQueryData>()
+    const [queryData, setQueryData] = useState<DBQueryData>()
     const [queryOffset, setQueryOffset] = useState(0)
     const [queryCount, setQueryCount] = useState<number|undefined>(undefined)
     const [queryLimit] = useState(200)
@@ -49,7 +53,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
         setDataLoading(true)
         const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount)
         if (result.success) {
-            setQueryModel(result.data)
+            setQueryData(result.data)
             if (!queryCount){
                 setQueryCount(result.data.count)
             }
@@ -72,15 +76,34 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
         setQueryOffset(nextOffset)
     }
 
+    const updateCellData = (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean) => {
+        const rowIdx = queryData!.rows.findIndex(x => x.ctid == oldCtid)
+        if (rowIdx) {
+            const newQueryData: DBQueryData = {...queryData!}
+            newQueryData!.rows[rowIdx] = {...newQueryData!.rows[rowIdx], ctid: newCtid}
+            newQueryData!.rows[rowIdx][columnName] = newValue
+            setQueryData(newQueryData)
+        } else {
+            fetchData(false)
+        }
+    }
+
     const queryOffsetRangeEnd = (queryData?.rows.length ?? 0) === queryLimit ? 
         queryOffset + queryLimit : queryOffset + (queryData?.rows.length ?? 0)
 
     return (
         <React.Fragment>
             <h1>Showing {dataModel?.schemaName}.{dataModel?.name}</h1>
-            { queryData && 
+            { project && dbConnection && queryData && 
                 <div className={styles.tableContainer}>
-                    <Table queryData={queryData}/>
+                    <Table 
+                        dbConnection={dbConnection} 
+                        isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
+                        queryData={queryData} 
+                        updateCellData={updateCellData}
+                        mSchema={String(mschema)}
+                        mName={String(mname)}
+                    />
                 </div> 
             }
             <br/><br/><br/>

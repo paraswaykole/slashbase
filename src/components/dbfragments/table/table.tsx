@@ -1,15 +1,23 @@
 import styles from './table.module.scss'
-import React from 'react'
-import { useTable } from 'react-table'
-import { DBQueryData } from '../../../data/models'
+import React, { useState } from 'react'
+import { Cell, useTable } from 'react-table'
+import { DBConnection, DBQueryData } from '../../../data/models'
 import EditableCell from './editablecell'
+import apiService from '../../../network/apiService'
 
 
 type ProjectCardPropType = { 
-    queryData: DBQueryData
+    queryData: DBQueryData,
+    dbConnection: DBConnection
+    mSchema: string,
+    mName: string,
+    isEditable: boolean,
+    updateCellData: (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean)=>void
 }
 
-const Table = ({queryData}: ProjectCardPropType) => {
+const Table = ({queryData, updateCellData, dbConnection, mSchema, mName, isEditable}: ProjectCardPropType) => {
+
+    const [editCell, setEditCell] = useState<(string|number)[]>([])
 
     const data = React.useMemo(
         () => queryData.rows,
@@ -17,7 +25,7 @@ const Table = ({queryData}: ProjectCardPropType) => {
     )
 
     const columns = React.useMemo(
-        () => queryData.columns.map((col) => ({
+        () => queryData.columns.filter(col => col !== 'ctid').map((col) => ({
             Header: col,
             accessor: col, 
         })),
@@ -28,15 +36,31 @@ const Table = ({queryData}: ProjectCardPropType) => {
         Cell: EditableCell,
     }      
 
+    const resetEditCell = ()=> {
+        setEditCell([])
+    }
+
+    const onSaveCell = async (ctid: string, columnName: string, newValue: string) => {
+        const result = await apiService.updateDBSingleData(dbConnection.id, mSchema, mName, ctid, columnName, newValue)
+        if (result.success) {
+            updateCellData(ctid, result.data.ctid, columnName, newValue)
+            resetEditCell()
+        }
+    }
+
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         rows,
         prepareRow,
-      } = useTable({ columns, data, defaultColumn })
-    
+      } = useTable({ columns, data, defaultColumn, ...{ editCell, resetEditCell, onSaveCell }})
 
+      const startEditing = (cell: Cell<any, any>)=>{
+        if (isEditable)
+            setEditCell([cell.row.index, cell.column.id])
+    }
+   
     return (
         <React.Fragment>
             <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
@@ -57,7 +81,7 @@ const Table = ({queryData}: ProjectCardPropType) => {
                         return (
                             <tr {...row.getRowProps()}>
                                 {row.cells.map(cell => {
-                                    return (<td {...cell.getCellProps()}>
+                                    return (<td {...cell.getCellProps()} onDoubleClick={()=>startEditing(cell)}>
                                         {cell.render('Cell')}
                                     </td>
                                     )
