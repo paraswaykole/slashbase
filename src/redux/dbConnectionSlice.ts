@@ -60,10 +60,11 @@ export const getDBDataModels = createAsyncThunk(
   }
 )
 
-export const projectsSlice = createSlice({
+export const dbConnectionSlice = createSlice({
   name: 'dbConnection',
   initialState,
   reducers: {
+    reset: (state) => initialState
   },
   extraReducers: (builder) => {
     builder
@@ -81,7 +82,9 @@ export const projectsSlice = createSlice({
   },
 })
 
+export const { reset } = dbConnectionSlice.actions
+
 export const selectDBConnection = (state: AppState) => state.dbConnection.dbConnection
 export const selectDBDataModels = (state: AppState) => state.dbConnection.dbDataModels
 
-export default projectsSlice.reducer
+export default dbConnectionSlice.reducer

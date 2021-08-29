@@ -4,6 +4,9 @@ import type { AppState } from './store'
 import { User } from '../data/models'
 import storage from '../data/storage'
 import apiService from '../network/apiService'
+import { reset as projectReset  } from './projectsSlice'
+import { reset as allDBConnReset } from './allDBConnectionsSlice'
+import { reset as dbConnReset  } from './dbConnectionSlice'
 
 export interface CurrentUserState {
   user?: User
@@ -59,9 +62,12 @@ export const editUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   'currentUser/logoutUser',
-  async () => {
+  async (_, {dispatch}) => {
     //TODO: make logout api call
     await storage.logoutUser()
+    dispatch(projectReset())
+    dispatch(allDBConnReset())
+    dispatch(dbConnReset())
     return {
       currentUser: undefined,
       isAuthenticated: false,

@@ -51,6 +51,7 @@ export const projectsSlice = createSlice({
   name: 'projects',
   initialState,
   reducers: {
+    reset: (state) => initialState
   },
   extraReducers: (builder) => {
     builder
@@ -68,6 +69,8 @@ export const projectsSlice = createSlice({
       })
   },
 })
+
+export const { reset } = projectsSlice.actions
 
 export const selectProjects = (state: AppState) => state.projects.projects
 

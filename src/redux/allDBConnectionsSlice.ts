@@ -52,6 +52,7 @@ export const allDBConnectionSlice = createSlice({
   name: 'allDBConnections',
   initialState,
   reducers: {
+    reset: (state) => initialState
   },
   extraReducers: (builder) => {
     builder
@@ -68,6 +69,8 @@ export const allDBConnectionSlice = createSlice({
       })
   },
 })
+
+export const { reset } = allDBConnectionSlice.actions
 
 export const selectAllDBConnections = (state: AppState) => state.allDBConnections.dbConnections
 
