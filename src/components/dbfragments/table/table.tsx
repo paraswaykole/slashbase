@@ -70,9 +70,9 @@ const Table = ({queryData, updateCellData, dbConnection, mSchema, mName, isEdita
             <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                 <thead>
                     {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
+                        <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>
+                                <th {...column.getHeaderProps()} key={column.id}>
                                     {column.render('Header')}
                                 </th>
                             ))}    
@@ -83,9 +83,9 @@ const Table = ({queryData, updateCellData, dbConnection, mSchema, mName, isEdita
                     {rows.map(row => {
                         prepareRow(row)
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr {...row.getRowProps()} key={row.id}>
                                 {row.cells.map(cell => {
-                                    return (<td {...cell.getCellProps()} onDoubleClick={()=>startEditing(cell)}>
+                                    return (<td {...cell.getCellProps()} onDoubleClick={()=>startEditing(cell)} key={row.id+""+cell.column.id}>
                                         {cell.render('Cell')}
                                     </td>
                                     )

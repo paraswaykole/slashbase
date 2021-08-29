@@ -20,6 +20,7 @@ const Header = (_: HeaderPropType) => {
 
     const currentUser: User = useAppSelector(selectCurrentUser)
     const projects: Project[] = useAppSelector(selectProjects)
+    const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
     const [isShowingDropDown, setIsShowingDropDown] = useState(false)
 
@@ -40,7 +41,6 @@ const Header = (_: HeaderPropType) => {
     } else if (router.pathname === Constants.APP_PATHS.PROJECT_MEMBERS.path) {
         currentOption = String(router.query.id)
     } else if (router.pathname === Constants.APP_PATHS.DB.path) {
-        const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
         if (currentDBConnection)
             currentOption = currentDBConnection?.projectId
     }

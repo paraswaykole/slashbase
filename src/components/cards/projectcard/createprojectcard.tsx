@@ -14,12 +14,13 @@ const CreateNewProjectCard = (_: CreateNewProjectCardPropType) => {
     const [creating, setCreating] = useState(false)
     const [projectName, setProjectName] = useState('')
     const [loading, setLoading] = useState(false)
+    
+    const dispatch = useAppDispatch()
 
     if (!currentUser || (currentUser && !currentUser.isRoot)){
         return null
     }
 
-    const dispatch = useAppDispatch()
 
     const startCreatingProject = async () => {
         if (loading){ 
