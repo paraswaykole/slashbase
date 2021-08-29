@@ -1,6 +1,7 @@
 import styles from './table.module.scss'
 import React, { useState } from 'react'
 import { Cell, useTable } from 'react-table'
+import toast from 'react-hot-toast';
 import { DBConnection, DBQueryData } from '../../../data/models'
 import EditableCell from './editablecell'
 import apiService from '../../../network/apiService'
@@ -45,6 +46,9 @@ const Table = ({queryData, updateCellData, dbConnection, mSchema, mName, isEdita
         if (result.success) {
             updateCellData(ctid, result.data.ctid, columnName, newValue)
             resetEditCell()
+            toast.success('1 row updated');
+        } else {
+            toast.error(result.error!);
         }
     }
 

@@ -12,11 +12,13 @@ import { useEffect } from 'react'
 import Constants from '../constants'
 import { getProjects } from '../redux/projectsSlice'
 import { getAllDBConnections } from '../redux/allDBConnectionsSlice'
+import { Toaster } from 'react-hot-toast'
 
 function SlashbaseApp({ Component, pageProps }: AppProps) {
   return <Provider store={store}>
     <SlashbaseAppComponent>
       <Component {...pageProps} />
+      <Toaster />
     </SlashbaseAppComponent>
   </Provider>
 }
