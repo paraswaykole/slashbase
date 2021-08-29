@@ -165,7 +165,7 @@ func (qc QueryController) UpdateSingleData(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error":   err,
+			"error":   "There was some problem",
 		})
 		return
 	}
