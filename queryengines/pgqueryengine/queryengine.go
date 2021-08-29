@@ -39,7 +39,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 	}
 
 	filteredQuery := strings.TrimSpace(strings.ToLower(query))
-	if strings.HasPrefix(filteredQuery, "select") {
+	if strings.HasPrefix(filteredQuery, "select") || strings.Contains(filteredQuery, "returning") {
 		rows, err := conn.Query(context.Background(), query)
 		if err != nil {
 			return nil, err
@@ -55,7 +55,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 			return nil, err
 		}
 		return map[string]interface{}{
-			"message": cmdTag,
+			"message": cmdTag.String(),
 		}, nil
 	}
 }
@@ -65,7 +65,7 @@ func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) (map
 }
 
 func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
-	query := fmt.Sprintf(`SELECT * FROM "%s"."%s" LIMIT %d OFFSET %d;`, schema, name, limit, offset)
+	query := fmt.Sprintf(`SELECT ctid, * FROM "%s"."%s" LIMIT %d OFFSET %d;`, schema, name, limit, offset)
 	data, err := pgqe.RunQuery(dbConn, query)
 	if err != nil {
 		return nil, err
@@ -77,6 +77,19 @@ func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema str
 			return nil, err
 		}
 		data["count"] = countData["rows"].([]map[string]interface{})[0]["count"]
+	}
+	return data, err
+}
+
+func (pgqe *PostgresQueryEngine) UpdateSingleData(dbConn *models.DBConnection, schema string, name string, ctid string, columnName string, value string) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`UPDATE "%s"."%s" SET "%s" = '%s' WHERE ctid = '%s' RETURNING ctid;`, schema, name, columnName, value, ctid)
+	data, err := pgqe.RunQuery(dbConn, query)
+	if err != nil {
+		return nil, err
+	}
+	ctID := data["rows"].([]map[string]interface{})[0]["ctid"]
+	data = map[string]interface{}{
+		"ctid": ctID,
 	}
 	return data, err
 }

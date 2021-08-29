@@ -27,6 +27,10 @@ func GetData(dbConn *models.DBConnection, schemaName string, name string, limit 
 	return postgresQueryEngine.GetData(dbConn, schemaName, name, limit, offset, fetchCount)
 }
 
+func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name string, ctid string, columnName, value string) (map[string]interface{}, error) {
+	return postgresQueryEngine.UpdateSingleData(dbConn, schemaName, name, ctid, columnName, value)
+}
+
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
 }

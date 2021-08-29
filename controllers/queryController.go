@@ -135,3 +135,42 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 		"data":    data,
 	})
 }
+
+func (qc QueryController) UpdateSingleData(c *gin.Context) {
+	dbConnId := c.Param("dbConnId")
+
+	var updateBody struct {
+		Schema     string `json:"schema"`
+		Name       string `json:"name"`
+		CTID       string `json:"ctid"`
+		ColumnName string `json:"columnName"`
+		Value      string `json:"value"`
+	}
+	c.BindJSON(&updateBody)
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+
+	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+		return
+	}
+
+	data, err := queryengines.UpdateSingleData(dbConn, updateBody.Schema, updateBody.Name, updateBody.CTID, updateBody.ColumnName, updateBody.Value)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    data,
+	})
+}

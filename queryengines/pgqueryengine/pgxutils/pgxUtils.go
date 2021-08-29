@@ -2,6 +2,7 @@ package pgxutils
 
 import (
 	"database/sql"
+	"fmt"
 	"reflect"
 
 	"github.com/jackc/pgproto3/v2"
@@ -79,6 +80,14 @@ func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 				}
 				continue
 			}
+			if tid, ok := val.(pgtype.TID); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = fmt.Sprintf("(%d,%d)", tid.BlockNumber, tid.OffsetNumber)
+				}
+				continue
+			}
 			b, ok := val.([]byte)
 			if ok {
 				v = string(b)
@@ -115,6 +124,8 @@ func FieldType(fd pgproto3.FieldDescription) reflect.Type {
 		return reflect.TypeOf(sql.NullTime{})
 	case pgtype.ByteaOID:
 		return reflect.TypeOf([]byte(nil))
+	case pgtype.TIDOID:
+		return reflect.TypeOf(pgtype.TID{})
 	default:
 		return reflect.TypeOf(new(interface{})).Elem()
 	}
