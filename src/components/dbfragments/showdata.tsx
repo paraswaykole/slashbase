@@ -83,19 +83,20 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     <Table queryData={queryData}/>
                 </div> 
             }
-            <br/>
-            {dataLoading ? 
-                <progress className="progress is-primary" max="100">loading</progress>
-                :
-                <nav className="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
-                    <a className="pagination-previous" onClick={onPreviousPage}>Previous</a>
-                    <a className="pagination-next" onClick={onNextPage}>Next</a>
-                    <ul className="pagination-list">
-                        Showing {queryOffset} - {queryOffsetRangeEnd} of {queryCount}
-                    </ul>
-                </nav>
-            }
-            <br/>
+            <br/><br/><br/>
+            <div className={styles.bottomBar}>
+                {dataLoading ? 
+                    <progress className="progress is-primary" max="100">loading</progress>
+                    :
+                    <nav className="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
+                        <button className="button pagination-previous" onClick={onPreviousPage}>Previous</button>
+                        <button className="button pagination-next" onClick={onNextPage}>Next</button>
+                        <ul className="pagination-list">
+                            Showing {queryOffset} - {queryOffsetRangeEnd} of {queryCount}
+                        </ul>
+                    </nav>
+                }
+            </div>
         </React.Fragment>
     )
 }
