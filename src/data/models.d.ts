@@ -53,6 +53,13 @@ export interface DBQueryData {
     count?: number
 }
 
+export interface DBQuery {
+    id: string
+    name: string,
+    query: string,
+    dbConnectionId: string,
+}
+
 // Result Models
 
 export interface ApiResult<T> { 

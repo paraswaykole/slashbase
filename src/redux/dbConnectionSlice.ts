@@ -1,19 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { AppState } from './store'
-import { DBConnection, DBDataModel } from '../data/models'
+import { DBConnection, DBDataModel, DBQuery } from '../data/models'
 import apiService from '../network/apiService'
 
 export interface DBConnectionState {
     dbConnection?: DBConnection,
     dbDataModels: DBDataModel[],
+    dbQueries: DBQuery[],
     isDBDataModelsFetched: boolean,
+    isDBQueriesFetched: boolean,
 }
 
 const initialState: DBConnectionState = {
   dbConnection: undefined,
   dbDataModels: [],
+  dbQueries: [],
   isDBDataModelsFetched: false,
+  isDBQueriesFetched: false,
 }
 
 export const getDBConnection = createAsyncThunk(
@@ -60,6 +64,42 @@ export const getDBDataModels = createAsyncThunk(
   }
 )
 
+export const getDBQueries = createAsyncThunk(
+  'dbConnection/getDBQueries',
+  async (payload: {dbConnId: string}, { rejectWithValue }) => {
+    const result = await apiService.getDBQueriesInDBConn(payload.dbConnId)
+    if(result.success){
+      const dbQueries = result.data
+      return {
+        dbQueries: dbQueries,
+      }
+    } else {
+      return rejectWithValue(result.error)
+    }
+  },
+  {
+    condition: (_, { getState }: any) => {
+      const { isDBQueriesFetched } = getState()['dbConnection'] as DBConnectionState
+      return !isDBQueriesFetched
+    }
+  }
+)
+
+export const saveDBQuery = createAsyncThunk(
+  'dbConnection/saveDBQuery',
+  async (payload: {dbConnId: string, queryId: string, name: string, query: string}, { rejectWithValue }) => {
+    const result = await apiService.saveDBQuery(payload.dbConnId, payload.name, payload.query, payload.queryId)
+    if(result.success){
+      const dbQuery = result.data
+      return {
+        dbQuery: dbQuery,
+      }
+    } else {
+      return rejectWithValue(result.error)
+    }
+  }
+)
+
 export const dbConnectionSlice = createSlice({
   name: 'dbConnection',
   initialState,
@@ -79,6 +119,18 @@ export const dbConnectionSlice = createSlice({
         state.dbDataModels = action.payload.dataModels
         state.isDBDataModelsFetched = true
       })
+      .addCase(getDBQueries.fulfilled, (state,  action) => {
+        state.dbQueries = action.payload.dbQueries
+        state.isDBQueriesFetched = true
+      })
+      .addCase(saveDBQuery.fulfilled, (state,  action) => {
+        const idx = state.dbQueries.findIndex(x => x.id === action.payload.dbQuery.id)
+        if (idx === -1){
+          state.dbQueries.push(action.payload.dbQuery)
+        } else {
+          state.dbQueries[idx] = action.payload.dbQuery
+        }
+      })
   },
 })
 
@@ -86,5 +138,6 @@ export const { reset } = dbConnectionSlice.actions
 
 export const selectDBConnection = (state: AppState) => state.dbConnection.dbConnection
 export const selectDBDataModels = (state: AppState) => state.dbConnection.dbDataModels
+export const selectDBDQueries = (state: AppState) => state.dbConnection.dbQueries
 
 export default dbConnectionSlice.reducer

@@ -1,12 +1,12 @@
 import styles from './sidebar.module.scss'
 import React from 'react'
 import { useRouter } from 'next/router'
-import { DBConnection, DBDataModel } from '../../data/models'
+import { DBConnection, DBDataModel, DBQuery } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
 import { selectAllDBConnections } from '../../redux/allDBConnectionsSlice'
 import Constants from '../../constants'
 import Link from 'next/link'
-import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
+import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
 
 enum SidebarViewType {
     GENERIC = "GENERIC", // default
@@ -20,15 +20,16 @@ const Sidebar = (_: SidebarPropType) => {
 
     const router = useRouter()
 
-    const { mschema, mname } = router.query
+    const { mschema, mname, queryId } = router.query
 
     let sidebarView: SidebarViewType = 
-        (router.pathname === Constants.APP_PATHS.DB.path) ?
+        (router.pathname === Constants.APP_PATHS.DB.path || router.pathname === Constants.APP_PATHS.DB_QUERY.path) ?
         SidebarViewType.DATABASE : SidebarViewType.GENERIC
     
     const allDBConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
+    const dbQueries: DBQuery[] = useAppSelector(selectDBDQueries)
 
     return (
         <aside className={"menu "+styles.sidebar}> 
@@ -59,7 +60,7 @@ const Sidebar = (_: SidebarPropType) => {
                         <ul className="menu-list">
                             {dbDataModels.map((dataModel: DBDataModel) => {
                                 return (
-                                    <li  key={dataModel.schemaName+dataModel.name}>
+                                    <li key={dataModel.schemaName+dataModel.name}>
                                         <Link 
                                             href={{pathname: Constants.APP_PATHS.DB.path, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
                                             as={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection!.id) + "?mschema="+dataModel.schemaName + "&mname="+dataModel.name}>
@@ -74,6 +75,33 @@ const Sidebar = (_: SidebarPropType) => {
                         <p className="menu-label">
                             Queries
                         </p>
+                        <ul className="menu-list">
+                            {dbQueries.map((dbQuery: DBQuery) => {
+                                return (
+                                    <li key={dbQuery.id}>
+                                        <Link 
+                                            href={Constants.APP_PATHS.DB_QUERY.path} 
+                                            as={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection!.id).replace('[queryId]', dbQuery.id)}>
+                                            <a className={queryId == dbQuery.id ? 'is-active' : ''}>
+                                                {dbQuery.name}
+                                            </a>
+                                        </Link>
+                                    </li>
+                                )
+                            })}
+                            <li>
+                                <Link 
+                                    href={Constants.APP_PATHS.DB_QUERY.path} 
+                                    as={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection?.id ?? '').replace('[queryId]', 'new')}>
+                                    <a className={ queryId === 'new' ? 'is-active' : ''}>
+                                        <span className="icon">
+                                            <i className="fas fa-plus-circle"></i>
+                                        </span>
+                                        &nbsp;New Query
+                                    </a>
+                                </Link>
+                            </li>
+                        </ul>
                     </React.Fragment>
                 }
             </div>

@@ -1,6 +1,8 @@
 import '../styles/globals.css'
 import '../styles/index.scss'
 import '@fortawesome/fontawesome-free/css/all.css'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/duotone-light.css'
 
 import type { AppProps } from 'next/app'
 import { Provider } from 'react-redux'

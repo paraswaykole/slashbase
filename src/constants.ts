@@ -49,6 +49,10 @@ const Constants: ConstantsType = {
             path: '/db/[id]',
             isAuth: true
         },
+        DB_QUERY: {
+            path: '/db/[id]/query/[queryId]',
+            isAuth: true
+        },
     }
 
 }

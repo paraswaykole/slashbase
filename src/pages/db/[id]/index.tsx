@@ -1,14 +1,14 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import AppLayout from '../../components/layouts/applayout'
+import AppLayout from '../../../components/layouts/applayout'
 
 import DefaultErrorPage from 'next/error'
-import { getDBConnection, getDBDataModels, selectDBConnection } from '../../redux/dbConnectionSlice'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import DBHomeFragment from '../../components/dbfragments/home'
-import DBShowDataFragment from '../../components/dbfragments/showdata'
-import { DBConnection } from '../../data/models'
+import { getDBConnection, getDBDataModels, getDBQueries, selectDBConnection } from '../../../redux/dbConnectionSlice'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import DBHomeFragment from '../../../components/dbfragments/home'
+import DBShowDataFragment from '../../../components/dbfragments/showdata'
+import { DBConnection } from '../../../data/models'
 
 enum DBFragmentViewType {
     HOME = "HOME",
@@ -37,6 +37,7 @@ const DBPage: NextPage = () => {
                     return
                 }
                 dispatch((getDBDataModels({dbConnId: String(id)}))) 
+                dispatch((getDBQueries({dbConnId: String(id)}))) 
             }
         })()
     }, [dispatch, router])
