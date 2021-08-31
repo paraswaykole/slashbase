@@ -10,6 +10,7 @@ import QueryEditor from '../../../../components/dbfragments/queryeditor/queryedi
 import apiService from '../../../../network/apiService'
 import toast from 'react-hot-toast'
 import Table from '../../../../components/dbfragments/table/table'
+import Constants from '../../../../constants'
 
 
 const DBQueryPage: NextPage = () => {
@@ -68,6 +69,11 @@ const DBQueryPage: NextPage = () => {
         callback()
     }
 
+    const onQuerySaved = (newQueryId: string) => {
+        if(newQueryId !== queryId)
+            router.replace(Constants.APP_PATHS.DB_QUERY.path.replace('[id]', String(id)).replace('[queryId]',newQueryId))
+    }
+
     if(error404) {
         return (<DefaultErrorPage statusCode={404} />)
     }
@@ -79,7 +85,8 @@ const DBQueryPage: NextPage = () => {
                     initialValue={dbQuery?.query ?? ''} 
                     initQueryName={dbQuery?.name ?? ''} 
                     queryId={queryId === 'new'? '': String(queryId)}
-                    runQuery={runQuery}/> 
+                    runQuery={runQuery}
+                    onSave={onQuerySaved}/> 
             }
             <br/>
             { queryData && 

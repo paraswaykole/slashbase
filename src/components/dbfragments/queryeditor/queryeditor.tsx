@@ -18,10 +18,11 @@ type QueryEditorPropType = {
     initQueryName: string,
     queryId: string,
     runQuery: (query: string, callback: ()=>void) => void
+    onSave: (queryId: string) => void
 }
 
 
-const QueryEditor = ({initialValue, initQueryName, queryId, runQuery}: QueryEditorPropType) => {
+const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: QueryEditorPropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -35,8 +36,9 @@ const QueryEditor = ({initialValue, initQueryName, queryId, runQuery}: QueryEdit
     const startSaving = async () => {
         setSaving(true)
         try{
-            await dispatch(saveDBQuery({dbConnId: dbConnection!.id, queryId, name: queryName, query: value})).unwrap()
+            const result = await dispatch(saveDBQuery({dbConnId: dbConnection!.id, queryId, name: queryName, query: value})).unwrap()
             toast.success("Saved Succesfully!")
+            onSave(result.dbQuery.id)
         } catch(e) {
             toast.error("There was some problem saving! Please try again.")
         }
