@@ -49,6 +49,18 @@ const SlashbaseAppComponent = ({children}: any) => {
         dispatch(getAllDBConnections())
       }
   }, [dispatch, isAuthenticated])
+
+  // SPA redirectes (forcing index.html) (disabled-SSR)
+  const queryKeys = Object.keys(router.query)
+  let finalPath = router.route
+  for(let i=0; i<queryKeys.length; i++){
+    const qkey = queryKeys[i]
+    finalPath = finalPath.replace(`[${qkey}]`, String(router.query[qkey]))
+  }
+  if(typeof window !== 'undefined' && window.location.pathname !== finalPath){
+    router.replace(window.location.href.slice(window.location.origin.length))
+    return null
+  }
   
   return children
 }
