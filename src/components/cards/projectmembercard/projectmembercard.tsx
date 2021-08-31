@@ -17,8 +17,8 @@ const ProjectMemberCard = ({member}: ProjectMemberCardPropType) => {
                         <ProfileImage imageUrl={member.user.profileImageUrl} />
                     </div>
                     <div className="column is-8">
-                        <h2>{member.user.name ?? member.user.email}</h2>
-                        { member.user.name && <h6 className="subtitle is-6">{member.user.email}</h6>}
+                        <b>{member.user.name ?? member.user.email}</b>
+                        { member.user.name && <b className="subtitle is-6"><br/>{member.user.email}</b>}
                     </div>
                     <div className="column is-2">
                         <span className={"tag is-primary "+styles.roleTag}>{member.role}</span>

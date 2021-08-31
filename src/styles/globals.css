@@ -22,17 +22,17 @@ h1,h2,h3,h4,h5,h6 {
 
 h1 {
   font-weight: 700 !important;
-  font-size: 32px !important;
+  font-size: 34px !important;
 }
 
 h2 {
   font-weight: 700 !important;
-  font-size: 28x !important;
+  font-size: 24px !important;
 }
 
 h3 {
   font-weight: 600 !important;
-  font-size: 24px !important;
+  font-size: 22px !important;
 }
 
 h4 {

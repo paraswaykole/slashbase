@@ -15,7 +15,7 @@ const DBConnCard = ({dbConn}: DBConnCardPropType) => {
             <a>
                 <div className={"card "+styles.cardContainer}>
                     <div className="card-content">
-                        <h2>{dbConn.name}</h2>
+                        <b>{dbConn.name}</b>
                     </div>
                 </div>
             </a>

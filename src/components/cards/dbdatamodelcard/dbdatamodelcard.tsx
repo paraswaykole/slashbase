@@ -19,7 +19,7 @@ const DBDataModelCard = ({dataModel, dbConnection}: DBDataModelPropType) => {
             <a>
                 <div className={"card "+styles.cardContainer}>
                     <div className="card-content">
-                        <h2>{dataModel.schemaName}.{dataModel.name}</h2>
+                        <b>{dataModel.schemaName}.{dataModel.name}</b>
                     </div>
                 </div>
             </a>

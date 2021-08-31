@@ -15,7 +15,7 @@ const ProjectCard = ({project}: ProjectCardPropType) => {
             <a>
                 <div className={"card "+styles.cardContainer}>
                     <div className="card-content">
-                        <h2>{project.name}</h2>
+                        <b>{project.name}</b>
                     </div>
                 </div>
             </a>

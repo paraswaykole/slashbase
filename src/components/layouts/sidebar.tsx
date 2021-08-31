@@ -54,6 +54,7 @@ const Sidebar = (_: SidebarPropType) => {
                 }
                 {sidebarView === SidebarViewType.DATABASE &&
                     <React.Fragment>
+                        <i className="fas fa-database"/> {dbConnection?.name}
                         <p className="menu-label">
                             Data Models
                         </p>

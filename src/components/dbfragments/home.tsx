@@ -17,7 +17,7 @@ const DBHomeFragment = ({}: DBHomePropType) => {
         <React.Fragment>
             {dbConnection && 
                 <React.Fragment>
-                    <h1>Connected to {dbConnection.name}</h1>
+                    <h1>Showing Data Models in {dbConnection.name}</h1>
                     {dbDataModels.map(x=>(
                         <DBDataModelCard key={x.schemaName+x.name} dataModel={x} dbConnection={dbConnection}/>
                     ))}
