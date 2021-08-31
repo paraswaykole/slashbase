@@ -32,23 +32,21 @@ const ProjectPage: NextPage = () => {
 
   return (
     <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
-      <main className="maincontainer">
-        <h1>Showing Databases in {project?.name}</h1>
-        {databases.map((db: DBConnection) => (
-          <DBConnCard key={db.id} dbConn={db}/>
-        ))}
-        { project && <NewDBConnButton project={project}/> }
-        &nbsp;&nbsp;
-        { project && <Link href={Constants.APP_PATHS.PROJECT_MEMBERS.path} as={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
-          <a>
-            <button className="button" >
-                <i className={"fas fa-users"}/>
-                &nbsp;&nbsp;
-                View Project Members
-            </button>
-          </a>
-        </Link> }
-      </main>
+      <h1>Showing Databases in {project?.name}</h1>
+      {databases.map((db: DBConnection) => (
+        <DBConnCard key={db.id} dbConn={db}/>
+      ))}
+      { project && <NewDBConnButton project={project}/> }
+      &nbsp;&nbsp;
+      { project && <Link href={Constants.APP_PATHS.PROJECT_MEMBERS.path} as={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
+        <a>
+          <button className="button" >
+              <i className={"fas fa-users"}/>
+              &nbsp;&nbsp;
+              View Project Members
+          </button>
+        </a>
+      </Link> }
     </AppLayout>
   )
 }

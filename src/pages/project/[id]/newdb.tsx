@@ -65,160 +65,158 @@ const NewDBPage: NextPage = () => {
 
     return (
         <AppLayout title="Add New Database Connection | Slashbase">
-            <main className="maincontainer">
-                <h1>Add New Postgres Database Connection in {project.name}</h1>
-                <div className="form-container"> 
-                    <div className="field">
-                        <label className="label">Display Name this database:</label>
-                        <div className="control">
-                            <input 
-                                className="input" 
-                                type="text" 
-                                value={dbName}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBName(e.target.value)}}
-                                placeholder="Enter a name for this database" />
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Host:</label>
-                        <div className="control">
-                            <input 
-                                className="input" 
-                                type="text" 
-                                value={dbHost}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBHost(e.target.value)}}
-                                placeholder="Enter host" />
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Port:</label>
-                        <div className="control">
-                            <input 
-                                className="input" 
-                                type="text" 
-                                value={dbPort}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBPort(e.target.value)}}
-                                placeholder="Enter port" />
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Database:</label>
-                        <div className="control">
-                            <input 
-                                className="input" 
-                                type="text" 
-                                value={dbDatabase}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBDatabase(e.target.value)}}
-                                placeholder="Enter database" />
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Database User:</label>
-                        <div className="control">
-                            <input 
-                                className="input" 
-                                type="text" 
-                                value={dbUsername}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBUsername(e.target.value)}}
-                                placeholder="Enter database username" />
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Database Password:</label>
-                        <div className="control">
-                            <input 
-                                className="input" 
-                                type="password" 
-                                value={dbPassword}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBPassword(e.target.value)}}
-                                placeholder="Enter database password" />
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Use SSH:</label>
-                        <div className="select">
-                            <select
-                                value={dbUseSSH}
-                                onChange={(e: React.ChangeEvent<HTMLSelectElement>)=>{
-                                    setUseSSH(e.target.value)
-                                }}
-                            >
-                                <option 
-                                    value={DBConnectionUseSSHType.NONE}>
-                                    None
-                                </option>
-                                <option 
-                                    value={DBConnectionUseSSHType.PASSWORD}>
-                                    Password
-                                </option>
-                                <option 
-                                    value={DBConnectionUseSSHType.KEYFILE}>
-                                    Identity File
-                                </option>
-                                <option 
-                                    value={DBConnectionUseSSHType.PASSKEYFILE}>
-                                    Identity File with Password
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    { dbUseSSH !== DBConnectionUseSSHType.NONE && 
-                        <React.Fragment>
-                            <div className="field">
-                                <label className="label">SSH Host:</label>
-                                <div className="control">
-                                    <input 
-                                        className="input" 
-                                        type="text" 
-                                        value={dbSSHHost}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setSSHHost(e.target.value)}}
-                                        placeholder="Enter SSH Host" />
-                                </div>
-                            </div>
-                            <div className="field">
-                                <label className="label">SSH User:</label>
-                                <div className="control">
-                                    <input 
-                                        className="input" 
-                                        type="text" 
-                                        value={dbSSHUser}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setSSHUser(e.target.value)}}
-                                        placeholder="Enter SSH User" />
-                                </div>
-                            </div>
-                            { (dbUseSSH === DBConnectionUseSSHType.PASSWORD || dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE ) &&
-                                < div className="field">
-                                    <label className="label">SSH Password:</label>
-                                    <div className="control">
-                                        <input 
-                                            className="input" 
-                                            type="password" 
-                                            value={dbSSHPassword}
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setSSHPassword(e.target.value)}}
-                                            placeholder="Enter SSH Password" />
-                                    </div>
-                                </div> 
-                            }
-                            { (dbUseSSH === DBConnectionUseSSHType.KEYFILE || dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE ) &&
-                                <div className="field">
-                                    <label className="label">SSH Identity File:</label>
-                                    <div className="control">
-                                        <textarea 
-                                            className="textarea" 
-                                            value={dbSSHKeyFile}
-                                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>)=>{setSSHKeyFile(e.target.value)}}
-                                            placeholder="Paste the contents of SSH Identity File here"/>
-                                    </div>
-                                </div>
-                            }
-                        </React.Fragment>
-                    }
+            <h1>Add New Postgres Database Connection in {project.name}</h1>
+            <div className="form-container"> 
+                <div className="field">
+                    <label className="label">Display Name this database:</label>
                     <div className="control">
-                        { !adding && <button className="button is-primary" onClick={startAddingDB}>Add</button> }
-                        { adding && <button className="button is-primary">Adding...</button>}
+                        <input 
+                            className="input" 
+                            type="text" 
+                            value={dbName}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBName(e.target.value)}}
+                            placeholder="Enter a name for this database" />
                     </div>
                 </div>
-            </main>
+                <div className="field">
+                    <label className="label">Host:</label>
+                    <div className="control">
+                        <input 
+                            className="input" 
+                            type="text" 
+                            value={dbHost}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBHost(e.target.value)}}
+                            placeholder="Enter host" />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">Port:</label>
+                    <div className="control">
+                        <input 
+                            className="input" 
+                            type="text" 
+                            value={dbPort}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBPort(e.target.value)}}
+                            placeholder="Enter port" />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">Database:</label>
+                    <div className="control">
+                        <input 
+                            className="input" 
+                            type="text" 
+                            value={dbDatabase}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBDatabase(e.target.value)}}
+                            placeholder="Enter database" />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">Database User:</label>
+                    <div className="control">
+                        <input 
+                            className="input" 
+                            type="text" 
+                            value={dbUsername}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBUsername(e.target.value)}}
+                            placeholder="Enter database username" />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">Database Password:</label>
+                    <div className="control">
+                        <input 
+                            className="input" 
+                            type="password" 
+                            value={dbPassword}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBPassword(e.target.value)}}
+                            placeholder="Enter database password" />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">Use SSH:</label>
+                    <div className="select">
+                        <select
+                            value={dbUseSSH}
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>)=>{
+                                setUseSSH(e.target.value)
+                            }}
+                        >
+                            <option 
+                                value={DBConnectionUseSSHType.NONE}>
+                                None
+                            </option>
+                            <option 
+                                value={DBConnectionUseSSHType.PASSWORD}>
+                                Password
+                            </option>
+                            <option 
+                                value={DBConnectionUseSSHType.KEYFILE}>
+                                Identity File
+                            </option>
+                            <option 
+                                value={DBConnectionUseSSHType.PASSKEYFILE}>
+                                Identity File with Password
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                { dbUseSSH !== DBConnectionUseSSHType.NONE && 
+                    <React.Fragment>
+                        <div className="field">
+                            <label className="label">SSH Host:</label>
+                            <div className="control">
+                                <input 
+                                    className="input" 
+                                    type="text" 
+                                    value={dbSSHHost}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setSSHHost(e.target.value)}}
+                                    placeholder="Enter SSH Host" />
+                            </div>
+                        </div>
+                        <div className="field">
+                            <label className="label">SSH User:</label>
+                            <div className="control">
+                                <input 
+                                    className="input" 
+                                    type="text" 
+                                    value={dbSSHUser}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setSSHUser(e.target.value)}}
+                                    placeholder="Enter SSH User" />
+                            </div>
+                        </div>
+                        { (dbUseSSH === DBConnectionUseSSHType.PASSWORD || dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE ) &&
+                            < div className="field">
+                                <label className="label">SSH Password:</label>
+                                <div className="control">
+                                    <input 
+                                        className="input" 
+                                        type="password" 
+                                        value={dbSSHPassword}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setSSHPassword(e.target.value)}}
+                                        placeholder="Enter SSH Password" />
+                                </div>
+                            </div> 
+                        }
+                        { (dbUseSSH === DBConnectionUseSSHType.KEYFILE || dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE ) &&
+                            <div className="field">
+                                <label className="label">SSH Identity File:</label>
+                                <div className="control">
+                                    <textarea 
+                                        className="textarea" 
+                                        value={dbSSHKeyFile}
+                                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>)=>{setSSHKeyFile(e.target.value)}}
+                                        placeholder="Paste the contents of SSH Identity File here"/>
+                                </div>
+                            </div>
+                        }
+                    </React.Fragment>
+                }
+                <div className="control">
+                    { !adding && <button className="button is-primary" onClick={startAddingDB}>Add</button> }
+                    { adding && <button className="button is-primary">Adding...</button>}
+                </div>
+            </div>
         </AppLayout>
     )
 }

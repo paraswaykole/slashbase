@@ -30,19 +30,17 @@ const ProjectMembersPage: NextPage = () => {
 
   return (
     <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
-      <main className="maincontainer">
-        <h1>Showing Members in {project?.name}</h1>
-        {projectMembers.map((pm: ProjectMember) => (
-          <ProjectMemberCard key={pm.id} member={pm}/>
-        ))}
-        { project && 
-            <AddNewProjectMemberCard 
-              project={project} 
-              onAdded={(newMember: ProjectMember )=>{
-                setProjectMembers([...projectMembers, newMember])
-              }}/> 
-        }
-      </main>
+      <h1>Showing Members in {project?.name}</h1>
+      {projectMembers.map((pm: ProjectMember) => (
+        <ProjectMemberCard key={pm.id} member={pm}/>
+      ))}
+      { project && 
+          <AddNewProjectMemberCard 
+            project={project} 
+            onAdded={(newMember: ProjectMember )=>{
+              setProjectMembers([...projectMembers, newMember])
+            }}/> 
+      }
     </AppLayout>
   )
 }

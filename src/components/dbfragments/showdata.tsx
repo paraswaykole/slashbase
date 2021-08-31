@@ -8,6 +8,7 @@ import { useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
 import { selectProjects } from '../../redux/projectsSlice'
 import { ProjectMemberRole } from '../../data/defaults'
+import { selectIsShowingSidebar } from '../../redux/configSlice'
 
 type DBShowDataPropType = { 
 
@@ -20,6 +21,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
+    const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const projects: Project[] = useAppSelector(selectProjects)
     const project: Project|undefined = projects.find(x=> x.id === dbConnection?.projectId)
     
@@ -107,7 +109,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                 </div> 
             }
             <br/><br/><br/>
-            <div className={styles.bottomBar}>
+            <div className={styles.bottomBar+(isShowingSidebar?' withsidebar':'')}>
                 {dataLoading ? 
                     <progress className="progress is-primary" max="100">loading</progress>
                     :

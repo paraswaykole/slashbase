@@ -64,8 +64,12 @@ h6 {
 
 .maincontainer{
   padding: 10px;
-  width: calc(100% - 260px);
+  width: 100%;
   overflow: scroll;
+}
+
+.withsidebar {
+  width: calc(100% - 260px) !important;
 }
 
 .form-container{

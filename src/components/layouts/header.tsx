@@ -9,6 +9,8 @@ import Constants from '../../constants'
 import { selectProjects } from '../../redux/projectsSlice'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import ProfileImage, { ProfileImageSize } from '../user/profileimage'
+import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
+import { useDispatch } from 'react-redux'
 
 type HeaderPropType = {
 
@@ -21,16 +23,29 @@ const Header = (_: HeaderPropType) => {
     const currentUser: User = useAppSelector(selectCurrentUser)
     const projects: Project[] = useAppSelector(selectProjects)
     const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
+    const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
+
+    const dispatch = useDispatch()
 
     const [isShowingDropDown, setIsShowingDropDown] = useState(false)
+    const [isShowingNavDropDown, setIsShowingNavDropDown] = useState(false)
 
     const options = [
         { value: 'home', label: 'Home', path: Constants.APP_PATHS.HOME.path },
         ...projects.map((x: Project) => ({value: x.id, label: x.name, path: Constants.APP_PATHS.PROJECT.path.replace('[id]', x.id) }))
     ]
 
-    const onNavigate = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        router.replace(options.find(x=>x.value === event.target.value)!.path)
+    const onNavigate = (option: {
+        value: string;
+        label: string;
+        path: string;
+    }) => {
+        router.replace(option.path)
+        setIsShowingNavDropDown(false)
+    }
+
+    const toggleSidebar = () => {
+        dispatch(setIsShowingSidebar(!isShowingSidebar))
     }
 
     let currentOption = 'home'
@@ -47,19 +62,34 @@ const Header = (_: HeaderPropType) => {
 
     return (
         <header className={styles.header}>
-            <Link href={Constants.APP_PATHS.HOME.path} as={Constants.APP_PATHS.HOME.path}>
-                <a>
-                    <div className={styles.home}>
-                        <i className={"fas fa-home"}/>
-                    </div>
-                </a>
-            </Link>
+            <button className={"button is-dark "+[styles.home, styles.btn].join(' ')} onClick={toggleSidebar}>
+                <i className={`fas ${isShowingSidebar ? 'fa-angle-double-left' : 'fa-bars'}`}/>
+            </button>
             <div className={styles.headerCenter}>
-                <select className={styles.headerSelect} value={currentOption} onChange={onNavigate}>
-                    {options.map((x)=>{
-                        return <option key={x.value} value={x.value} label={x.label} />
-                    })}
-                </select>
+                <div className={`dropdown${isShowingNavDropDown ? ' is-active':''}`}>
+                    <div className="dropdown-trigger">
+                        <button className={"button is-dark " + styles.btn} aria-haspopup="true" aria-controls="dropdown-menu" onClick={()=>{setIsShowingNavDropDown(!isShowingNavDropDown)}}>
+                        <span>{options.find(x => x.value === currentOption)?.label}</span>
+                        <span className="icon is-small">
+                            <i className="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                        </button>
+                    </div>
+                    <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div className="dropdown-content">
+                            {options.map((x) => {
+                                return (
+                                    <React.Fragment key={x.value}>
+                                        <a onClick={()=>{onNavigate(x)}} className={`dropdown-item${x.value === currentOption?' is-active':''}`}>
+                                            {x.label}
+                                        </a>
+                                        { x.value === 'home' && <hr className="dropdown-divider" /> }
+                                    </React.Fragment>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </div>
             </div>
             <div className={styles.headerMenu}>
                 { currentUser && 

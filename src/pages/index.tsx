@@ -13,13 +13,11 @@ const HomePage: NextPage = () => {
 
   return (
     <AppLayout title="Home">
-      <main className="maincontainer">
-        <h1>All Projects</h1>
-        {projects.map((project: Project) => (
-          <ProjectCard  key={project.id} project={project}/>
-        ))}
-        <CreateNewProjectCard />
-      </main>
+      <h1>All Projects</h1>
+      {projects.map((project: Project) => (
+        <ProjectCard  key={project.id} project={project}/>
+      ))}
+      <CreateNewProjectCard />      
     </AppLayout>
   )
 }

@@ -74,7 +74,6 @@ const DBQueryPage: NextPage = () => {
 
     return (
         <AppLayout title={(dbQuery ? dbQuery.name +" | ":" New Query | ")+ (dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase")} key={String(queryId)}>
-        <main className="maincontainer">
            {((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId)) && 
                 <QueryEditor 
                     initialValue={dbQuery?.query ?? ''} 
@@ -93,7 +92,6 @@ const DBQueryPage: NextPage = () => {
                     isEditable={false}/>
             }
             {queryResult && <span><b>Result of Query: </b>{queryResult.message}</span>}
-        </main>
         </AppLayout>
     )
 }

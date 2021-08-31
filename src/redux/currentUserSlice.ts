@@ -7,6 +7,7 @@ import apiService from '../network/apiService'
 import { reset as projectReset  } from './projectsSlice'
 import { reset as allDBConnReset } from './allDBConnectionsSlice'
 import { reset as dbConnReset  } from './dbConnectionSlice'
+import { reset as configReset  } from './configSlice'
 
 export interface CurrentUserState {
   user?: User
@@ -68,6 +69,7 @@ export const logoutUser = createAsyncThunk(
     dispatch(projectReset())
     dispatch(allDBConnReset())
     dispatch(dbConnReset())
+    dispatch(configReset())
     return {
       currentUser: undefined,
       isAuthenticated: false,

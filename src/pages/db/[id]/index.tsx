@@ -56,12 +56,10 @@ const DBPage: NextPage = () => {
 
     return (
         <AppLayout title={dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase"}>
-        <main className="maincontainer">
             {dbFragmentViewType === DBFragmentViewType.HOME && 
                 <DBHomeFragment /> }
             {dbFragmentViewType === DBFragmentViewType.SHOWDATA && mschema && mname && 
                 <DBShowDataFragment key={String(mschema)+String(mname)}/> }
-        </main>
         </AppLayout>
     )
 }

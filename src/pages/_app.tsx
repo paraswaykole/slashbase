@@ -15,6 +15,7 @@ import Constants from '../constants'
 import { getProjects } from '../redux/projectsSlice'
 import { getAllDBConnections } from '../redux/allDBConnectionsSlice'
 import { Toaster } from 'react-hot-toast'
+import { getConfig } from '../redux/configSlice'
 
 function SlashbaseApp({ Component, pageProps }: AppProps) {
   return <Provider store={store}>
@@ -48,6 +49,7 @@ const SlashbaseAppComponent = ({children}: any) => {
         dispatch(getProjects())
         dispatch(getAllDBConnections())
       }
+      dispatch(getConfig())
   }, [dispatch, isAuthenticated])
 
   // SPA redirectes (forcing index.html) (disabled-SSR)
