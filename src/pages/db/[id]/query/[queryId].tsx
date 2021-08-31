@@ -51,7 +51,7 @@ const DBQueryPage: NextPage = () => {
             }
             setQueryData(undefined)
         })()
-    }, [dispatch, router, queryId])
+    }, [dispatch, router, queryId, id])
 
     const runQuery = async (query: string, callback: ()=>void) => {
         const result = await apiService.runQuery(dbConnection!.id, query)

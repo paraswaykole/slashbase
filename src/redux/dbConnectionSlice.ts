@@ -111,7 +111,9 @@ export const dbConnectionSlice = createSlice({
       .addCase(getDBConnection.fulfilled, (state,  action) => {
         if (action.payload.new){
           state.dbDataModels = []
+          state.dbQueries = []
           state.isDBDataModelsFetched = false
+          state.isDBQueriesFetched = false
         }
         state.dbConnection = action.payload.dbConnection
       })
