@@ -39,12 +39,12 @@ const Sidebar = (_: SidebarPropType) => {
                         <p className="menu-label">
                             All Databases
                         </p>
-                        <ul className="menu-list">
+                        <ul className={"menu-list "+styles.menuList}>
                             {allDBConnections.map((dbConn: DBConnection) => {
                                 return (
                                     <li key={dbConn.id}>
                                         <Link href={Constants.APP_PATHS.DB.path} as={Constants.APP_PATHS.DB.path.replace('[id]', dbConn.id)}>
-                                            <a>{dbConn.name}</a>
+                                            <a title={dbConn.name}>{dbConn.name}</a>
                                         </Link>
                                     </li>
                                 )
@@ -57,15 +57,16 @@ const Sidebar = (_: SidebarPropType) => {
                         <p className="menu-label">
                             Data Models
                         </p>
-                        <ul className="menu-list">
+                        <ul className={"menu-list "+styles.menuList}>
                             {dbDataModels.map((dataModel: DBDataModel) => {
+                                const label = `${dataModel.schemaName}.${dataModel.name}`
                                 return (
                                     <li key={dataModel.schemaName+dataModel.name}>
                                         <Link 
                                             href={{pathname: Constants.APP_PATHS.DB.path, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
                                             as={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection!.id) + "?mschema="+dataModel.schemaName + "&mname="+dataModel.name}>
-                                            <a className={dataModel.schemaName == mschema && dataModel.name == mname ? 'is-active' : ''}>
-                                                {dataModel.schemaName}.{dataModel.name}
+                                            <a className={dataModel.schemaName == mschema && dataModel.name == mname ? 'is-active' : ''} title={label}>
+                                                {label}
                                             </a>
                                         </Link>
                                     </li>
@@ -75,14 +76,14 @@ const Sidebar = (_: SidebarPropType) => {
                         <p className="menu-label">
                             Queries
                         </p>
-                        <ul className="menu-list">
+                        <ul className={"menu-list "+styles.menuList}>
                             {dbQueries.map((dbQuery: DBQuery) => {
                                 return (
                                     <li key={dbQuery.id}>
                                         <Link 
                                             href={Constants.APP_PATHS.DB_QUERY.path} 
                                             as={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection!.id).replace('[queryId]', dbQuery.id)}>
-                                            <a className={queryId == dbQuery.id ? 'is-active' : ''}>
+                                            <a className={queryId == dbQuery.id ? 'is-active' : ''} title={dbQuery.name}>
                                                 {dbQuery.name}
                                             </a>
                                         </Link>
