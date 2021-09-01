@@ -37,7 +37,7 @@ const EditableCell = ({
         <div className="field has-addons">
             <div className="control is-expanded">
                 <input 
-                    className="input is-small" 
+                    className={"input is-small "+styles.cellinput} 
                     type="text"
                     placeholder={"Enter "+id}
                     value={value}
