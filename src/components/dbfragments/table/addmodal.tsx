@@ -52,7 +52,7 @@ const AddModal = ({queryData, dbConnection, mSchema, mName, onAddData, onClose}:
           <section className="modal-card-body">
               {queryData.columns.filter(col => col !== 'ctid').map(col => {
                   return (
-                    <div className="field">
+                    <div className="field" key={col}>
                         <label className="label">{col}</label>
                         <div className="control">
                             <input 

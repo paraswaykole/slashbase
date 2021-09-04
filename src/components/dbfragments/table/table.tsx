@@ -76,16 +76,8 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, heading, up
             hooks.visibleColumns.push(columns => [
                     {
                         id: 'selection',
-                        Header: ({ getToggleAllRowsSelectedProps }: any) => (
-                            <div>
-                                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-                            </div>
-                        ),
-                        Cell: ({ row }: any) => (
-                            <div>
-                                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-                            </div>
-                        ),
+                        Header: HeaderSelectionComponent,
+                        Cell: CellSelectionComponent,
                     },
                     ...columns,
                 ]
@@ -183,9 +175,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, heading, up
     )
 }
 
-const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, {
-    indeterminate: boolean,
-}>(
+const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, { indeterminate: boolean }>(
     ({ indeterminate, ...rest }, ref) => {
       const defaultRef = React.useRef()
       const resolvedRef: any = ref || defaultRef
@@ -200,8 +190,20 @@ const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, {
         </>
       )
     }
-  )
-  
+)
+IndeterminateCheckbox.displayName = 'IndeterminateCheckbox';
+
+const HeaderSelectionComponent = ({ getToggleAllRowsSelectedProps }: any) => (
+    <div>
+        <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+    </div>
+)
+
+const CellSelectionComponent = ({ row }: any) => (
+    <div>
+        <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    </div>
+)
 
 
 export default Table
