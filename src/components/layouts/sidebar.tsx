@@ -52,7 +52,7 @@ const Sidebar = (_: SidebarPropType) => {
                         </ul>
                     </React.Fragment>
                 }
-                {sidebarView === SidebarViewType.DATABASE &&
+                {sidebarView === SidebarViewType.DATABASE && dbConnection &&
                     <React.Fragment>
                         <i className="fas fa-database"/> {dbConnection?.name}
                         <p className="menu-label">
@@ -94,7 +94,7 @@ const Sidebar = (_: SidebarPropType) => {
                             <li>
                                 <Link 
                                     href={Constants.APP_PATHS.DB_QUERY.path} 
-                                    as={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection?.id ?? '').replace('[queryId]', 'new')}>
+                                    as={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection!.id).replace('[queryId]', 'new')}>
                                     <a className={ queryId === 'new' ? 'is-active' : ''}>
                                         <span className="icon">
                                             <i className="fas fa-plus-circle"></i>

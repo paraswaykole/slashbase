@@ -152,7 +152,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, heading, up
                 <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                     <thead>
                         {headerGroups.map(headerGroup => (
-                            <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+                            <tr {...headerGroup.getHeaderGroupProps()} key={"header"}>
                                 {headerGroup.headers.map(column => (
                                     <th {...column.getHeaderProps()} key={column.id}>
                                         {column.render('Header')}
