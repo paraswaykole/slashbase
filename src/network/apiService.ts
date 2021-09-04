@@ -67,6 +67,16 @@ const updateDBSingleData = async function(dbConnId: string, schemaName: string, 
     return result
 }
 
+const addDBData = async function(dbConnId: string, schemaName: string, mName: string, data: any): Promise<ApiResult<CTIDResponse>> {
+    const result: ApiResult<CTIDResponse> = await Request.apiInstance.post(`/query/data/${dbConnId}/add`, {schema: schemaName, name: mName, data}).then(res => res.data)
+    return result
+}
+
+const deleteDBData = async function(dbConnId: string, schemaName: string, mName: string, ctids: string[]): Promise<ApiResult<DBQueryResult>> {
+    const result: ApiResult<DBQueryResult> = await Request.apiInstance.post(`/query/data/${dbConnId}/delete`, {schema: schemaName, name: mName, ctids}).then(res => res.data)
+    return result
+}
+
 const saveDBQuery = async function(dbConnId: string, name: string, query: string, queryId: string): Promise<ApiResult<DBQuery>> {
     const result: ApiResult<DBQuery> = await Request.apiInstance.post(`/query/save/${dbConnId}`, {name, queryId, query}).then(res => res.data)
     return result
@@ -101,6 +111,8 @@ export default {
     addNewDBConn,
     addNewProjectMember,
     updateDBSingleData,
+    addDBData,
+    deleteDBData,
     saveDBQuery,
     getDBQueriesInDBConn,
     getSingleDBQuery,

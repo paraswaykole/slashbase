@@ -90,23 +90,35 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
         }
     }
 
+    const onDeleteRows = (indexes: number[]) => {
+        const filteredRows = queryData!.rows.filter((_,i) => !indexes.includes(i))     
+        const newQueryData: DBQueryData = {...queryData!, rows: filteredRows}
+        setQueryData(newQueryData)
+    }
+
+    const onAddData = (newData: any) => {
+        const updatedRows = [newData, ...queryData!.rows]   
+        const updateQueryData: DBQueryData = {...queryData!, rows: updatedRows}
+        setQueryData(updateQueryData)
+    }
+
     const queryOffsetRangeEnd = (queryData?.rows.length ?? 0) === queryLimit ? 
         queryOffset + queryLimit : queryOffset + (queryData?.rows.length ?? 0)
 
     return (
         <React.Fragment>
-            <h1>Showing {dataModel?.schemaName}.{dataModel?.name}</h1>
             { project && dbConnection && queryData && 
-                <div className={styles.tableContainer}>
-                    <Table 
-                        dbConnection={dbConnection} 
-                        isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
-                        queryData={queryData} 
-                        updateCellData={updateCellData}
-                        mSchema={String(mschema)}
-                        mName={String(mname)}
-                    />
-                </div> 
+                <Table 
+                    dbConnection={dbConnection} 
+                    isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
+                    queryData={queryData} 
+                    updateCellData={updateCellData}
+                    onDeleteRows={onDeleteRows}
+                    onAddData={onAddData}
+                    heading={`Showing ${dataModel?.schemaName}.${dataModel?.name}`}
+                    mSchema={String(mschema)}
+                    mName={String(mname)}
+                />
             }
             <br/><br/><br/>
             <div className={styles.bottomBar+(isShowingSidebar?' withsidebar':'')}>

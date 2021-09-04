@@ -96,6 +96,7 @@ const DBQueryPage: NextPage = () => {
                     mSchema={''}
                     mName={''}
                     updateCellData={()=>{}}
+                    onDeleteRows={()=>{}}
                     isEditable={false}/>
             }
             {queryResult && <span><b>Result of Query: </b>{queryResult.message}</span>}
