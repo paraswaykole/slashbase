@@ -67,6 +67,8 @@ func NewRouter() *gin.Engine {
 			queryGroup.GET("/get/:queryId", queryController.GetSingleDBQuery)
 			queryGroup.GET("/data/:dbConnId", queryController.GetData)
 			queryGroup.POST("/data/:dbConnId/single", queryController.UpdateSingleData)
+			queryGroup.POST("/data/:dbConnId/add", queryController.AddData)
+			queryGroup.POST("/data/:dbConnId/delete", queryController.DeleteData)
 			queryGroup.GET("/datamodels/:dbConnId", queryController.GetDataModels)
 		}
 	}

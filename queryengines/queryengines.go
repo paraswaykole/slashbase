@@ -47,6 +47,14 @@ func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name strin
 	return postgresQueryEngine.UpdateSingleData(dbConn, schemaName, name, ctid, columnName, value)
 }
 
+func AddData(dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}) (map[string]interface{}, error) {
+	return postgresQueryEngine.AddData(dbConn, schemaName, name, data)
+}
+
+func DeleteData(dbConn *models.DBConnection, schemaName string, name string, ctids []string) (map[string]interface{}, error) {
+	return postgresQueryEngine.DeleteData(dbConn, schemaName, name, ctids)
+}
+
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
 }

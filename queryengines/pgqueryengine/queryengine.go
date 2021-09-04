@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"slashbase.com/backend/models"
 	"slashbase.com/backend/models/sbsql"
@@ -91,4 +92,32 @@ func (pgqe *PostgresQueryEngine) UpdateSingleData(dbConn *models.DBConnection, s
 		"ctid": ctID,
 	}
 	return data, err
+}
+
+func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema string, name string, data map[string]interface{}) (map[string]interface{}, error) {
+	keys := []string{}
+	values := []string{}
+	for key, value := range data {
+		keys = append(keys, key)
+		val := value.(string)
+		values = append(values, val)
+	}
+	keysStr := strings.Join(keys, ", ")
+	valuesStr := strings.Join(values, "','")
+	query := fmt.Sprintf(`INSERT INTO "%s"."%s"(%s) VALUES('%s') RETURNING ctid;`, schema, name, keysStr, valuesStr)
+	rData, err := pgqe.RunQuery(dbConn, query)
+	if err != nil {
+		return nil, err
+	}
+	ctID := rData["rows"].([]map[string]interface{})[0]["ctid"]
+	rData = map[string]interface{}{
+		"ctid": ctID,
+	}
+	return rData, err
+}
+
+func (pgqe *PostgresQueryEngine) DeleteData(dbConn *models.DBConnection, schema string, name string, ctids []string) (map[string]interface{}, error) {
+	ctidsStr := strings.Join(ctids, "', '")
+	query := fmt.Sprintf(`DELETE FROM "%s"."%s" WHERE ctid IN ('%s');`, schema, name, ctidsStr)
+	return pgqe.RunQuery(dbConn, query)
 }

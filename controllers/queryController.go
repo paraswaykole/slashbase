@@ -145,6 +145,80 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 	})
 }
 
+func (qc QueryController) AddData(c *gin.Context) {
+	dbConnId := c.Param("dbConnId")
+
+	var addBody struct {
+		Schema string                 `json:"schema"`
+		Name   string                 `json:"name"`
+		Data   map[string]interface{} `json:"data"`
+	}
+	c.BindJSON(&addBody)
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+
+	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+		return
+	}
+
+	data, err := queryengines.AddData(dbConn, addBody.Schema, addBody.Name, addBody.Data)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    data,
+	})
+}
+
+func (qc QueryController) DeleteData(c *gin.Context) {
+	dbConnId := c.Param("dbConnId")
+
+	var deleteBody struct {
+		Schema string   `json:"schema"`
+		Name   string   `json:"name"`
+		CTIDs  []string `json:"ctids"`
+	}
+	c.BindJSON(&deleteBody)
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+
+	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+		return
+	}
+
+	data, err := queryengines.DeleteData(dbConn, deleteBody.Schema, deleteBody.Name, deleteBody.CTIDs)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    data,
+	})
+}
+
 func (qc QueryController) UpdateSingleData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 
