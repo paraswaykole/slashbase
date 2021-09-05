@@ -62,9 +62,22 @@ const Header = (_: HeaderPropType) => {
 
     return (
         <header className={styles.header}>
-            <button className={"button is-dark "+[styles.home, styles.btn].join(' ')} onClick={toggleSidebar}>
-                <i className={`fas ${isShowingSidebar ? 'fa-angle-double-left' : 'fa-bars'}`}/>
-            </button>
+            <div className={styles.leftBtns}>
+                <Link href={Constants.APP_PATHS.HOME.path} as={Constants.APP_PATHS.HOME.path}>
+                    <a>
+                        <button className={"button is-dark "+[styles.btn].join(' ')}>
+                            <span className="icon">
+                                <i className={`fas fa-home`}/>
+                            </span>
+                        </button>
+                    </a>
+                </Link>
+                <button className={"button is-dark "+[styles.btn].join(' ')} onClick={toggleSidebar}>
+                    <i className={`fas ${isShowingSidebar ? 'fa-angle-double-left' : 'fa-bars'}`}/>
+                    <span className={styles.btnMsg}>&nbsp;&nbsp;{isShowingSidebar?'hide':'show'} sidebar</span>
+                </button>
+            </div>
+            <div/>{/*this is is to take position of leftBtn as it is absolute*/}
             <div className={styles.headerCenter}>
                 <div className={`dropdown${isShowingNavDropDown ? ' is-active':''}`}>
                     <div className="dropdown-trigger">
