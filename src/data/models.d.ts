@@ -45,6 +45,14 @@ export interface DBConnection {
 export interface DBDataModel {
     name: string
     schemaName: string|null
+    fields?: Array<{
+        name: string
+        type: string
+        isPrimary: boolean
+        isNullable: boolean
+        charMaxLength: number|null,
+        default: string|null
+    }>
 }
 
 export interface DBQueryData {

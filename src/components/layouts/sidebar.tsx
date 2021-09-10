@@ -23,7 +23,7 @@ const Sidebar = (_: SidebarPropType) => {
     const { mschema, mname, queryId } = router.query
 
     let sidebarView: SidebarViewType = 
-        (router.pathname === Constants.APP_PATHS.DB.path || router.pathname === Constants.APP_PATHS.DB_QUERY.path) ?
+        (router.pathname === Constants.APP_PATHS.DB.path || router.pathname === Constants.APP_PATHS.DB_PATH.path || router.pathname === Constants.APP_PATHS.DB_QUERY.path) ?
         SidebarViewType.DATABASE : SidebarViewType.GENERIC
     
     const allDBConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
@@ -64,8 +64,8 @@ const Sidebar = (_: SidebarPropType) => {
                                 return (
                                     <li key={dataModel.schemaName+dataModel.name}>
                                         <Link 
-                                            href={{pathname: Constants.APP_PATHS.DB.path, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
-                                            as={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection!.id) + "?mschema="+dataModel.schemaName + "&mname="+dataModel.name}>
+                                            href={{pathname: Constants.APP_PATHS.DB_PATH.path, query: {mschema: dataModel.schemaName, mname: dataModel.name}}} 
+                                            as={Constants.APP_PATHS.DB_PATH.path.replace('[id]', dbConnection!.id).replace('[path]', 'data') + "?mschema="+dataModel.schemaName + "&mname="+dataModel.name}>
                                             <a className={dataModel.schemaName == mschema && dataModel.name == mname ? 'is-active' : ''} title={label}>
                                                 {label}
                                             </a>

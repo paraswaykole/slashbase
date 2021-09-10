@@ -110,3 +110,9 @@ h6 {
   border-left: 1px solid #000000 !important;
   border-right: 1px solid #000000 !important;
 }
+
+.fa-rotate-315 {
+  -webkit-transform: rotate(315deg);
+  -moz-transform: rotate(315deg);
+  transform: rotate(315deg);
+}

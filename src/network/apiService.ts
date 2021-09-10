@@ -53,7 +53,12 @@ const getDBConnectionsByProject = async function(projectId: string): Promise<Api
 }
 
 const getDBDataModelsByConnectionId = async function(dbConnId: string): Promise<ApiResult<Array<DBDataModel>>> {
-    const result: ApiResult<Array<DBDataModel>> = await Request.apiInstance.get(`/query/datamodels/${dbConnId}`).then(res => res.data)
+    const result: ApiResult<Array<DBDataModel>> = await Request.apiInstance.get(`/query/datamodel/all/${dbConnId}`).then(res => res.data)
+    return result
+}
+
+const getDBSingleDataModelByConnectionId = async function(dbConnId: string, schemaName: string, mName: string,): Promise<ApiResult<DBDataModel>> {
+    const result: ApiResult<DBDataModel> = await Request.apiInstance.get(`/query/datamodel/single/${dbConnId}?schema=${schemaName}&name=${mName}`).then(res => res.data)
     return result
 }
 
@@ -107,6 +112,7 @@ export default {
     getSingleDBConnection,
     getDBConnectionsByProject,
     getDBDataModelsByConnectionId,
+    getDBSingleDataModelByConnectionId,
     getDBDataInDataModel,
     addNewDBConn,
     addNewProjectMember,
