@@ -21,7 +21,7 @@ const LoginPage: NextPage = ()=> {
         try {
             await dispatch(loginUser({email: userEmail, password: userPassword})).unwrap()
             router.replace(Constants.APP_PATHS.HOME.path)            
-        } catch (e){
+        } catch (e: any){
             setUserPassword('')
             setLoginError(e)
         }
