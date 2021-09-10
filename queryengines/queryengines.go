@@ -31,12 +31,40 @@ func RunQuery(dbConn *models.DBConnection, query string, userRole string) (map[s
 	return postgresQueryEngine.RunQuery(dbConn, query)
 }
 
-func GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) {
+func GetDataModels(dbConn *models.DBConnection) ([]*DBDataModel, error) {
 	data, err := postgresQueryEngine.GetDataModels(dbConn)
 	if err != nil {
-		return data, err
+		return nil, err
 	}
-	return data, nil
+	dataModels := []*DBDataModel{}
+	for _, table := range data {
+		view := BuildDBDataModel(dbConn, table)
+		if view != nil {
+			dataModels = append(dataModels, view)
+		}
+	}
+	return dataModels, nil
+}
+
+func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name string) (*DBDataModel, error) {
+	fieldsData, err := postgresQueryEngine.GetSingleDataModelFields(dbConn, schemaName, name)
+	if err != nil {
+		return nil, err
+	}
+	allFields := []DBDataModelField{}
+	for _, field := range fieldsData {
+		fieldView := BuildDBDataModelField(dbConn, field)
+		if fieldView != nil {
+			allFields = append(allFields, *fieldView)
+		}
+	}
+
+	dataModels := DBDataModel{
+		SchemaName: schemaName,
+		Name:       name,
+		Fields:     allFields,
+	}
+	return &dataModels, nil
 }
 
 func GetData(dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {

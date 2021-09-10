@@ -60,8 +60,36 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 	}
 }
 
-func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) (map[string]interface{}, error) {
-	return pgqe.RunQuery(dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
+func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) ([]map[string]interface{}, error) {
+	data, err := pgqe.RunQuery(dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
+	if err != nil {
+		return nil, err
+	}
+	rdata := data["rows"].([]map[string]interface{})
+	return rdata, nil
+}
+
+func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
+	query := fmt.Sprintf(`
+		SELECT *
+		FROM
+		(SELECT *
+		FROM information_schema.columns
+		WHERE table_schema = '%s' AND table_name = '%s') AS t1
+		LEFT JOIN
+		(SELECT conname,
+				contype,
+				unnest(conkey) AS conkey,
+				pg_get_constraintdef(oid, TRUE) AS pretty_source
+		FROM pg_constraint
+		WHERE conrelid = '"%s"."%s"'::regclass AND contype = 'p') AS t2 ON t1.ordinal_position = t2.conkey order by t1.ordinal_position;`,
+		schema, name, schema, name)
+	data, err := pgqe.RunQuery(dbConn, query)
+	if err != nil {
+		return nil, err
+	}
+	rdata := data["rows"].([]map[string]interface{})
+	return rdata, err
 }
 
 func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
