@@ -12,7 +12,7 @@ type DBQueryLog struct {
 	CreatedAt      time.Time `gorm:"autoCreateTime"`
 	UpdatedAt      time.Time `gorm:"autoUpdateTime"`
 
-	User User `gorm:"foreignkey:UserID"`
+	User User `gorm:"foreignkey:user_id"`
 }
 
 func NewQueryLog(userID string, dbConnectionID string, query string) *DBQueryLog {
