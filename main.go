@@ -29,6 +29,10 @@ func main() {
 }
 
 func autoMigrate() {
+	err := db.GetDB().Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`).Error
+	if err != nil {
+		os.Exit(1)
+	}
 	db.GetDB().AutoMigrate(
 		&models.User{},
 		&models.UserSession{},
@@ -38,7 +42,7 @@ func autoMigrate() {
 		&models.DBQuery{},
 		&models.DBQueryLog{},
 	)
-	err := db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
+	err = db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
 	if err != nil {
 		os.Exit(1)
 	}
