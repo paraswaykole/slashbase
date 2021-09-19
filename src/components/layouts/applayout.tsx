@@ -22,7 +22,7 @@ const AppLayout: FunctionComponent<PageLayoutPropType> = ({title, children}) => 
                 <Header />    
                 <div className="appcontent">
                     { isShowingSidebar && <Sidebar /> }
-                    <main className={`maincontainer${isShowingSidebar?' withsidebar':''}`}>
+                    <main id="mainContainer" className={`maincontainer${isShowingSidebar?' withsidebar':''}`}>
                         { children }
                     </main>
                 </div>

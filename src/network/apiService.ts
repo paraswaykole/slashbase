@@ -1,5 +1,5 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult } from '../data/models'
+import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult } from '../data/models'
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 
 const loginUser = async function(email: string, password: string): Promise<ApiResult<UserSession>> {
@@ -87,13 +87,18 @@ const saveDBQuery = async function(dbConnId: string, name: string, query: string
     return result
 }
 
-const getDBQueriesInDBConn = async function(dbConnId: string,): Promise<ApiResult<DBQuery[]>> {
+const getDBQueriesInDBConn = async function(dbConnId: string): Promise<ApiResult<DBQuery[]>> {
     const result: ApiResult<DBQuery[]> = await Request.apiInstance.get(`/query/getall/${dbConnId}`).then(res => res.data)
     return result
 }
 
-const getSingleDBQuery = async function(queryId: string,): Promise<ApiResult<DBQuery>> {
+const getSingleDBQuery = async function(queryId: string): Promise<ApiResult<DBQuery>> {
     const result: ApiResult<DBQuery> = await Request.apiInstance.get(`/query/get/${queryId}`).then(res => res.data)
+    return result
+}
+
+const getDBHistory = async function(queryId: string, before?: number): Promise<PaginatedApiResult<DBQueryLog, number>> {
+    const result: PaginatedApiResult<DBQueryLog, number> = await Request.apiInstance.get(`/query/history/${queryId}${before?`?before=${before}`:''}`).then(res => res.data)
     return result
 }
 
@@ -122,5 +127,6 @@ export default {
     saveDBQuery,
     getDBQueriesInDBConn,
     getSingleDBQuery,
+    getDBHistory,
     runQuery
 }

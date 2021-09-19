@@ -116,3 +116,7 @@ h6 {
   -moz-transform: rotate(315deg);
   transform: rotate(315deg);
 }
+
+.nolink{
+  color: inherit;
+}

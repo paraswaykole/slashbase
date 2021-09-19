@@ -23,7 +23,10 @@ const Sidebar = (_: SidebarPropType) => {
     const { mschema, mname, queryId } = router.query
 
     let sidebarView: SidebarViewType = 
-        (router.pathname === Constants.APP_PATHS.DB.path || router.pathname === Constants.APP_PATHS.DB_PATH.path || router.pathname === Constants.APP_PATHS.DB_QUERY.path) ?
+        (router.pathname === Constants.APP_PATHS.DB.path 
+            || router.pathname === Constants.APP_PATHS.DB_PATH.path 
+            || router.pathname === Constants.APP_PATHS.DB_QUERY.path
+            || router.pathname === Constants.APP_PATHS.DB_HISTORY.path) ?
         SidebarViewType.DATABASE : SidebarViewType.GENERIC
     
     const allDBConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
@@ -54,7 +57,9 @@ const Sidebar = (_: SidebarPropType) => {
                 }
                 {sidebarView === SidebarViewType.DATABASE && dbConnection &&
                     <React.Fragment>
-                        <i className="fas fa-database"/> {dbConnection?.name}
+                         <Link href={Constants.APP_PATHS.DB.path} as={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection?.id)}>
+                             <a title={dbConnection.name} className="nolink"><i className="fas fa-database"/> {dbConnection?.name}</a>
+                        </Link>
                         <p className="menu-label">
                             Data Models
                         </p>

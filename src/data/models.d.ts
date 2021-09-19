@@ -50,14 +50,14 @@ export interface DBDataModel {
         type: string
         isPrimary: boolean
         isNullable: boolean
-        charMaxLength: number|null,
+        charMaxLength: number|null
         default: string|null
     }>
 }
 
 export interface DBQueryData {
-    columns: string[],
-    rows: any[],
+    columns: string[]
+    rows: any[]
     count?: number
 }
 
@@ -67,15 +67,32 @@ export interface DBQueryResult {
 
 export interface DBQuery {
     id: string
-    name: string,
-    query: string,
-    dbConnectionId: string,
+    name: string
+    query: string
+    dbConnectionId: string
+}
+
+export interface DBQueryLog {
+    id: string
+    query: string
+    user: User
+    dbConnectionId: string
+    createdAt: string
 }
 
 // Result Models
 
 export interface ApiResult<T> { 
     data: T
+    success: boolean
+    error?: string
+}
+
+export interface PaginatedApiResult<T, N> {
+    data: {
+        list: T[]
+        next: N
+    }
     success: boolean
     error?: string
 }
