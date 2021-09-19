@@ -15,7 +15,7 @@ func InitQueryEngines() {
 	postgresQueryEngine = pgqueryengine.InitPostgresQueryEngine()
 }
 
-func RunQuery(dbConn *models.DBConnection, query string, userRole string) (map[string]interface{}, error) {
+func RunQuery(user *models.User, dbConn *models.DBConnection, query string, userRole string) (map[string]interface{}, error) {
 	queryType := pgxutils.GetPSQLQueryType(query)
 	isAllowed := false
 	if queryType == pgxutils.QUERY_READ && utils.ContainsString([]string{models.ROLE_ANALYST, models.ROLE_ADMIN, models.ROLE_DEVELOPER}, userRole) {
@@ -28,11 +28,11 @@ func RunQuery(dbConn *models.DBConnection, query string, userRole string) (map[s
 	if !isAllowed {
 		return nil, errors.New("not allowed")
 	}
-	return postgresQueryEngine.RunQuery(dbConn, query)
+	return postgresQueryEngine.RunQuery(user, dbConn, query)
 }
 
-func GetDataModels(dbConn *models.DBConnection) ([]*DBDataModel, error) {
-	data, err := postgresQueryEngine.GetDataModels(dbConn)
+func GetDataModels(user *models.User, dbConn *models.DBConnection) ([]*DBDataModel, error) {
+	data, err := postgresQueryEngine.GetDataModels(user, dbConn)
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +46,8 @@ func GetDataModels(dbConn *models.DBConnection) ([]*DBDataModel, error) {
 	return dataModels, nil
 }
 
-func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name string) (*DBDataModel, error) {
-	fieldsData, err := postgresQueryEngine.GetSingleDataModelFields(dbConn, schemaName, name)
+func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaName string, name string) (*DBDataModel, error) {
+	fieldsData, err := postgresQueryEngine.GetSingleDataModelFields(user, dbConn, schemaName, name)
 	if err != nil {
 		return nil, err
 	}
@@ -67,20 +67,20 @@ func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name str
 	return &dataModels, nil
 }
 
-func GetData(dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
-	return postgresQueryEngine.GetData(dbConn, schemaName, name, limit, offset, fetchCount)
+func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
+	return postgresQueryEngine.GetData(user, dbConn, schemaName, name, limit, offset, fetchCount)
 }
 
-func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name string, ctid string, columnName, value string) (map[string]interface{}, error) {
-	return postgresQueryEngine.UpdateSingleData(dbConn, schemaName, name, ctid, columnName, value)
+func UpdateSingleData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctid string, columnName, value string) (map[string]interface{}, error) {
+	return postgresQueryEngine.UpdateSingleData(user, dbConn, schemaName, name, ctid, columnName, value)
 }
 
-func AddData(dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}) (map[string]interface{}, error) {
-	return postgresQueryEngine.AddData(dbConn, schemaName, name, data)
+func AddData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}) (map[string]interface{}, error) {
+	return postgresQueryEngine.AddData(user, dbConn, schemaName, name, data)
 }
 
-func DeleteData(dbConn *models.DBConnection, schemaName string, name string, ctids []string) (map[string]interface{}, error) {
-	return postgresQueryEngine.DeleteData(dbConn, schemaName, name, ctids)
+func DeleteData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctids []string) (map[string]interface{}, error) {
+	return postgresQueryEngine.DeleteData(user, dbConn, schemaName, name, ctids)
 }
 
 func RemoveUnusedConnections() {

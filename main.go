@@ -36,6 +36,7 @@ func autoMigrate() {
 		&models.ProjectMember{},
 		&models.DBConnection{},
 		&models.DBQuery{},
+		&models.DBQueryLog{},
 	)
 	err := db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
 	if err != nil {

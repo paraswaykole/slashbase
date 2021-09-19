@@ -6,11 +6,14 @@ import (
 	"strconv"
 	"strings"
 
+	"slashbase.com/backend/daos"
 	"slashbase.com/backend/models"
 	"slashbase.com/backend/models/sbsql"
 	"slashbase.com/backend/queryengines/pgqueryengine/pgxutils"
 	"slashbase.com/backend/sshtunnel"
 )
+
+var dbQueryLogDao daos.DBQueryLogDao
 
 type PostgresQueryEngine struct {
 	openConnections map[string]pgxConnPoolInstance
@@ -22,7 +25,7 @@ func InitPostgresQueryEngine() *PostgresQueryEngine {
 	}
 }
 
-func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
 		sshTun := sshtunnel.GetSSHTunnel(dbConn.ID, dbConn.UseSSH,
@@ -37,6 +40,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 	if err != nil {
 		return nil, err
 	}
+	queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
 
 	queryType := pgxutils.GetPSQLQueryType(query)
 	if queryType == pgxutils.QUERY_READ {
@@ -45,23 +49,24 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 			return nil, err
 		}
 		columns, rowsData := pgxutils.PgSqlRowsToJson(rows)
+		go dbQueryLogDao.CreateDBQueryLog(queryLog)
 		return map[string]interface{}{
 			"columns": columns,
 			"rows":    rowsData,
 		}, nil
-	} else {
-		cmdTag, err := conn.Exec(context.Background(), query)
-		if err != nil {
-			return nil, err
-		}
-		return map[string]interface{}{
-			"message": cmdTag.String(),
-		}, nil
 	}
+	cmdTag, err := conn.Exec(context.Background(), query)
+	if err != nil {
+		return nil, err
+	}
+	go dbQueryLogDao.CreateDBQueryLog(queryLog)
+	return map[string]interface{}{
+		"message": cmdTag.String(),
+	}, nil
 }
 
-func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) ([]map[string]interface{}, error) {
-	data, err := pgqe.RunQuery(dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
+func (pgqe *PostgresQueryEngine) GetDataModels(user *models.User, dbConn *models.DBConnection) ([]map[string]interface{}, error) {
+	data, err := pgqe.RunQuery(user, dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +74,7 @@ func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection) ([]m
 	return rdata, nil
 }
 
-func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(user *models.User, dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`
 		SELECT *
 		FROM
@@ -84,7 +89,7 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(dbConn *models.DBConne
 		FROM pg_constraint
 		WHERE conrelid = '"%s"."%s"'::regclass AND contype = 'p') AS t2 ON t1.ordinal_position = t2.conkey order by t1.ordinal_position;`,
 		schema, name, schema, name)
-	data, err := pgqe.RunQuery(dbConn, query)
+	data, err := pgqe.RunQuery(user, dbConn, query)
 	if err != nil {
 		return nil, err
 	}
@@ -92,15 +97,15 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(dbConn *models.DBConne
 	return rdata, err
 }
 
-func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`SELECT ctid, * FROM "%s"."%s" LIMIT %d OFFSET %d;`, schema, name, limit, offset)
-	data, err := pgqe.RunQuery(dbConn, query)
+	data, err := pgqe.RunQuery(user, dbConn, query)
 	if err != nil {
 		return nil, err
 	}
 	if fetchCount {
 		countQuery := fmt.Sprintf(`SELECT count(*) FROM "%s"."%s";`, schema, name)
-		countData, err := pgqe.RunQuery(dbConn, countQuery)
+		countData, err := pgqe.RunQuery(user, dbConn, countQuery)
 		if err != nil {
 			return nil, err
 		}
@@ -109,9 +114,9 @@ func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema str
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) UpdateSingleData(dbConn *models.DBConnection, schema string, name string, ctid string, columnName string, value string) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) UpdateSingleData(user *models.User, dbConn *models.DBConnection, schema string, name string, ctid string, columnName string, value string) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`UPDATE "%s"."%s" SET "%s" = '%s' WHERE ctid = '%s' RETURNING ctid;`, schema, name, columnName, value, ctid)
-	data, err := pgqe.RunQuery(dbConn, query)
+	data, err := pgqe.RunQuery(user, dbConn, query)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +127,7 @@ func (pgqe *PostgresQueryEngine) UpdateSingleData(dbConn *models.DBConnection, s
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema string, name string, data map[string]interface{}) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) AddData(user *models.User, dbConn *models.DBConnection, schema string, name string, data map[string]interface{}) (map[string]interface{}, error) {
 	keys := []string{}
 	values := []string{}
 	for key, value := range data {
@@ -133,7 +138,7 @@ func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema str
 	keysStr := strings.Join(keys, ", ")
 	valuesStr := strings.Join(values, "','")
 	query := fmt.Sprintf(`INSERT INTO "%s"."%s"(%s) VALUES('%s') RETURNING ctid;`, schema, name, keysStr, valuesStr)
-	rData, err := pgqe.RunQuery(dbConn, query)
+	rData, err := pgqe.RunQuery(user, dbConn, query)
 	if err != nil {
 		return nil, err
 	}
@@ -144,8 +149,8 @@ func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema str
 	return rData, err
 }
 
-func (pgqe *PostgresQueryEngine) DeleteData(dbConn *models.DBConnection, schema string, name string, ctids []string) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) DeleteData(user *models.User, dbConn *models.DBConnection, schema string, name string, ctids []string) (map[string]interface{}, error) {
 	ctidsStr := strings.Join(ctids, "', '")
 	query := fmt.Sprintf(`DELETE FROM "%s"."%s" WHERE ctid IN ('%s');`, schema, name, ctidsStr)
-	return pgqe.RunQuery(dbConn, query)
+	return pgqe.RunQuery(user, dbConn, query)
 }

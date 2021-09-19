@@ -9,7 +9,7 @@ type DBQuery struct {
 	Name           string    `gorm:"not null"`
 	Query          string    `gorm:"not null"`
 	CreatedBy      string    `gorm:"not null"`
-	DBConnectionID string    `gorm:"not null"`
+	DBConnectionID string    `gorm:"type:uuid;not null"`
 	CreatedAt      time.Time `gorm:"autoCreateTime"`
 	UpdatedAt      time.Time `gorm:"autoUpdateTime"`
 

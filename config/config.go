@@ -23,6 +23,10 @@ func Init(env string) {
 	}
 }
 
+const (
+	PAGINATION_COUNT = 20
+)
+
 // IsLive gives if the current environment is production
 func IsLive() bool {
 	return config.GetString("name") == "prod"

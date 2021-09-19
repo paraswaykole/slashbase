@@ -4,8 +4,10 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"slashbase.com/backend/config"
 	"slashbase.com/backend/daos"
 	"slashbase.com/backend/middlewares"
 	"slashbase.com/backend/models"
@@ -17,6 +19,7 @@ import (
 type QueryController struct{}
 
 var dbQueryDao daos.DBQueryDao
+var dbQueryLogDao daos.DBQueryLogDao
 
 func (qc QueryController) RunQuery(c *gin.Context) {
 	var runBody struct {
@@ -24,6 +27,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		Query          string `json:"query"`
 	}
 	c.BindJSON(&runBody)
+	authUser := middlewares.GetAuthUser(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(runBody.DBConnectionID)
 	if err != nil {
@@ -43,7 +47,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.RunQuery(dbConn, runBody.Query, authUserProjectMember.Role)
+	data, err := queryengines.RunQuery(authUser, dbConn, runBody.Query, authUserProjectMember.Role)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -69,7 +73,7 @@ func (qc QueryController) GetData(c *gin.Context) {
 	if err != nil {
 		offset = int64(0)
 	}
-
+	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
@@ -88,7 +92,7 @@ func (qc QueryController) GetData(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.GetData(dbConn, schema, name, limit, offset, fetchCount)
+	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -104,6 +108,7 @@ func (qc QueryController) GetData(c *gin.Context) {
 
 func (qc QueryController) GetDataModels(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
+	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
@@ -122,7 +127,7 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 		return
 	}
 
-	dataModels, err := queryengines.GetDataModels(dbConn)
+	dataModels, err := queryengines.GetDataModels(authUser, dbConn)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -142,7 +147,7 @@ func (qc QueryController) GetSingleDataModel(c *gin.Context) {
 
 	schema := c.Query("schema")
 	name := c.Query("name")
-
+	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
@@ -161,7 +166,7 @@ func (qc QueryController) GetSingleDataModel(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.GetSingleDataModel(dbConn, schema, name)
+	data, err := queryengines.GetSingleDataModel(authUser, dbConn, schema, name)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -177,13 +182,13 @@ func (qc QueryController) GetSingleDataModel(c *gin.Context) {
 
 func (qc QueryController) AddData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-
 	var addBody struct {
 		Schema string                 `json:"schema"`
 		Name   string                 `json:"name"`
 		Data   map[string]interface{} `json:"data"`
 	}
 	c.BindJSON(&addBody)
+	authUser := middlewares.GetAuthUser(c)
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
@@ -198,7 +203,7 @@ func (qc QueryController) AddData(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.AddData(dbConn, addBody.Schema, addBody.Name, addBody.Data)
+	data, err := queryengines.AddData(authUser, dbConn, addBody.Schema, addBody.Name, addBody.Data)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -214,7 +219,7 @@ func (qc QueryController) AddData(c *gin.Context) {
 
 func (qc QueryController) DeleteData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-
+	authUser := middlewares.GetAuthUser(c)
 	var deleteBody struct {
 		Schema string   `json:"schema"`
 		Name   string   `json:"name"`
@@ -235,7 +240,7 @@ func (qc QueryController) DeleteData(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.DeleteData(dbConn, deleteBody.Schema, deleteBody.Name, deleteBody.CTIDs)
+	data, err := queryengines.DeleteData(authUser, dbConn, deleteBody.Schema, deleteBody.Name, deleteBody.CTIDs)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -251,7 +256,7 @@ func (qc QueryController) DeleteData(c *gin.Context) {
 
 func (qc QueryController) UpdateSingleData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-
+	authUser := middlewares.GetAuthUser(c)
 	var updateBody struct {
 		Schema     string `json:"schema"`
 		Name       string `json:"name"`
@@ -274,7 +279,7 @@ func (qc QueryController) UpdateSingleData(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.UpdateSingleData(dbConn, updateBody.Schema, updateBody.Name, updateBody.CTID, updateBody.ColumnName, updateBody.Value)
+	data, err := queryengines.UpdateSingleData(authUser, dbConn, updateBody.Schema, updateBody.Name, updateBody.CTID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -413,5 +418,67 @@ func (qc QueryController) GetSingleDBQuery(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    views.BuildDBQueryView(dbQuery),
+	})
+}
+
+func (qc QueryController) GetQueryHistoryInDBConnection(c *gin.Context) {
+	dbConnID := c.Param("dbConnId")
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+
+	beforeInt, err := strconv.ParseInt(c.Query("before"), 10, 64)
+	var before time.Time
+	if err != nil {
+		before = time.Now()
+	} else {
+		before = utils.UnixNanoToTime(beforeInt)
+	}
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+		return
+	}
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   errors.New("not allowed"),
+		})
+		return
+	}
+
+	authUserProjectMember, err := middlewares.GetAuthUserProjectMemberForProject(c, dbConn.ProjectID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	dbQueryLogs, err := dbQueryLogDao.GetDBQueryLogsDBConnID(dbConnID, authUserProjectMember, before)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	dbQueryLogViews := []views.DBQueryLogView{}
+	var next int64 = -1
+	for i, dbQueryLog := range dbQueryLogs {
+		dbQueryLogViews = append(dbQueryLogViews, *views.BuildDBQueryLogView(dbQueryLog))
+		if i == config.PAGINATION_COUNT-1 {
+			next = dbQueryLog.CreatedAt.UnixNano()
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"list": dbQueryLogViews,
+			"next": next,
+		},
 	})
 }
