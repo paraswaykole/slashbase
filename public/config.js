@@ -1,3 +1,3 @@
 window.CONFIG={
-    API_HOST: "http://localhost:4201"
+    API_HOST: "http://localhost:3001"
 }
