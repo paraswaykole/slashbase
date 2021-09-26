@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"slashbase.com/backend/config"
-	"slashbase.com/backend/db"
-	"slashbase.com/backend/models"
-	"slashbase.com/backend/queryengines"
-	"slashbase.com/backend/server"
-	"slashbase.com/backend/sshtunnel"
+	"slashbase.com/backend/src/config"
+	"slashbase.com/backend/src/db"
+	"slashbase.com/backend/src/models"
+	"slashbase.com/backend/src/queryengines"
+	"slashbase.com/backend/src/server"
+	"slashbase.com/backend/src/sshtunnel"
 )
 
 func main() {
