@@ -13,7 +13,7 @@ interface ConstantsType {
 const Constants: ConstantsType = {
     API_HOST: String(process.env.API_HOST),
     API_URL: process.env.API_HOST+"/api/v1",
-    IS_LIVE: Boolean(process.env.IS_LIVE),
+    IS_LIVE: Boolean(process.env.NEXT_PUBLIC_ENV_NAME === 'production'),
 
 
     APP_PATHS: {
