@@ -16,9 +16,11 @@ declare global {
     }
 }
 
+const API_HOST = String(global.CONFIG?.API_HOST ?? process.env.API_HOST)
+
 const Constants: ConstantsType = {
-    API_HOST: String(global.CONFIG.API_HOST),
-    API_URL: global.CONFIG.API_HOST+"/api/v1",
+    API_HOST: API_HOST,
+    API_URL: API_HOST+"/api/v1",
     IS_LIVE: Boolean(process.env.NEXT_PUBLIC_ENV_NAME === 'production'),
 
 
