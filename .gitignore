@@ -12,8 +12,6 @@ __debug_bin
 *.dll
 *.so
 *.dylib
-backend
-server
 
 # Test binary, built with `go test -c`
 *.test
@@ -23,3 +21,8 @@ server
 
 # Src
 src/config/*.yaml
+
+# Build
+backend
+server
+build/
