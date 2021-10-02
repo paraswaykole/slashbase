@@ -1,6 +1,4 @@
 interface ConstantsType {
-    API_HOST: string
-    API_URL: string
     IS_LIVE: boolean
     APP_PATHS: {
         [key: string]: {
@@ -16,14 +14,11 @@ declare global {
     }
 }
 
-const API_HOST = String(global.CONFIG?.API_HOST ?? process.env.API_HOST)
+const LOCAL='local'
+const PRODUCTION = 'production'
 
 const Constants: ConstantsType = {
-    API_HOST: API_HOST,
-    API_URL: API_HOST+"/api/v1",
-    IS_LIVE: Boolean(process.env.NEXT_PUBLIC_ENV_NAME === 'production'),
-
-
+    IS_LIVE: Boolean(process.env.NEXT_PUBLIC_ENV_NAME === PRODUCTION),
     APP_PATHS: {
         LOGIN: {
             path: '/login',
@@ -74,3 +69,11 @@ const Constants: ConstantsType = {
 }
 
 export default Constants
+
+export const GetAPIConfig = function () {
+    const API_HOST = String(process.env.NEXT_PUBLIC_ENV_NAME === PRODUCTION ? global.CONFIG?.API_HOST : process.env.NEXT_PUBLIC_API_HOST)
+    return {
+        API_HOST: API_HOST,
+        API_URL: API_HOST + "/api/v1"
+    }
+}
