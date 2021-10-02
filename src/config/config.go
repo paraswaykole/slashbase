@@ -18,6 +18,8 @@ func Init(env string) {
 	if env != ENV_PRODUCTION {
 		config.AddConfigPath("../src/config/")
 		config.AddConfigPath("src/config/")
+	} else {
+		config.AddConfigPath(".")
 	}
 	err = config.ReadInConfig()
 	if err != nil {
@@ -70,4 +72,11 @@ func GetApiHost() string {
 
 func GetAppHost() string {
 	return config.GetString("constants.app_host")
+}
+
+func GetRootUser() *RootUserConfig {
+	return &RootUserConfig{
+		Email:    config.GetString("root_user.email"),
+		Password: config.GetString("root_user.password"),
+	}
 }

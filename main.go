@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"slashbase.com/backend/src/config"
+	"slashbase.com/backend/src/daos"
 	"slashbase.com/backend/src/db"
 	"slashbase.com/backend/src/models"
 	"slashbase.com/backend/src/queryengines"
@@ -23,6 +24,7 @@ func main() {
 	config.Init(*environment)
 	db.InitGormDB()
 	autoMigrate()
+	configureRootUser()
 	queryengines.InitQueryEngines()
 	initUnusedRemovalThreads()
 	server.Init()
@@ -43,6 +45,20 @@ func autoMigrate() {
 		&models.DBQueryLog{},
 	)
 	err = db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
+	if err != nil {
+		os.Exit(1)
+	}
+}
+
+func configureRootUser() {
+	rootUserConfig := config.GetRootUser()
+	rootUser, err := models.NewUser(rootUserConfig.Email, rootUserConfig.Password)
+	if err != nil {
+		os.Exit(1)
+	}
+	rootUser.IsRoot = true
+	var userDao daos.UserDao
+	_, err = userDao.GetRootUserOrCreate(*rootUser)
 	if err != nil {
 		os.Exit(1)
 	}

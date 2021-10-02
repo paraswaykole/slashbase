@@ -6,3 +6,8 @@ type DatabaseConfig struct {
 	User     string
 	Password string
 }
+
+type RootUserConfig struct {
+	Email    string
+	Password string
+}
