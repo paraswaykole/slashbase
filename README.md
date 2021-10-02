@@ -1,6 +1,6 @@
 # Slashbase Web
 
-This is web frontend for Slashbase IDE written in NextJs React Framework.
+This is web frontend for Slashbase IDE written in Nextjs React Framework (SPA: disabled SSR).
 
 ## License
 
