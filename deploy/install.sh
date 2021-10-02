@@ -1,10 +1,8 @@
 #!/bin/bash
-mkdir slashbase || cd slashbase
 export WORK_DIR=$(pwd)
 
-# WIP: this script is work in progress. Avoid running it.
-# wget "github.com/slashbase/slashbase-server/release.tar.gz" && wget "github.com/slashbase/slashbase-web/release.tar.gz"
-# tar -xf release.tar release.tar
+wget "https://github.com/slashbase/slashbase-web/releases/download/v1.0.0-beta/web-release.tar.gz" && wget "https://github.com/slashbase/slashbase-server/releases/download/v1.0.0-beta/server-release.tar.gz"
+tar -xvf web-release.tar.gz && tar -xvf server-release.tar.gz
 
 touch template.yaml & cat << EOF > template.yaml
 name: production
@@ -46,7 +44,7 @@ read root_email
 echo "Enter the root user password:"
 read root_pass
 
-auth_secret=$(openssl rand -hex 64)
+auth_secret=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64 ; echo '')
 crypted_data_secret=$(openssl rand -hex 64)
 
 # create backend configs
@@ -104,7 +102,7 @@ for i in "${variables[@]}"; do
     flip=0
   fi
 done
-sed -i -f replace.sed web/config.js
+sed -i -f replace.sed out/config.js
 rm -f replace.sed
 
 # create, install and start slashbase service
@@ -138,7 +136,7 @@ sudo apt install nginx
 sudo mkdir -p /var/www/$domain/html
 sudo chown -R $USER:$USER /var/www/$domain/html
 sudo chmod -R 755 /var/www/$domain
-sudo mv $WORK_DIR/web/* /var/www/$domain/html/
+sudo mv $WORK_DIR/out/* /var/www/$domain/html/
 
 # setup nginx configs
 touch $domain
