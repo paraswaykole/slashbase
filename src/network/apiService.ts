@@ -1,110 +1,134 @@
 import Request from './request'
 import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult } from '../data/models'
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
+import { AxiosResponse } from 'axios'
 
 const loginUser = async function(email: string, password: string): Promise<ApiResult<UserSession>> {
-    const result: ApiResult<UserSession> = await Request.getApiInstance().post('/user/login', { email, password }).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<UserSession>>>('/user/login', { email, password })
+                        .then(res => res.data)
 }
 
 const editUser = async function(name: string, profileImageUrl: string): Promise<ApiResult<User>> {
-    const result: ApiResult<User> = await Request.getApiInstance().post('/user/edit', { name, profileImageUrl }).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<User>>>('/user/edit', { name, profileImageUrl })
+                        .then(res => res.data)
 }
 
 const createNewProject = async function(projectName: string): Promise<ApiResult<Project>> {
-    const result: ApiResult<Project> = await Request.getApiInstance().post('/project/create', {name: projectName}).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                .post<any, AxiosResponse<ApiResult<Project>>>('/project/create', {name: projectName})
+                .then(res => res.data)
 }
 
 const getProjects = async function(): Promise<ApiResult<Array<Project>>> {
-    const result: ApiResult<Array<Project>> = await Request.getApiInstance().get('/project/all').then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<Array<Project>>>('/project/all')
+                        .then(res => res.data)
 }
 
 const addNewProjectMember = async function(projectId: string, payload: AddProjectMemberPayload): Promise<ApiResult<ProjectMember>> {
-    const result: ApiResult<ProjectMember> = await Request.getApiInstance().post(`/project/${projectId}/members/create`, payload).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<ProjectMember>>>(`/project/${projectId}/members/create`, payload)
+                        .then(res => res.data)
+    
 }
 
 const getProjectMembers = async function(projectId: string): Promise<ApiResult<Array<ProjectMember>>> {
-    const result: ApiResult<Array<ProjectMember>> = await Request.getApiInstance().get(`/project/${projectId}/members`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<Array<ProjectMember>>>(`/project/${projectId}/members`)
+                        .then(res => res.data)
+    
 }
 
 const addNewDBConn = async function(dbConnPayload: AddDBConnPayload): Promise<ApiResult<DBConnection>> {
-    const result: ApiResult<DBConnection> = await Request.getApiInstance().post('/dbconnection/create', dbConnPayload).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<DBConnection>>>('/dbconnection/create', dbConnPayload)
+                        .then(res => res.data)
 }
 
 const getAllDBConnections = async function(): Promise<ApiResult<Array<DBConnection>>> {
-    const result: ApiResult<Array<DBConnection>> = await Request.getApiInstance().get('/dbconnection/all').then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<Array<DBConnection>>>('/dbconnection/all')
+                        .then(res => res.data)
 }
 
 const getSingleDBConnection = async function(dbConnId: string): Promise<ApiResult<DBConnection>> {
-    const result: ApiResult<DBConnection> = await Request.getApiInstance().get(`/dbconnection/${dbConnId}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<DBConnection>>(`/dbconnection/${dbConnId}`)
+                        .then(res => res.data)
 }
 
 const getDBConnectionsByProject = async function(projectId: string): Promise<ApiResult<Array<DBConnection>>> {
-    const result: ApiResult<Array<DBConnection>> = await Request.getApiInstance().get(`/dbconnection/project/${projectId}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<Array<DBConnection>>>(`/dbconnection/project/${projectId}`)
+                        .then(res => res.data)
 }
 
 const getDBDataModelsByConnectionId = async function(dbConnId: string): Promise<ApiResult<Array<DBDataModel>>> {
-    const result: ApiResult<Array<DBDataModel>> = await Request.getApiInstance().get(`/query/datamodel/all/${dbConnId}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<Array<DBDataModel>>>(`/query/datamodel/all/${dbConnId}`)
+                        .then(res => res.data)
 }
 
 const getDBSingleDataModelByConnectionId = async function(dbConnId: string, schemaName: string, mName: string,): Promise<ApiResult<DBDataModel>> {
-    const result: ApiResult<DBDataModel> = await Request.getApiInstance().get(`/query/datamodel/single/${dbConnId}?schema=${schemaName}&name=${mName}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<DBDataModel>>(`/query/datamodel/single/${dbConnId}?schema=${schemaName}&name=${mName}`)
+                        .then(res => res.data)
 }
 
 const getDBDataInDataModel = async function(dbConnId: string, schemaName: string, mName: string, offset: number, fetchCount: boolean): Promise<ApiResult<DBQueryData>> {
-    const result: ApiResult<DBQueryData> = await Request.getApiInstance().get(`/query/data/${dbConnId}?schema=${schemaName}&name=${mName}&offset=${offset}&count=${fetchCount}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get< ApiResult<DBQueryData>>(`/query/data/${dbConnId}?schema=${schemaName}&name=${mName}&offset=${offset}&count=${fetchCount}`)
+                        .then(res => res.data)
 }
 
 const updateDBSingleData = async function(dbConnId: string, schemaName: string, mName: string, ctid: string, columnName: string, value: string): Promise<ApiResult<CTIDResponse>> {
-    const result: ApiResult<CTIDResponse> = await Request.getApiInstance().post(`/query/data/${dbConnId}/single`, {schema: schemaName, name: mName, ctid, columnName, value}).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<CTIDResponse>>>(`/query/data/${dbConnId}/single`, {schema: schemaName, name: mName, ctid, columnName, value})
+                        .then(res => res.data)
 }
 
 const addDBData = async function(dbConnId: string, schemaName: string, mName: string, data: any): Promise<ApiResult<CTIDResponse>> {
-    const result: ApiResult<CTIDResponse> = await Request.getApiInstance().post(`/query/data/${dbConnId}/add`, {schema: schemaName, name: mName, data}).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<CTIDResponse>>>(`/query/data/${dbConnId}/add`, {schema: schemaName, name: mName, data})
+                        .then(res => res.data)
 }
 
 const deleteDBData = async function(dbConnId: string, schemaName: string, mName: string, ctids: string[]): Promise<ApiResult<DBQueryResult>> {
-    const result: ApiResult<DBQueryResult> = await Request.getApiInstance().post(`/query/data/${dbConnId}/delete`, {schema: schemaName, name: mName, ctids}).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<DBQueryResult>>>(`/query/data/${dbConnId}/delete`, {schema: schemaName, name: mName, ctids})
+                        .then(res => res.data)
 }
 
 const saveDBQuery = async function(dbConnId: string, name: string, query: string, queryId: string): Promise<ApiResult<DBQuery>> {
-    const result: ApiResult<DBQuery> = await Request.getApiInstance().post(`/query/save/${dbConnId}`, {name, queryId, query}).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<DBQuery>>>(`/query/save/${dbConnId}`, {name, queryId, query})
+                        .then(res => res.data)
 }
 
 const getDBQueriesInDBConn = async function(dbConnId: string): Promise<ApiResult<DBQuery[]>> {
-    const result: ApiResult<DBQuery[]> = await Request.getApiInstance().get(`/query/getall/${dbConnId}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<DBQuery[]>>(`/query/getall/${dbConnId}`)
+                        .then(res => res.data)
 }
 
 const getSingleDBQuery = async function(queryId: string): Promise<ApiResult<DBQuery>> {
-    const result: ApiResult<DBQuery> = await Request.getApiInstance().get(`/query/get/${queryId}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<ApiResult<DBQuery>>(`/query/get/${queryId}`)
+                        .then(res => res.data)
 }
 
 const getDBHistory = async function(queryId: string, before?: number): Promise<PaginatedApiResult<DBQueryLog, number>> {
-    const result: PaginatedApiResult<DBQueryLog, number> = await Request.getApiInstance().get(`/query/history/${queryId}${before?`?before=${before}`:''}`).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .get<PaginatedApiResult<DBQueryLog, number>>(`/query/history/${queryId}${before?`?before=${before}`:''}`)
+                        .then(res => res.data)
 }
 
 const runQuery = async function(dbConnId: string, query: string): Promise<ApiResult<DBQueryData|DBQueryResult>> {
-    const result: ApiResult<DBQueryData|DBQueryResult> = await Request.getApiInstance().post("/query/run", {dbConnectionId: dbConnId, query}).then(res => res.data)
-    return result
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<DBQueryData|DBQueryResult>>>("/query/run", {dbConnectionId: dbConnId, query})
+                        .then(res => res.data)
 }
 
 export default {

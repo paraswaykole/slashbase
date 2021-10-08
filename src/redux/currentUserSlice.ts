@@ -84,17 +84,17 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getUser.fulfilled, (state, action) => {
+      .addCase(getUser.fulfilled, (state, action: any) => {
         state.user = action.payload.currentUser ? action.payload.currentUser : undefined
         state.isAuthenticated = action.payload.isAuthenticated
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action: any) => {
         if (action.payload){
           state.user = action.payload.currentUser
           state.isAuthenticated = action.payload.isAuthenticated
         }
       })
-      .addCase(editUser.fulfilled, (state, action) => {
+      .addCase(editUser.fulfilled, (state, action: any) => {
         if (action.payload){
           state.user = action.payload.currentUser
         }

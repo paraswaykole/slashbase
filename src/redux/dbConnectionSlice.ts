@@ -85,9 +85,9 @@ export const getDBQueries = createAsyncThunk(
   }
 )
 
-export const saveDBQuery = createAsyncThunk(
+export const saveDBQuery = createAsyncThunk<{dbQuery: DBQuery}, {dbConnId: string, queryId: string, name: string, query: string}>(
   'dbConnection/saveDBQuery',
-  async (payload: {dbConnId: string, queryId: string, name: string, query: string}, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     const result = await apiService.saveDBQuery(payload.dbConnId, payload.name, payload.query, payload.queryId)
     if(result.success){
       const dbQuery = result.data
@@ -108,7 +108,7 @@ export const dbConnectionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getDBConnection.fulfilled, (state,  action) => {
+      .addCase(getDBConnection.fulfilled, (state,  action: any) => {
         if (action.payload.new){
           state.dbDataModels = []
           state.dbQueries = []
@@ -117,15 +117,15 @@ export const dbConnectionSlice = createSlice({
         }
         state.dbConnection = action.payload.dbConnection
       })
-      .addCase(getDBDataModels.fulfilled, (state,  action) => {
+      .addCase(getDBDataModels.fulfilled, (state,  action: any) => {
         state.dbDataModels = action.payload.dataModels
         state.isDBDataModelsFetched = true
       })
-      .addCase(getDBQueries.fulfilled, (state,  action) => {
+      .addCase(getDBQueries.fulfilled, (state,  action: any) => {
         state.dbQueries = action.payload.dbQueries
         state.isDBQueriesFetched = true
       })
-      .addCase(saveDBQuery.fulfilled, (state,  action) => {
+      .addCase(saveDBQuery.fulfilled, (state,  action: any) => {
         const idx = state.dbQueries.findIndex(x => x.id === action.payload.dbQuery.id)
         if (idx === -1){
           state.dbQueries.push(action.payload.dbQuery)

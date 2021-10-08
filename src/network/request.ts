@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from 'axios'
-import Constants, { GetAPIConfig } from '../constants'
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+import { GetAPIConfig } from '../constants'
 import storage from '../data/storage';
 
 
@@ -9,9 +9,12 @@ const getApiInstance = () => {
         headers: {'content-type': 'text/json'},
         withCredentials: true,
     })
-    apiInstance.interceptors.request.use(async function (config) {
+    apiInstance.interceptors.request.use(async function (config: AxiosRequestConfig<any>) {
         const token = await storage.getCurrentUserToken()
         if(token){
+            if (!config.headers) {
+                config.headers = {}
+            }
             config.headers['Authorization'] = 'Bearer '+token
         }
         return config
