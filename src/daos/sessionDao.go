@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 	"slashbase.com/backend/src/config"
 	"slashbase.com/backend/src/db"
