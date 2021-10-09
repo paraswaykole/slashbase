@@ -74,7 +74,7 @@ const AccountPage: NextPage = () => {
                         value={editableUser.email}
                         disabled={true}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setEditableUser({...editableUser,email: e.target.value})}}
-                        placeholder="Enter you email" />
+                        placeholder="Enter your email" />
                 </div>
             </div>
             <div className="field">
@@ -82,10 +82,10 @@ const AccountPage: NextPage = () => {
                 <div className="control">
                     <input 
                         className="input" 
-                        type="email" 
+                        type="text" 
                         value={editableUser.name ?? ''}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setEditableUser({...editableUser,name: e.target.value})}}
-                        placeholder="Enter a name for this database" />
+                        placeholder="Enter your name" />
                 </div>
             </div>
             {savingError && <span className="help is-danger">There was some problem saving!</span> }
