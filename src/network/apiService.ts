@@ -15,6 +15,19 @@ const editUser = async function(name: string, profileImageUrl: string): Promise<
                         .then(res => res.data)
 }
 
+const getUsers = async function(offset: number): Promise<PaginatedApiResult<User, number>> {
+    return await Request.getApiInstance()
+                        .get<PaginatedApiResult<User, number>>(`/user/all?offset=${offset}`)
+                        .then(res => res.data)
+}
+
+
+const addUser = async function(email: string, password: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<undefined>>>(`/user/add`, {email, password})
+                        .then(res => res.data)
+}
+
 const createNewProject = async function(projectName: string): Promise<ApiResult<Project>> {
     return await Request.getApiInstance()
                 .post<any, AxiosResponse<ApiResult<Project>>>('/project/create', {name: projectName})
@@ -134,6 +147,8 @@ const runQuery = async function(dbConnId: string, query: string): Promise<ApiRes
 export default {
     loginUser,
     editUser,
+    getUsers,
+    addUser,
     getProjects,
     createNewProject,
     getProjectMembers,

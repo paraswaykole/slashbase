@@ -117,6 +117,11 @@ const Header = (_: HeaderPropType) => {
                                         Account
                                     </a>
                                 </Link>
+                                { currentUser.isRoot && <Link href={Constants.APP_PATHS.SETTINGS_USER.path} as={Constants.APP_PATHS.SETTINGS_USER.path}>
+                                    <a className="dropdown-item">
+                                        Manage Users
+                                    </a>
+                                </Link> }
                                 <hr className="dropdown-divider"/>
                                 <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
                                     <a className="dropdown-item">
