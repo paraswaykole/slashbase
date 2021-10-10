@@ -32,6 +32,7 @@ func NewRouter() *gin.Engine {
 			userGroup.Use(middlewares.AuthUserMiddleware())
 			userGroup.POST("/edit", userController.EditAccount)
 			userGroup.POST("/add", userController.AddUser)
+			userGroup.GET("/all", userController.GetUsers)
 			userGroup.GET("/logout", userController.Logout)
 		}
 		projectGroup := api.Group("project")

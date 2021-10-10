@@ -4,13 +4,14 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"slashbase.com/backend/src/config"
 	"slashbase.com/backend/src/daos"
 	"slashbase.com/backend/src/middlewares"
 	"slashbase.com/backend/src/models"
-	"slashbase.com/backend/src/utils"
 	"slashbase.com/backend/src/views"
 )
 
@@ -93,10 +94,54 @@ func (uc UserController) EditAccount(c *gin.Context) {
 	})
 }
 
+func (uc UserController) GetUsers(c *gin.Context) {
+	authUser := middlewares.GetAuthUser(c)
+	if !authUser.IsRoot {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "not allowed",
+		})
+	}
+	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "invalid offset",
+		})
+	}
+
+	users, err := userDao.GetUsersPaginated(offset)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "There was some problem",
+		})
+	}
+
+	userViews := []views.UserView{}
+	next := -1
+	for i, user := range *users {
+		userViews = append(userViews, views.BuildUser(&user))
+		if i == config.PAGINATION_COUNT-1 {
+			next = next + config.PAGINATION_COUNT
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"list": userViews,
+			"next": next,
+		},
+	})
+
+}
+
 func (uc UserController) AddUser(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	var addUserBody struct {
-		Email string `json:"email"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	c.BindJSON(&addUserBody)
 	if !authUser.IsRoot {
@@ -108,7 +153,7 @@ func (uc UserController) AddUser(c *gin.Context) {
 	usr, err := userDao.GetUserByEmail(addUserBody.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			usr, err = models.NewUser(addUserBody.Email, utils.RandStringUnsafe(10))
+			usr, err = models.NewUser(addUserBody.Email, addUserBody.Password)
 			if err != nil {
 				c.JSON(http.StatusOK, gin.H{
 					"success": false,

@@ -3,6 +3,7 @@ package daos
 import (
 	"database/sql"
 
+	"slashbase.com/backend/src/config"
 	"slashbase.com/backend/src/db"
 	"slashbase.com/backend/src/models"
 )
@@ -44,4 +45,13 @@ func (d UserDao) EditUser(userID string, name string, profileImageURL string) er
 		},
 	}).Error
 	return err
+}
+
+func (d UserDao) GetUsersPaginated(offset int) (*[]models.User, error) {
+	var users []models.User
+	err := db.GetDB().
+		Model(&models.User{}).
+		Offset(offset).Limit(config.PAGINATION_COUNT).
+		Preload("Projects").Find(&users).Error
+	return &users, err
 }
