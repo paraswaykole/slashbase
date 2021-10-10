@@ -45,7 +45,7 @@ echo "Enter the root user password:"
 read root_pass
 
 auth_secret=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64 ; echo '')
-crypted_data_secret=$(openssl rand -hex 64)
+crypted_data_secret=$(openssl rand -hex 32)
 
 # create backend configs
 rm -f replace.sed
