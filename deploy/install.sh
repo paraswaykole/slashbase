@@ -1,8 +1,8 @@
 #!/bin/bash
 export WORK_DIR=$(pwd)
 
-wget "https://github.com/slashbase/slashbase-web/releases/download/v1.0.1-beta/web-release.tar.gz" && wget "https://github.com/slashbase/slashbase-server/releases/download/v1.0.1-beta/server-release.tar.gz"
-tar -xvf web-release.tar.gz && tar -xvf server-release.tar.gz
+wget "https://github.com/slashbase/slashbase/releases/download/v1.0.0-beta/release.tar.gz"
+tar -xvf release.tar.gz
 
 touch template.yaml & cat << EOF > template.yaml
 name: production
