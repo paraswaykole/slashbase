@@ -1,0 +1,24 @@
+.sidebar {
+    height: 100%;
+    background: #f3f3f3;
+    width: 260px;
+    padding-top: 10px;
+    box-shadow: inset -1px 0px 4px 0px rgb(0 0 0 / 20%);
+    white-space: nowrap;
+    overflow-x: hidden;
+    .spacebox{
+        padding: 5px 10px;
+    }
+    .menuList{
+        a {
+            overflow-x: hidden;
+        }
+    }
+    .projectMenuItem {
+        padding: 5px 10px;
+        transition: all .2s;
+    }
+    .projectMenuItem:hover {
+        background: #e0e0e8;
+    }
+}

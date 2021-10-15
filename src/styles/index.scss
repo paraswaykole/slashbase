@@ -1,0 +1,23 @@
+// Colors
+$primary: #000;
+$info: #0000ff;
+$active-color: #615f9c;
+
+// Menu
+$menu-item-hover-background-color: #bababa;
+$menu-item-active-background-color: $active-color;
+
+// Forms
+$input-disabled-border-color: #d4d4d4;
+
+// Dropdown
+$dropdown-item-active-background-color: $active-color; 
+
+// Table
+$table-head-background-color: #e9e9e9;
+$table-row-active-background-color: $active-color;
+
+//Tabs
+$tabs-toggle-link-active-background-color: $active-color;
+
+@import '~bulma/bulma';
