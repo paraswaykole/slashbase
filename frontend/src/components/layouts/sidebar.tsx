@@ -7,12 +7,13 @@ import { selectAllDBConnections } from '../../redux/allDBConnectionsSlice'
 import Constants from '../../constants'
 import Link from 'next/link'
 import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
+import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
+import { useDispatch } from 'react-redux'
 
 enum SidebarViewType {
     GENERIC = "GENERIC", // default
     DATABASE = "DATABASE" // Used to show elements of single database
 }
-
 
 type SidebarPropType = { }
 
@@ -29,10 +30,18 @@ const Sidebar = (_: SidebarPropType) => {
             || router.pathname === Constants.APP_PATHS.DB_HISTORY.path) ?
         SidebarViewType.DATABASE : SidebarViewType.GENERIC
     
+    const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const allDBConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const dbQueries: DBQuery[] = useAppSelector(selectDBDQueries)
+
+
+    const dispatch = useDispatch()
+
+    const toggleSidebar = () => {
+        dispatch(setIsShowingSidebar(!isShowingSidebar))
+    }
 
     return (
         <aside className={"menu "+styles.sidebar}> 
@@ -111,6 +120,12 @@ const Sidebar = (_: SidebarPropType) => {
                         </ul>
                     </React.Fragment>
                 }
+            </div>
+            <div>
+                <button className={"button "+[styles.btn, styles.sidebarHideBtn].join(' ')} onClick={toggleSidebar}>
+                    <i className={"fas fa-angle-double-left"}/>
+                    <span className={styles.btnMsg}>&nbsp;&nbsp;hide sidebar</span>
+                </button>
             </div>
         </aside>
     )
