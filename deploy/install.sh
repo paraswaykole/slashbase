@@ -1,6 +1,18 @@
 #!/bin/bash
 export WORK_DIR=$(pwd)
 
+SLASHBASE_INSTALLATION_ID=$(curl -s 'https://api64.ipify.org')
+
+# Sends analytics events
+
+curl -XPOST -H "Content-type: application/json" -d '{
+    "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
+    "event": "Install Started",
+    "properties": {
+      "distinct_id": "'$SLASHBASE_INSTALLATION_ID'"
+    }
+  }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
+
 wget "https://github.com/slashbase/slashbase/releases/download/v1.0.0-beta/release.tar.gz"
 tar -xvf release.tar.gz
 
@@ -105,6 +117,16 @@ done
 sed -i -f replace.sed out/config.js
 rm -f replace.sed
 
+curl -XPOST -H "Content-type: application/json" -d '{
+    "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
+    "event": "Configs Generated",
+    "properties": {
+      "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
+      "root_email": "'$root_email'",
+      "domain": "'$domain'"
+    }
+  }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
+
 # create, install and start slashbase service
 touch slashbase.service
 cat << EOF > slashbase.service
@@ -172,3 +194,13 @@ sudo systemctl restart nginx
 sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 sudo certbot --nginx
+
+curl -XPOST -H "Content-type: application/json" -d '{
+    "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
+    "event": "Install Success",
+    "properties": {
+      "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
+      "root_email": "'$root_email'",
+      "domain": "'$domain'"
+    }
+  }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
