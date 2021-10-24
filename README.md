@@ -37,7 +37,7 @@ Please follow the [installation guide](https://docs.slashbase.com/get-started/in
 
 ## Documentation
 
-Detailed documenation is available at [https://docs.slashbase.com](https://docs.slashbase.com).
+Detailed documenation is available at [docs.slashbase.com](https://docs.slashbase.com).
 
 ## Support
 
