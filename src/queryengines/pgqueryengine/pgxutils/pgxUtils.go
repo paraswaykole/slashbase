@@ -195,7 +195,7 @@ func FieldType(fd pgproto3.FieldDescription) reflect.Type {
 		return reflect.TypeOf(sql.NullInt32{})
 	case pgtype.Int2OID:
 		return reflect.TypeOf(sql.NullInt32{})
-	case pgtype.VarcharOID, pgtype.BPCharArrayOID, pgtype.TextOID, pgtype.BPCharOID, pgtype.UUIDOID, pgtype.NameOID:
+	case pgtype.VarcharOID, pgtype.BPCharArrayOID, pgtype.TextOID, pgtype.BPCharOID, pgtype.UUIDOID, pgtype.NameOID, LtreeOID:
 		return reflect.TypeOf(sql.NullString{})
 	case pgtype.BoolOID:
 		return reflect.TypeOf(sql.NullBool{})
@@ -215,6 +215,10 @@ func FieldType(fd pgproto3.FieldDescription) reflect.Type {
 const (
 	ERRCODE_INVALID_PASSWORD                    = "28P01" // worng password
 	ERRCODE_INVALID_AUTHORIZATION_SPECIFICATION = "28000" // db does not exist
+)
+
+const (
+	LtreeOID = 16411
 )
 
 const (
