@@ -97,6 +97,78 @@ func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 				}
 				continue
 			}
+			if tid, ok := val.(pgtype.VarcharArray); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.BoolArray); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.UUIDArray); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.DateArray); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.Int2Array); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.Int4Array); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.Int8Array); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.Float4Array); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.Float8Array); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
 			b, ok := val.([]byte)
 			if ok {
 				v = string(b)
