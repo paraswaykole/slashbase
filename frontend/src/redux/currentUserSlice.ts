@@ -64,7 +64,7 @@ export const editUser = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   'currentUser/logoutUser',
   async (_, {dispatch}) => {
-    //TODO: make logout api call
+    await apiService.logoutUser()
     await storage.logoutUser()
     dispatch(projectReset())
     dispatch(allDBConnReset())

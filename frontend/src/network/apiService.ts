@@ -9,6 +9,12 @@ const loginUser = async function(email: string, password: string): Promise<ApiRe
                         .then(res => res.data)
 }
 
+const logoutUser = async function(): Promise<ApiResult<null>> {
+    return await Request.getApiInstance()
+                        .get<ApiResult<null>>('/user/logout')
+                        .then(res => res.data)
+}
+
 const editUser = async function(name: string, profileImageUrl: string): Promise<ApiResult<User>> {
     return await Request.getApiInstance()
                         .post<any, AxiosResponse<ApiResult<User>>>('/user/edit', { name, profileImageUrl })
@@ -146,6 +152,7 @@ const runQuery = async function(dbConnId: string, query: string): Promise<ApiRes
 
 export default {
     loginUser,
+    logoutUser,
     editUser,
     getUsers,
     addUser,
