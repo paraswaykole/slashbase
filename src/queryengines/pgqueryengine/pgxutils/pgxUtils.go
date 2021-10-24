@@ -89,6 +89,14 @@ func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 				}
 				continue
 			}
+			if tid, ok := val.(pgtype.TextArray); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[col] = nil
+				} else {
+					entry[col] = tid.Elements
+				}
+				continue
+			}
 			b, ok := val.([]byte)
 			if ok {
 				v = string(b)
