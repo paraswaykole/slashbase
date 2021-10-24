@@ -29,7 +29,7 @@ It's written in Golang and Nextjs React Framework (SPA) and runs as a single Lin
 
 ## Demo
 
-Checkout demo at [https://demo.slashbase.com](https://demo.slashbase.com)
+Checkout demo at [demo.slashbase.com](https://demo.slashbase.com).
 
 ## Installation
 
@@ -37,7 +37,7 @@ Please follow the [installation guide](https://docs.slashbase.com/get-started/in
 
 ## Documentation
 
-Detailed documenation is available at [https://docs.slashbase.com](https://docs.slashbase.com)
+Detailed documenation is available at [https://docs.slashbase.com](https://docs.slashbase.com).
 
 ## Support
 
