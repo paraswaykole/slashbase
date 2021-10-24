@@ -23,19 +23,15 @@ It's written in Golang and Nextjs React Framework (SPA) and runs as a single Lin
 
 ## Demo
 
-Checkout demo at: [https://demo.slashbase.com](https://demo.slashbase.com)
+Checkout demo at [https://demo.slashbase.com](https://demo.slashbase.com)
 
 ## Installation
 
-The install script is tested on DigitalOcean Ubuntu 20.04 droplet. Requires postgres to run. Install it on your cloud instance or use a managed postgres database. To install Postgres on instance follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04). 
+Please follow the [installation guide](https://docs.slashbase.com/get-started/install-slashbase) to install Slashbase on your own cloud (in your own VPC)
 
-Then run the following commands:
+## Documentation
 
-1. `mkdir slashbase && cd slashbase`
-2. `wget https://raw.githubusercontent.com/slashbase/slashbase-server/main/deploy/install.sh && chmod +x install.sh`
-3. `./install.sh`
-4. Enter required configs & follow the instructions till the setup completes.
-5. Visit your url on browser and enter the root user credentials you entered while installation to login.
+Detailed documenation is available at [https://docs.slashbase.com](https://docs.slashbase.com)
 
 ## License
 
