@@ -39,6 +39,10 @@ Please follow the [installation guide](https://docs.slashbase.com/get-started/in
 
 Detailed documenation is available at [https://docs.slashbase.com](https://docs.slashbase.com)
 
+## Support
+
+If you face any issues installing or using slashbase, send us a mail on slashbaseide@gmail.com or contact support chat on our website [slashbase.com](https://slashbase.com).
+
 ## License
 
 See the [LICENSE file](LICENSE.txt) for license rights and limitations.
