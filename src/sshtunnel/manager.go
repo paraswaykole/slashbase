@@ -11,7 +11,7 @@ type sshTunnelInstance struct {
 
 var sshtunnels map[string]sshTunnelInstance = map[string]sshTunnelInstance{}
 
-func GetSSHTunnel(dbConnID string, sshAuthType, sshHost string, port int, sshUser string, sshPassword, sshKeyFile string) *SSHTun {
+func GetSSHTunnel(dbConnID string, sshAuthType, sshHost string, remoteHost string, remotePort int, sshUser string, sshPassword, sshKeyFile string) *SSHTun {
 	if eSSHtun, exists := sshtunnels[dbConnID]; exists {
 		if eSSHtun.sshTun.started {
 			sshtunnels[dbConnID] = sshTunnelInstance{
@@ -22,7 +22,7 @@ func GetSSHTunnel(dbConnID string, sshAuthType, sshHost string, port int, sshUse
 		}
 	}
 	newPort := 4000 + len(sshtunnels)
-	sshtun := New(newPort, sshHost, port)
+	sshtun := New(newPort, sshHost, remoteHost, remotePort)
 	sshtun.SetUser(sshUser)
 	if sshAuthType == "KEYFILE" {
 		sshtun.SetKeyFile(sshKeyFile)

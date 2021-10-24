@@ -28,8 +28,12 @@ func InitPostgresQueryEngine() *PostgresQueryEngine {
 func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
+		remoteHost := string(dbConn.DBHost)
+		if remoteHost == "" {
+			remoteHost = "localhost"
+		}
 		sshTun := sshtunnel.GetSSHTunnel(dbConn.ID, dbConn.UseSSH,
-			string(dbConn.SSHHost), port, string(dbConn.SSHUser),
+			string(dbConn.SSHHost), remoteHost, port, string(dbConn.SSHUser),
 			string(dbConn.SSHPassword), string(dbConn.SSHKeyFile),
 		)
 		dbConn.DBHost = "localhost"

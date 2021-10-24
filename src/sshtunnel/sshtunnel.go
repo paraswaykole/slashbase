@@ -102,11 +102,11 @@ const (
 // The SSH user and port can be changed with SetUser and SetPort.
 // The local and remote hosts can be changed to something different than localhost with SetLocalHost and SetRemoteHost.
 // The states of the tunnel can be received throgh a callback function with SetConnState.
-func New(localPort int, server string, remotePort int) *SSHTun {
+func New(localPort int, sshHost string, remoteServer string, remotePort int) *SSHTun {
 	return &SSHTun{
 		Mutex: &sync.Mutex{},
 		server: Endpoint{
-			Host: server,
+			Host: sshHost,
 			Port: 22,
 		},
 		user:         "root",
@@ -118,7 +118,7 @@ func New(localPort int, server string, remotePort int) *SSHTun {
 			Port: localPort,
 		},
 		remote: Endpoint{
-			Host: "localhost",
+			Host: remoteServer,
 			Port: remotePort,
 		},
 		started: false,
@@ -127,11 +127,11 @@ func New(localPort int, server string, remotePort int) *SSHTun {
 	}
 }
 
-func NewUnix(localUnixSocket string, server string, remoteUnixSocket string) *SSHTun {
+func NewUnix(localUnixSocket string, sshHost string, remoteUnixSocket string) *SSHTun {
 	return &SSHTun{
 		Mutex: &sync.Mutex{},
 		server: Endpoint{
-			Host: server,
+			Host: sshHost,
 			Port: 22,
 		},
 		user:         "root",
