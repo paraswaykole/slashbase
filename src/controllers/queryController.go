@@ -73,6 +73,14 @@ func (qc QueryController) GetData(c *gin.Context) {
 	if err != nil {
 		offset = int64(0)
 	}
+	filter, hasFilter := c.GetQueryArray("filter[]")
+	if hasFilter && len(filter) < 2 {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "Invalid filter query",
+		})
+		return
+	}
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
@@ -92,7 +100,7 @@ func (qc QueryController) GetData(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount)
+	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount, filter)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

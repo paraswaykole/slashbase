@@ -46,6 +46,7 @@ const DBPage: NextPage = () => {
             { mschema && mname && 
                 <React.Fragment>
                     <div className="tabs is-toggle is-toggle-rounded">
+                        <h1>{`Showing ${mschema}.${mname}`}&nbsp;&nbsp;</h1>
                         <ul>
                             <Link 
                                 href={{pathname: Constants.APP_PATHS.DB_PATH.path, query: {mschema, mname}}} 

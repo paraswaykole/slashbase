@@ -30,7 +30,9 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const [queryOffset, setQueryOffset] = useState(0)
     const [queryCount, setQueryCount] = useState<number|undefined>(undefined)
     const [queryLimit] = useState(200)
+    const [queryFilter, setQueryFilter] = useState<string[]|undefined>(undefined)
     const [dataLoading, setDataLoading] = useState(false)
+
     
     useEffect(()=>{
         const dModel = dbDataModels.find(x => x.schemaName == mschema && x.name == mname)
@@ -49,14 +51,19 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     useEffect(()=>{
         fetchData(false)
     }, [queryOffset])
+
+    useEffect(()=>{
+        fetchData(true)
+    }, [queryFilter])
+    
     
     const fetchData = async (fetchCount: boolean) => {
         if(!dataModel || dataLoading) return
         setDataLoading(true)
-        const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount)
+        const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount, queryFilter)
         if (result.success) {
             setQueryData(result.data)
-            if (!queryCount){
+            if (fetchCount){
                 setQueryCount(result.data.count)
             }
         }
@@ -76,6 +83,10 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
             return
         }
         setQueryOffset(nextOffset)
+    }
+    const onFilterChanged = (newFilter: string[]|undefined) => {
+        setQueryFilter(newFilter)
+        setQueryOffset(0)
     }
 
     const updateCellData = (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean) => {
@@ -115,7 +126,8 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     updateCellData={updateCellData}
                     onDeleteRows={onDeleteRows}
                     onAddData={onAddData}
-                    heading={`Showing ${dataModel?.schemaName}.${dataModel?.name}`}
+                    onFilterChanged={onFilterChanged}
+                    showHeader={true}
                     mSchema={String(mschema)}
                     mName={String(mname)}
                 />

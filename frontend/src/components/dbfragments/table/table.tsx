@@ -1,5 +1,5 @@
 import styles from './table.module.scss'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Cell, useRowSelect, useTable, UseTableInstanceProps } from 'react-table'
 import toast from 'react-hot-toast';
 import { DBConnection, DBQueryData } from '../../../data/models'
@@ -14,24 +14,31 @@ type ProjectCardPropType = {
     mSchema: string,
     mName: string,
     isEditable: boolean,
-    heading?: string,
+    showHeader?: boolean,
     updateCellData: (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean)=>void,
     onDeleteRows: (indexes: number[]) => void,
     onAddData: (newData: any) => void,
+    onFilterChanged: (newFilter: string[]|undefined) => void,
 }
 
-const Table = ({queryData, dbConnection, mSchema, mName, isEditable, heading, updateCellData, onDeleteRows, onAddData}: ProjectCardPropType) => {
+const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader, updateCellData, onDeleteRows, onAddData, onFilterChanged}: ProjectCardPropType) => {
 
     const [editCell, setEditCell] = useState<(string|number)[]>([])
     const [isAdding, setIsAdding] = useState<boolean>(false)
+
+    const filter0Ref = useRef<HTMLSelectElement>(null);
+    const filter1Ref = useRef<HTMLSelectElement>(null);
+    const filter2Ref = useRef<HTMLInputElement>(null);
 
     const data = React.useMemo(
         () => queryData.rows,
         [queryData]
     )
 
+    const displayColumns = queryData.columns.filter(col => col !== 'ctid')
+
     const columns = React.useMemo(
-        () => queryData.columns.filter(col => col !== 'ctid').map((col) => ({
+        () => displayColumns.map((col) => ({
             Header: col,
             accessor: col, 
         })),
@@ -106,13 +113,60 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, heading, up
     if (isEditable)
         setEditCell([cell.row.index, cell.column.id])
     }
+
+    const changeFilter = () => {
+        let filter: string[] | undefined = undefined
+        if (filter0Ref.current!.value !== 'default' && filter1Ref.current!.value !== 'default'){
+            let operator = filter1Ref.current!.value
+            if (operator === 'IS NULL' || operator === 'IS NOT NULL' ){
+                filter = [filter0Ref.current!.value, operator]
+            } else {
+                filter = [filter0Ref.current!.value, operator, filter2Ref.current!.value]
+            }
+        }
+        onFilterChanged(filter)
+    }
    
     return (
         <React.Fragment>
-            { (heading || isEditable) && <div className={styles.tableHeader}>
+            { (showHeader || isEditable) && <div className={styles.tableHeader}>
                 <div className="columns">
                     <div className="column is-9">
-                        {heading && <h1>{heading}</h1> }
+                        <div className="field has-addons">
+                            <p className="control">
+                                <span className="select">
+                                    <select ref={filter0Ref}>
+                                        <option value="default">Select column</option>
+                                        {displayColumns.map(x => 
+                                            (<option>{x}</option>)
+                                        )}
+                                    </select>
+                                </span>
+                            </p>
+                            <p className="control">
+                                <span className="select">
+                                    <select ref={filter1Ref}>
+                                        <option value="default">Select operator</option>
+                                        <option value="=">=</option>
+                                        <option value="!=">≠</option>
+                                        <option value="<">&lt;</option>
+                                        <option value=">">&gt;</option>
+                                        <option value=">=">≥</option>
+                                        <option value="<=">≤</option>
+                                        <option value="IS NULL">is null</option>
+                                        <option value="IS NOT NULL">not null</option>
+                                        <option value="LIKE">like</option>
+                                        <option value="NOT LIKE">not like</option>
+                                    </select>
+                                </span>
+                            </p>
+                            <p className="control">
+                                <input ref={filter2Ref} className="input" type="text" placeholder="Value"/>
+                            </p>
+                            <p className="control">
+                                <button className="button" onClick={changeFilter}>Filter</button>
+                            </p>
+                        </div>
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">

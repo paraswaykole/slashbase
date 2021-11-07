@@ -101,14 +101,34 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(user *models.User, dbC
 	return rdata, err
 }
 
-func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`SELECT ctid, * FROM "%s"."%s" LIMIT %d OFFSET %d;`, schema, name, limit, offset)
+	countQuery := fmt.Sprintf(`SELECT count(*) FROM "%s"."%s";`, schema, name)
+	if len(filter) > 1 {
+		filter2 := ""
+		if len(filter) == 3 {
+			filter2 = " '" + filter[2] + "'"
+		}
+		query = fmt.Sprintf(`SELECT ctid, * FROM "%s"."%s" WHERE "%s" %s%s LIMIT %d OFFSET %d;`,
+			schema,
+			name,
+			filter[0],
+			filter[1],
+			filter2,
+			limit,
+			offset)
+		countQuery = fmt.Sprintf(`SELECT count(*) FROM "%s"."%s" WHERE "%s" %s%s;`,
+			schema,
+			name,
+			filter[0],
+			filter[1],
+			filter2)
+	}
 	data, err := pgqe.RunQuery(user, dbConn, query)
 	if err != nil {
 		return nil, err
 	}
 	if fetchCount {
-		countQuery := fmt.Sprintf(`SELECT count(*) FROM "%s"."%s";`, schema, name)
 		countData, err := pgqe.RunQuery(user, dbConn, countQuery)
 		if err != nil {
 			return nil, err

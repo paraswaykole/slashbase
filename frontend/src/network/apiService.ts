@@ -90,15 +90,23 @@ const getDBDataModelsByConnectionId = async function(dbConnId: string): Promise<
                         .then(res => res.data)
 }
 
-const getDBSingleDataModelByConnectionId = async function(dbConnId: string, schemaName: string, mName: string,): Promise<ApiResult<DBDataModel>> {
+const getDBSingleDataModelByConnectionId = async function(dbConnId: string, schemaName: string, mName: string): Promise<ApiResult<DBDataModel>> {
     return await Request.getApiInstance()
                         .get<ApiResult<DBDataModel>>(`/query/datamodel/single/${dbConnId}?schema=${schemaName}&name=${mName}`)
                         .then(res => res.data)
 }
 
-const getDBDataInDataModel = async function(dbConnId: string, schemaName: string, mName: string, offset: number, fetchCount: boolean): Promise<ApiResult<DBQueryData>> {
+const getDBDataInDataModel = async function(dbConnId: string, schemaName: string, mName: string, offset: number, fetchCount: boolean, filter?: string[]): Promise<ApiResult<DBQueryData>> {
     return await Request.getApiInstance()
-                        .get< ApiResult<DBQueryData>>(`/query/data/${dbConnId}?schema=${schemaName}&name=${mName}&offset=${offset}&count=${fetchCount}`)
+                        .get< ApiResult<DBQueryData>>(`/query/data/${dbConnId}`, { 
+                            params: {
+                                schema: schemaName,
+                                name: mName,
+                                offset: offset,
+                                count: fetchCount,
+                                filter,
+                            }
+                        })
                         .then(res => res.data)
 }
 
