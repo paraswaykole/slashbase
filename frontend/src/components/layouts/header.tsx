@@ -55,7 +55,10 @@ const Header = (_: HeaderPropType) => {
         currentOption = String(router.query.id)
     } else if (router.pathname === Constants.APP_PATHS.PROJECT_MEMBERS.path) {
         currentOption = String(router.query.id)
-    } else if (router.pathname === Constants.APP_PATHS.DB.path || router.pathname === Constants.APP_PATHS.DB_PATH.path || router.pathname === Constants.APP_PATHS.DB_HISTORY.path) {
+    } else if (router.pathname === Constants.APP_PATHS.DB.path 
+            || router.pathname === Constants.APP_PATHS.DB_PATH.path 
+            || router.pathname === Constants.APP_PATHS.DB_HISTORY.path
+            || router.pathname === Constants.APP_PATHS.DB_QUERY.path) {
         if (currentDBConnection)
             currentOption = currentDBConnection?.projectId
     }
