@@ -15,13 +15,15 @@ type ProjectCardPropType = {
     mName: string,
     isEditable: boolean,
     showHeader?: boolean,
+    querySort?: string[],
     updateCellData: (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean)=>void,
     onDeleteRows: (indexes: number[]) => void,
     onAddData: (newData: any) => void,
     onFilterChanged: (newFilter: string[]|undefined) => void,
+    onSortChanged: (newSort: string[]|undefined) => void,
 }
 
-const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader, updateCellData, onDeleteRows, onAddData, onFilterChanged}: ProjectCardPropType) => {
+const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader, querySort, updateCellData, onDeleteRows, onAddData, onFilterChanged, onSortChanged}: ProjectCardPropType) => {
 
     const [editCell, setEditCell] = useState<(string|number)[]>([])
     const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -39,10 +41,15 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
 
     const columns = React.useMemo(
         () => displayColumns.map((col) => ({
-            Header: col,
+            Header: <>{col}{querySort && querySort[0] === col ? 
+                querySort[1] === 'ASC' ? 
+                <>&nbsp;<i className="fas fa-caret-up"/></>
+                :
+                <>&nbsp;<i className="fas fa-caret-down"/></>
+                 : undefined}</>,
             accessor: col, 
         })),
-        [queryData]
+        [queryData, querySort]
     )
 
     const defaultColumn = {
@@ -72,7 +79,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
         prepareRow,
         state,
     } = useTable<any>({ 
-          columns, 
+            columns, 
             data, 
             defaultColumn, 
             ...{ editCell, resetEditCell, onSaveCell }
@@ -125,6 +132,21 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
             }
         }
         onFilterChanged(filter)
+    }
+
+    const changeSort = (newSort: string) => {
+        if (!isEditable){
+            return
+        }
+        if (querySort && newSort === querySort[0]) {
+            if (querySort[1] === 'ASC') {
+                onSortChanged([querySort[0], 'DESC'])
+            } else if (querySort[1] === 'DESC') {
+                onSortChanged(undefined)
+            }
+        } else {
+            onSortChanged([newSort, 'ASC'])
+        }
     }
    
     return (
@@ -200,7 +222,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
                         {headerGroups.map(headerGroup => (
                             <tr {...headerGroup.getHeaderGroupProps()} key={"header"}>
                                 {headerGroup.headers.map(column => (
-                                    <th {...column.getHeaderProps()} key={column.id}>
+                                    <th {...column.getHeaderProps()} key={column.id} onClick={()=>{changeSort(column.id)}}>
                                         {column.render('Header')}
                                     </th>
                                 ))}    

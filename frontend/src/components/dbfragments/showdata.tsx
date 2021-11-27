@@ -31,6 +31,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const [queryCount, setQueryCount] = useState<number|undefined>(undefined)
     const [queryLimit] = useState(200)
     const [queryFilter, setQueryFilter] = useState<string[]|undefined>(undefined)
+    const [querySort, setQuerySort] = useState<string[]|undefined>(undefined)
     const [dataLoading, setDataLoading] = useState(false)
 
     
@@ -50,7 +51,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     
     useEffect(()=>{
         fetchData(false)
-    }, [queryOffset])
+    }, [queryOffset, querySort])
 
     useEffect(()=>{
         fetchData(true)
@@ -60,7 +61,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const fetchData = async (fetchCount: boolean) => {
         if(!dataModel || dataLoading) return
         setDataLoading(true)
-        const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount, queryFilter)
+        const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount, queryFilter, querySort)
         if (result.success) {
             setQueryData(result.data)
             if (fetchCount){
@@ -87,6 +88,10 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const onFilterChanged = (newFilter: string[]|undefined) => {
         setQueryFilter(newFilter)
         setQueryOffset(0)
+    }
+
+    const onSortChanged = (newSort: string[]|undefined) => {
+        setQuerySort(newSort)
     }
 
     const updateCellData = (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean) => {
@@ -121,15 +126,17 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
             { project && dbConnection && queryData && 
                 <Table 
                     dbConnection={dbConnection} 
-                    isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
+                    mSchema={String(mschema)}
+                    mName={String(mname)}
                     queryData={queryData} 
+                    querySort={querySort}
+                    isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
+                    showHeader={true}
                     updateCellData={updateCellData}
                     onDeleteRows={onDeleteRows}
                     onAddData={onAddData}
                     onFilterChanged={onFilterChanged}
-                    showHeader={true}
-                    mSchema={String(mschema)}
-                    mName={String(mname)}
+                    onSortChanged={onSortChanged}
                 />
             }
             <br/><br/><br/>

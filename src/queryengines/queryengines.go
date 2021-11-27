@@ -67,8 +67,8 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 	return &dataModels, nil
 }
 
-func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string) (map[string]interface{}, error) {
-	return postgresQueryEngine.GetData(user, dbConn, schemaName, name, limit, offset, fetchCount, filter)
+func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
+	return postgresQueryEngine.GetData(user, dbConn, schemaName, name, limit, offset, fetchCount, filter, sort)
 }
 
 func UpdateSingleData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctid string, columnName, value string) (map[string]interface{}, error) {

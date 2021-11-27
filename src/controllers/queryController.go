@@ -81,6 +81,14 @@ func (qc QueryController) GetData(c *gin.Context) {
 		})
 		return
 	}
+	sort, hasSort := c.GetQueryArray("sort[]")
+	if hasSort && len(sort) != 2 {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "Invalid sort query",
+		})
+		return
+	}
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
@@ -100,7 +108,7 @@ func (qc QueryController) GetData(c *gin.Context) {
 		return
 	}
 
-	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount, filter)
+	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount, filter, sort)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
