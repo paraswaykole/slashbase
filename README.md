@@ -6,9 +6,10 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/github/license/slashbase/slashbase-server" alt="License">
-  <img src="https://img.shields.io/github/commit-activity/m/slashbase/slashbase-server" alt="Commits per month">
   <img src="https://img.shields.io/github/go-mod/go-version/slashbase/slashbase-server.svg" alt="Go verison">
   <img src="https://img.shields.io/github/release/slashbase/slashbase-server.svg" alt="Release version">
+  <a href="https://twitter.com/slashbaseide"><img src="https://img.shields.io/badge/%40slashbaseide-follow-blue"></a>
+  <img src="https://img.shields.io/github/commit-activity/m/slashbase/slashbase-server" alt="Commits per month">
 </p>
 
 ___
