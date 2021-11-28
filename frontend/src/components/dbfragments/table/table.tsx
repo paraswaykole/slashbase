@@ -160,7 +160,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
                                     <select ref={filter0Ref}>
                                         <option value="default">Select column</option>
                                         {displayColumns.map(x => 
-                                            (<option>{x}</option>)
+                                            (<option key={x}>{x}</option>)
                                         )}
                                     </select>
                                 </span>
