@@ -18,7 +18,7 @@ func GetDB() *gorm.DB {
 
 func InitGormDB() {
 	dbConfig := config.GetDatabaseConfig()
-	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=5432 sslmode=disable TimeZone=Asia/Kolkata", dbConfig.Host, dbConfig.User, dbConfig.Password, dbConfig.Database)
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=Asia/Kolkata", dbConfig.Host, dbConfig.User, dbConfig.Password, dbConfig.Database, dbConfig.Port)
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println(err)

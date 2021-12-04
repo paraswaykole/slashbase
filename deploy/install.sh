@@ -24,6 +24,7 @@ server:
 
 database:
     host: \${db_host}
+    port: \${db_port}
     user: \${db_user}
     database: \${db_name}
     password: \${db_pass}
@@ -43,6 +44,8 @@ EOF
 
 echo "Enter the postgres host (default 127.0.0.1):"
 read db_host
+echo "Enter the postgres port (default 5432):"
+read db_port
 echo "Enter the postgres database name (default slashbase):"
 read db_name
 echo "Enter the postgres db user (default slashbase):"
@@ -64,6 +67,8 @@ rm -f replace.sed
 touch replace.sed
 variables=( "db_host"
             $db_host
+            "db_port"
+            $db_port
             "db_user"
             $db_user
             "db_name"

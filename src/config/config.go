@@ -52,6 +52,7 @@ func GetDatabaseConfig() *DatabaseConfig {
 	return &DatabaseConfig{
 		Host:     config.GetString("database.host"),
 		User:     config.GetString("database.user"),
+		Port:     config.GetString("database.port"),
 		Password: config.GetString("database.password"),
 		Database: config.GetString("database.database"),
 	}
