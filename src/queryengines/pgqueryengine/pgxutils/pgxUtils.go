@@ -231,16 +231,16 @@ const (
 func GetPSQLQueryType(query string) int {
 	// TODO: better query parsing method needed
 	filteredQuery := strings.TrimSpace(strings.ToLower(query))
-	if strings.Contains(filteredQuery, "returning") {
+	if strings.Contains(filteredQuery, "returning ") {
 		return QUERY_READ
 	}
-	if strings.Contains(filteredQuery, "update") || strings.Contains(filteredQuery, "insert") || strings.Contains(filteredQuery, "truncate") {
+	if strings.Contains(filteredQuery, "update ") || strings.Contains(filteredQuery, "insert ") || strings.Contains(filteredQuery, "truncate ") {
 		return QUERY_WRITE
 	}
-	if strings.Contains(filteredQuery, "alter") || strings.Contains(filteredQuery, "drop") {
+	if strings.Contains(filteredQuery, "alter ") || strings.Contains(filteredQuery, "drop ") {
 		return QUERY_ALTER
 	}
-	if strings.HasPrefix(filteredQuery, "select") {
+	if strings.HasPrefix(filteredQuery, "select ") {
 		return QUERY_READ
 	}
 	return QUERY_UNKOWN
