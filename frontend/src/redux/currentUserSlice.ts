@@ -107,8 +107,6 @@ export const userSlice = createSlice({
 })
 
 
-export const { } = userSlice.actions
-
 export const selectCurrentUser = (state: AppState) => state.currentUser.user!
 
 export const selectIsAuthenticated = (state: AppState) => state.currentUser.isAuthenticated
