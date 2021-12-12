@@ -70,7 +70,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 }
 
 func (pgqe *PostgresQueryEngine) GetDataModels(user *models.User, dbConn *models.DBConnection) ([]map[string]interface{}, error) {
-	data, err := pgqe.RunQuery(user, dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
+	data, err := pgqe.RunQuery(user, dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' ORDER BY tablename;")
 	if err != nil {
 		return nil, err
 	}
