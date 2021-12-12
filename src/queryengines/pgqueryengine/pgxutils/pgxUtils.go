@@ -234,7 +234,7 @@ func GetPSQLQueryType(query string) int {
 	if strings.Contains(filteredQuery, "returning ") {
 		return QUERY_READ
 	}
-	if strings.Contains(filteredQuery, "update ") || strings.Contains(filteredQuery, "insert ") || strings.Contains(filteredQuery, "truncate ") {
+	if strings.Contains(filteredQuery, "update ") || strings.Contains(filteredQuery, "create table") || strings.Contains(filteredQuery, "insert ") || strings.Contains(filteredQuery, "truncate ") {
 		return QUERY_WRITE
 	}
 	if strings.Contains(filteredQuery, "alter ") || strings.Contains(filteredQuery, "drop ") {
