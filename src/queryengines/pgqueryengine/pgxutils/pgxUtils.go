@@ -231,7 +231,7 @@ const (
 func GetPSQLQueryType(query string) int {
 	// TODO: better query parsing method needed
 	filteredQuery := strings.TrimSpace(strings.ToLower(query))
-	if strings.Contains(filteredQuery, "returning ") {
+	if strings.Contains(filteredQuery, "returning ") || strings.Contains(filteredQuery, "with ") {
 		return QUERY_READ
 	}
 	if strings.Contains(filteredQuery, "update ") || strings.Contains(filteredQuery, "insert ") || strings.Contains(filteredQuery, "truncate ") {
