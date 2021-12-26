@@ -1,17 +1,25 @@
 import styles from './queryeditor.module.scss'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { saveDBQuery, selectDBConnection } from '../../../redux/dbConnectionSlice'
 import { DBConnection } from '../../../data/models'
 import toast from 'react-hot-toast'
+import {format} from 'sql-formatter'
 
 
-const CodeMirror = dynamic(() => {
+const WrappedCodeMirror = dynamic(() => {
     // @ts-ignore
     import('codemirror/mode/sql/sql')
-    return import('react-codemirror')
+    return import('../wrappedcodemirror')
 }, {ssr: false})
+
+const ForwardRefCodeMirror = React.forwardRef<
+  ReactCodeMirror.ReactCodeMirror,
+  ReactCodeMirror.ReactCodeMirrorProps
+>((props, ref) => {
+  return <WrappedCodeMirror {...props} editorRef={ref} />;
+});
 
 type QueryEditorPropType = {
     initialValue: string,
@@ -30,13 +38,21 @@ const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: Q
     const [queryName, setQueryName] = useState(initQueryName)
     const [saving, setSaving] = useState(false)
     const [running, setRunning] = useState(false)
+    const editorRef = useRef<ReactCodeMirror.ReactCodeMirror | null>(null);
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
     const startSaving = async () => {
         setSaving(true)
         try{
-            const result = await dispatch(saveDBQuery({dbConnId: dbConnection!.id, queryId, name: queryName, query: value})).unwrap()
+            let formattedQuery = format(value, {
+              language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
+              uppercase: true, // Defaults to false
+              linesBetweenQueries: 2,
+            });
+            setValue(formattedQuery);
+            editorRef.current?.getCodeMirror().setValue(formattedQuery);
+            const result = await dispatch(saveDBQuery({dbConnId: dbConnection!.id, queryId, name: queryName, query: formattedQuery})).unwrap()
             toast.success("Saved Succesfully!")
             onSave(result.dbQuery.id)
         } catch(e) {
@@ -46,6 +62,13 @@ const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: Q
     }
 
     const startRunningQuery = () => {
+      let formattedQuery = format(value, {
+        language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
+        uppercase: true, // Defaults to false
+        linesBetweenQueries: 2,
+      });
+      setValue(formattedQuery);
+      editorRef.current?.getCodeMirror().setValue(formattedQuery);
         runQuery(value, ()=>{
             setRunning(false)
         })
@@ -53,7 +76,8 @@ const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: Q
 
     return (
         <React.Fragment>
-        <CodeMirror 
+        <ForwardRefCodeMirror 
+            ref={editorRef}
             value={value}
             options={{
                 mode: 'sql',
