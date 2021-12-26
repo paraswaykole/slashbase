@@ -23,7 +23,8 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^7.2.4",
     "react-table": "^7.7.0",
-    "react-tooltip": "^4.2.21"
+    "react-tooltip": "^4.2.21",
+    "sql-formatter": "^4.0.2"
   },
   "devDependencies": {
     "@types/react": "17.0.18",
