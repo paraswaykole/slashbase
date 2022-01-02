@@ -21,6 +21,8 @@ const ForwardRefCodeMirror = React.forwardRef<
   return <WrappedCodeMirror {...props} editorRef={ref} />;
 });
 
+ForwardRefCodeMirror.displayName = 'ForwardRefCodeMirror';
+
 type QueryEditorPropType = {
     initialValue: string,
     initQueryName: string,
