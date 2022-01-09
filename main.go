@@ -27,6 +27,7 @@ func main() {
 	configureRootUser()
 	queryengines.InitQueryEngines()
 	initUnusedRemovalThreads()
+	fmt.Println("Starting slashbase server...")
 	server.Init()
 }
 

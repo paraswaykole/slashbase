@@ -9,7 +9,8 @@ curl -XPOST -H "Content-type: application/json" -d '{
     "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
     "event": "Install Started",
     "properties": {
-      "distinct_id": "'$SLASHBASE_INSTALLATION_ID'"
+      "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
+      "type": "binary"
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
 
@@ -128,7 +129,8 @@ curl -XPOST -H "Content-type: application/json" -d '{
     "properties": {
       "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
       "root_email": "'$root_email'",
-      "domain": "'$domain'"
+      "domain": "'$domain'",
+      "type": "binary"
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
 
@@ -206,6 +208,7 @@ curl -XPOST -H "Content-type: application/json" -d '{
     "properties": {
       "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
       "root_email": "'$root_email'",
-      "domain": "'$domain'"
+      "domain": "'$domain'",
+      "type": "binary"
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
