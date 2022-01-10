@@ -45,8 +45,8 @@ const DBPage: NextPage = () => {
         <AppLayout title={dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase"}>
             { mschema && mname && 
                 <React.Fragment>
-                    <div className="tabs is-toggle is-toggle-rounded">
-                        <h1>{`Showing ${mschema}.${mname}`}&nbsp;&nbsp;</h1>
+                    <div className="tabs is-toggle is-toggle-rounded tabs-set">
+                        <h1>{`Showing ${mschema}.${mname}`}</h1>
                         <ul>
                             <Link 
                                 href={{pathname: Constants.APP_PATHS.DB_PATH.path, query: {mschema, mname}}} 
@@ -76,6 +76,16 @@ const DBPage: NextPage = () => {
                     { path === 'model' && <DBShowModelFragment /> }
                 </React.Fragment>
             }
+            <style jsx>{`
+                .tabs-set {
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 0.7rem;
+                }
+                .tabs-set ul{
+                    flex-grow: 0;
+                }
+            `}</style>
         </AppLayout>
     )
 }
