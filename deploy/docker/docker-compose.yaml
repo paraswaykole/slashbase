@@ -28,7 +28,7 @@ services:
       - '3001:3001'
       - '2345:2345'
     volumes:
-      - ../../src/config:/slashbase/src/config
+      - ../../:/slashbase
     depends_on:
       slashbase-db:
         condition: service_healthy
