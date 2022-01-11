@@ -42,7 +42,12 @@ const (
 func newDBConnection(userID string, projectID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
 
 	if !utils.ContainsString([]string{DBUSESSH_NONE, DBUSESSH_PASSWORD, DBUSESSH_KEYFILE, DBUSESSH_PASSKEYFILE}, useSSH) {
-		return nil, errors.New("UseSSH is not correct")
+		return nil, errors.New("useSSH is not correct")
+	}
+
+	if name == "" || dbhost == "" || dbport == "" || dbuser == "" ||
+		dbpassword == "" || databaseName == "" {
+		return nil, errors.New("cannot be empty")
 	}
 
 	return &DBConnection{
