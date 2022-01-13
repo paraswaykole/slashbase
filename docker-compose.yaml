@@ -21,27 +21,27 @@ services:
 
   slashbase-server:
     build:
-      context: ../../
+      context: .
       target: dev
     restart: always
     ports:
       - '3001:3001'
       - '2345:2345'
     volumes:
-      - ../../:/slashbase
+      - .:/slashbase
     depends_on:
       slashbase-db:
         condition: service_healthy
 
   slashbase-web:
     build:
-      context: ../../frontend
+      context: ./frontend
       target: dev
     restart: always
     ports:
       - '3000:3000'
     volumes:
-      - ../../frontend:/app
+      - ./frontend:/app
       - /app/node_modules
       - /app/.next
 
