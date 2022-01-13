@@ -31,6 +31,10 @@ func RunQuery(user *models.User, dbConn *models.DBConnection, query string, user
 	return postgresQueryEngine.RunQuery(user, dbConn, query)
 }
 
+func TestConnection(user *models.User, dbConn *models.DBConnection) bool {
+	return postgresQueryEngine.TestConnection(user, dbConn)
+}
+
 func GetDataModels(user *models.User, dbConn *models.DBConnection) ([]*DBDataModel, error) {
 	data, err := postgresQueryEngine.GetDataModels(user, dbConn)
 	if err != nil {

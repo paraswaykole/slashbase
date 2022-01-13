@@ -31,6 +31,7 @@ const NewDBPage: NextPage = () => {
     const [dbSSHUser, setSSHUser] = useState('')
     const [dbSSHPassword, setSSHPassword] = useState('')
     const [dbSSHKeyFile, setSSHKeyFile] = useState('')
+    const [addingError, setAddingError] = useState(false)
     const [adding, setAdding] = useState(false)
 
     if (!project) {
@@ -42,25 +43,29 @@ const NewDBPage: NextPage = () => {
     }
 
     const startAddingDB = async () => {
-      setAdding(true)
-      const payload: AddDBConnPayload = {
-          projectId: project.id,
-          name: dbName,
-          host: dbHost,
-          port: dbPort,
-          password: dbPassword,
-          user: dbUsername,
-          dbname: dbDatabase,
-          useSSH: dbUseSSH,
-          sshHost: dbSSHHost,
-          sshUser: dbSSHUser,
-          sshPassword: dbSSHPassword,
-          sshKeyFile: dbSSHKeyFile,
-          
-      }
-      await dispatch(addNewDBConn(payload))
-      setAdding(false)
-      router.replace(Constants.APP_PATHS.PROJECT.path.replace('[id]', project.id))
+        setAdding(true)
+        const payload: AddDBConnPayload = {
+            projectId: project.id,
+            name: dbName,
+            host: dbHost,
+            port: dbPort,
+            password: dbPassword,
+            user: dbUsername,
+            dbname: dbDatabase,
+            useSSH: dbUseSSH,
+            sshHost: dbSSHHost,
+            sshUser: dbSSHUser,
+            sshPassword: dbSSHPassword,
+            sshKeyFile: dbSSHKeyFile,
+            
+        }
+        try {
+            await dispatch(addNewDBConn(payload)).unwrap()
+            router.replace(Constants.APP_PATHS.PROJECT.path.replace('[id]', project.id))
+        } catch(e: any){
+            setAddingError(e)
+        }
+        setAdding(false)
     }
 
     return (
@@ -215,6 +220,7 @@ const NewDBPage: NextPage = () => {
                 <div className="control">
                     { !adding && <button className="button is-primary" onClick={startAddingDB}>Add</button> }
                     { adding && <button className="button is-primary">Adding...</button>}
+                    { !adding && addingError && <span className="help is-danger" style={{display: "inline-flex"}}>&nbsp;&nbsp;{addingError}</span>}
                 </div>
             </div>
         </AppLayout>

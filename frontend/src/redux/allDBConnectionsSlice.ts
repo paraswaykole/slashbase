@@ -38,11 +38,15 @@ export const getAllDBConnections = createAsyncThunk(
 
 export const addNewDBConn = createAsyncThunk(
   'allDBConnections/addNewDBConn',
-  async (payload: AddDBConnPayload) => {
-    const result = await apiService.addNewDBConn(payload)
-    const dbConn = result.success ? result.data : null
-    return {
-      dbConn: dbConn,
+  async (payload: AddDBConnPayload, { rejectWithValue }) => {
+    const response = await apiService.addNewDBConn(payload)
+    if (response.success) {
+      const dbConn = response.success ? response.data : null
+      return {
+        dbConn: dbConn
+      }
+    } else {
+      return rejectWithValue(response.error)
     }
   }
 )
@@ -59,11 +63,11 @@ export const allDBConnectionSlice = createSlice({
       .addCase(getAllDBConnections.pending, (state) => {
         state.isFetching = true
       })
-      .addCase(getAllDBConnections.fulfilled, (state,  action) => {
+      .addCase(getAllDBConnections.fulfilled, (state, action) => {
         state.isFetching = false
         state.dbConnections = state.dbConnections.concat(action.payload.dbConnections)
       })
-      .addCase(addNewDBConn.fulfilled, (state,  action) => {
+      .addCase(addNewDBConn.fulfilled, (state, action: any) => {
         if (action.payload.dbConn)
           state.dbConnections.push(action.payload.dbConn)
       })

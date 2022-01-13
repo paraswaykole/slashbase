@@ -8,6 +8,7 @@ import (
 	"slashbase.com/backend/src/daos"
 	"slashbase.com/backend/src/middlewares"
 	"slashbase.com/backend/src/models"
+	"slashbase.com/backend/src/queryengines"
 	"slashbase.com/backend/src/utils"
 	"slashbase.com/backend/src/views"
 )
@@ -47,6 +48,16 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 		})
 		return
 	}
+
+	success := queryengines.TestConnection(authUser, dbConn)
+	if !success {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "Failed to connect to database",
+		})
+		return
+	}
+
 	err = dbConnDao.CreateDBConnection(dbConn)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{

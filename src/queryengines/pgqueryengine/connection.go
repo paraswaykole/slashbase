@@ -28,9 +28,11 @@ func (pxEngine *PostgresQueryEngine) getConnection(dbConnectionId, host string, 
 		err = fmt.Errorf("unable to connect to database: %v", err)
 		return
 	}
-	pxEngine.openConnections[dbConnectionId] = pgxConnPoolInstance{
-		pgxConnPoolInstance: pool,
-		LastUsed:            time.Now(),
+	if dbConnectionId != "" {
+		pxEngine.openConnections[dbConnectionId] = pgxConnPoolInstance{
+			pgxConnPoolInstance: pool,
+			LastUsed:            time.Now(),
+		}
 	}
 	return pool, err
 }

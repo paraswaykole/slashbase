@@ -69,6 +69,16 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 	}, nil
 }
 
+func (pgqe *PostgresQueryEngine) TestConnection(user *models.User, dbConn *models.DBConnection) bool {
+	query := "SELECT 1 AS test;"
+	data, err := pgqe.RunQuery(user, dbConn, query)
+	if err != nil {
+		return false
+	}
+	test := data["rows"].([]map[string]interface{})[0]["test"].(int32)
+	return test == 1
+}
+
 func (pgqe *PostgresQueryEngine) GetDataModels(user *models.User, dbConn *models.DBConnection) ([]map[string]interface{}, error) {
 	data, err := pgqe.RunQuery(user, dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' ORDER BY tablename;")
 	if err != nil {
