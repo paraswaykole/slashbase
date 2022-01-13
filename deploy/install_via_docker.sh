@@ -533,9 +533,9 @@ EOF
 mv default.conf "$WORK_DIR/data/nginx/conf.d/"
 
 if has_curl; then
-    curl -o docker-compose.yaml https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/docker-compose.production.yaml
+    curl -o docker-compose.yaml https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/docker-compose.yaml
 elif has_wget; then
-    wget -O docker-compose.yaml https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/docker-compose.production.yaml
+    wget -O docker-compose.yaml https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/docker-compose.yaml
 fi
 
 
