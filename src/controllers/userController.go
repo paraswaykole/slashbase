@@ -3,189 +3,93 @@ package controllers
 import (
 	"database/sql"
 	"errors"
-	"net/http"
-	"strconv"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"slashbase.com/backend/src/config"
 	"slashbase.com/backend/src/daos"
-	"slashbase.com/backend/src/middlewares"
 	"slashbase.com/backend/src/models"
-	"slashbase.com/backend/src/views"
 )
 
 type UserController struct{}
 
 var userDao daos.UserDao
 
-func (uc UserController) LoginUser(c *gin.Context) {
-	var loginBody struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	c.BindJSON(&loginBody)
-	usr, err := userDao.GetUserByEmail(loginBody.Email)
+func (uc UserController) LoginUser(email, password string) (*models.UserSession, error) {
+
+	usr, err := userDao.GetUserByEmail(email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"error":   "Invalid User",
-			})
-			return
+			return nil, errors.New("invalid user")
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	if usr.VerifyPassword(loginBody.Password) {
+	if usr.VerifyPassword(password) {
 		userSession, _ := models.NewUserSession(usr.ID)
 		err = userDao.CreateUserSession(userSession)
 		userSession.User = *usr
 		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"error":   "There was some problem",
-			})
-			return
+			return nil, errors.New("there was some problem")
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"success": true,
-			"data":    views.BuildUserSession(userSession),
-		})
-		return
+		return userSession, nil
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": false,
-		"error":   "Invalid Login",
-	})
+	return nil, errors.New("invalid user")
 }
 
-func (uc UserController) EditAccount(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
-	var userBody struct {
-		Name            string `json:"name"`
-		ProfileImageURL string `json:"profileImageUrl"`
-	}
-	c.BindJSON(&userBody)
+func (uc UserController) EditAccount(authUser *models.User, name, profileImageUrl string) error {
 
-	err := userDao.EditUser(authUser.ID, userBody.Name, userBody.ProfileImageURL)
+	err := userDao.EditUser(authUser.ID, name, profileImageUrl)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return errors.New("there was some problem")
 	}
 	authUser.FullName = sql.NullString{
-		String: userBody.Name,
-		Valid:  userBody.Name != "",
+		String: name,
+		Valid:  name != "",
 	}
 	authUser.ProfileImageURL = sql.NullString{
-		String: userBody.ProfileImageURL,
-		Valid:  userBody.ProfileImageURL != "",
+		String: profileImageUrl,
+		Valid:  profileImageUrl != "",
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildUser(authUser),
-	})
+	return nil
 }
 
-func (uc UserController) GetUsers(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
+func (uc UserController) GetUsersPaginated(authUser *models.User, offset int) (*[]models.User, int, error) {
+
 	if !authUser.IsRoot {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
-	}
-	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "invalid offset",
-		})
+		return nil, 0, errors.New("not allowed")
 	}
 
 	users, err := userDao.GetUsersPaginated(offset)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
+		return nil, 0, errors.New("there was some problem")
 	}
 
-	userViews := []views.UserView{}
 	next := -1
-	for i, user := range *users {
-		userViews = append(userViews, views.BuildUser(&user))
-		if i == config.PAGINATION_COUNT-1 {
-			next = next + config.PAGINATION_COUNT
-		}
+	if len(*users) == config.PAGINATION_COUNT {
+		next = next + config.PAGINATION_COUNT
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data": gin.H{
-			"list": userViews,
-			"next": next,
-		},
-	})
-
+	return users, next, nil
 }
 
-func (uc UserController) AddUser(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
-	var addUserBody struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	c.BindJSON(&addUserBody)
+func (uc UserController) AddUser(authUser *models.User, email, password string) error {
 	if !authUser.IsRoot {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
+		return errors.New("not allowed")
 	}
-	usr, err := userDao.GetUserByEmail(addUserBody.Email)
+	usr, err := userDao.GetUserByEmail(email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			usr, err = models.NewUser(addUserBody.Email, addUserBody.Password)
+			usr, err = models.NewUser(email, password)
 			if err != nil {
-				c.JSON(http.StatusOK, gin.H{
-					"success": false,
-					"error":   err,
-				})
-				return
+				return err
 			}
 		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"error":   "There was some problem",
-			})
-			return
+			return errors.New("there was some problem")
 		}
 	}
 	err = userDao.CreateUser(usr)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return errors.New("there was some problem")
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-	})
-}
-
-func (uc UserController) Logout(c *gin.Context) {
-	authUserSession := middlewares.GetAuthSession(c)
-	authUserSession.SetInActive()
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-	})
+	return nil
 }

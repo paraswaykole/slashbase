@@ -2,18 +2,13 @@ package controllers
 
 import (
 	"errors"
-	"net/http"
-	"strconv"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/src/config"
 	"slashbase.com/backend/src/daos"
-	"slashbase.com/backend/src/middlewares"
 	"slashbase.com/backend/src/models"
 	"slashbase.com/backend/src/queryengines"
 	"slashbase.com/backend/src/utils"
-	"slashbase.com/backend/src/views"
 )
 
 type QueryController struct{}
@@ -21,480 +16,227 @@ type QueryController struct{}
 var dbQueryDao daos.DBQueryDao
 var dbQueryLogDao daos.DBQueryLogDao
 
-func (qc QueryController) RunQuery(c *gin.Context) {
-	var runBody struct {
-		DBConnectionID string `json:"dbConnectionId"`
-		Query          string `json:"query"`
-	}
-	c.BindJSON(&runBody)
-	authUser := middlewares.GetAuthUser(c)
+func (qc QueryController) RunQuery(authUser *models.User, dbConnectionId, query string) (map[string]interface{}, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(runBody.DBConnectionID, authUser.ID)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnectionId, authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 
-	authUserProjectMember, err := middlewares.GetAuthUserProjectMemberForProject(c, dbConn.ProjectID)
+	authUserProjectMember, err := GetAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, err
 	}
 
-	data, err := queryengines.RunQuery(authUser, dbConn, runBody.Query, authUserProjectMember.Role)
+	data, err := queryengines.RunQuery(authUser, dbConn, query, authUserProjectMember.Role)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, err
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    data,
-	})
+	return data, nil
 }
 
-func (qc QueryController) GetData(c *gin.Context) {
-	dbConnId := c.Param("dbConnId")
-
-	schema := c.Query("schema")
-	name := c.Query("name")
-	fetchCount := c.Query("count") == "true"
-	limit := 200
-	offsetStr := c.Query("offset")
-	offset, err := strconv.ParseInt(offsetStr, 10, 64)
-	if err != nil {
-		offset = int64(0)
-	}
-	filter, hasFilter := c.GetQueryArray("filter[]")
-	if hasFilter && len(filter) < 2 {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Invalid filter query",
-		})
-		return
-	}
-	sort, hasSort := c.GetQueryArray("sort[]")
-	if hasSort && len(sort) != 2 {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Invalid sort query",
-		})
-		return
-	}
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjects := middlewares.GetAuthUserProjectIds(c)
+func (qc QueryController) GetData(authUser *models.User, authUserProjectIds *[]string,
+	dbConnId, schema, name string, fetchCount bool, limit int, offset int64,
+	filter, sort []string) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Not allowed to run query",
-		})
-		return
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed to run query")
 	}
 
 	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount, filter, sort)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err,
-		})
-		return
+		return nil, err
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    data,
-	})
+	return data, nil
 }
 
-func (qc QueryController) GetDataModels(c *gin.Context) {
-	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjects := middlewares.GetAuthUserProjectIds(c)
+func (qc QueryController) GetDataModels(authUser *models.User, authUserProjectIds *[]string, dbConnId string) ([]*queryengines.DBDataModel, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Not allowed to run query",
-		})
-		return
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed to run query")
 	}
 
 	dataModels, err := queryengines.GetDataModels(authUser, dbConn)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err,
-		})
-		return
+		return nil, err
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    dataModels,
-	})
+	return dataModels, nil
 }
 
-func (qc QueryController) GetSingleDataModel(c *gin.Context) {
-	dbConnId := c.Param("dbConnId")
-
-	schema := c.Query("schema")
-	name := c.Query("name")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjects := middlewares.GetAuthUserProjectIds(c)
+func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+	schema, name string) (*queryengines.DBDataModel, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Not allowed to run query",
-		})
-		return
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed to run query")
 	}
 
 	data, err := queryengines.GetSingleDataModel(authUser, dbConn, schema, name)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err,
-		})
-		return
+		return nil, err
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    data,
-	})
+	return data, nil
 }
 
-func (qc QueryController) AddData(c *gin.Context) {
-	dbConnId := c.Param("dbConnId")
-	var addBody struct {
-		Schema string                 `json:"schema"`
-		Name   string                 `json:"name"`
-		Data   map[string]interface{} `json:"data"`
-	}
-	c.BindJSON(&addBody)
-	authUser := middlewares.GetAuthUser(c)
+func (qc QueryController) AddData(authUser *models.User, dbConnId string,
+	schema, name string, data map[string]interface{}) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 
-	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-		return
+	if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+		return nil, err
 	}
 
-	data, err := queryengines.AddData(authUser, dbConn, addBody.Schema, addBody.Name, addBody.Data)
+	resultData, err := queryengines.AddData(authUser, dbConn, schema, name, data)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    data,
-	})
+	return resultData, nil
 }
 
-func (qc QueryController) DeleteData(c *gin.Context) {
-	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	var deleteBody struct {
-		Schema string   `json:"schema"`
-		Name   string   `json:"name"`
-		CTIDs  []string `json:"ctids"`
-	}
-	c.BindJSON(&deleteBody)
+func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
+	schema, name string, ctids []string) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 
-	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-		return
+	if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+		return nil, err
 	}
 
-	data, err := queryengines.DeleteData(authUser, dbConn, deleteBody.Schema, deleteBody.Name, deleteBody.CTIDs)
+	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ctids)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    data,
-	})
+	return data, nil
 }
 
-func (qc QueryController) UpdateSingleData(c *gin.Context) {
-	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	var updateBody struct {
-		Schema     string `json:"schema"`
-		Name       string `json:"name"`
-		CTID       string `json:"ctid"`
-		ColumnName string `json:"columnName"`
-		Value      string `json:"value"`
-	}
-	c.BindJSON(&updateBody)
+func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
+	schema, name, ctid, columnName, columnValue string) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 
-	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-		return
+	if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+		return nil, err
 	}
 
-	data, err := queryengines.UpdateSingleData(authUser, dbConn, updateBody.Schema, updateBody.Name, updateBody.CTID, updateBody.ColumnName, updateBody.Value)
+	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, ctid, columnName, columnValue)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    data,
-	})
+	return data, nil
 }
 
-func (qc QueryController) SaveDBQuery(c *gin.Context) {
-	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjects := middlewares.GetAuthUserProjectIds(c)
-	var createBody struct {
-		Name    string `json:"name"`
-		Query   string `json:"query"`
-		QueryID string `json:"queryId"`
-	}
-	c.BindJSON(&createBody)
+func (qc QueryController) SaveDBQuery(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+	name, query, queryId string) (*models.DBQuery, error) {
 
 	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 
-	if !utils.ContainsString(*authUserProjects, dbConn.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Not allowed to run query",
-		})
-		return
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed")
 	}
 
 	var queryObj *models.DBQuery
-	if createBody.QueryID == "" {
-		queryObj = models.NewQuery(authUser, createBody.Name, createBody.Query, dbConn.ID)
+	if queryId == "" {
+		queryObj = models.NewQuery(authUser, name, query, dbConn.ID)
 		err = dbQueryDao.CreateQuery(queryObj)
 	} else {
-		queryObj, err = dbQueryDao.GetSingleDBQuery(createBody.QueryID)
+		queryObj, err = dbQueryDao.GetSingleDBQuery(queryId)
 		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"error":   err.Error(),
-			})
-			return
+			return nil, errors.New("there was some problem")
 		}
-		queryObj.Name = createBody.Name
-		queryObj.Query = createBody.Query
-		err = dbQueryDao.UpdateDBQuery(createBody.QueryID, &models.DBQuery{
-			Name:  createBody.Name,
-			Query: createBody.Query,
+		queryObj.Name = name
+		queryObj.Query = query
+		err = dbQueryDao.UpdateDBQuery(queryId, &models.DBQuery{
+			Name:  name,
+			Query: query,
 		})
-
 	}
 
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildDBQueryView(queryObj),
-	})
+	return queryObj, nil
 }
 
-func (qc QueryController) GetDBQueriesInDBConnection(c *gin.Context) {
-	dbConnID := c.Param("dbConnId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+func (qc QueryController) GetDBQueriesInDBConnection(authUserProjectIds *[]string, dbConnId string) ([]*models.DBQuery, error) {
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   errors.New("not allowed"),
-		})
-		return
+		return nil, errors.New("not allowed")
 	}
 
-	dbQueries, err := dbQueryDao.GetDBQueriesByDBConnId(dbConnID)
+	dbQueries, err := dbQueryDao.GetDBQueriesByDBConnId(dbConnId)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, err
 	}
-	dbQueryViews := []views.DBQueryView{}
-	for _, dbQuery := range dbQueries {
-		dbQueryViews = append(dbQueryViews, *views.BuildDBQueryView(dbQuery))
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    dbQueryViews,
-	})
+	return dbQueries, nil
 }
 
-func (qc QueryController) GetSingleDBQuery(c *gin.Context) {
-	queryID := c.Param("queryId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+func (qc QueryController) GetSingleDBQuery(authUserProjectIds *[]string, queryId string) (*models.DBQuery, error) {
 
-	dbQuery, err := dbQueryDao.GetSingleDBQuery(queryID)
+	dbQuery, err := dbQueryDao.GetSingleDBQuery(queryId)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 
 	if !utils.ContainsString(*authUserProjectIds, dbQuery.DBConnection.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   errors.New("not allowed"),
-		})
-		return
+		return nil, errors.New("not allowed")
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildDBQueryView(dbQuery),
-	})
+	return dbQuery, nil
 }
 
-func (qc QueryController) GetQueryHistoryInDBConnection(c *gin.Context) {
-	dbConnID := c.Param("dbConnId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+func (qc QueryController) GetQueryHistoryInDBConnection(authUser *models.User, authUserProjectIds *[]string,
+	dbConnId string, before time.Time) ([]*models.DBQueryLog, int64, error) {
 
-	beforeInt, err := strconv.ParseInt(c.Query("before"), 10, 64)
-	var before time.Time
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
-		before = time.Now()
-	} else {
-		before = utils.UnixNanoToTime(beforeInt)
-	}
-
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, 0, errors.New("there was some problem")
 	}
 	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   errors.New("not allowed"),
-		})
-		return
+		return nil, 0, errors.New("not allowed")
 	}
 
-	authUserProjectMember, err := middlewares.GetAuthUserProjectMemberForProject(c, dbConn.ProjectID)
+	authUserProjectMember, err := GetAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, 0, err
 	}
 
-	dbQueryLogs, err := dbQueryLogDao.GetDBQueryLogsDBConnID(dbConnID, authUserProjectMember, before)
+	dbQueryLogs, err := dbQueryLogDao.GetDBQueryLogsDBConnID(dbConnId, authUserProjectMember, before)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, 0, errors.New("there was some problem")
 	}
-	dbQueryLogViews := []views.DBQueryLogView{}
+
 	var next int64 = -1
-	for i, dbQueryLog := range dbQueryLogs {
-		dbQueryLogViews = append(dbQueryLogViews, *views.BuildDBQueryLogView(dbQueryLog))
-		if i == config.PAGINATION_COUNT-1 {
-			next = dbQueryLog.CreatedAt.UnixNano()
-		}
+	if len(dbQueryLogs) == config.PAGINATION_COUNT {
+		next = dbQueryLogs[len(dbQueryLogs)-1].CreatedAt.UnixNano()
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data": gin.H{
-			"list": dbQueryLogViews,
-			"next": next,
-		},
-	})
+
+	return dbQueryLogs, next, nil
 }

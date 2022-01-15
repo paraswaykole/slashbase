@@ -1,139 +1,66 @@
 package controllers
 
 import (
-	"net/http"
+	"errors"
 
-	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/src/daos"
-	"slashbase.com/backend/src/middlewares"
 	"slashbase.com/backend/src/models"
-	"slashbase.com/backend/src/utils"
-	"slashbase.com/backend/src/views"
 )
 
 type ProjectController struct{}
 
 var projectDao daos.ProjectDao
 
-func (tc ProjectController) CreateProject(c *gin.Context) {
-	var createBody struct {
-		Name string `json:"name"`
-	}
-	c.BindJSON(&createBody)
-	authUser := middlewares.GetAuthUser(c)
+func (pc ProjectController) CreateProject(authUser *models.User, projectName string) (*models.Project, *models.ProjectMember, error) {
 
 	if !authUser.IsRoot {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
+		return nil, nil, errors.New("not allowed")
 	}
 
-	project := models.NewProject(authUser, createBody.Name)
+	project := models.NewProject(authUser, projectName)
 	projectMember, err := projectDao.CreateProject(project)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, nil, errors.New("there was some problem")
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildProject(project, projectMember),
-	})
+
+	return project, projectMember, nil
 }
 
-func (tc ProjectController) GetProjects(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
+func (pc ProjectController) GetProjects(authUser *models.User) (*[]models.ProjectMember, error) {
+
 	projectMembers, err := projectDao.GetProjectMembersForUser(authUser.ID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	projectViews := []views.ProjectView{}
-	for _, t := range *projectMembers {
-		projectViews = append(projectViews, views.BuildProject(&t.Project, &t))
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    projectViews,
-	})
+	return projectMembers, nil
 }
 
-func (tc ProjectController) GetProjectMembers(c *gin.Context) {
-	projectID := c.Param("projectId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
-	if !utils.ContainsString(*authUserProjectIds, projectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
-		return
-	}
+func (pc ProjectController) GetProjectMembers(projectID string) (*[]models.ProjectMember, error) {
+
 	projectMembers, err := projectDao.GetProjectMembers(projectID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	projectMemberViews := []views.ProjectMemberView{}
-	for _, t := range *projectMembers {
-		projectMemberViews = append(projectMemberViews, views.BuildProjectMember(&t))
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    projectMemberViews,
-	})
+	return projectMembers, nil
 }
 
-func (tc ProjectController) AddProjectMembers(c *gin.Context) {
-	projectID := c.Param("projectId")
-	var addMemberBody struct {
-		Email string `json:"email"`
-		Role  string `json:"role"`
-	}
-	c.BindJSON(&addMemberBody)
+func (pc ProjectController) AddProjectMembers(projectID, email, role string) (*models.ProjectMember, error) {
 
-	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, projectID, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
-		return
-	}
-
-	toAddUser, err := userDao.GetUserByEmail(addMemberBody.Email)
+	toAddUser, err := userDao.GetUserByEmail(email)
 	if err != nil {
 		// TODO: Create user and send email if doesn't exist in users table.
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "user does not exist",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 
-	newProjectMember, err := models.NewProjectMember(toAddUser.ID, projectID, addMemberBody.Role)
+	newProjectMember, err := models.NewProjectMember(toAddUser.ID, projectID, role)
 	if err != nil {
 		// TODO: Create user and send email if doesn't exist in users table.
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, err
 	}
 	err = projectDao.CreateProjectMember(newProjectMember)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 	newProjectMember.User = *toAddUser
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildProjectMember(newProjectMember),
-	})
+	return newProjectMember, nil
 }

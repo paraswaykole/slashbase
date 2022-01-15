@@ -2,141 +2,73 @@ package controllers
 
 import (
 	"errors"
-	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/src/daos"
-	"slashbase.com/backend/src/middlewares"
 	"slashbase.com/backend/src/models"
 	"slashbase.com/backend/src/queryengines"
-	"slashbase.com/backend/src/utils"
-	"slashbase.com/backend/src/views"
 )
 
 type DBConnectionController struct{}
 
 var dbConnDao daos.DBConnectionDao
 
-func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
-	var createBody struct {
-		ProjectID   string `json:"projectId"`
-		Name        string `json:"name"`
-		Host        string `json:"host"`
-		Port        string `json:"port"`
-		Password    string `json:"password"`
-		User        string `json:"user"`
-		DBName      string `json:"dbname"`
-		LoginType   string `json:"loginType"`
-		UseSSH      string `json:"useSSH"`
-		SSHHost     string `json:"sshHost"`
-		SSHUser     string `json:"sshUser"`
-		SSHPassword string `json:"sshPassword"`
-		SSHKeyFile  string `json:"sshKeyFile"`
-	}
-	c.BindJSON(&createBody)
-	authUser := middlewares.GetAuthUser(c)
+func (dbcc DBConnectionController) CreateDBConnection(
+	authUser *models.User,
+	projectID string,
+	name string,
+	host string,
+	port string,
+	password string,
+	user string,
+	dbName string,
+	loginType string,
+	useSSH string,
+	sshHost string,
+	sshUser string,
+	sshPassword string,
+	sshKeyFile string) (*models.DBConnection, error) {
 
-	if isAllowed, err := middlewares.GetAuthUserHasRolesForProject(c, createBody.ProjectID, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
-		return
-	}
-
-	dbConn, err := models.NewPostgresDBConnection(authUser.ID, createBody.ProjectID, createBody.Name, createBody.Host, createBody.Port,
-		createBody.User, createBody.Password, createBody.DBName, createBody.LoginType, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
+	dbConn, err := models.NewPostgresDBConnection(authUser.ID, projectID, name, host, port,
+		user, password, dbName, loginType, useSSH, sshHost, sshUser, sshPassword, sshKeyFile)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, err
 	}
 
 	success := queryengines.TestConnection(authUser, dbConn)
 	if !success {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "Failed to connect to database",
-		})
-		return
+		return nil, errors.New("failed to connect to database")
 	}
 
 	err = dbConnDao.CreateDBConnection(dbConn)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildDBConnection(dbConn),
-	})
+	return dbConn, nil
 }
 
-func (dbcc DBConnectionController) GetDBConnections(c *gin.Context) {
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+func (dbcc DBConnectionController) GetDBConnections(authUserProjectIds *[]string) ([]*models.DBConnection, error) {
 
 	dbConns, err := dbConnDao.GetDBConnectionsByProjectIds(*authUserProjectIds)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	dbConnViews := []views.DBConnectionView{}
-	for _, dbConn := range dbConns {
-		dbConnViews = append(dbConnViews, views.BuildDBConnection(dbConn))
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    dbConnViews,
-	})
+	return dbConns, err
 }
 
-func (dbcc DBConnectionController) GetSingleDBConnection(c *gin.Context) {
-	dbConnID := c.Param("dbConnId")
-	_ = middlewares.GetAuthUser(c)
+func (dbcc DBConnectionController) GetSingleDBConnection(authUser *models.User, dbConnID string) (*models.DBConnection, error) {
 	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
 	// TODO: check if authUser is member of project
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildDBConnection(dbConn),
-	})
+	return dbConn, nil
 }
 
-func (dbcc DBConnectionController) GetDBConnectionsByProject(c *gin.Context) {
-	projectID := c.Param("projectId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
-	if !utils.ContainsString(*authUserProjectIds, projectID) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   errors.New("not allowed"),
-		})
-		return
-	}
+func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) ([]*models.DBConnection, error) {
 
 	dbConns, err := dbConnDao.GetDBConnectionsByProject(projectID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
+		return nil, errors.New("there was some problem")
 	}
-	dbConnViews := []views.DBConnectionView{}
-	for _, dbConn := range dbConns {
-		dbConnViews = append(dbConnViews, views.BuildDBConnection(dbConn))
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    dbConnViews,
-	})
+	return dbConns, nil
 }
