@@ -12,6 +12,9 @@ RUN apk update \
     git \
     && update-ca-certificates
 
+COPY go.mod go.sum ./
+RUN go mod download
+
 FROM base as debugger
 WORKDIR /slashbase
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
