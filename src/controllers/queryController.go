@@ -29,7 +29,7 @@ func (qc QueryController) RunQuery(c *gin.Context) {
 	c.BindJSON(&runBody)
 	authUser := middlewares.GetAuthUser(c)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(runBody.DBConnectionID)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(runBody.DBConnectionID, authUser.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -92,7 +92,7 @@ func (qc QueryController) GetData(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -127,7 +127,7 @@ func (qc QueryController) GetDataModels(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -166,7 +166,7 @@ func (qc QueryController) GetSingleDataModel(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjects := middlewares.GetAuthUserProjectIds(c)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -206,7 +206,7 @@ func (qc QueryController) AddData(c *gin.Context) {
 	c.BindJSON(&addBody)
 	authUser := middlewares.GetAuthUser(c)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -243,7 +243,7 @@ func (qc QueryController) DeleteData(c *gin.Context) {
 	}
 	c.BindJSON(&deleteBody)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -282,7 +282,7 @@ func (qc QueryController) UpdateSingleData(c *gin.Context) {
 	}
 	c.BindJSON(&updateBody)
 
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

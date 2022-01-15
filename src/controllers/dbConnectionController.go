@@ -26,6 +26,7 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 		Password    string `json:"password"`
 		User        string `json:"user"`
 		DBName      string `json:"dbname"`
+		LoginType   string `json:"loginType"`
 		UseSSH      string `json:"useSSH"`
 		SSHHost     string `json:"sshHost"`
 		SSHUser     string `json:"sshUser"`
@@ -40,7 +41,7 @@ func (dbcc DBConnectionController) CreateDBConnection(c *gin.Context) {
 	}
 
 	dbConn, err := models.NewPostgresDBConnection(authUser.ID, createBody.ProjectID, createBody.Name, createBody.Host, createBody.Port,
-		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
+		createBody.User, createBody.Password, createBody.DBName, createBody.LoginType, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

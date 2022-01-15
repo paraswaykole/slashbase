@@ -1,15 +1,16 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import AppLayout from '../../../components/layouts/applayout'
 import { Project } from '../../../data/models'
 import DefaultErrorPage from 'next/error'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { selectProjects } from '../../../redux/projectsSlice'
 import { AddDBConnPayload } from '../../../network/payloads'
-import { DBConnectionUseSSHType, ProjectMemberRole } from '../../../data/defaults'
+import { DBConnectionLoginType, DBConnectionUseSSHType, ProjectMemberRole } from '../../../data/defaults'
 import { addNewDBConn } from '../../../redux/allDBConnectionsSlice'
 import Constants from '../../../constants'
+import ReactTooltip from 'react-tooltip'
 
 const NewDBPage: NextPage = () => {
 
@@ -26,6 +27,7 @@ const NewDBPage: NextPage = () => {
     const [dbDatabase, setDBDatabase] = useState('')
     const [dbUsername, setDBUsername] = useState('')
     const [dbPassword, setDBPassword] = useState('')
+    const [dbLoginType, setDBLoginType] = useState<string>(DBConnectionLoginType.USE_ROOT)
     const [dbUseSSH, setUseSSH] = useState<string>(DBConnectionUseSSHType.NONE)
     const [dbSSHHost, setSSHHost] = useState('')
     const [dbSSHUser, setSSHUser] = useState('')
@@ -53,6 +55,7 @@ const NewDBPage: NextPage = () => {
             user: dbUsername,
             dbname: dbDatabase,
             useSSH: dbUseSSH,
+            loginType:dbLoginType,
             sshHost: dbSSHHost,
             sshUser: dbSSHUser,
             sshPassword: dbSSHPassword,
@@ -136,6 +139,33 @@ const NewDBPage: NextPage = () => {
                             value={dbPassword}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{setDBPassword(e.target.value)}}
                             placeholder="Enter database password" />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">
+                        Login Type: &nbsp;
+                        <span className="icon-text">
+                            <span className="icon">
+                                <i className="fas fa-info-circle" data-tip="Select 'Use Root login' if you want to use the db login you specified above to<br>login for all project members, or Select 'Create individual accounts' if you want<br>Slashbase to create individual account for every member in project"/>
+                            </span>
+                        </span>
+                    </label>
+                    <div className="select">
+                        <select
+                            value={dbLoginType}
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>)=>{
+                                setDBLoginType(e.target.value)
+                            }}
+                        >
+                            <option 
+                                value={DBConnectionLoginType.USE_ROOT}>
+                                Use root user
+                            </option>
+                            <option 
+                                value={DBConnectionLoginType.INDIVIDUAL_ACCOUNTS}>
+                                Use individual accounts
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div className="field">
@@ -223,6 +253,7 @@ const NewDBPage: NextPage = () => {
                     { !adding && addingError && <span className="help is-danger" style={{display: "inline-flex"}}>&nbsp;&nbsp;{addingError}</span>}
                 </div>
             </div>
+            <ReactTooltip place="right" multiline={true} type="dark" effect="solid"/>
         </AppLayout>
     )
 }

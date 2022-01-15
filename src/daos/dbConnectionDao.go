@@ -30,3 +30,21 @@ func (d DBConnectionDao) GetDBConnectionByID(id string) (*models.DBConnection, e
 	err := db.GetDB().Where(&models.DBConnection{ID: id}).Preload("Project").First(&dbConn).Error
 	return dbConn, err
 }
+
+func (d DBConnectionDao) GetConnectableDBConnection(id, userID string) (*models.DBConnection, error) {
+	var dbConn *models.DBConnection
+	err := db.GetDB().Where(&models.DBConnection{ID: id}).Preload("Project").First(&dbConn).Error
+	if err == nil {
+		var dbConnUser models.DBConnectionUser
+		if dbConn.LoginType == models.DBLOGINTYPE_ROOT {
+			err = db.GetDB().Where("db_connection_id = ? AND is_root = ?", id, true).First(&dbConnUser).Error
+		} else {
+			err = db.GetDB().Where("db_connection_id = ? AND user_id = ?", id, userID).First(&dbConnUser).Error
+		}
+		if err != nil {
+			return nil, err
+		}
+		dbConn.ConnectionUser = &dbConnUser
+	}
+	return dbConn, err
+}
