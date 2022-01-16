@@ -1,12 +1,8 @@
 package queryengines
 
 import (
-	"errors"
-
 	"slashbase.com/backend/src/models"
 	"slashbase.com/backend/src/queryengines/pgqueryengine"
-	"slashbase.com/backend/src/queryengines/pgqueryengine/pgxutils"
-	"slashbase.com/backend/src/utils"
 )
 
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine
@@ -16,18 +12,6 @@ func InitQueryEngines() {
 }
 
 func RunQuery(user *models.User, dbConn *models.DBConnection, query string, userRole string) (map[string]interface{}, error) {
-	queryType := pgxutils.GetPSQLQueryType(query)
-	isAllowed := false
-	if queryType == pgxutils.QUERY_READ && utils.ContainsString([]string{models.ROLE_ANALYST, models.ROLE_ADMIN, models.ROLE_DEVELOPER}, userRole) {
-		isAllowed = true
-	} else if queryType == pgxutils.QUERY_WRITE && utils.ContainsString([]string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}, userRole) {
-		isAllowed = true
-	} else if queryType == pgxutils.QUERY_ALTER && utils.ContainsString([]string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}, userRole) {
-		isAllowed = true
-	}
-	if !isAllowed {
-		return nil, errors.New("not allowed")
-	}
 	return postgresQueryEngine.RunQuery(user, dbConn, query, true)
 }
 

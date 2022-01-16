@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 
 	"github.com/jackc/pgproto3/v2"
 	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
+	"slashbase.com/backend/src/utils"
 )
 
 func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
@@ -229,18 +231,22 @@ const (
 )
 
 func GetPSQLQueryType(query string) int {
-	// TODO: better query parsing method needed
-	filteredQuery := strings.ReplaceAll(strings.TrimSpace(strings.ToLower(query)), "\n", " ")
-	if strings.Contains(filteredQuery, "returning ") || strings.Contains(filteredQuery, "with ") {
+	filteredQuery := strings.TrimSpace(strings.ToLower(query))
+	filteredQuery = strings.ReplaceAll(filteredQuery, "\n", " ")
+	regexr, _ := regexp.Compile(`'.+'|".+"`)
+	regexr.ReplaceAllString(filteredQuery, "")
+	filteredQuery = strings.ReplaceAll(filteredQuery, "  ", " ")
+	tokens := strings.Split(filteredQuery, " ")
+	if utils.ContainsString(tokens, "returning") || utils.ContainsString(tokens, "with") {
 		return QUERY_READ
 	}
-	if strings.Contains(filteredQuery, "update ") || strings.Contains(filteredQuery, "insert ") || strings.Contains(filteredQuery, "truncate ") {
+	if utils.ContainsString(tokens, "update") || utils.ContainsString(tokens, "insert") || utils.ContainsString(tokens, "truncate") {
 		return QUERY_WRITE
 	}
-	if strings.Contains(filteredQuery, "alter ") || strings.Contains(filteredQuery, "drop ") || strings.Contains(filteredQuery, "create ") {
+	if utils.ContainsString(tokens, "alter") || utils.ContainsString(tokens, "drop") || utils.ContainsString(tokens, "create") {
 		return QUERY_ALTER
 	}
-	if strings.HasPrefix(filteredQuery, "select ") {
+	if utils.ContainsString(tokens, "select") {
 		return QUERY_READ
 	}
 	return QUERY_UNKOWN
