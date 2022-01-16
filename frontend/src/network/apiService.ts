@@ -78,6 +78,13 @@ const getSingleDBConnection = async function(dbConnId: string): Promise<ApiResul
                         .then(res => res.data)
 }
 
+const deleteDBConnection = async function(dbConnId: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+                        .delete<ApiResult<undefined>>(`/dbconnection/${dbConnId}`)
+                        .then(res => res.data)
+}
+
+
 const getDBConnectionsByProject = async function(projectId: string): Promise<ApiResult<Array<DBConnection>>> {
     return await Request.getApiInstance()
                         .get<ApiResult<Array<DBConnection>>>(`/dbconnection/project/${projectId}`)
@@ -170,6 +177,7 @@ export default {
     getProjectMembers,
     getAllDBConnections,
     getSingleDBConnection,
+    deleteDBConnection,
     getDBConnectionsByProject,
     getDBDataModelsByConnectionId,
     getDBSingleDataModelByConnectionId,

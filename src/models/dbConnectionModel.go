@@ -31,7 +31,7 @@ type DBConnection struct {
 
 	CreatedByUser     User               `gorm:"foreignkey:CreatedBy"`
 	Project           Project            `gorm:"foreignkey:ProjectID"`
-	DBConnectionUsers []DBConnectionUser `gorm:"foreignKey:DBConnectionID"`
+	DBConnectionUsers []DBConnectionUser `gorm:"foreignKey:DBConnectionID;constraint:OnDelete:CASCADE;"`
 	ConnectionUser    *DBConnectionUser  `gorm:"-"`
 }
 

@@ -54,6 +54,7 @@ func NewRouter() *gin.Engine {
 			dbConnGroup.GET("/all", dbConnRoutes.GetDBConnections)
 			dbConnGroup.GET("/project/:projectId", dbConnRoutes.GetDBConnectionsByProject)
 			dbConnGroup.GET("/:dbConnId", dbConnRoutes.GetSingleDBConnection)
+			dbConnGroup.DELETE("/:dbConnId", dbConnRoutes.DeleteDBConnection)
 		}
 		queryGroup := api.Group("query")
 		{

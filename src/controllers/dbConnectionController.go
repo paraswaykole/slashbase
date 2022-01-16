@@ -83,6 +83,22 @@ func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) (
 	return dbConns, nil
 }
 
+func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnID string) error {
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
+	if err != nil {
+		return errors.New("db connection not found")
+	}
+
+	// TODO: check if authUser is member of project
+
+	err = dbConnDao.DeleteDBConnectionById(dbConn.ID)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	return nil
+}
+
 func (dbcc DBConnectionController) createRoleLogins(authUser *models.User, dbConn *models.DBConnection) ([]models.DBConnectionUser, error) {
 	if dbConn.LoginType != models.DBLOGINTYPE_ROLE_ACCOUNTS {
 		return nil, nil

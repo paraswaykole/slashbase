@@ -31,6 +31,11 @@ func (d DBConnectionDao) GetDBConnectionByID(id string) (*models.DBConnection, e
 	return dbConn, err
 }
 
+func (d DBConnectionDao) DeleteDBConnectionById(id string) error {
+	err := db.GetDB().Where(&models.DBConnection{ID: id}).Delete(&models.DBConnection{}).Error
+	return err
+}
+
 func (d DBConnectionDao) GetConnectableDBConnection(id, userID string) (*models.DBConnection, error) {
 	var dbConn *models.DBConnection
 	err := db.GetDB().Where(&models.DBConnection{ID: id}).Preload("Project").First(&dbConn).Error

@@ -30,11 +30,18 @@ const ProjectPage: NextPage = () => {
     })()
   }, [router])
 
+  const onDeleteDB = async (dbConnId: string) => {
+    let response = await apiService.deleteDBConnection(dbConnId)
+    if(response.success){
+      setDatabases(databases.filter(db => db.id !== dbConnId))
+    }
+  }
+
   return (
     <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
       <h1>Showing Databases in {project?.name}</h1>
       {databases.map((db: DBConnection) => (
-        <DBConnCard key={db.id} dbConn={db}/>
+        <DBConnCard key={db.id} dbConn={db} onDeleteDB={onDeleteDB}/>
       ))}
       { project && <NewDBConnButton project={project}/> }
       &nbsp;&nbsp;

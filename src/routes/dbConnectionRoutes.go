@@ -76,6 +76,22 @@ func (dbcr DBConnectionRoutes) GetDBConnections(c *gin.Context) {
 	})
 }
 
+func (dbcr DBConnectionRoutes) DeleteDBConnection(c *gin.Context) {
+	dbConnID := c.Param("dbConnId")
+	authUser := middlewares.GetAuthUser(c)
+	err := dbConnController.DeleteDBConnection(authUser, dbConnID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
+}
+
 func (dbcr DBConnectionRoutes) GetSingleDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
