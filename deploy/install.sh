@@ -14,7 +14,7 @@ curl -XPOST -H "Content-type: application/json" -d '{
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
 
-wget "https://github.com/slashbase/slashbase/releases/download/v1.0.1-beta/release.tar.gz"
+wget "https://github.com/slashbase/slashbase/releases/download/v1.0.2-beta/release.tar.gz"
 tar -xvf release.tar.gz
 
 touch template.yaml & cat << EOF > template.yaml
