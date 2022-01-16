@@ -41,6 +41,7 @@ func autoMigrate() {
 		&models.Project{},
 		&models.ProjectMember{},
 		&models.DBConnection{},
+		&models.DBConnectionUser{},
 		&models.DBQuery{},
 		&models.DBQueryLog{},
 	)

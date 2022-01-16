@@ -14,3 +14,8 @@ export enum DBConnectionUseSSHType {
 	KEYFILE     = "KEYFILE",
 	PASSKEYFILE = "PASSKEYFILE",
 }
+
+export enum DBConnectionLoginType {
+    USE_ROOT        = "USE_ROOT",
+	ROLE_ACCOUNTS    = "ROLE_ACCOUNTS",
+}

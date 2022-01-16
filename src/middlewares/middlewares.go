@@ -1,18 +1,15 @@
 package middlewares
 
 import (
-	"errors"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/src/daos"
 	"slashbase.com/backend/src/models"
-	"slashbase.com/backend/src/utils"
 )
 
 var userDao daos.UserDao
-var projectDao daos.ProjectDao
 
 const (
 	USER_SESSION = "USER_SESSION"
@@ -39,7 +36,6 @@ func FindUserMiddleware() gin.HandlerFunc {
 			return
 		}
 		c.Next()
-		return
 	}
 }
 
@@ -52,7 +48,6 @@ func AuthUserMiddleware() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		c.Abort()
-		return
 	}
 }
 
@@ -73,45 +68,4 @@ func GetAuthUserProjectIds(c *gin.Context) *[]string {
 		projectIDs = append(projectIDs, project.ID)
 	}
 	return &projectIDs
-}
-
-func GetAuthUserHasRolesForProject(c *gin.Context, projectID string, hasRoles []string) (bool, error) {
-	authUser := GetAuthUser(c)
-	pMember, notFound, err := projectDao.GetUserProjectMemberForProject(projectID, authUser.ID)
-	if notFound {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
-		return false, nil
-	} else if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"error":   "There was some problem",
-		})
-		return false, err
-	}
-
-	if utils.ContainsString(hasRoles, pMember.Role) {
-		return true, nil
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": false,
-		"error":   "not allowed",
-	})
-	return false, nil
-}
-
-func GetAuthUserProjectMemberForProject(c *gin.Context, projectID string) (*models.ProjectMember, error) {
-	authUser := GetAuthUser(c)
-	pMember, notFound, err := projectDao.GetUserProjectMemberForProject(projectID, authUser.ID)
-	if err != nil {
-		if notFound {
-			return nil, errors.New("not allowed")
-		}
-		return nil, errors.New("there was some problem")
-	}
-
-	return pMember, nil
 }

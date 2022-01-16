@@ -42,8 +42,10 @@ services:
       - '3000:3000'
     volumes:
       - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
+      - slashbasenodemodules:/app/node_modules
+      - slashbasenext:/app/.next
 
 volumes: 
-     slashbasepgdata:
+  slashbasepgdata:
+  slashbasenodemodules:
+  slashbasenext:

@@ -4,8 +4,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/src/config"
-	"slashbase.com/backend/src/controllers"
 	"slashbase.com/backend/src/middlewares"
+	"slashbase.com/backend/src/routes"
 )
 
 // NewRouter return a gin router for server
@@ -26,56 +26,56 @@ func NewRouter() *gin.Engine {
 	{
 		userGroup := api.Group("user")
 		{
-			userController := new(controllers.UserController)
-			userGroup.POST("/login", userController.LoginUser)
+			userRoutes := new(routes.UserRoutes)
+			userGroup.POST("/login", userRoutes.LoginUser)
 			userGroup.Use(middlewares.FindUserMiddleware())
 			userGroup.Use(middlewares.AuthUserMiddleware())
-			userGroup.POST("/edit", userController.EditAccount)
-			userGroup.POST("/add", userController.AddUser)
-			userGroup.GET("/all", userController.GetUsers)
-			userGroup.GET("/logout", userController.Logout)
+			userGroup.POST("/edit", userRoutes.EditAccount)
+			userGroup.POST("/add", userRoutes.AddUser)
+			userGroup.GET("/all", userRoutes.GetUsers)
+			userGroup.GET("/logout", userRoutes.Logout)
 		}
 		projectGroup := api.Group("project")
 		{
-			projectController := new(controllers.ProjectController)
+			projectRoutes := new(routes.ProjectRoutes)
 			projectGroup.Use(middlewares.FindUserMiddleware())
 			projectGroup.Use(middlewares.AuthUserMiddleware())
-			projectGroup.POST("/create", projectController.CreateProject)
-			projectGroup.GET("/all", projectController.GetProjects)
-			projectGroup.POST("/:projectId/members/create", projectController.AddProjectMembers)
-			projectGroup.GET("/:projectId/members", projectController.GetProjectMembers)
+			projectGroup.POST("/create", projectRoutes.CreateProject)
+			projectGroup.GET("/all", projectRoutes.GetProjects)
+			projectGroup.POST("/:projectId/members/create", projectRoutes.AddProjectMembers)
+			projectGroup.GET("/:projectId/members", projectRoutes.GetProjectMembers)
 		}
 		dbConnGroup := api.Group("dbconnection")
 		{
-			dbConnController := new(controllers.DBConnectionController)
+			dbConnRoutes := new(routes.DBConnectionRoutes)
 			dbConnGroup.Use(middlewares.FindUserMiddleware())
 			dbConnGroup.Use(middlewares.AuthUserMiddleware())
-			dbConnGroup.POST("/create", dbConnController.CreateDBConnection)
-			dbConnGroup.GET("/all", dbConnController.GetDBConnections)
-			dbConnGroup.GET("/project/:projectId", dbConnController.GetDBConnectionsByProject)
-			dbConnGroup.GET("/:dbConnId", dbConnController.GetSingleDBConnection)
+			dbConnGroup.POST("/create", dbConnRoutes.CreateDBConnection)
+			dbConnGroup.GET("/all", dbConnRoutes.GetDBConnections)
+			dbConnGroup.GET("/project/:projectId", dbConnRoutes.GetDBConnectionsByProject)
+			dbConnGroup.GET("/:dbConnId", dbConnRoutes.GetSingleDBConnection)
 		}
 		queryGroup := api.Group("query")
 		{
-			queryController := new(controllers.QueryController)
+			queryRoutes := new(routes.QueryRoutes)
 			queryGroup.Use(middlewares.FindUserMiddleware())
 			queryGroup.Use(middlewares.AuthUserMiddleware())
-			queryGroup.POST("/run", queryController.RunQuery)
-			queryGroup.POST("/save/:dbConnId", queryController.SaveDBQuery)
-			queryGroup.GET("/getall/:dbConnId", queryController.GetDBQueriesInDBConnection)
-			queryGroup.GET("/get/:queryId", queryController.GetSingleDBQuery)
-			queryGroup.GET("/history/:dbConnId", queryController.GetQueryHistoryInDBConnection)
+			queryGroup.POST("/run", queryRoutes.RunQuery)
+			queryGroup.POST("/save/:dbConnId", queryRoutes.SaveDBQuery)
+			queryGroup.GET("/getall/:dbConnId", queryRoutes.GetDBQueriesInDBConnection)
+			queryGroup.GET("/get/:queryId", queryRoutes.GetSingleDBQuery)
+			queryGroup.GET("/history/:dbConnId", queryRoutes.GetQueryHistoryInDBConnection)
 			dataGroup := queryGroup.Group("data")
 			{
-				dataGroup.GET("/:dbConnId", queryController.GetData)
-				dataGroup.POST("/:dbConnId/single", queryController.UpdateSingleData)
-				dataGroup.POST("/:dbConnId/add", queryController.AddData)
-				dataGroup.POST("/:dbConnId/delete", queryController.DeleteData)
+				dataGroup.GET("/:dbConnId", queryRoutes.GetData)
+				dataGroup.POST("/:dbConnId/single", queryRoutes.UpdateSingleData)
+				dataGroup.POST("/:dbConnId/add", queryRoutes.AddData)
+				dataGroup.POST("/:dbConnId/delete", queryRoutes.DeleteData)
 			}
 			dataModelGroup := queryGroup.Group("datamodel")
 			{
-				dataModelGroup.GET("/all/:dbConnId", queryController.GetDataModels)
-				dataModelGroup.GET("/single/:dbConnId", queryController.GetSingleDataModel)
+				dataModelGroup.GET("/all/:dbConnId", queryRoutes.GetDataModels)
+				dataModelGroup.GET("/single/:dbConnId", queryRoutes.GetSingleDataModel)
 			}
 		}
 	}
