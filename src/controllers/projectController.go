@@ -61,6 +61,19 @@ func (pc ProjectController) AddProjectMembers(projectID, email, role string) (*m
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
+	go pc.updateProjectMemberInDBConnections(projectID)
 	newProjectMember.User = *toAddUser
 	return newProjectMember, nil
+}
+
+func (pc ProjectController) updateProjectMemberInDBConnections(projectID string) error {
+	dbConns, err := dbConnDao.GetDBConnectionsByProject(projectID)
+	if err != nil {
+		return err
+	}
+	dbController := new(DBConnectionController)
+	for _, dbConn := range dbConns {
+		dbController.updateDBConnUsersProjectMemberRoles(dbConn)
+	}
+	return nil
 }

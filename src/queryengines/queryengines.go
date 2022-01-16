@@ -28,7 +28,7 @@ func RunQuery(user *models.User, dbConn *models.DBConnection, query string, user
 	if !isAllowed {
 		return nil, errors.New("not allowed")
 	}
-	return postgresQueryEngine.RunQuery(user, dbConn, query)
+	return postgresQueryEngine.RunQuery(user, dbConn, query, true)
 }
 
 func TestConnection(user *models.User, dbConn *models.DBConnection) bool {
@@ -85,6 +85,14 @@ func AddData(user *models.User, dbConn *models.DBConnection, schemaName string, 
 
 func DeleteData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctids []string) (map[string]interface{}, error) {
 	return postgresQueryEngine.DeleteData(user, dbConn, schemaName, name, ctids)
+}
+
+func CheckCreateRolePermissions(user *models.User, dbConn *models.DBConnection) bool {
+	return postgresQueryEngine.CheckCreateRolePermissions(user, dbConn)
+}
+
+func CreateRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *models.DBConnectionUser) error {
+	return postgresQueryEngine.CreateRoleLogin(user, dbConn, dbUser)
 }
 
 func RemoveUnusedConnections() {

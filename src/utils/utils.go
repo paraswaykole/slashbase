@@ -22,7 +22,8 @@ func UnixNanoToTime(nanoInt int64) time.Time {
 	return value
 }
 
-func RandStringUnsafe(n int) string {
+// fast & unsafe pointer function
+func RandString(n int) string {
 	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	const (
 		letterIdxBits = 6                    // 6 bits to represent a letter index

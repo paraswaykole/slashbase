@@ -1,11 +1,16 @@
 package controllers
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
+	"strings"
 
 	"slashbase.com/backend/src/daos"
 	"slashbase.com/backend/src/models"
+	"slashbase.com/backend/src/models/sbsql"
 	"slashbase.com/backend/src/queryengines"
+	"slashbase.com/backend/src/utils"
 )
 
 type DBConnectionController struct{}
@@ -38,6 +43,11 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}
+	dbUsers, err := dbcc.createRoleLogins(authUser, dbConn)
+	if err != nil {
+		return nil, err
+	}
+	dbConn.DBConnectionUsers = append(dbConn.DBConnectionUsers, dbUsers...)
 
 	err = dbConnDao.CreateDBConnection(dbConn)
 	if err != nil {
@@ -71,4 +81,100 @@ func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) (
 		return nil, errors.New("there was some problem")
 	}
 	return dbConns, nil
+}
+
+func (dbcc DBConnectionController) createRoleLogins(authUser *models.User, dbConn *models.DBConnection) ([]models.DBConnectionUser, error) {
+	if dbConn.LoginType != models.DBLOGINTYPE_ROLE_ACCOUNTS {
+		return nil, nil
+	}
+
+	hasRolePermissions := queryengines.CheckCreateRolePermissions(authUser, dbConn)
+	if !hasRolePermissions {
+		return nil, fmt.Errorf("user '%s' does not have create role privilege", string(dbConn.ConnectionUser.DBUser))
+	}
+
+	dbConnectionUsers := []models.DBConnectionUser{
+		{
+			DBUser:     sbsql.CryptedData("sb_"+strings.ToLower(models.ROLE_ADMIN)) + "_" + sbsql.CryptedData(strings.ToLower(utils.RandString(4))),
+			DBPassword: sbsql.CryptedData(utils.RandString(10)),
+			ForRole: sql.NullString{
+				String: models.ROLE_ADMIN,
+				Valid:  true,
+			},
+		},
+		{
+			DBUser:     sbsql.CryptedData("sb_"+strings.ToLower(models.ROLE_DEVELOPER)) + "_" + sbsql.CryptedData(strings.ToLower(utils.RandString(4))),
+			DBPassword: sbsql.CryptedData(utils.RandString(10)),
+			ForRole: sql.NullString{
+				String: models.ROLE_DEVELOPER,
+				Valid:  true,
+			},
+		},
+		{
+			DBUser:     sbsql.CryptedData("sb_"+strings.ToLower(models.ROLE_ANALYST)) + "_" + sbsql.CryptedData(strings.ToLower(utils.RandString(4))),
+			DBPassword: sbsql.CryptedData(utils.RandString(10)),
+			ForRole: sql.NullString{
+				String: models.ROLE_ANALYST,
+				Valid:  true,
+			},
+		},
+	}
+
+	for _, dbUser := range dbConnectionUsers {
+		err := queryengines.CreateRoleLogin(authUser, dbConn, &dbUser)
+		if err != nil {
+			return nil, errors.New("there was some problem")
+		}
+	}
+
+	projectMembers, err := projectDao.GetProjectMembers(dbConn.ProjectID)
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+	for _, projectMember := range *projectMembers {
+		if projectMember.Role == models.ROLE_ADMIN {
+			dbConnectionUsers[0].UserIDs = append(dbConnectionUsers[0].UserIDs, projectMember.UserID)
+		} else if projectMember.Role == models.ROLE_DEVELOPER {
+			dbConnectionUsers[1].UserIDs = append(dbConnectionUsers[1].UserIDs, projectMember.UserID)
+		} else if projectMember.Role == models.ROLE_ANALYST {
+			dbConnectionUsers[2].UserIDs = append(dbConnectionUsers[2].UserIDs, projectMember.UserID)
+		}
+	}
+
+	return dbConnectionUsers, nil
+}
+
+func (dbcc DBConnectionController) updateDBConnUsersProjectMemberRoles(dbConn *models.DBConnection) error {
+	if dbConn.LoginType != models.DBLOGINTYPE_ROLE_ACCOUNTS {
+		return nil
+	}
+
+	dbConnUsers, err := dbConnDao.GetAllRolesDBConnectionUsers(dbConn.ID)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	roleMap := map[string]int{}
+	for i, dbUser := range dbConnUsers {
+		roleMap[dbUser.ForRole.String] = i
+	}
+
+	projectMembers, err := projectDao.GetProjectMembers(dbConn.ProjectID)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	for _, projectMember := range *projectMembers {
+		if !utils.ContainsString(dbConnUsers[roleMap[projectMember.Role]].UserIDs, projectMember.UserID) {
+			dbConnUsers[roleMap[projectMember.Role]].UserIDs = append(dbConnUsers[roleMap[projectMember.Role]].UserIDs, projectMember.UserID)
+		}
+	}
+
+	for _, dbUser := range dbConnUsers {
+		err = dbUser.Save()
+		if err != nil {
+			return errors.New("there was some problem updating records")
+		}
+	}
+	return nil
 }

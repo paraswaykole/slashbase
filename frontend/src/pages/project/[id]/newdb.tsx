@@ -143,10 +143,10 @@ const NewDBPage: NextPage = () => {
                 </div>
                 <div className="field">
                     <label className="label">
-                        Login Type: &nbsp;
+                        Login type for members in project: &nbsp;
                         <span className="icon-text">
                             <span className="icon">
-                                <i className="fas fa-info-circle" data-tip="Select 'Use Root login' if you want to use the db login you specified above to<br>login for all project members, or Select 'Create individual accounts' if you want<br>Slashbase to create individual account for every member in project"/>
+                                <i className="fas fa-info-circle" data-tip="Select 'Use root user' if you want to use the db login you specified above to<br>login for all project members, or Select 'Use role accounts' if you want<br>Slashbase to create and use 3 roles account for admins, developers and analysts in the project"/>
                             </span>
                         </span>
                     </label>
@@ -162,8 +162,8 @@ const NewDBPage: NextPage = () => {
                                 Use root user
                             </option>
                             <option 
-                                value={DBConnectionLoginType.INDIVIDUAL_ACCOUNTS}>
-                                Use individual accounts
+                                value={DBConnectionLoginType.ROLE_ACCOUNTS}>
+                                Use roles accounts
                             </option>
                         </select>
                     </div>

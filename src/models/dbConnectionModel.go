@@ -5,6 +5,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/lib/pq"
+	"slashbase.com/backend/src/db"
 	"slashbase.com/backend/src/models/sbsql"
 	"slashbase.com/backend/src/utils"
 )
@@ -37,9 +39,10 @@ type DBConnectionUser struct {
 	ID             string            `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	DBUser         sbsql.CryptedData `gorm:"type:text"`
 	DBPassword     sbsql.CryptedData `gorm:"type:text"`
-	UserID         sql.NullString    `gorm:"type:text"`
+	UserIDs        pq.StringArray    `gorm:"type:text[]"`
 	DBConnectionID string            `gorm:"not null"`
 	IsRoot         bool              `gorm:"not null;"`
+	ForRole        sql.NullString
 }
 
 const (
@@ -50,8 +53,8 @@ const (
 	DBUSESSH_KEYFILE     = "KEYFILE"
 	DBUSESSH_PASSKEYFILE = "PASSKEYFILE"
 
-	DBLOGINTYPE_ROOT                = "USE_ROOT"
-	DBLOGINTYPE_INDIVIDUAL_ACCOUNTS = "INDIVIDUAL_ACCOUNTS"
+	DBLOGINTYPE_ROOT          = "USE_ROOT"
+	DBLOGINTYPE_ROLE_ACCOUNTS = "ROLE_ACCOUNTS"
 )
 
 func newDBConnection(userID string, projectID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName string, loginType string, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
@@ -60,7 +63,7 @@ func newDBConnection(userID string, projectID string, name string, dbtype string
 		return nil, errors.New("useSSH is not correct")
 	}
 
-	if !utils.ContainsString([]string{DBLOGINTYPE_ROOT, DBLOGINTYPE_INDIVIDUAL_ACCOUNTS}, loginType) {
+	if !utils.ContainsString([]string{DBLOGINTYPE_ROOT, DBLOGINTYPE_ROLE_ACCOUNTS}, loginType) {
 		return nil, errors.New("loginType is not correct")
 	}
 
@@ -96,4 +99,12 @@ func newDBConnection(userID string, projectID string, name string, dbtype string
 
 func NewPostgresDBConnection(userID string, projectID string, name string, dbhost, dbport, dbuser, dbpassword, databaseName string, loginType string, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
 	return newDBConnection(userID, projectID, name, DBTYPE_POSTGRES, dbhost, dbport, dbuser, dbpassword, databaseName, loginType, useSSH, sshHost, sshUser, sshPassword, sshKeyFile)
+}
+
+func (dbConn DBConnection) Save() error {
+	return db.GetDB().Save(&dbConn).Error
+}
+
+func (dbConnUser DBConnectionUser) Save() error {
+	return db.GetDB().Save(&dbConnUser).Error
 }

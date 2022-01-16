@@ -39,7 +39,7 @@ func (d DBConnectionDao) GetConnectableDBConnection(id, userID string) (*models.
 		if dbConn.LoginType == models.DBLOGINTYPE_ROOT {
 			err = db.GetDB().Where("db_connection_id = ? AND is_root = ?", id, true).First(&dbConnUser).Error
 		} else {
-			err = db.GetDB().Where("db_connection_id = ? AND user_id = ?", id, userID).First(&dbConnUser).Error
+			err = db.GetDB().Where("db_connection_id = ? AND ? = ANY(user_ids)", id, userID).First(&dbConnUser).Error
 		}
 		if err != nil {
 			return nil, err
@@ -47,4 +47,13 @@ func (d DBConnectionDao) GetConnectableDBConnection(id, userID string) (*models.
 		dbConn.ConnectionUser = &dbConnUser
 	}
 	return dbConn, err
+}
+
+func (d DBConnectionDao) GetAllRolesDBConnectionUsers(dbConnectionID string) ([]*models.DBConnectionUser, error) {
+	var dbConnUsers []*models.DBConnectionUser
+	err := db.GetDB().Where("db_connection_id = ? AND for_role IN ?", dbConnectionID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER, models.ROLE_ANALYST}).Find(&dbConnUsers).Error
+	if err != nil {
+		return nil, err
+	}
+	return dbConnUsers, nil
 }
