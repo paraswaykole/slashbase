@@ -11,7 +11,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@reduxjs/toolkit": "^1.6.1",
-    "axios": "^0.22.0",
+    "axios": "^0.24.0",
     "bulma": "^0.9.3",
     "codemirror": "^5.62.3",
     "localforage": "^1.9.0",
