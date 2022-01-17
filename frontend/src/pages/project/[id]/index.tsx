@@ -6,6 +6,7 @@ import DBConnCard from '../../../components/cards/dbconncard/dbconncard'
 import NewDBConnButton from '../../../components/cards/dbconncard/newdbconnectionbutton'
 import AppLayout from '../../../components/layouts/applayout'
 import Constants from '../../../constants'
+import { ProjectMemberRole } from '../../../data/defaults'
 import { DBConnection, Project } from '../../../data/models'
 import apiService from '../../../network/apiService'
 import { useAppSelector } from '../../../redux/hooks'
@@ -41,7 +42,7 @@ const ProjectPage: NextPage = () => {
     <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
       <h1>Showing Databases in {project?.name}</h1>
       {databases.map((db: DBConnection) => (
-        <DBConnCard key={db.id} dbConn={db} onDeleteDB={onDeleteDB}/>
+        <DBConnCard key={db.id} dbConn={db} isAdmin={project?.currentMember?.role === ProjectMemberRole.ADMIN} onDeleteDB={onDeleteDB} />
       ))}
       { project && <NewDBConnButton project={project}/> }
       &nbsp;&nbsp;

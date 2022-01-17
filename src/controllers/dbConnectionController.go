@@ -83,18 +83,22 @@ func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) (
 	return dbConns, nil
 }
 
-func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnID string) error {
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
+func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnId string) error {
+	dbConn, err := dbConnDao.GetConnectableRootDBConnection(dbConnId)
 	if err != nil {
 		return errors.New("db connection not found")
 	}
 
-	// TODO: check if authUser is member of project
+	if _, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN}); err != nil {
+		return err
+	}
 
 	err = dbConnDao.DeleteDBConnectionById(dbConn.ID)
 	if err != nil {
 		return errors.New("there was some problem")
 	}
+
+	go dbcc.deleteRoleLogins(authUser, dbConn)
 
 	return nil
 }
@@ -158,6 +162,26 @@ func (dbcc DBConnectionController) createRoleLogins(authUser *models.User, dbCon
 	}
 
 	return dbConnectionUsers, nil
+}
+
+func (dbcc DBConnectionController) deleteRoleLogins(authUser *models.User, dbConn *models.DBConnection) error {
+
+	if dbConn.LoginType != models.DBLOGINTYPE_ROLE_ACCOUNTS {
+		return nil
+	}
+
+	hasRolePermissions := queryengines.CheckCreateRolePermissions(authUser, dbConn)
+	if !hasRolePermissions {
+		return fmt.Errorf("user '%s' does not have create role privilege", string(dbConn.ConnectionUser.DBUser))
+	}
+
+	for _, dbUser := range dbConn.DBConnectionUsers {
+		if dbUser.ForRole.Valid {
+			queryengines.DeleteRoleLogin(authUser, dbConn, &dbUser)
+		}
+	}
+
+	return nil
 }
 
 func (dbcc DBConnectionController) updateDBConnUsersProjectMemberRoles(dbConn *models.DBConnection) error {

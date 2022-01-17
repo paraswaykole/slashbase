@@ -6,10 +6,11 @@ import Link from 'next/link'
 
 type DBConnCardPropType = { 
     dbConn: DBConnection
+    isAdmin: Boolean
     onDeleteDB: (dbConnId: string) => void
 }
 
-const DBConnCard = ({dbConn, onDeleteDB}: DBConnCardPropType) => {
+const DBConnCard = ({dbConn, isAdmin, onDeleteDB}: DBConnCardPropType) => {
 
     const [showDropdown, setShowDropdown] = useState(false)
 
@@ -23,24 +24,26 @@ const DBConnCard = ({dbConn, onDeleteDB}: DBConnCardPropType) => {
                 <div className={"card "+styles.cardContainer}>
                     <div className={"card-content "+styles.cardContent}>
                         <b>{dbConn.name}</b>
-                        <div className="dropdown is-active" onClick={(e)=>{e.preventDefault()}}>
-                            <div className="dropdown-trigger">
-                                <button className="button" aria-haspopup="true" aria-controls="dropdown-menu" onClick={toggleDropdown}>
-                                    <span className="icon is-small">
-                                        <i className="fas fa-ellipsis-v" aria-hidden="true"></i>
-                                    </span>
-                                </button>
-                            </div>
-                            {showDropdown && 
-                                <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                                    <div className="dropdown-content">
-                                        <a onClick={()=>{onDeleteDB(dbConn.id)}} className="dropdown-item">
-                                            Delete DB
-                                        </a>
-                                    </div>
+                        { isAdmin && 
+                            <div className="dropdown is-active" onClick={(e)=>{e.preventDefault()}}>
+                                <div className="dropdown-trigger">
+                                    <button className="button" aria-haspopup="true" aria-controls="dropdown-menu" onClick={toggleDropdown}>
+                                        <span className="icon is-small">
+                                            <i className="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                        </span>
+                                    </button>
                                 </div>
-                            }
-                        </div>
+                                {showDropdown && 
+                                    <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                        <div className="dropdown-content">
+                                            <a onClick={()=>{onDeleteDB(dbConn.id)}} className="dropdown-item">
+                                                Delete DB
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div> 
+                        }
                     </div>
                 </div>
             </a>

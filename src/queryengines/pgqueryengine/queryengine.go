@@ -243,3 +243,31 @@ func (pgqe *PostgresQueryEngine) CreateRoleLogin(user *models.User, dbConn *mode
 
 	return nil
 }
+
+func (pgqe *PostgresQueryEngine) DeleteRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *models.DBConnectionUser) error {
+
+	query := "SELECT nspname FROM pg_namespace WHERE nspname <> 'information_schema' AND nspname NOT LIKE 'pg\\_%';"
+	data, err := pgqe.RunQuery(user, dbConn, query, false)
+	if err != nil {
+		return err
+	}
+	if len(data["rows"].([]map[string]interface{})) == 0 {
+		return nil
+	}
+	for _, nspname := range data["rows"].([]map[string]interface{}) {
+		namespace := nspname["nspname"].(string)
+		query = fmt.Sprintf(`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA %s FROM %s;`, namespace, dbUser.DBUser)
+		_, err = pgqe.RunQuery(user, dbConn, query, false)
+		if err != nil {
+			return err
+		}
+	}
+
+	query = fmt.Sprintf(`DROP ROLE %s;`, dbUser.DBUser)
+	_, err = pgqe.RunQuery(user, dbConn, query, false)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

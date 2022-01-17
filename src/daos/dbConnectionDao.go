@@ -1,6 +1,8 @@
 package daos
 
 import (
+	"errors"
+
 	"slashbase.com/backend/src/db"
 	"slashbase.com/backend/src/models"
 )
@@ -50,6 +52,22 @@ func (d DBConnectionDao) GetConnectableDBConnection(id, userID string) (*models.
 			return nil, err
 		}
 		dbConn.ConnectionUser = &dbConnUser
+	}
+	return dbConn, err
+}
+
+func (d DBConnectionDao) GetConnectableRootDBConnection(dbConnectionId string) (*models.DBConnection, error) {
+	var dbConn *models.DBConnection
+	err := db.GetDB().Where(&models.DBConnection{ID: dbConnectionId}).Preload("DBConnectionUsers").Preload("Project").First(&dbConn).Error
+	if err == nil {
+		for i, dbConnUser := range dbConn.DBConnectionUsers {
+			if dbConnUser.IsRoot {
+				dbConn.ConnectionUser = &dbConn.DBConnectionUsers[i]
+			}
+		}
+	}
+	if dbConn.ConnectionUser == nil {
+		return nil, errors.New("root user not found")
 	}
 	return dbConn, err
 }

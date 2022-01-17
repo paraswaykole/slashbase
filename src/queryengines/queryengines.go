@@ -79,6 +79,10 @@ func CreateRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *mod
 	return postgresQueryEngine.CreateRoleLogin(user, dbConn, dbUser)
 }
 
+func DeleteRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *models.DBConnectionUser) error {
+	return postgresQueryEngine.DeleteRoleLogin(user, dbConn, dbUser)
+}
+
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
 }
