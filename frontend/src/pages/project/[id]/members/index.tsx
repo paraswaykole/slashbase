@@ -8,6 +8,7 @@ import { Project, ProjectMember } from '../../../../data/models'
 import apiService from '../../../../network/apiService'
 import { useAppSelector } from '../../../../redux/hooks'
 import { selectProjects } from '../../../../redux/projectsSlice'
+import { ProjectMemberRole } from '../../../../data/defaults'
 
 const ProjectMembersPage: NextPage = () => {
 
@@ -28,11 +29,18 @@ const ProjectMembersPage: NextPage = () => {
     })()
   }, [router])
 
+  const onDeleteMember = async (userId: string) => {
+    let response = await apiService.deleteProjectMember(project!.id, userId)
+    if(response.success){
+      setProjectMembers(projectMembers.filter(pm => pm.user.id !== userId))
+    }
+  }
+
   return (
     <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
       <h1>Showing Members in {project?.name}</h1>
       {projectMembers.map((pm: ProjectMember) => (
-        <ProjectMemberCard key={pm.id} member={pm}/>
+        <ProjectMemberCard key={pm.id} member={pm} isAdmin={project?.currentMember?.role == ProjectMemberRole.ADMIN} onDeleteMember={onDeleteMember}/>
       ))}
       { project && 
           <AddNewProjectMemberCard 

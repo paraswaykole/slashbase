@@ -84,7 +84,7 @@ func (pr ProjectRoutes) GetProjectMembers(c *gin.Context) {
 	})
 }
 
-func (pr ProjectRoutes) AddProjectMembers(c *gin.Context) {
+func (pr ProjectRoutes) AddProjectMember(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUser := middlewares.GetAuthUser(c)
 	var addMemberBody struct {
@@ -97,7 +97,7 @@ func (pr ProjectRoutes) AddProjectMembers(c *gin.Context) {
 		return
 	}
 
-	newProjectMember, err := projectController.AddProjectMembers(projectID, addMemberBody.Email, addMemberBody.Role)
+	newProjectMember, err := projectController.AddProjectMember(projectID, addMemberBody.Email, addMemberBody.Role)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -108,5 +108,27 @@ func (pr ProjectRoutes) AddProjectMembers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    views.BuildProjectMember(newProjectMember),
+	})
+}
+
+func (pr ProjectRoutes) DeleteProjectMember(c *gin.Context) {
+	projectId := c.Param("projectId")
+	userId := c.Param("userId")
+	authUser := middlewares.GetAuthUser(c)
+
+	if isAllowed, err := controllers.GetAuthUserHasRolesForProject(authUser, projectId, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
+		return
+	}
+
+	err := projectController.DeleteProjectMember(projectId, userId)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
 	})
 }

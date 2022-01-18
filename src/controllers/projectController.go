@@ -44,7 +44,7 @@ func (pc ProjectController) GetProjectMembers(projectID string) (*[]models.Proje
 	return projectMembers, nil
 }
 
-func (pc ProjectController) AddProjectMembers(projectID, email, role string) (*models.ProjectMember, error) {
+func (pc ProjectController) AddProjectMember(projectID, email, role string) (*models.ProjectMember, error) {
 
 	toAddUser, err := userDao.GetUserByEmail(email)
 	if err != nil {
@@ -64,6 +64,25 @@ func (pc ProjectController) AddProjectMembers(projectID, email, role string) (*m
 	go pc.updateProjectMemberInDBConnections(projectID)
 	newProjectMember.User = *toAddUser
 	return newProjectMember, nil
+}
+
+func (pc ProjectController) DeleteProjectMember(projectId, userId string) error {
+
+	projectMember, notFound, err := projectDao.FindProjectMember(projectId, userId)
+	if err != nil {
+		if notFound {
+			return errors.New("member not found")
+		}
+		return errors.New("there was some problem")
+	}
+
+	err = projectDao.DeleteProjectMember(projectMember)
+	if err != nil {
+		return errors.New("there was some problem deleting the member")
+	}
+
+	go pc.updateProjectMemberInDBConnections(projectId)
+	return nil
 }
 
 func (pc ProjectController) updateProjectMemberInDBConnections(projectID string) error {

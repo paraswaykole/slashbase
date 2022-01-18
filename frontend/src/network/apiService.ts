@@ -53,6 +53,13 @@ const addNewProjectMember = async function(projectId: string, payload: AddProjec
     
 }
 
+const deleteProjectMember = async function(projectId: string, userId: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+                        .delete<ApiResult<undefined>>(`/project/${projectId}/members/${userId}`)
+                        .then(res => res.data)
+    
+}
+
 const getProjectMembers = async function(projectId: string): Promise<ApiResult<Array<ProjectMember>>> {
     return await Request.getApiInstance()
                         .get<ApiResult<Array<ProjectMember>>>(`/project/${projectId}/members`)
@@ -184,6 +191,7 @@ export default {
     getDBDataInDataModel,
     addNewDBConn,
     addNewProjectMember,
+    deleteProjectMember,
     updateDBSingleData,
     addDBData,
     deleteDBData,

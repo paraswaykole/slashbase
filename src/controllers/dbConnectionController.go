@@ -204,10 +204,14 @@ func (dbcc DBConnectionController) updateDBConnUsersProjectMemberRoles(dbConn *m
 		return errors.New("there was some problem")
 	}
 
-	for _, projectMember := range *projectMembers {
-		if !utils.ContainsString(dbConnUsers[roleMap[projectMember.Role]].UserIDs, projectMember.UserID) {
-			dbConnUsers[roleMap[projectMember.Role]].UserIDs = append(dbConnUsers[roleMap[projectMember.Role]].UserIDs, projectMember.UserID)
+	for role := range roleMap {
+		if _, exists := roleMap[role]; exists {
+			dbConnUsers[roleMap[role]].UserIDs = []string{}
 		}
+	}
+
+	for _, projectMember := range *projectMembers {
+		dbConnUsers[roleMap[projectMember.Role]].UserIDs = append(dbConnUsers[roleMap[projectMember.Role]].UserIDs, projectMember.UserID)
 	}
 
 	for _, dbUser := range dbConnUsers {
