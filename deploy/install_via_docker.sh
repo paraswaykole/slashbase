@@ -507,8 +507,8 @@ curl -XPOST -H "Content-type: application/json" -d '{
     "event": "Configs Generated",
     "properties": {
       "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
-      "root_email": "'$root_email'",
-      "domain": "'$domain'",
+      "root_email": "'$slashbase_root_email'",
+      "domain": "'$domain_name'",
       "type": "docker"
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
@@ -572,7 +572,7 @@ docker exec slashbase-web nginx -s reload
 if [[ $status_code -eq 404 ]]; then
     echo "++++++++++++++++++ SUCCESS ++++++++++++++++++++++"
     echo "Slashbase installation is complete!"
-    echo "Your app is not running at https://$domain_name."
+    echo "Your app is running at https://$domain_name"
     echo "Use the root email and password you specified to login."
     echo "+++++++++++++++++++++++++++++++++++++++++++++++++"
 fi
@@ -582,8 +582,8 @@ curl -XPOST -H "Content-type: application/json" -d '{
     "event": "Install Success",
     "properties": {
       "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
-      "root_email": "'$root_email'",
-      "domain": "'$domain'",
+      "root_email": "'$slashbase_root_email'",
+      "domain": "'$domain_name'",
       "type": "docker"
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
