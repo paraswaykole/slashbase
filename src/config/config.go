@@ -29,6 +29,7 @@ func Init(env string) {
 }
 
 const (
+	VERSION          = "v1.0.2-beta"
 	PAGINATION_COUNT = 20
 	ENV_PRODUCTION   = "production"
 	ENV_DEVELOPMENT  = "development"
@@ -74,6 +75,14 @@ func GetApiHost() string {
 
 func GetAppHost() string {
 	return config.GetString("constants.app_host")
+}
+
+func GetTelemetryEnabled() bool {
+	return config.GetBool("telemetry.enabled")
+}
+
+func GetTelemetryId() string {
+	return config.GetString("telemetry.id")
 }
 
 func GetRootUser() *RootUserConfig {

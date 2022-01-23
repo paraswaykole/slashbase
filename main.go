@@ -12,6 +12,7 @@ import (
 	"slashbase.com/backend/src/queryengines"
 	"slashbase.com/backend/src/server"
 	"slashbase.com/backend/src/sshtunnel"
+	"slashbase.com/backend/src/tasks"
 )
 
 func main() {
@@ -23,6 +24,7 @@ func main() {
 	flag.Parse()
 	config.Init(*environment)
 	db.InitGormDB()
+	tasks.InitCron()
 	autoMigrate()
 	configureRootUser()
 	queryengines.InitQueryEngines()
