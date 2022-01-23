@@ -448,7 +448,8 @@ read_rootuser_password() {
 ask_telemetry() {
     echo ""
     echo "+++++++++++ IMPORTANT ++++++++++++++++++++++"
-    echo -e "Slashbase sends a periodic ping (every 24 hours) to our analytics service with version and a telemetry ID from config.yaml. This helps us know the number of users per core version."
+    echo -e "Slashbase sends a periodic ping (every 24 hours) to our analytics service with version and a telemetry ID from config.yaml."
+    echo -e "This helps us know the number of users per version."
     echo -e ""
     if confirm y 'Would you like to enable telemetry and receive better support?'; then
         enable_telemetry="true"
