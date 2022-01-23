@@ -85,6 +85,29 @@ check_os() {
     esac
 }
 
+confirm() {
+    local default="$1"  # Should be `y` or `n`.
+    local prompt="$2"
+
+    local options="y/N"
+    if [[ $default == y || $default == Y ]]; then
+        options="Y/n"
+    fi
+
+    local answer
+    read -rp "$prompt [$options] " answer
+    if [[ -z $answer ]]; then
+        # No answer given, the user just hit the Enter key. Take the default value as the answer.
+        answer="$default"
+    else
+        # An answer was given. This means the user didn't get to hit Enter so the cursor on the same line. Do an empty
+        # echo so the cursor moves to a new line.
+        echo
+    fi
+
+    [[ yY =~ $answer ]]
+}
+
 
 # This function checks if the relevant ports required by Slashbase are available or not
 # The script should error out in case they aren't available
@@ -223,6 +246,10 @@ secret:
 constants:
     api_host: "https://\${domain_name}"
     app_host: "https://\${domain_name}"
+
+telemetry:
+  id: \${telemetry_id}
+  enabled: \${enable_telemetry}
 EOF
 
     rm -f replace.sed
@@ -242,6 +269,10 @@ EOF
                 $slashbase_root_email
                 "slashbase_root_password"
                 $slashbase_root_password
+                "telemetry_id"
+                $telemetry_id
+                "enable_telemetry"
+                "$enable_telemetry"
             )
 
     flip=0
@@ -414,6 +445,19 @@ read_rootuser_password() {
     echo ""
 }
 
+ask_telemetry() {
+    echo ""
+    echo "+++++++++++ IMPORTANT ++++++++++++++++++++++"
+    echo -e "Slashbase sends a periodic ping (every 24 hours) to our analytics service with version and a telemetry ID from config.yaml. This helps us know the number of users per core version."
+    echo -e ""
+    if confirm y 'Would you like to enable telemetry and receive better support?'; then
+        enable_telemetry="true"
+    else
+        enable_telemetry="false"
+    fi
+    echo "++++++++++++++++++++++++++++++++++++++++++++"
+}
+
 bye() {  # Prints a friendly good bye message and exits the script.
     if [ "$?" -ne 0 ]; then
         set +o errexit
@@ -498,6 +542,8 @@ read_postgres_username
 read_postgres_password
 read_rootuser_email
 read_rootuser_password
+telemetry_id=$SLASHBASE_INSTALLATION_ID
+ask_telemetry
 generate_secrets
 generate_app_config_file
 generate_docker_env_file
