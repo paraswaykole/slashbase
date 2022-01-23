@@ -77,10 +77,6 @@ func GetAppHost() string {
 	return config.GetString("constants.app_host")
 }
 
-func GetTelemetryEnabled() bool {
-	return config.GetBool("telemetry.enabled")
-}
-
 func GetTelemetryId() string {
 	return config.GetString("telemetry.id")
 }

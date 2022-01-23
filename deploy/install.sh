@@ -249,7 +249,6 @@ constants:
 
 telemetry:
   id: \${telemetry_id}
-  enabled: \${enable_telemetry}
 EOF
 
     rm -f replace.sed
@@ -271,8 +270,6 @@ EOF
                 $slashbase_root_password
                 "telemetry_id"
                 $telemetry_id
-                "enable_telemetry"
-                "$enable_telemetry"
             )
 
     flip=0
@@ -445,20 +442,6 @@ read_rootuser_password() {
     echo ""
 }
 
-ask_telemetry() {
-    echo ""
-    echo "+++++++++++ IMPORTANT ++++++++++++++++++++++"
-    echo -e "Slashbase sends anonymous data (just version and telemetry ID) to our analytics service"
-    echo -e "This helps us know the number of users per version. (No user data collected)"
-    echo -e ""
-    if confirm y 'Would you like to enable telemetry and receive better support?'; then
-        enable_telemetry="true"
-    else
-        enable_telemetry="false"
-    fi
-    echo "++++++++++++++++++++++++++++++++++++++++++++"
-}
-
 bye() {  # Prints a friendly good bye message and exits the script.
     if [ "$?" -ne 0 ]; then
         set +o errexit
@@ -544,7 +527,6 @@ read_postgres_password
 read_rootuser_email
 read_rootuser_password
 telemetry_id=$SLASHBASE_INSTALLATION_ID
-ask_telemetry
 generate_secrets
 generate_app_config_file
 generate_docker_env_file

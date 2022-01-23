@@ -19,9 +19,7 @@ func InitCron() {
 
 	scheduler := gocron.NewScheduler(time.UTC)
 
-	if config.GetTelemetryEnabled() {
-		telemetryPings(scheduler)
-	}
+	telemetryPings(scheduler)
 
 	scheduler.StartAsync()
 }
