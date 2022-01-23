@@ -495,7 +495,7 @@ trap bye EXIT
 
 if [[ $desired_os -eq 0 ]];then
     echo ""
-    echo "This script is does not support your OS."
+    echo "This script does not support your OS."
     exit 1
 fi
 
