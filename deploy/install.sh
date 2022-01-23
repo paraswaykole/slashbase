@@ -454,7 +454,6 @@ bye() {  # Prints a friendly good bye message and exits the script.
             "properties": {
             "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
             "email": "'$email'",
-            "domain": "'$domain_name'",
             "type": "docker"
             }
         }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
@@ -536,8 +535,6 @@ curl -XPOST -H "Content-type: application/json" -d '{
     "event": "Configs Generated",
     "properties": {
       "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
-      "root_email": "'$slashbase_root_email'",
-      "domain": "'$domain_name'",
       "type": "docker"
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
@@ -606,13 +603,15 @@ if [[ $status_code -eq 404 ]]; then
     echo "+++++++++++++++++++++++++++++++++++++++++++++++++"
 fi
 
+echo ""
+echo "Please share your email to receive support & updates from Slashbase!"
+read -rp 'Email: ' email
 curl -XPOST -H "Content-type: application/json" -d '{
     "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
     "event": "Install Success",
     "properties": {
       "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
-      "root_email": "'$slashbase_root_email'",
-      "domain": "'$domain_name'",
+      "email": "'$email'",
       "type": "docker"
     }
   }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
