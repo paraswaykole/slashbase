@@ -470,7 +470,7 @@ bye() {  # Prints a friendly good bye message and exits the script.
             "properties": {
             "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
             "email": "'$email'",
-            "domain": "'$domain'",
+            "domain": "'$domain_name'",
             "type": "docker"
             }
         }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
