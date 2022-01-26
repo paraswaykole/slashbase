@@ -32,9 +32,16 @@ const UsersPage: NextPage = () => {
   }, [currentUser, usersNext])
 
   const fetchUsers = async () => {
+    if (usersNext === -1){
+      return
+    }
     let result = await apiService.getUsers(usersNext)
     if(result.success) {
-      setUsers(result.data.list)
+      if(usersNext === 0) {
+        setUsers(result.data.list)
+      } else {
+      setUsers([...users,...result.data.list])
+      }
       setUsersNext(result.data.next)
     } else {
       toast.error(result.error!)
