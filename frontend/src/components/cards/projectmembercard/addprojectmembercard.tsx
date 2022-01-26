@@ -131,7 +131,7 @@ const AddNewProjectMemberCard = ({ project, onAdded }: AddNewProjectMemberCardPr
                                             className={styles.searchResults}
                                             >
                                                 {searchResults.map((user: User) => 
-                                                    (<div className={"columns is-2 "+styles.searchItem} onClick={()=>{setMemberEmail(user.email)}}>
+                                                    (<div key={user.id} className={"columns is-2 "+styles.searchItem} onClick={()=>{setMemberEmail(user.email)}}>
                                                         <div className="column">
                                                             <ProfileImage imageUrl={user.profileImageUrl} />
                                                         </div>
