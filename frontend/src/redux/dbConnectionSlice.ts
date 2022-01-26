@@ -5,17 +5,19 @@ import { DBConnection, DBDataModel, DBQuery } from '../data/models'
 import apiService from '../network/apiService'
 
 export interface DBConnectionState {
-    dbConnection?: DBConnection,
-    dbDataModels: DBDataModel[],
-    dbQueries: DBQuery[],
-    isDBDataModelsFetched: boolean,
-    isDBQueriesFetched: boolean,
+    dbConnection?: DBConnection
+    dbDataModels: DBDataModel[]
+    dbQueries: DBQuery[]
+    isFetchingDBDataModels: boolean
+    isDBDataModelsFetched: boolean
+    isDBQueriesFetched: boolean
 }
 
 const initialState: DBConnectionState = {
   dbConnection: undefined,
   dbDataModels: [],
   dbQueries: [],
+  isFetchingDBDataModels: false,
   isDBDataModelsFetched: false,
   isDBQueriesFetched: false,
 }
@@ -120,6 +122,13 @@ export const dbConnectionSlice = createSlice({
       .addCase(getDBDataModels.fulfilled, (state,  action: any) => {
         state.dbDataModels = action.payload.dataModels
         state.isDBDataModelsFetched = true
+        state.isFetchingDBDataModels = false
+      })
+      .addCase(getDBDataModels.rejected,  (state,  action: any) => {
+        state.isFetchingDBDataModels = false
+      })
+      .addCase(getDBDataModels.pending,  (state,  action: any) => {
+        state.isFetchingDBDataModels = true
       })
       .addCase(getDBQueries.fulfilled, (state,  action: any) => {
         state.dbQueries = action.payload.dbQueries
@@ -141,5 +150,6 @@ export const { reset } = dbConnectionSlice.actions
 export const selectDBConnection = (state: AppState) => state.dbConnection.dbConnection
 export const selectDBDataModels = (state: AppState) => state.dbConnection.dbDataModels
 export const selectDBDQueries = (state: AppState) => state.dbConnection.dbQueries
+export const selectIsFetchingDBDataModels = (state: AppState) => state.dbConnection.isFetchingDBDataModels
 
 export default dbConnectionSlice.reducer
