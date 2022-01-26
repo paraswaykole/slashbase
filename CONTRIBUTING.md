@@ -1,6 +1,6 @@
 # Contributing to Slashbase
 
-Thanks & Cheers for taking time and interest to contribute to Slashbase 🙌 🙏 👏
+Thanks & Cheers for taking time and interest in contributing to Slashbase 🙌 🙏 👏
 
 The following is a set of guidelines for contributing to Slashbase.
 
