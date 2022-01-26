@@ -2,6 +2,7 @@ package daos
 
 import (
 	"database/sql"
+	"strings"
 
 	"slashbase.com/backend/src/config"
 	"slashbase.com/backend/src/db"
@@ -51,6 +52,17 @@ func (d UserDao) GetUsersPaginated(offset int) (*[]models.User, error) {
 	var users []models.User
 	err := db.GetDB().
 		Model(&models.User{}).
+		Offset(offset).Limit(config.PAGINATION_COUNT).
+		Preload("Projects").Find(&users).Error
+	return &users, err
+}
+
+func (d UserDao) SearchUsersPaginated(searchTerm string, offset int) (*[]models.User, error) {
+	searchTerm = "%" + strings.ToLower(searchTerm) + "%"
+	var users []models.User
+	err := db.GetDB().
+		Model(&models.User{}).
+		Where("lower(email) LIKE ? OR lower(full_name) LIKE ?", searchTerm, searchTerm).
 		Offset(offset).Limit(config.PAGINATION_COUNT).
 		Preload("Projects").Find(&users).Error
 	return &users, err

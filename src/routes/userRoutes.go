@@ -66,7 +66,9 @@ func (ur UserRoutes) GetUsers(c *gin.Context) {
 		})
 	}
 
-	users, next, err := userController.GetUsersPaginated(authUser, offset)
+	searchTerm := c.DefaultQuery("search", "")
+
+	users, next, err := userController.GetUsersPaginated(authUser, searchTerm, offset)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,

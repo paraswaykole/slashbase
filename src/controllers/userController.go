@@ -53,20 +53,27 @@ func (uc UserController) EditAccount(authUser *models.User, name, profileImageUr
 	return nil
 }
 
-func (uc UserController) GetUsersPaginated(authUser *models.User, offset int) (*[]models.User, int, error) {
+func (uc UserController) GetUsersPaginated(authUser *models.User, searchTerm string, offset int) (*[]models.User, int, error) {
 
 	if !authUser.IsRoot {
 		return nil, 0, errors.New("not allowed")
 	}
 
-	users, err := userDao.GetUsersPaginated(offset)
+	var users *[]models.User
+	var err error
+	if searchTerm == "" {
+		users, err = userDao.GetUsersPaginated(offset)
+	} else {
+		users, err = userDao.SearchUsersPaginated(searchTerm, offset)
+	}
+
 	if err != nil {
 		return nil, 0, errors.New("there was some problem")
 	}
 
 	next := -1
 	if len(*users) == config.PAGINATION_COUNT {
-		next = next + config.PAGINATION_COUNT
+		next = offset + config.PAGINATION_COUNT
 	}
 
 	return users, next, nil
