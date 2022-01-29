@@ -18,13 +18,13 @@ The following is a set of guidelines for contributing to Slashbase.
 
 To contribute code to the repository, you need to setup the development environment. To do that, you can follow the following steps:
 
-1. Clone or Fork-Clone the github repo and open it in you preferred IDE (VS-Code recommended).
+1. Clone or Fork-Clone the GitHub repo and open it in your preferred IDE (VS-Code recommended).
 2. You need docker installed on your desktop, follow [this link](https://docs.docker.com/desktop/) to install.
-3. Go to project root directory and
+3. Go to the project root directory and
     - Copy the file at `frontend/.env.local.txt` and paste as `frontend/.env.local`
     - Copy the file at `src/config/development.yaml.txt` and paste as `src/config/development.yaml`
     - Edit `src/config/development.yaml` file and update the root user email and password.
-5. Open terminal at project root directory and run `docker-compose up`. Once it starts, server is running at `http://localhost:3001` & Client at `http://localhost:3000`
+5. Open terminal at the project root directory and run `docker-compose up`. Once it starts, server is running at `http://localhost:3001` & Client at `http://localhost:3000`
 7. Create a new branch and make changes to the code.
 8. Test and make sure the code runs (run `docker-compose up` or restart `docker-compose restart slashbase-server` to reflect go code changes)
 9. Push your code and send PR.
