@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { DBConnection } from '../../../data/models'
 import Constants from '../../../constants'
 import Link from 'next/link'
+import OutsideClickHandler from 'react-outside-click-handler'
 
 type DBConnCardPropType = { 
     dbConn: DBConnection
@@ -34,13 +35,15 @@ const DBConnCard = ({dbConn, isAdmin, onDeleteDB}: DBConnCardPropType) => {
                                     </button>
                                 </div>
                                 {showDropdown && 
-                                    <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                                        <div className="dropdown-content">
-                                            <a onClick={()=>{onDeleteDB(dbConn.id)}} className="dropdown-item">
-                                                Delete DB
-                                            </a>
+                                    <OutsideClickHandler onOutsideClick={()=>{setShowDropdown(false)}}>
+                                        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                            <div className="dropdown-content">
+                                                <a onClick={()=>{onDeleteDB(dbConn.id)}} className="dropdown-item">
+                                                    Delete DB
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </OutsideClickHandler>
                                 }
                             </div> 
                         }

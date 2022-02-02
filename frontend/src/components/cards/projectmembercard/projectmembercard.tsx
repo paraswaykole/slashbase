@@ -1,5 +1,6 @@
 import styles from './projectmembercard.module.scss'
 import React, { useState } from 'react'
+import OutsideClickHandler from 'react-outside-click-handler'
 import { ProjectMember } from '../../../data/models'
 import ProfileImage from '../../user/profileimage'
 
@@ -42,13 +43,15 @@ const ProjectMemberCard = ({member,isAdmin, onDeleteMember}: ProjectMemberCardPr
                                     </button>
                                 </div>
                                 {showDropdown && 
-                                    <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                                        <div className="dropdown-content">
-                                            <a onClick={()=>{onDeleteMember(member.user.id)}} className="dropdown-item">
-                                                Remove Member
-                                            </a>
+                                    <OutsideClickHandler onOutsideClick={()=>{setShowDropdown(false)}}>
+                                        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                            <div className="dropdown-content">
+                                                <a onClick={()=>{onDeleteMember(member.user.id)}} className="dropdown-item">
+                                                    Remove Member
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </OutsideClickHandler>
                                 }
                             </div> 
                         }

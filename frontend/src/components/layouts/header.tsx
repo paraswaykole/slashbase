@@ -1,6 +1,7 @@
 import styles from './header.module.scss'
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import OutsideClickHandler from 'react-outside-click-handler'
 import { DBConnection, Project, User } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
 import { useRouter } from 'next/router'
@@ -89,20 +90,22 @@ const Header = (_: HeaderPropType) => {
                         </span>
                         </button>
                     </div>
-                    <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                        <div className="dropdown-content">
-                            {options.map((x) => {
-                                return (
-                                    <React.Fragment key={x.value}>
-                                        <a onClick={()=>{onNavigate(x)}} className={`dropdown-item${x.value === currentOption?' is-active':''}`}>
-                                            {x.label}
-                                        </a>
-                                        { x.value === 'home' && <hr className="dropdown-divider" /> }
-                                    </React.Fragment>
-                                )
-                            })}
+                    <OutsideClickHandler onOutsideClick={()=>{setIsShowingNavDropDown(false)}}>
+                        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div className="dropdown-content">
+                                {options.map((x) => {
+                                    return (
+                                        <React.Fragment key={x.value}>
+                                            <a onClick={()=>{onNavigate(x)}} className={`dropdown-item${x.value === currentOption?' is-active':''}`}>
+                                                {x.label}
+                                            </a>
+                                            { x.value === 'home' && <hr className="dropdown-divider" /> }
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </div>
                         </div>
-                    </div>
+                    </OutsideClickHandler>
                 </div>
             </div>
             <div className={styles.headerMenu}>
@@ -111,26 +114,28 @@ const Header = (_: HeaderPropType) => {
                         <div className="dropdown-trigger" onClick={()=>{setIsShowingDropDown(!isShowingDropDown)}}>
                             <ProfileImage imageUrl={currentUser.profileImageUrl} size={ProfileImageSize.SMALL} classes={[styles.profileImage]}/>
                         </div>
-                        <div className="dropdown-menu" role="menu">
-                            <div className="dropdown-content">
-                                <Link href={Constants.APP_PATHS.ACCOUNT.path} as={Constants.APP_PATHS.ACCOUNT.path}>
-                                    <a className="dropdown-item">
-                                        Account
-                                    </a>
-                                </Link>
-                                { currentUser.isRoot && <Link href={Constants.APP_PATHS.SETTINGS_USER.path} as={Constants.APP_PATHS.SETTINGS_USER.path}>
-                                    <a className="dropdown-item">
-                                        Manage Users
-                                    </a>
-                                </Link> }
-                                <hr className="dropdown-divider"/>
-                                <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
-                                    <a className="dropdown-item">
-                                        Logout
-                                    </a>
-                                </Link>
+                        <OutsideClickHandler onOutsideClick={()=>{setIsShowingDropDown(false)}}>
+                            <div className="dropdown-menu" role="menu">
+                                <div className="dropdown-content">
+                                    <Link href={Constants.APP_PATHS.ACCOUNT.path} as={Constants.APP_PATHS.ACCOUNT.path}>
+                                        <a className="dropdown-item">
+                                            Account
+                                        </a>
+                                    </Link>
+                                    { currentUser.isRoot && <Link href={Constants.APP_PATHS.SETTINGS_USER.path} as={Constants.APP_PATHS.SETTINGS_USER.path}>
+                                        <a className="dropdown-item">
+                                            Manage Users
+                                        </a>
+                                    </Link> }
+                                    <hr className="dropdown-divider"/>
+                                    <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
+                                        <a className="dropdown-item">
+                                            Logout
+                                        </a>
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
+                        </OutsideClickHandler>
                     </div>    
                 }
             </div>
