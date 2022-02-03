@@ -1,11 +1,13 @@
 import axios from 'axios'
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import AppLayout from '../components/layouts/applayout'
-import ProfileImage, { ProfileImageSize } from '../components/user/profileimage'
-import { User } from '../data/models'
-import { editUser, selectCurrentUser } from '../redux/currentUserSlice'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import AppLayout from '../../components/layouts/applayout'
+import ProfileImage, { ProfileImageSize } from '../../components/user/profileimage'
+import Constants from '../../constants'
+import { User } from '../../data/models'
+import { editUser, selectCurrentUser } from '../../redux/currentUserSlice'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 
 const AccountPage: NextPage = () => {
 
@@ -90,10 +92,17 @@ const AccountPage: NextPage = () => {
             </div>
             {savingError && <span className="help is-danger">There was some problem saving!</span> }
             <div className="control">
-                      { !saving && <button className="button is-primary" onClick={startSaving}>Save</button> }
-                      { saving && <button className="button is-primary is-loading">Saving...</button>}
-              </div>
-          </div>
+                { !saving && <button className="button is-primary" onClick={startSaving}>Save</button> }
+                { saving && <button className="button is-primary is-loading">Saving...</button>}
+            </div>
+            <br />
+            <hr/>
+            <Link href={Constants.APP_PATHS.ACCOUNT_CHANGE_PASSWORD.path} as={Constants.APP_PATHS.ACCOUNT_CHANGE_PASSWORD.path}>
+              <a>
+                <button className="button is-seconday">Change password</button> 
+              </a>
+            </Link>
+        </div>
       }
     </AppLayout>
   )

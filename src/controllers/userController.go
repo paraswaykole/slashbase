@@ -53,6 +53,26 @@ func (uc UserController) EditAccount(authUser *models.User, name, profileImageUr
 	return nil
 }
 
+func (uc UserController) ChangePassword(authUser *models.User, oldPassword, newPassword string) error {
+
+	isOldPaswordValid := authUser.VerifyPassword(oldPassword)
+	if !isOldPaswordValid {
+		return errors.New("old password is incorrect")
+	}
+
+	err := authUser.SetPassword(newPassword)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	err = userDao.UpdatePassword(authUser.ID, authUser.Password)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	return nil
+}
+
 func (uc UserController) GetUsersPaginated(authUser *models.User, searchTerm string, offset int) (*[]models.User, int, error) {
 
 	if !authUser.IsRoot {

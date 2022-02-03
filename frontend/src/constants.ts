@@ -32,6 +32,10 @@ const Constants: ConstantsType = {
             path: '/account',
             isAuth: true
         },
+        ACCOUNT_CHANGE_PASSWORD: {
+            path: '/account/password',
+            isAuth: true
+        },
         SETTINGS_USER: {
             path: '/users',
             isAuth: true

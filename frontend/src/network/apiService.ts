@@ -21,6 +21,12 @@ const editUser = async function(name: string, profileImageUrl: string): Promise<
                         .then(res => res.data)
 }
 
+const changeUserPassword = async function(oldPassword: string, newPassword: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+                        .post<any, AxiosResponse<ApiResult<undefined>>>('/user/password', { oldPassword, newPassword })
+                        .then(res => res.data)
+}
+
 const getUsers = async function(offset: number): Promise<PaginatedApiResult<User, number>> {
     return await Request.getApiInstance()
                         .get<PaginatedApiResult<User, number>>(`/user/all?offset=${offset}`)
@@ -183,6 +189,7 @@ export default {
     loginUser,
     logoutUser,
     editUser,
+    changeUserPassword,
     getUsers,
     searchUsers,
     addUser,

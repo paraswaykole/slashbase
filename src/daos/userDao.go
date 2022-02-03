@@ -48,6 +48,13 @@ func (d UserDao) EditUser(userID string, name string, profileImageURL string) er
 	return err
 }
 
+func (d UserDao) UpdatePassword(userID string, newPasswordHash string) error {
+	err := db.GetDB().Where(&models.User{ID: userID}).Updates(&models.User{
+		Password: newPasswordHash,
+	}).Error
+	return err
+}
+
 func (d UserDao) GetUsersPaginated(offset int) (*[]models.User, error) {
 	var users []models.User
 	err := db.GetDB().

@@ -56,6 +56,27 @@ func (ur UserRoutes) EditAccount(c *gin.Context) {
 	})
 }
 
+func (ur UserRoutes) ChangePassword(c *gin.Context) {
+	authUser := middlewares.GetAuthUser(c)
+	var body struct {
+		OldPassword string `json:"oldPassword"`
+		NewPassword string `json:"newPassword"`
+	}
+	c.BindJSON(&body)
+
+	err := userController.ChangePassword(authUser, body.OldPassword, body.NewPassword)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
+}
+
 func (ur UserRoutes) GetUsers(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
