@@ -19,7 +19,6 @@ type UserView struct {
 type UserSessionView struct {
 	ID        string    `json:"id"`
 	User      UserView  `json:"user"`
-	Token     string    `json:"token"`
 	IsActive  bool      `json:"isActive"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
@@ -46,7 +45,6 @@ func BuildUserSession(userSession *models.UserSession) UserSessionView {
 	userSessView := UserSessionView{
 		ID:        userSession.ID,
 		User:      BuildUser(&userSession.User),
-		Token:     userSession.GetAuthToken(),
 		IsActive:  userSession.IsActive,
 		CreatedAt: userSession.CreatedAt,
 		UpdatedAt: userSession.UpdatedAt,

@@ -3,8 +3,10 @@ package routes
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"slashbase.com/backend/src/config"
 	"slashbase.com/backend/src/controllers"
 	"slashbase.com/backend/src/middlewares"
 	"slashbase.com/backend/src/views"
@@ -28,9 +30,24 @@ func (ur UserRoutes) LoginUser(c *gin.Context) {
 		})
 		return
 	}
+	c.SetSameSite(http.SameSiteStrictMode)
+	c.SetCookie(config.SESSION_COOKIE_NAME, userSession.GetAuthToken(), config.SESSION_COOKIE_MAX_AGE, "/", config.GetApiHost(), strings.HasPrefix(config.GetApiHost(), "https://"), true)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    views.BuildUserSession(userSession),
+	})
+}
+
+func (ur UserRoutes) CheckAuth(c *gin.Context) {
+	tokenString, _ := c.Cookie("session")
+	if tokenString != "" {
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": false,
 	})
 }
 
@@ -136,6 +153,8 @@ func (ur UserRoutes) AddUser(c *gin.Context) {
 func (ur UserRoutes) Logout(c *gin.Context) {
 	authUserSession := middlewares.GetAuthSession(c)
 	authUserSession.SetInActive()
+	c.SetSameSite(http.SameSiteStrictMode)
+	c.SetCookie(config.SESSION_COOKIE_NAME, "", -1, "/", config.GetApiHost(), strings.HasPrefix(config.GetApiHost(), "https://"), true)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 	})

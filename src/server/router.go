@@ -16,11 +16,7 @@ func NewRouter() *gin.Engine {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "Authorization")
 	corsConfig.AllowCredentials = true
-	if config.IsLive() || config.IsDevelopment() {
-		corsConfig.AllowOrigins = []string{config.GetAppHost()}
-	} else {
-		corsConfig.AllowOrigins = []string{"http://localhost:3000"}
-	}
+	corsConfig.AllowOrigins = []string{config.GetAppHost()}
 	router.Use(cors.New(corsConfig))
 	api := router.Group("/api/v1")
 	{
@@ -28,6 +24,7 @@ func NewRouter() *gin.Engine {
 		{
 			userRoutes := new(routes.UserRoutes)
 			userGroup.POST("/login", userRoutes.LoginUser)
+			userGroup.GET("/checkauth", userRoutes.CheckAuth)
 			userGroup.Use(middlewares.FindUserMiddleware())
 			userGroup.Use(middlewares.AuthUserMiddleware())
 			userGroup.POST("/edit", userRoutes.EditAccount)

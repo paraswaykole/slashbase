@@ -36,13 +36,13 @@ const SlashbaseAppComponent = ({children}: any) => {
       (async () => {
           const currentPath = Object.values(Constants.APP_PATHS).find(x => x.path === router.route)
           if (currentPath){
-            const { payload } : any = await dispatch((getUser()))
+            const payload : any = await dispatch((getUser())).unwrap()
             if((isAuthenticated === null && payload.isAuthenticated) || !currentPath.isAuth || isAuthenticated){
                 return
             }
           }
           if(router.route != '/_error')
-            router.replace(Constants.APP_PATHS.LOGIN.path)
+          router.replace(Constants.APP_PATHS.LOGIN.path)
       })()
       // prefetch or preload data
       if (isAuthenticated){

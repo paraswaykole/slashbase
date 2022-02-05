@@ -21,7 +21,7 @@ const initialState: CurrentUserState = {
 export const getUser = createAsyncThunk(
   'currentUser/getUser',
   async () => {
-    const isAuthenticated = await storage.isUserAuthenticated()
+    const isAuthenticated = await apiService.isUserAuthenticated()
     const currentUser = await storage.getCurrentUser()
     return {
       currentUser,
@@ -35,7 +35,7 @@ export const loginUser = createAsyncThunk(
   async (payload: {email: string, password: string}, { rejectWithValue }) => {
     let response = await apiService.loginUser(payload.email, payload.password)
     if (response.success) {
-      await storage.loginCurrentUser(response.data.user, response.data.token)
+      await storage.loginCurrentUser(response.data.user)
       return {
         currentUser: response.data.user,
         isAuthenticated: true,
@@ -65,6 +65,17 @@ export const logoutUser = createAsyncThunk(
   'currentUser/logoutUser',
   async (_, {dispatch}) => {
     await apiService.logoutUser()
+    dispatch(clearLogin())
+    return {
+      currentUser: undefined,
+      isAuthenticated: false,
+    }
+  }
+)
+
+export const clearLogin = createAsyncThunk(
+  'currentUser/clearLogin',
+  async (_, {dispatch}) => {
     await storage.logoutUser()
     dispatch(projectReset())
     dispatch(allDBConnReset())

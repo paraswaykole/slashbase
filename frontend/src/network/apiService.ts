@@ -9,6 +9,12 @@ const loginUser = async function(email: string, password: string): Promise<ApiRe
                         .then(res => res.data)
 }
 
+const isUserAuthenticated = async function(): Promise<boolean>{
+    return await Request.getApiInstance()
+                        .get<ApiResult<undefined>>('/user/checkauth')
+                        .then(res => res.data.success)
+}
+
 const logoutUser = async function(): Promise<ApiResult<null>> {
     return await Request.getApiInstance()
                         .get<ApiResult<null>>('/user/logout')
@@ -187,6 +193,7 @@ const runQuery = async function(dbConnId: string, query: string): Promise<ApiRes
 
 export default {
     loginUser,
+    isUserAuthenticated,
     logoutUser,
     editUser,
     changeUserPassword,

@@ -13,7 +13,6 @@ export interface User{
 export interface UserSession {
     id: string
     user: User
-    token: string
     isActive: boolean
 }
 

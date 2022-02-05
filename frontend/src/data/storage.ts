@@ -6,12 +6,10 @@ const slashbaseStore = localforage.createInstance({
 })
 
 const CURRENT_USER_KEY = 'currentUser'
-const CURRENT_USER_TOKEN_KEY = 'currentUserToken'
 
 const CONFIG_IS_SHOWING_SIDEBAR = 'configIsShowingSidebar'
 
-const loginCurrentUser = async function(currentUser: User, token: string): Promise<User>{
-    await slashbaseStore.setItem(CURRENT_USER_TOKEN_KEY, token)
+const loginCurrentUser = async function(currentUser: User): Promise<User>{
     return await slashbaseStore.setItem(CURRENT_USER_KEY, currentUser)
 }
 
@@ -21,14 +19,6 @@ const updateCurrentUser = async function(currentUser: User): Promise<User>{
 
 const getCurrentUser = async function(): Promise<User|null>{
     return await slashbaseStore.getItem(CURRENT_USER_KEY)
-}
-
-const getCurrentUserToken = async function(): Promise<string|null>{
-    return await slashbaseStore.getItem(CURRENT_USER_TOKEN_KEY)
-}
-
-const isUserAuthenticated = async function(): Promise<boolean>{
-    return (await slashbaseStore.getItem(CURRENT_USER_TOKEN_KEY) != null)
 }
 
 const logoutUser = async function(): Promise<void> {
@@ -50,9 +40,7 @@ const setIsShowingSidebar = async function(isShowingSidebar: boolean): Promise<b
 export default {
     loginCurrentUser,
     updateCurrentUser,
-    getCurrentUserToken,
     getCurrentUser,
-    isUserAuthenticated,
     logoutUser,
     isShowingSidebar,
     setIsShowingSidebar

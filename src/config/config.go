@@ -29,19 +29,22 @@ func Init(env string) {
 }
 
 const (
-	VERSION          = "v1.0.2-beta"
+	VERSION = "v1.0.2-beta"
+
 	PAGINATION_COUNT = 20
-	ENV_PRODUCTION   = "production"
-	ENV_DEVELOPMENT  = "development"
-	ENV_LOCAL        = "local"
+
+	SESSION_COOKIE_NAME    = "session"
+	SESSION_COOKIE_MAX_AGE = 30 * 24 * 60 * 60 * 1000
+
+	ENV_PRODUCTION  = "production"
+	ENV_DEVELOPMENT = "development"
+	ENV_LOCAL       = "local"
 )
 
-// IsLive gives if the current environment is production
 func IsLive() bool {
 	return config.GetString("name") == ENV_PRODUCTION
 }
 
-// IsStage gives if the current environment is development
 func IsDevelopment() bool {
 	return config.GetString("name") == ENV_DEVELOPMENT
 }
