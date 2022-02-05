@@ -47,7 +47,10 @@ func AuthUserMiddleware() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"error":   "Unauthorized",
+		})
 		c.Abort()
 	}
 }

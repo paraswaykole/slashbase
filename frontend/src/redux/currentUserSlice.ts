@@ -105,6 +105,12 @@ export const userSlice = createSlice({
           state.isAuthenticated = action.payload.isAuthenticated
         }
       })
+      .addCase(clearLogin.fulfilled, (state, action: any) => {
+        if (action.payload){
+          state.user = action.payload.currentUser
+          state.isAuthenticated = action.payload.isAuthenticated
+        }
+      })
       .addCase(editUser.fulfilled, (state, action: any) => {
         if (action.payload){
           state.user = action.payload.currentUser
