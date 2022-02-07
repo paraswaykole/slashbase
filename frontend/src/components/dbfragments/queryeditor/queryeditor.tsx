@@ -31,7 +31,6 @@ type QueryEditorPropType = {
     onSave: (queryId: string) => void
 }
 
-
 const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: QueryEditorPropType) => {
 
     const dispatch = useAppDispatch()
@@ -45,16 +44,12 @@ const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: Q
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
     const startSaving = async () => {
+        if(queryName === '') {
+            return
+        }
         setSaving(true)
         try{
-            let formattedQuery = format(value, {
-              language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
-              uppercase: true, // Defaults to false
-              linesBetweenQueries: 2,
-            });
-            setValue(formattedQuery);
-            editorRef.current?.getCodeMirror().setValue(formattedQuery);
-            const result = await dispatch(saveDBQuery({dbConnId: dbConnection!.id, queryId, name: queryName, query: formattedQuery})).unwrap()
+            const result = await dispatch(saveDBQuery({dbConnId: dbConnection!.id, queryId, name: queryName, query: value})).unwrap()
             toast.success("Saved Succesfully!")
             onSave(result.dbQuery.id)
         } catch(e) {
@@ -64,16 +59,19 @@ const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: Q
     }
 
     const startRunningQuery = () => {
-      let formattedQuery = format(value, {
-        language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
-        uppercase: true, // Defaults to false
-        linesBetweenQueries: 2,
-      });
-      setValue(formattedQuery);
-      editorRef.current?.getCodeMirror().setValue(formattedQuery);
         runQuery(value, ()=>{
             setRunning(false)
         })
+    }
+
+    const formatQuery = () => {
+        let formattedQuery = format(value, {
+            language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
+            uppercase: true, // Defaults to false
+            linesBetweenQueries: 2,
+        })
+        setValue(formattedQuery)
+        editorRef.current?.getCodeMirror().setValue(formattedQuery)
     }
 
     return (
@@ -101,11 +99,26 @@ const QueryEditor = ({initialValue, initQueryName, queryId, runQuery, onSave}: Q
                             />
                     </div>
                     <div className={"column "+styles.buttons}>
-                        { !running && <button className="button" onClick={startRunningQuery}>Run Query</button>}
-                        { running && <button className="button is-loading">Running</button>}
+                        { !saving && <button className="button " onClick={startSaving}>
+                            <span className="icon is-small">
+                                <i className="fas fa-save" aria-hidden="true"></i>
+                            </span>
+                        </button>}
+                        { saving && <button className="button is-loading">Saving</button>}
                         &nbsp;&nbsp;
-                        { !saving && <button className="button is-primary" onClick={startSaving}>Save Query</button>}
-                        { saving && <button className="button is-primary is-loading">Saving</button>}
+                        <button className="button" onClick={formatQuery}>
+                            <span className="icon is-small">
+                                <i className="fas fa-align-left" aria-hidden="true"></i>
+                            </span>
+                        </button>
+                        &nbsp;&nbsp;
+                        { !running && <button className="button is-primary" onClick={startRunningQuery}>
+                            <span className="icon is-small">
+                                <i className="fas fa-play-circle" aria-hidden="true"></i>
+                            </span>&nbsp;&nbsp;
+                            Run query
+                        </button>}
+                        { running && <button className="button is-primary is-loading">Running</button>}
                     </div>
                 </div>
             </div>
