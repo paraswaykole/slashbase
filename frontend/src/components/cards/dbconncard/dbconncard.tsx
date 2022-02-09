@@ -20,9 +20,9 @@ const DBConnCard = ({dbConn, isAdmin, onDeleteDB}: DBConnCardPropType) => {
     }
 
     return (
-        <Link href={Constants.APP_PATHS.DB.path} as={Constants.APP_PATHS.DB.path.replace('[id]', dbConn.id)}>
-            <a>
-                <div className={"card "+styles.cardContainer}>
+        <div className={"card "+styles.cardContainer}>
+            <Link href={Constants.APP_PATHS.DB.path} as={Constants.APP_PATHS.DB.path.replace('[id]', dbConn.id)}>
+                <a className={"card "+styles.cardLink}>
                     <div className={"card-content "+styles.cardContent}>
                         <b>{dbConn.name}</b>
                         { isAdmin && 
@@ -48,9 +48,10 @@ const DBConnCard = ({dbConn, isAdmin, onDeleteDB}: DBConnCardPropType) => {
                             </div> 
                         }
                     </div>
-                </div>
-            </a>
-        </Link>
+                </a>
+            </Link>
+        </div>
+
     )
 }
 

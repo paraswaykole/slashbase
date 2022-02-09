@@ -11,15 +11,16 @@ type ProjectCardPropType = {
 const ProjectCard = ({project}: ProjectCardPropType) => {
 
     return (
-        <Link href={Constants.APP_PATHS.PROJECT.path} as={Constants.APP_PATHS.PROJECT.path.replace('[id]', project.id)}>
-            <a>
-                <div className={"card "+styles.cardContainer}>
+        <div className={"card "+styles.cardContainer}>
+            <Link href={Constants.APP_PATHS.PROJECT.path} as={Constants.APP_PATHS.PROJECT.path.replace('[id]', project.id)}>
+                <a className={"card "+styles.cardLink}>
                     <div className="card-content">
                         <b>{project.name}</b>
                     </div>
-                </div>
-            </a>
-        </Link>
+                </a>
+            </Link>
+        </div>
+
     )
 }
 
