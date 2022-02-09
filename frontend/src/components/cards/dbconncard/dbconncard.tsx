@@ -22,7 +22,7 @@ const DBConnCard = ({dbConn, isAdmin, onDeleteDB}: DBConnCardPropType) => {
     return (
         <div className={"card "+styles.cardContainer}>
             <Link href={Constants.APP_PATHS.DB.path} as={Constants.APP_PATHS.DB.path.replace('[id]', dbConn.id)}>
-                <a className={"card "+styles.cardLink}>
+                <a className={styles.cardLink}>
                     <div className={"card-content "+styles.cardContent}>
                         <b>{dbConn.name}</b>
                         { isAdmin && 
