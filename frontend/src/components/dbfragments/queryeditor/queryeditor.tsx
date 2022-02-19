@@ -11,7 +11,7 @@ import {format} from 'sql-formatter'
 const WrappedCodeMirror = dynamic(() => {
     // @ts-ignore
     import('codemirror/mode/sql/sql')
-    return import('../wrappedcodemirror')
+    return import('./wrappedcodemirror')
 }, {ssr: false})
 
 const ForwardRefCodeMirror = React.forwardRef<

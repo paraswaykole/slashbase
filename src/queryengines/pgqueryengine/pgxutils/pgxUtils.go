@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/jackc/pgproto3/v2"
@@ -32,142 +33,143 @@ func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 		rows.Scan(valuePtrs...)
 
 		entry := make(map[string]interface{})
-		for i, col := range columns {
+		for i := range columns {
+			iStr := strconv.Itoa(i)
 			var v interface{}
 			val := reflect.ValueOf(valuePtrs[i]).Elem().Interface() // dereference pointer
 			if str, ok := val.(sql.NullString); ok {
 				if str.Valid {
-					entry[col] = str.String
+					entry[iStr] = str.String
 				} else {
-					entry[col] = nil
+					entry[iStr] = nil
 				}
 				continue
 			}
 			if bol, ok := val.(sql.NullBool); ok {
 				if bol.Valid {
-					entry[col] = bol.Bool
+					entry[iStr] = bol.Bool
 				} else {
-					entry[col] = nil
+					entry[iStr] = nil
 				}
 				continue
 			}
 			if float, ok := val.(sql.NullFloat64); ok {
 				if float.Valid {
-					entry[col] = float.Float64
+					entry[iStr] = float.Float64
 				} else {
-					entry[col] = nil
+					entry[iStr] = nil
 				}
 				continue
 			}
 			if inte, ok := val.(sql.NullInt32); ok {
 				if inte.Valid {
-					entry[col] = inte.Int32
+					entry[iStr] = inte.Int32
 				} else {
-					entry[col] = nil
+					entry[iStr] = nil
 				}
 				continue
 			}
 			if inte, ok := val.(sql.NullInt64); ok {
 				if inte.Valid {
-					entry[col] = inte.Int64
+					entry[iStr] = inte.Int64
 				} else {
-					entry[col] = nil
+					entry[iStr] = nil
 				}
 				continue
 			}
 			if time, ok := val.(sql.NullTime); ok {
 				if time.Valid {
-					entry[col] = time.Time.String()
+					entry[iStr] = time.Time.String()
 				} else {
-					entry[col] = nil
+					entry[iStr] = nil
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.TID); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = fmt.Sprintf("(%d,%d)", tid.BlockNumber, tid.OffsetNumber)
+					entry[iStr] = fmt.Sprintf("(%d,%d)", tid.BlockNumber, tid.OffsetNumber)
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.TextArray); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.VarcharArray); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.BoolArray); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.UUIDArray); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.DateArray); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.Int2Array); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.Int4Array); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.Int8Array); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.Float4Array); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
 			if tid, ok := val.(pgtype.Float8Array); ok {
 				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
-					entry[col] = nil
+					entry[iStr] = nil
 				} else {
-					entry[col] = tid.Elements
+					entry[iStr] = tid.Elements
 				}
 				continue
 			}
@@ -177,7 +179,7 @@ func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 			} else {
 				v = val
 			}
-			entry[col] = v
+			entry[iStr] = v
 		}
 		tableData = append(tableData, entry)
 	}

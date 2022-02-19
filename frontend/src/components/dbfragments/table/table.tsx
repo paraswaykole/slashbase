@@ -38,16 +38,17 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
     )
 
     const displayColumns = queryData.columns.filter(col => col !== 'ctid')
+    const ctidExists = queryData.columns.length != displayColumns.length
 
     const columns = React.useMemo(
-        () => displayColumns.map((col) => ({
-            Header: <>{col}{querySort && querySort[0] === col ? 
-                querySort[1] === 'ASC' ? 
-                <>&nbsp;<i className="fas fa-caret-up"/></>
-                :
-                <>&nbsp;<i className="fas fa-caret-down"/></>
-                 : undefined}</>,
-            accessor: col, 
+        () => displayColumns.map((col, i) => ({
+                Header: <>{col}{querySort && querySort[0] === col ? 
+                    querySort[1] === 'ASC' ? 
+                    <>&nbsp;<i className="fas fa-caret-up"/></>
+                    :
+                    <>&nbsp;<i className="fas fa-caret-down"/></>
+                    : undefined}</>,
+                accessor: (ctidExists ? i+1 : i).toString(), 
         })),
         [queryData, querySort]
     )
@@ -60,10 +61,11 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
         setEditCell([])
     }
 
-    const onSaveCell = async (ctid: string, columnName: string, newValue: string) => {
+    const onSaveCell = async (ctid: string, columnIdx: string, newValue: string) => {
+        const columnName = queryData.columns[parseInt(columnIdx)]
         const result = await apiService.updateDBSingleData(dbConnection.id, mSchema, mName, ctid, columnName, newValue)
         if (result.success) {
-            updateCellData(ctid, result.data.ctid, columnName, newValue)
+            updateCellData(ctid, result.data.ctid, columnIdx, newValue)
             resetEditCell()
             toast.success('1 row updated');
         } else {
@@ -102,7 +104,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
     const newState: any = state // temporary typescript hack
     const selectedRowIds: any = newState.selectedRowIds
     const selectedRows: number[] = Object.keys(selectedRowIds).map(x=>parseInt(x))
-    const selectedCTIDs = rows.filter((_,i) => selectedRows.includes(i)).map(x => x.original['ctid']).filter(x => x)
+    const selectedCTIDs = rows.filter((_,i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
 
     const onDeleteBtnPressed = async () => {
         if (selectedCTIDs.length > 0){
@@ -134,18 +136,22 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
         onFilterChanged(filter)
     }
 
-    const changeSort = (newSort: string) => {
+    const changeSort = (newSortIdx: string) => {
         if (!isEditable){
             return
         }
-        if (querySort && newSort === querySort[0]) {
+        const newSortName: string = displayColumns.find((_, i) => {
+            const colIdx = ctidExists ? i+1 : i
+            return colIdx.toString() === newSortIdx
+        })!
+        if (querySort && newSortName === querySort[0]) {
             if (querySort[1] === 'ASC') {
                 onSortChanged([querySort[0], 'DESC'])
             } else if (querySort[1] === 'DESC') {
                 onSortChanged(undefined)
             }
         } else {
-            onSortChanged([newSort, 'ASC'])
+            onSortChanged([newSortName, 'ASC'])
         }
     }
    

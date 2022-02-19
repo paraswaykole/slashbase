@@ -77,12 +77,12 @@ func (pgqe *PostgresQueryEngine) TestConnection(user *models.User, dbConn *model
 	if err != nil {
 		return false
 	}
-	test := data["rows"].([]map[string]interface{})[0]["test"].(int32)
+	test := data["rows"].([]map[string]interface{})[0]["0"].(int32)
 	return test == 1
 }
 
 func (pgqe *PostgresQueryEngine) GetDataModels(user *models.User, dbConn *models.DBConnection) ([]map[string]interface{}, error) {
-	data, err := pgqe.RunQuery(user, dbConn, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' ORDER BY tablename;", true)
+	data, err := pgqe.RunQuery(user, dbConn, "SELECT tablename, schemaname FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' ORDER BY tablename;", true)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (pgqe *PostgresQueryEngine) GetDataModels(user *models.User, dbConn *models
 
 func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(user *models.User, dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`
-		SELECT *
+		SELECT column_name, data_type, is_nullable, column_default, contype, character_maximum_length
 		FROM
 		(SELECT *
 		FROM information_schema.columns
@@ -150,7 +150,7 @@ func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBCon
 		if err != nil {
 			return nil, err
 		}
-		data["count"] = countData["rows"].([]map[string]interface{})[0]["count"]
+		data["count"] = countData["rows"].([]map[string]interface{})[0]["0"]
 	}
 	return data, err
 }
@@ -161,7 +161,7 @@ func (pgqe *PostgresQueryEngine) UpdateSingleData(user *models.User, dbConn *mod
 	if err != nil {
 		return nil, err
 	}
-	ctID := data["rows"].([]map[string]interface{})[0]["ctid"]
+	ctID := data["rows"].([]map[string]interface{})[0]["0"]
 	data = map[string]interface{}{
 		"ctid": ctID,
 	}
@@ -183,7 +183,7 @@ func (pgqe *PostgresQueryEngine) AddData(user *models.User, dbConn *models.DBCon
 	if err != nil {
 		return nil, err
 	}
-	ctID := rData["rows"].([]map[string]interface{})[0]["ctid"]
+	ctID := rData["rows"].([]map[string]interface{})[0]["0"]
 	rData = map[string]interface{}{
 		"ctid": ctID,
 	}
@@ -204,7 +204,7 @@ func (pgqe *PostgresQueryEngine) CheckCreateRolePermissions(user *models.User, d
 	}
 	hasRolePermissions := false
 	if len(data["rows"].([]map[string]interface{})) == 1 {
-		hasRolePermissions = data["rows"].([]map[string]interface{})[0]["rolcreatedb"].(bool)
+		hasRolePermissions = data["rows"].([]map[string]interface{})[0]["0"].(bool)
 	}
 	return hasRolePermissions
 }
@@ -233,7 +233,7 @@ func (pgqe *PostgresQueryEngine) CreateRoleLogin(user *models.User, dbConn *mode
 		permissions = "SELECT, INSERT, UPDATE, DELETE, REFERENCES"
 	}
 	for _, nspname := range data["rows"].([]map[string]interface{}) {
-		namespace := nspname["nspname"].(string)
+		namespace := nspname["0"].(string)
 		query = fmt.Sprintf(`GRANT %s ON ALL TABLES IN SCHEMA %s TO %s;`, permissions, namespace, dbUser.DBUser)
 		_, err = pgqe.RunQuery(user, dbConn, query, false)
 		if err != nil {
@@ -255,7 +255,7 @@ func (pgqe *PostgresQueryEngine) DeleteRoleLogin(user *models.User, dbConn *mode
 		return nil
 	}
 	for _, nspname := range data["rows"].([]map[string]interface{}) {
-		namespace := nspname["nspname"].(string)
+		namespace := nspname["0"].(string)
 		query = fmt.Sprintf(`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA %s FROM %s;`, namespace, dbUser.DBUser)
 		_, err = pgqe.RunQuery(user, dbConn, query, false)
 		if err != nil {

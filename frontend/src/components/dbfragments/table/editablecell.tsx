@@ -12,7 +12,7 @@ const EditableCell = ({
     // We need to keep and update the state of the cell normally
     const [value, setValue] = React.useState(initialValue)
   
-    // // If the initialValue is changed external, sync it up with our state
+    // If the initialValue is changed external, sync it up with our state
     React.useEffect(() => {
       setValue(initialValue)
     }, [initialValue])
@@ -27,7 +27,7 @@ const EditableCell = ({
     }
 
     const onSave = async () => {
-      onSaveCell(original.ctid, id, value)
+      onSaveCell(original["0"], id, value)
     }
 
     const isEditingCell = editCell.length == 2 && editCell[0] === index && editCell[1] === id

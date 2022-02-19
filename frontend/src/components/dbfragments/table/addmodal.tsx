@@ -28,12 +28,15 @@ const AddModal = ({queryData, dbConnection, mSchema, mName, onAddData, onClose}:
         if(result.success) {
             toast.success('data added')
             let mNewData = {...newData, ctid: result.data.ctid}
-            queryData.columns.forEach((col)=>{
+            queryData.columns.forEach((col, i)=>{
+                const colIdx = i.toString()
                 if (mNewData[col] === undefined) {
-                    mNewData[col] = null
+                    mNewData[colIdx] = null
+                } else {
+                    mNewData[colIdx] = mNewData[col]
+                    delete mNewData[col]
                 }
             })
-            console.log(mNewData)
             onAddData(mNewData)
             onClose()
         } else {

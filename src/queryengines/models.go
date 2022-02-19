@@ -22,8 +22,8 @@ type DBDataModelField struct {
 func BuildDBDataModel(dbConn *models.DBConnection, tableData map[string]interface{}) *DBDataModel {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		view := DBDataModel{
-			Name:       tableData["tablename"].(string),
-			SchemaName: tableData["schemaname"].(string),
+			Name:       tableData["0"].(string),
+			SchemaName: tableData["1"].(string),
 		}
 		return &view
 	}
@@ -33,20 +33,20 @@ func BuildDBDataModel(dbConn *models.DBConnection, tableData map[string]interfac
 func BuildDBDataModelField(dbConn *models.DBConnection, fieldData map[string]interface{}) *DBDataModelField {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		view := DBDataModelField{
-			Name:       fieldData["column_name"].(string),
-			Type:       fieldData["data_type"].(string),
-			IsNullable: fieldData["is_nullable"].(string) == "YES",
+			Name:       fieldData["0"].(string),
+			Type:       fieldData["1"].(string),
+			IsNullable: fieldData["2"].(string) == "YES",
 		}
-		if fieldData["column_default"] != nil {
-			coldef := fieldData["column_default"].(string)
+		if fieldData["3"] != nil {
+			coldef := fieldData["3"].(string)
 			view.Default = &coldef
 		}
-		if fieldData["contype"] != nil {
-			contype := rune(fieldData["contype"].(int8))
+		if fieldData["4"] != nil {
+			contype := rune(fieldData["4"].(int8))
 			view.IsPrimary = contype == 'p'
 		}
-		if fieldData["character_maximum_length"] != nil {
-			maxLen := fieldData["character_maximum_length"].(int32)
+		if fieldData["5"] != nil {
+			maxLen := fieldData["5"].(int32)
 			view.CharMaxLength = &maxLen
 		}
 

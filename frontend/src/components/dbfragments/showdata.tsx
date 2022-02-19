@@ -94,12 +94,12 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
         setQuerySort(newSort)
     }
 
-    const updateCellData = (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean) => {
-        const rowIdx = queryData!.rows.findIndex(x => x.ctid == oldCtid)
+    const updateCellData = (oldCtid: string, newCtid: string, columnIdx: string, newValue: string|null|boolean) => {
+        const rowIdx = queryData!.rows.findIndex(x => x["0"] == oldCtid)
         if (rowIdx) {
             const newQueryData: DBQueryData = {...queryData!}
             newQueryData!.rows[rowIdx] = {...newQueryData!.rows[rowIdx], ctid: newCtid}
-            newQueryData!.rows[rowIdx][columnName] = newValue
+            newQueryData!.rows[rowIdx][columnIdx] = newValue
             setQueryData(newQueryData)
         } else {
             fetchData(false)
