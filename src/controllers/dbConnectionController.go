@@ -39,7 +39,8 @@ func (dbcc DBConnectionController) CreateDBConnection(
 		return nil, err
 	}
 
-	success := queryengines.TestConnection(authUser, dbConn)
+	dbConnCopy := *dbConn
+	success := queryengines.TestConnection(authUser, &dbConnCopy)
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}
