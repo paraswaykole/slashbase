@@ -197,7 +197,7 @@ func (pgqe *PostgresQueryEngine) DeleteData(user *models.User, dbConn *models.DB
 }
 
 func (pgqe *PostgresQueryEngine) CheckCreateRolePermissions(user *models.User, dbConn *models.DBConnection) bool {
-	query := fmt.Sprintf(`SELECT rolcreatedb FROM "pg_authid" WHERE rolname = '%s'`, dbConn.ConnectionUser.DBUser)
+	query := fmt.Sprintf(`SELECT rolcreatedb FROM "pg_roles" WHERE rolname = '%s'`, dbConn.ConnectionUser.DBUser)
 	data, err := pgqe.RunQuery(user, dbConn, query, false)
 	if err != nil {
 		return false
