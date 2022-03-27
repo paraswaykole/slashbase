@@ -36,7 +36,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 			string(dbConn.SSHHost), remoteHost, port, string(dbConn.SSHUser),
 			string(dbConn.SSHPassword), string(dbConn.SSHKeyFile),
 		)
-		dbConn.DBHost = "localhost"
+		dbConn.DBHost = sbsql.CryptedData("localhost")
 		dbConn.DBPort = sbsql.CryptedData(fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port))
 	}
 	port, _ = strconv.Atoi(string(dbConn.DBPort))

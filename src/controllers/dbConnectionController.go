@@ -40,11 +40,13 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	}
 
 	dbConnCopy := *dbConn
+	dbConnectionUser := *dbConn.ConnectionUser
+	dbConnCopy.ConnectionUser = &dbConnectionUser
 	success := queryengines.TestConnection(authUser, &dbConnCopy)
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}
-	dbUsers, err := dbcc.createRoleLogins(authUser, dbConn)
+	dbUsers, err := dbcc.createRoleLogins(authUser, &dbConnCopy)
 	if err != nil {
 		return nil, err
 	}
