@@ -40,6 +40,7 @@ func NewRouter() *gin.Engine {
 			projectGroup.Use(middlewares.AuthUserMiddleware())
 			projectGroup.POST("/create", projectRoutes.CreateProject)
 			projectGroup.GET("/all", projectRoutes.GetProjects)
+			projectGroup.DELETE("/:projectId", projectRoutes.DeleteProject)
 			projectGroup.POST("/:projectId/members/create", projectRoutes.AddProjectMember)
 			projectGroup.DELETE("/:projectId/members/:userId", projectRoutes.DeleteProjectMember)
 			projectGroup.GET("/:projectId/members", projectRoutes.GetProjectMembers)

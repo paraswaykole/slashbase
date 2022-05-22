@@ -24,5 +24,4 @@ src/config/*.yaml
 
 # Build
 backend
-server
 build/

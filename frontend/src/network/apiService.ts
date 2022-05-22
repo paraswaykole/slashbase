@@ -58,6 +58,12 @@ const createNewProject = async function(projectName: string): Promise<ApiResult<
                 .then(res => res.data)
 }
 
+const deleteProject = async function(projectId: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+                .delete<any, AxiosResponse<ApiResult<undefined>>>(`/project/${projectId}`)
+                .then(res => res.data)
+}
+
 const getProjects = async function(): Promise<ApiResult<Array<Project>>> {
     return await Request.getApiInstance()
                         .get<ApiResult<Array<Project>>>('/project/all')
@@ -202,6 +208,7 @@ export default {
     addUser,
     getProjects,
     createNewProject,
+    deleteProject,
     getProjectMembers,
     getAllDBConnections,
     getSingleDBConnection,

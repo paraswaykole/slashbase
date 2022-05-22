@@ -4,6 +4,7 @@ import type { AppState } from './store'
 import { Project } from '../data/models'
 import apiService from '../network/apiService'
 import { AddProjectMemberPayload } from '../network/payloads'
+import { getAllDBConnections } from './allDBConnectionsSlice'
 
 export interface ProjectState {
     projects: Array<Project>
@@ -47,6 +48,26 @@ export const createNewProject = createAsyncThunk(
   }
 )
 
+export const deleteProject = createAsyncThunk(
+  'projects/deleteProject',
+  async (payload: {projectId: string}, {dispatch}) => {
+    const result = await apiService.deleteProject(payload.projectId)
+    if (result.success) {
+      const resp = await dispatch(getAllDBConnections({force: true}))
+      console.log(resp)
+      return {
+        success: true,
+        projectId: payload.projectId,
+      }
+    } else {
+      return {
+        success: false
+      }
+    }
+  }
+)
+
+
 export const projectsSlice = createSlice({
   name: 'projects',
   initialState,
@@ -65,6 +86,11 @@ export const projectsSlice = createSlice({
       .addCase(createNewProject.fulfilled, (state,  action) => {
         if (action.payload.project) {
           state.projects.push(action.payload.project)
+        }
+      })
+      .addCase(deleteProject.fulfilled, (state,  action) => {
+        if (action.payload.success) {
+          state.projects = state.projects.filter(pro => pro.id !== action.payload.projectId)
         }
       })
   },

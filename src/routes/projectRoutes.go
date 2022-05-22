@@ -132,3 +132,24 @@ func (pr ProjectRoutes) DeleteProjectMember(c *gin.Context) {
 		"success": true,
 	})
 }
+
+func (pr ProjectRoutes) DeleteProject(c *gin.Context) {
+	projectId := c.Param("projectId")
+	authUser := middlewares.GetAuthUser(c)
+
+	if isAllowed, err := controllers.GetAuthUserHasRolesForProject(authUser, projectId, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
+		return
+	}
+
+	err := projectController.DeleteProject(projectId)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
+}

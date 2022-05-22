@@ -17,15 +17,19 @@ const initialState: AllDBConnectionsState = {
 
 export const getAllDBConnections = createAsyncThunk(
   'allDBConnections/getAllDBConnections',
-  async () => {
+  async (payload: {force?: boolean}) => {
     const result = await apiService.getAllDBConnections()
     const dbConnections = result.success ? result.data : []
     return {
+      force: payload?.force ?? false, 
       dbConnections: dbConnections,
     }
   },
   {
-    condition: (_, { getState }: any) => {
+    condition: (payload: {force?: boolean}, { getState }: any) => {
+      if (payload?.force == true){
+        return true
+      }
       const { dbConnections, isFetching} = getState()['allDBConnections'] as AllDBConnectionsState
       const isFetched = dbConnections.length > 0
       if (isFetched || isFetching) {
@@ -65,7 +69,11 @@ export const allDBConnectionSlice = createSlice({
       })
       .addCase(getAllDBConnections.fulfilled, (state, action) => {
         state.isFetching = false
-        state.dbConnections = state.dbConnections.concat(action.payload.dbConnections)
+        if (action.payload.force) {
+          state.dbConnections = action.payload.dbConnections
+        } else {
+          state.dbConnections = state.dbConnections.concat(action.payload.dbConnections)
+        }
       })
       .addCase(addNewDBConn.fulfilled, (state, action: any) => {
         if (action.payload.dbConn)

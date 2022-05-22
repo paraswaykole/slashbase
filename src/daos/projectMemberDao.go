@@ -24,6 +24,11 @@ func (d ProjectDao) GetProjectMembers(projectID string) (*[]models.ProjectMember
 	return &projectMembers, err
 }
 
+func (d ProjectDao) DeleteAllProjectMembersInProject(projectID string) error {
+	err := db.GetDB().Where(models.ProjectMember{ProjectID: projectID}).Delete(models.ProjectMember{}).Error
+	return err
+}
+
 func (d ProjectDao) GetProjectMembersForUser(userID string) (*[]models.ProjectMember, error) {
 	var projectMembers []models.ProjectMember
 	err := db.GetDB().Where(models.ProjectMember{UserID: userID}).Preload("Project").Find(&projectMembers).Error

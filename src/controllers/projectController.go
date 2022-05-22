@@ -35,6 +35,38 @@ func (pc ProjectController) GetProjects(authUser *models.User) (*[]models.Projec
 	return projectMembers, nil
 }
 
+func (pc ProjectController) DeleteProject(id string) error {
+
+	project, err := projectDao.GetProject(id)
+	if err != nil {
+		return errors.New("could not find project")
+	}
+
+	allDBsInProject, err := dbConnDao.GetDBConnectionsByProject(project.ID)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	for _, dbConn := range allDBsInProject {
+		err := dbConnDao.DeleteDBConnectionById(dbConn.ID)
+		if err != nil {
+			return errors.New("there was some problem deleting db `" + dbConn.Name + "` in the project")
+		}
+	}
+
+	err = projectDao.DeleteAllProjectMembersInProject(project.ID)
+	if err != nil {
+		return errors.New("there was some problem deleting project members")
+	}
+
+	err = projectDao.DeleteProject(project.ID)
+	if err != nil {
+		return errors.New("there was some problem deleting the project")
+	}
+
+	return nil
+}
+
 func (pc ProjectController) GetProjectMembers(projectID string) (*[]models.ProjectMember, error) {
 
 	projectMembers, err := projectDao.GetProjectMembers(projectID)

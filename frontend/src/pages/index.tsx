@@ -15,9 +15,9 @@ const HomePage: NextPage = () => {
     <AppLayout title="Home">
       <h1>All Projects</h1>
       {projects.map((project: Project) => (
-        <ProjectCard  key={project.id} project={project}/>
+        <ProjectCard key={project.id} project={project} />
       ))}
-      <CreateNewProjectCard />      
+      <CreateNewProjectCard />
     </AppLayout>
   )
 }
