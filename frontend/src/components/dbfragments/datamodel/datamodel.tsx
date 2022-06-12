@@ -58,6 +58,24 @@ const DataModel = ({ dataModel }: DataModelPropType) => {
                             }
                         </tbody>
                     </table>}
+                {dataModel.indexes && dataModel.indexes.length > 0 &&
+                    <table className={"table is-bordered is-striped is-narrow is-hoverable"}>
+                        <thead>
+                            <tr>
+                                <th colSpan={2}>Indexes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                dataModel.indexes?.map(field => (
+                                    <tr key={field.name}>
+                                        <td>{field.name}</td>
+                                        <td>{field.indexDef}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>}
                 <ReactTooltip place="bottom" type="dark" effect="solid" />
             </div>
         </React.Fragment>

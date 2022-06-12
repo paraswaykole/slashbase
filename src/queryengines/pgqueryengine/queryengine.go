@@ -124,6 +124,17 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelConstraints(user *models.User
 	return returnedData, err
 }
 
+func (pgqe *PostgresQueryEngine) GetSingleDataModelIndexes(user *models.User, dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
+	query := fmt.Sprintf(`SELECT indexname, indexdef FROM pg_indexes
+	WHERE schemaname = '%s' AND tablename = '%s';`, schema, name)
+	data, err := pgqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	returnedData := data["rows"].([]map[string]interface{})
+	return returnedData, err
+}
+
 func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
 	sortQuery := ""
 	if len(sort) == 2 {

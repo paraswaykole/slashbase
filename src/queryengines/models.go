@@ -9,6 +9,7 @@ type DBDataModel struct {
 	SchemaName  string                 `json:"schemaName"`
 	Fields      []DBDataModelField     `json:"fields"`
 	Constraints []DBDataModelConstaint `json:"constraints"`
+	Indexes     []DBDataModelIndex     `json:"indexes"`
 }
 
 type DBDataModelField struct {
@@ -23,6 +24,11 @@ type DBDataModelField struct {
 type DBDataModelConstaint struct {
 	Name          string `json:"name"`
 	ConstraintDef string `json:"constraintDef"`
+}
+
+type DBDataModelIndex struct {
+	Name     string `json:"name"`
+	IndexDef string `json:"indexDef"`
 }
 
 func BuildDBDataModel(dbConn *models.DBConnection, tableData map[string]interface{}) *DBDataModel {
@@ -66,6 +72,17 @@ func BuildDBDataModelConstraint(dbConn *models.DBConnection, fieldData map[strin
 		view := DBDataModelConstaint{
 			Name:          fieldData["0"].(string),
 			ConstraintDef: fieldData["1"].(string),
+		}
+		return &view
+	}
+	return nil
+}
+
+func BuildDBDataModelIndex(dbConn *models.DBConnection, fieldData map[string]interface{}) *DBDataModelIndex {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		view := DBDataModelIndex{
+			Name:     fieldData["0"].(string),
+			IndexDef: fieldData["1"].(string),
 		}
 		return &view
 	}

@@ -56,6 +56,10 @@ export interface DBDataModel {
         name: string
         constraintDef: string
     }>
+    indexes?: Array<{
+        name: string
+        indexDef: string
+    }>
 }
 
 export interface DBQueryData {
