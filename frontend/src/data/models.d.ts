@@ -52,6 +52,10 @@ export interface DBDataModel {
         charMaxLength: number|null
         default: string|null
     }>
+    constraints?: Array<{
+        name: string
+        constraintDef: string
+    }>
 }
 
 export interface DBQueryData {

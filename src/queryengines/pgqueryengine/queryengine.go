@@ -109,8 +109,19 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(user *models.User, dbC
 	if err != nil {
 		return nil, err
 	}
-	rdata := data["rows"].([]map[string]interface{})
-	return rdata, err
+	returnedData := data["rows"].([]map[string]interface{})
+	return returnedData, err
+}
+
+func (pgqe *PostgresQueryEngine) GetSingleDataModelConstraints(user *models.User, dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
+	query := fmt.Sprintf(`SELECT conname, pg_get_constraintdef(oid, true) as pretty_source
+		FROM pg_constraint WHERE conrelid = '"%s"."%s"'::regclass;`, schema, name)
+	data, err := pgqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	returnedData := data["rows"].([]map[string]interface{})
+	return returnedData, err
 }
 
 func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {

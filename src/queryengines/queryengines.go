@@ -39,6 +39,10 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 	if err != nil {
 		return nil, err
 	}
+	constraintsData, err := postgresQueryEngine.GetSingleDataModelConstraints(user, dbConn, schemaName, name)
+	if err != nil {
+		return nil, err
+	}
 	allFields := []DBDataModelField{}
 	for _, field := range fieldsData {
 		fieldView := BuildDBDataModelField(dbConn, field)
@@ -46,11 +50,19 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 			allFields = append(allFields, *fieldView)
 		}
 	}
+	allConstraints := []DBDataModelConstaint{}
+	for _, constraint := range constraintsData {
+		constraintView := BuildDBDataModelConstraint(dbConn, constraint)
+		if constraintView != nil {
+			allConstraints = append(allConstraints, *constraintView)
+		}
+	}
 
 	dataModels := DBDataModel{
-		SchemaName: schemaName,
-		Name:       name,
-		Fields:     allFields,
+		SchemaName:  schemaName,
+		Name:        name,
+		Fields:      allFields,
+		Constraints: allConstraints,
 	}
 	return &dataModels, nil
 }

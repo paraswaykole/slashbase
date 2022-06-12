@@ -5,9 +5,10 @@ import (
 )
 
 type DBDataModel struct {
-	Name       string             `json:"name"`
-	SchemaName string             `json:"schemaName"`
-	Fields     []DBDataModelField `json:"fields"`
+	Name        string                 `json:"name"`
+	SchemaName  string                 `json:"schemaName"`
+	Fields      []DBDataModelField     `json:"fields"`
+	Constraints []DBDataModelConstaint `json:"constraints"`
 }
 
 type DBDataModelField struct {
@@ -17,6 +18,11 @@ type DBDataModelField struct {
 	IsNullable    bool    `json:"isNullable"`
 	CharMaxLength *int32  `json:"charMaxLength"`
 	Default       *string `json:"default"`
+}
+
+type DBDataModelConstaint struct {
+	Name          string `json:"name"`
+	ConstraintDef string `json:"constraintDef"`
 }
 
 func BuildDBDataModel(dbConn *models.DBConnection, tableData map[string]interface{}) *DBDataModel {
@@ -50,6 +56,17 @@ func BuildDBDataModelField(dbConn *models.DBConnection, fieldData map[string]int
 			view.CharMaxLength = &maxLen
 		}
 
+		return &view
+	}
+	return nil
+}
+
+func BuildDBDataModelConstraint(dbConn *models.DBConnection, fieldData map[string]interface{}) *DBDataModelConstaint {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		view := DBDataModelConstaint{
+			Name:          fieldData["0"].(string),
+			ConstraintDef: fieldData["1"].(string),
+		}
 		return &view
 	}
 	return nil
