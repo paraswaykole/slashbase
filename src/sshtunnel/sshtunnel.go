@@ -1,3 +1,4 @@
+// This file is modified version of sshtun library: https://github.com/rgzr/sshtun
 // Package sshtun provides a SSH tunnel with port forwarding. By default it reads the default linux ssh private key location ($HOME/.ssh/id_rsa).
 package sshtunnel
 
