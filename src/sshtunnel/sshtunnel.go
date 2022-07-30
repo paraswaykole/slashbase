@@ -255,7 +255,7 @@ func (tun *SSHTun) Start() error {
 	// Local listener
 	localList, err := net.Listen(tun.local.connectionType(), local)
 	if err != nil {
-		return tun.errNotStarted(fmt.Errorf("Local listen on %s failed: %s", local, err.Error()))
+		return tun.errNotStarted(fmt.Errorf("local listen on %s failed: %s", local, err.Error()))
 	}
 
 	// Context and error channel
@@ -267,7 +267,7 @@ func (tun *SSHTun) Start() error {
 		for {
 			localConn, err := localList.Accept()
 			if err != nil {
-				tun.errStarted(fmt.Errorf("Local accept on %s failed: %s", local, err.Error()))
+				tun.errStarted(fmt.Errorf("local accept on %s failed: %s", local, err.Error()))
 				break
 			}
 			if tun.debug {
@@ -281,10 +281,8 @@ func (tun *SSHTun) Start() error {
 
 	// Wait until someone cancels the context and stop accepting connections
 	go func() {
-		select {
-		case <-tun.ctx.Done():
-			localList.Close()
-		}
+		<-tun.ctx.Done()
+		localList.Close()
 	}()
 
 	// Now others can call Stop or fail
@@ -298,10 +296,8 @@ func (tun *SSHTun) Start() error {
 	tun.Unlock()
 
 	// Wait to exit
-	select {
-	case errFromCh := <-tun.errCh:
-		return errFromCh
-	}
+	errFromCh := <-tun.errCh
+	return errFromCh
 }
 
 func (tun *SSHTun) errNotStarted(err error) error {
@@ -366,7 +362,7 @@ func (tun *SSHTun) getSSHAuthMethod() (ssh.AuthMethod, error) {
 		}
 		return method, nil
 	default:
-		return nil, fmt.Errorf("Unknown auth type: %d", tun.authType)
+		return nil, fmt.Errorf("unknown auth type: %d", tun.authType)
 	}
 }
 
@@ -374,7 +370,7 @@ func (tun *SSHTun) getSSHAuthMethodForKeyFile(encrypted bool) (ssh.AuthMethod, e
 	buf := []byte(tun.authKeyFile)
 	key, err := tun.parsePrivateKey(buf, encrypted)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading SSH key file %s: %s", tun.authKeyFile, err.Error())
+		return nil, fmt.Errorf("error reading SSH key file %s: %s", tun.authKeyFile, err.Error())
 	}
 	return key, nil
 }
@@ -382,11 +378,11 @@ func (tun *SSHTun) getSSHAuthMethodForKeyFile(encrypted bool) (ssh.AuthMethod, e
 func (tun *SSHTun) getSSHAuthMethodForKeyReader(encrypted bool) (ssh.AuthMethod, error) {
 	buf, err := ioutil.ReadAll(tun.authKeyReader)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading from SSH key reader: %s", err.Error())
+		return nil, fmt.Errorf("error reading from SSH key reader: %s", err.Error())
 	}
 	key, err := tun.parsePrivateKey(buf, encrypted)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading from SSH key reader: %s", err.Error())
+		return nil, fmt.Errorf("error reading from SSH key reader: %s", err.Error())
 	}
 	return key, nil
 }
@@ -397,12 +393,12 @@ func (tun *SSHTun) parsePrivateKey(buf []byte, encrypted bool) (ssh.AuthMethod, 
 	if encrypted {
 		key, err = ssh.ParsePrivateKeyWithPassphrase(buf, []byte(tun.authPassword))
 		if err != nil {
-			return nil, fmt.Errorf("Error parsing encrypted key: %s", err.Error())
+			return nil, fmt.Errorf("error parsing encrypted key: %s", err.Error())
 		}
 	} else {
 		key, err = ssh.ParsePrivateKey(buf)
 		if err != nil {
-			return nil, fmt.Errorf("Error parsing key: %s", err.Error())
+			return nil, fmt.Errorf("error parsing key: %s", err.Error())
 		}
 	}
 	return ssh.PublicKeys(key), nil
@@ -411,18 +407,18 @@ func (tun *SSHTun) parsePrivateKey(buf []byte, encrypted bool) (ssh.AuthMethod, 
 func (tun *SSHTun) getSSHAuthMethodForSSHAgent() (ssh.AuthMethod, error) {
 	conn, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
 	if err != nil {
-		return nil, fmt.Errorf("Error opening unix socket: %s", err)
+		return nil, fmt.Errorf("error opening unix socket: %s", err)
 	}
 
 	agentClient := agent.NewClient(conn)
 
 	signers, err := agentClient.Signers()
 	if err != nil {
-		return nil, fmt.Errorf("Error getting ssh-agent signers: %s", err)
+		return nil, fmt.Errorf("error getting ssh-agent signers: %s", err)
 	}
 
 	if len(signers) == 0 {
-		return nil, fmt.Errorf("No signers from ssh-agent. Use 'ssh-add' to add keys to agent")
+		return nil, fmt.Errorf("no signers from ssh-agent. Use 'ssh-add' to add keys to agent")
 	}
 
 	return ssh.PublicKeys(signers...), nil
@@ -482,12 +478,10 @@ func (tun *SSHTun) forward(localConn net.Conn, config *ssh.ClientConfig) {
 		}
 	}()
 
-	select {
-	case <-myCtx.Done():
-		myCancel()
-		if tun.debug {
-			log.Printf("SSH tunnel CLOSE: %s", connStr)
-		}
+	<-myCtx.Done()
+	myCancel()
+	if tun.debug {
+		log.Printf("SSH tunnel CLOSE: %s", connStr)
 	}
 }
 
