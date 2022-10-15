@@ -5,10 +5,9 @@
   <p align="center">The open-source collaborative IDE for your databases in your browser.</p>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/github/license/slashbase/slashbase-server" alt="License">
-  <img src="https://img.shields.io/github/go-mod/go-version/slashbase/slashbase-server.svg" alt="Go verison">
-  <img src="https://img.shields.io/github/release/slashbase/slashbase-server.svg" alt="Release version">
-  <a href="https://twitter.com/slashbaseide"><img src="https://img.shields.io/badge/%40slashbaseide-follow-blue"></a>
+  <img src="https://img.shields.io/github/license/slashbaseide/slashbase" alt="License">
+  <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
+  <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
 </p>
 
 ___
@@ -26,10 +25,6 @@ It's written in Golang and Nextjs React Framework (SPA) and runs as a single Lin
 - **Cloud based**: Works in browser. Setup once and use everywhere. Self-host on your VPC.
 - **Easy to use**: Minimal interface, simple to use and easy sharing queries within team.
 - **Collaborative**: Works with your team. Assign roles like Analyst, Developer or Admin to manage read-write permissions.
-
-## Demo
-
-Checkout demo at [demo.slashbase.com](https://demo.slashbase.com).
 
 ## Installation
 
