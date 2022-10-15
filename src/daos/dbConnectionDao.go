@@ -63,6 +63,7 @@ func (d DBConnectionDao) GetConnectableRootDBConnection(dbConnectionId string) (
 		for i, dbConnUser := range dbConn.DBConnectionUsers {
 			if dbConnUser.IsRoot {
 				dbConn.ConnectionUser = &dbConn.DBConnectionUsers[i]
+				break
 			}
 		}
 	}
