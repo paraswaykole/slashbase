@@ -24,7 +24,7 @@ func (pr ProjectRoutes) CreateProject(c *gin.Context) {
 
 	project, projectMember, err := projectController.CreateProject(authUser, createBody.Name)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -40,7 +40,7 @@ func (pr ProjectRoutes) GetProjects(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	projectMembers, err := projectController.GetProjects(authUser)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -60,7 +60,7 @@ func (pr ProjectRoutes) GetProjectMembers(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	if !utils.ContainsString(*authUserProjectIds, projectID) {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
 			"error":   "not allowed",
 		})
@@ -68,7 +68,7 @@ func (pr ProjectRoutes) GetProjectMembers(c *gin.Context) {
 	}
 	projectMembers, err := projectController.GetProjectMembers(projectID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -99,7 +99,7 @@ func (pr ProjectRoutes) AddProjectMember(c *gin.Context) {
 
 	newProjectMember, err := projectController.AddProjectMember(projectID, addMemberBody.Email, addMemberBody.Role)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -122,7 +122,7 @@ func (pr ProjectRoutes) DeleteProjectMember(c *gin.Context) {
 
 	err := projectController.DeleteProjectMember(projectId, userId)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -143,7 +143,7 @@ func (pr ProjectRoutes) DeleteProject(c *gin.Context) {
 
 	err := projectController.DeleteProject(projectId)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})

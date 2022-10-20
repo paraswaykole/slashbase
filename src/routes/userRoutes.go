@@ -24,7 +24,7 @@ func (ur UserRoutes) LoginUser(c *gin.Context) {
 	c.BindJSON(&loginBody)
 	userSession, err := userController.LoginUser(loginBody.Email, loginBody.Password)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -61,7 +61,7 @@ func (ur UserRoutes) EditAccount(c *gin.Context) {
 
 	err := userController.EditAccount(authUser, userBody.Name, userBody.ProfileImageURL)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -83,7 +83,7 @@ func (ur UserRoutes) ChangePassword(c *gin.Context) {
 
 	err := userController.ChangePassword(authUser, body.OldPassword, body.NewPassword)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -98,7 +98,7 @@ func (ur UserRoutes) GetUsers(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
 			"error":   "invalid offset",
 		})
@@ -108,7 +108,7 @@ func (ur UserRoutes) GetUsers(c *gin.Context) {
 
 	users, next, err := userController.GetUsersPaginated(authUser, searchTerm, offset)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -139,7 +139,7 @@ func (ur UserRoutes) AddUser(c *gin.Context) {
 	c.BindJSON(&addUserBody)
 	err := userController.AddUser(authUser, addUserBody.Email, addUserBody.Password)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})

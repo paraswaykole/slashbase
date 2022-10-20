@@ -42,7 +42,7 @@ func (dbcr DBConnectionRoutes) CreateDBConnection(c *gin.Context) {
 	dbConn, err := dbConnController.CreateDBConnection(authUser, createBody.ProjectID, createBody.Name, createBody.Host, createBody.Port,
 		createBody.User, createBody.Password, createBody.DBName, createBody.LoginType, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -60,7 +60,7 @@ func (dbcr DBConnectionRoutes) GetDBConnections(c *gin.Context) {
 
 	dbConns, err := dbConnController.GetDBConnections(authUserProjectIds)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -81,7 +81,7 @@ func (dbcr DBConnectionRoutes) DeleteDBConnection(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	err := dbConnController.DeleteDBConnection(authUser, dbConnID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -97,7 +97,7 @@ func (dbcr DBConnectionRoutes) GetSingleDBConnection(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	dbConn, err := dbConnController.GetSingleDBConnection(authUser, dbConnID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -114,7 +114,7 @@ func (dbcr DBConnectionRoutes) GetDBConnectionsByProject(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	if !utils.ContainsString(*authUserProjectIds, projectID) {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
 			"error":   errors.New("not allowed"),
 		})
@@ -123,7 +123,7 @@ func (dbcr DBConnectionRoutes) GetDBConnectionsByProject(c *gin.Context) {
 
 	dbConns, err := dbConnController.GetDBConnectionsByProject(projectID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})

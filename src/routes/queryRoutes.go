@@ -26,7 +26,7 @@ func (qr QueryRoutes) RunQuery(c *gin.Context) {
 
 	data, err := queryController.RunQuery(authUser, runBody.DBConnectionID, runBody.Query)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -52,7 +52,7 @@ func (qr QueryRoutes) GetData(c *gin.Context) {
 	}
 	filter, hasFilter := c.GetQueryArray("filter[]")
 	if hasFilter && len(filter) < 2 {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
 			"error":   "Invalid filter query",
 		})
@@ -60,7 +60,7 @@ func (qr QueryRoutes) GetData(c *gin.Context) {
 	}
 	sort, hasSort := c.GetQueryArray("sort[]")
 	if hasSort && len(sort) != 2 {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
 			"error":   "Invalid sort query",
 		})
@@ -71,7 +71,7 @@ func (qr QueryRoutes) GetData(c *gin.Context) {
 
 	data, err := queryController.GetData(authUser, authUserProjectIds, dbConnId, schema, name, fetchCount, limit, offset, filter, sort)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -90,7 +90,7 @@ func (qr QueryRoutes) GetDataModels(c *gin.Context) {
 
 	dataModels, err := queryController.GetDataModels(authUser, authUserProjectIds, dbConnId)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -113,7 +113,7 @@ func (qr QueryRoutes) GetSingleDataModel(c *gin.Context) {
 
 	data, err := queryController.GetSingleDataModel(authUser, authUserProjectIds, dbConnId, schema, name)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -137,7 +137,7 @@ func (qr QueryRoutes) AddData(c *gin.Context) {
 
 	data, err := queryController.AddData(authUser, dbConnId, addBody.Schema, addBody.Name, addBody.Data)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -161,7 +161,7 @@ func (qr QueryRoutes) DeleteData(c *gin.Context) {
 
 	data, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.CTIDs)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -187,7 +187,7 @@ func (qr QueryRoutes) UpdateSingleData(c *gin.Context) {
 
 	data, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.CTID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -212,7 +212,7 @@ func (qr QueryRoutes) SaveDBQuery(c *gin.Context) {
 
 	queryObj, err := queryController.SaveDBQuery(authUser, authUserProjectIds, dbConnId, createBody.Name, createBody.Query, createBody.QueryID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -230,7 +230,7 @@ func (qr QueryRoutes) GetDBQueriesInDBConnection(c *gin.Context) {
 
 	dbQueries, err := queryController.GetDBQueriesInDBConnection(authUserProjectIds, dbConnID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -252,7 +252,7 @@ func (qr QueryRoutes) GetSingleDBQuery(c *gin.Context) {
 
 	dbQuery, err := queryController.GetSingleDBQuery(authUserProjectIds, queryID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
@@ -279,7 +279,7 @@ func (qr QueryRoutes) GetQueryHistoryInDBConnection(c *gin.Context) {
 
 	dbQueryLogs, next, err := queryController.GetQueryHistoryInDBConnection(authUser, authUserProjectIds, dbConnID, before)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
