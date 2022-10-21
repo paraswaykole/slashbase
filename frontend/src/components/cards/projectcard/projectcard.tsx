@@ -35,7 +35,7 @@ const ProjectCard = ({ project }: ProjectCardPropType) => {
                     <div className={"card-content " + styles.cardContent}>
                         <b>{project.name}</b>
                         {isAdmin &&
-                            <div className="dropdown is-active" onClick={(e) => { e.preventDefault() }}>
+                            <div className="dropdown is-right is-active" onClick={(e) => { e.preventDefault() }}>
                                 <div className="dropdown-trigger">
                                     <button className="button" aria-haspopup="true" aria-controls="dropdown-menu" onClick={toggleDropdown}>
                                         <span className="icon is-small">
