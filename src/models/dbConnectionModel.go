@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"slashbase.com/backend/internal/rnal/db"
-	"slashbase.com/backend/internal/rnal/models/sbsql"
-	"slashbase.com/backend/internal/rnal/utils"
+	"slashbase.com/backend/internal/db"
+	"slashbase.com/backend/internal/models/sbsql"
+	"slashbase.com/backend/internal/utils"
 )
 
 type DBConnection struct {

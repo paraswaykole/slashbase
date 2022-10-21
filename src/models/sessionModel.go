@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"slashbase.com/backend/internal/rnal/config"
-	"slashbase.com/backend/internal/rnal/db"
+	"slashbase.com/backend/internal/config"
+	"slashbase.com/backend/internal/db"
 )
 
 type UserSession struct {
