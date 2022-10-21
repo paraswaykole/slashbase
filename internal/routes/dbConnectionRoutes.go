@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"slashbase.com/backend/internal/rnal/rnal/controllers"
-	"slashbase.com/backend/internal/rnal/rnal/middlewares"
-	"slashbase.com/backend/internal/rnal/rnal/models"
-	"slashbase.com/backend/internal/rnal/rnal/utils"
-	"slashbase.com/backend/internal/rnal/rnal/views"
+	"slashbase.com/backend/internal/controllers"
+	"slashbase.com/backend/internal/middlewares"
+	"slashbase.com/backend/internal/models"
+	"slashbase.com/backend/internal/utils"
+	"slashbase.com/backend/internal/views"
 )
 
 type DBConnectionRoutes struct{}

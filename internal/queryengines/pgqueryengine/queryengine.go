@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"slashbase.com/backend/internal/rnal/daos"
-	"slashbase.com/backend/internal/rnal/models"
-	"slashbase.com/backend/internal/rnal/models/sbsql"
-	"slashbase.com/backend/internal/rnal/queryengines/pgqueryengine/pgxutils"
-	"slashbase.com/backend/internal/rnal/sshtunnel"
+	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/models"
+	"slashbase.com/backend/internal/models/sbsql"
+	"slashbase.com/backend/internal/queryengines/pgqueryengine/pgxutils"
+	"slashbase.com/backend/internal/sshtunnel"
 )
 
 var dbQueryLogDao daos.DBQueryLogDao

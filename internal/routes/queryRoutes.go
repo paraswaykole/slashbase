@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"slashbase.com/backend/internal/rnal/controllers"
-	"slashbase.com/backend/internal/rnal/middlewares"
-	"slashbase.com/backend/internal/rnal/utils"
-	"slashbase.com/backend/internal/rnal/views"
+	"slashbase.com/backend/internal/controllers"
+	"slashbase.com/backend/internal/middlewares"
+	"slashbase.com/backend/internal/utils"
+	"slashbase.com/backend/internal/views"
 )
 
 type QueryRoutes struct{}
