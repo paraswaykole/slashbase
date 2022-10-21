@@ -8,7 +8,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-         - slashbasepgdata:/var/lib/postgresql/data
+      - slashbasepgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: slashbase
       POSTGRES_USER: slashbase
@@ -22,6 +22,7 @@ services:
   slashbase-server:
     build:
       context: .
+      dockerfile: ./dev.Dockerfile
       target: dev
     restart: always
     ports:
@@ -36,6 +37,7 @@ services:
   slashbase-web:
     build:
       context: ./frontend
+      dockerfile: ./frontend/dev.Dockerfile
       target: dev
     restart: always
     ports:
@@ -45,7 +47,7 @@ services:
       - slashbasenodemodules:/app/node_modules
       - slashbasenext:/app/.next
 
-volumes: 
+volumes:
   slashbasepgdata:
   slashbasenodemodules:
   slashbasenext:
