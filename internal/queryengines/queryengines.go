@@ -2,13 +2,16 @@ package queryengines
 
 import (
 	"slashbase.com/backend/internal/models"
+	"slashbase.com/backend/internal/queryengines/mongoqueryengine"
 	"slashbase.com/backend/internal/queryengines/pgqueryengine"
 )
 
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine
+var mongoQueryEngine *mongoqueryengine.MongoQueryEngine
 
 func InitQueryEngines() {
 	postgresQueryEngine = pgqueryengine.InitPostgresQueryEngine()
+	mongoQueryEngine = mongoqueryengine.InitMongoQueryEngine()
 }
 
 func RunQuery(user *models.User, dbConn *models.DBConnection, query string, userRole string) (map[string]interface{}, error) {
@@ -109,4 +112,5 @@ func DeleteRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *mod
 
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
+	mongoQueryEngine.RemoveUnusedConnections()
 }
