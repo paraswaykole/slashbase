@@ -1,6 +1,8 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/src/config"
@@ -79,6 +81,14 @@ func NewRouter() *gin.Engine {
 				dataModelGroup.GET("/single/:dbConnId", queryRoutes.GetSingleDataModel)
 			}
 		}
+	}
+
+	if config.IsLive() {
+		router.LoadHTMLGlob("html/*.html")
+		router.Static("_next", "html/_next")
+		router.NoRoute(func(c *gin.Context) {
+			c.HTML(http.StatusOK, "index.html", nil)
+		})
 	}
 	return router
 
