@@ -1,3 +1,7 @@
+## THIS IS BACKEND DEVELOPMENT DOCKERFILE. 
+## TO BE USED FOR LOCAL DEVELOPMENT.
+
+# Create base image for building go binary
 FROM golang:1.17.3-alpine3.14 as base
 WORKDIR /app
 
@@ -28,20 +32,3 @@ ENTRYPOINT ["dlv"]
 CMD ["debug","--headless", "--accept-multiclient", "--continue", "--log","-l" ,"0.0.0.0:2345" ,"--api-version=2", "--", "-e", "development"]
 EXPOSE 3001
 EXPOSE 2345
-
-# Executable builder
-FROM base as builder
-
-WORKDIR /slashbase
-COPY . .
-RUN env GOOS=linux GOARCH=amd64 go build --o backend -trimpath
-
-# Production
-FROM alpine:3.14
-
-WORKDIR /slashbase
-COPY --from=builder /slashbase/backend /slashbase
-
-ENTRYPOINT ["/slashbase/backend"]
-CMD ["-e", "production"]
-EXPOSE 3001

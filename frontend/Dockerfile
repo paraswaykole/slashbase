@@ -1,3 +1,6 @@
+## THIS IS FRONTEND DEVELOPMENT DOCKERFILE. 
+## TO BE USED FOR LOCAL DEVELOPMENT.
+
 # Install dependencies only when needed
 FROM node:alpine AS deps
 
@@ -14,21 +17,3 @@ COPY --from=deps /app/node_modules ./node_modules
 
 ENTRYPOINT ["yarn", "dev"] 
 EXPOSE 3000
-
-# Rebuild the source code only when needed
-FROM node:alpine AS builder
-
-WORKDIR /app
-COPY . .
-COPY --from=deps /app/node_modules ./node_modules
-RUN yarn build
-
-# Production
-FROM nginx:1.21.4-alpine
-
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=builder /app/out /usr/share/nginx/html
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
-EXPOSE 80
-EXPOSE 443

@@ -20,7 +20,7 @@ __debug_bin
 *.out
 
 # Src
-src/config/*.yaml
+internal/config/*.yaml
 
 # Build
 backend
