@@ -83,7 +83,7 @@ func NewRouter() *gin.Engine {
 		}
 	}
 
-	// Serving the Frontend routes in Production
+	// Serving the Frontend files in Production
 	if config.IsLive() {
 		router.LoadHTMLGlob("html/*.html")
 		router.Static("_next", "html/_next")
