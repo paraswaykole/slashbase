@@ -24,10 +24,10 @@ const HomePage: NextPage = () => {
   return (
     <AppLayout title="Home">
       <h1>All Projects</h1>
-      {projectsGrid.map((list: Project[]) => (
-        <div className="columns">
+      {projectsGrid.map((list: Project[], index: number) => (
+        <div className="columns" key={index}>
           {list.map((project: Project) => (
-            <div className="column">
+            <div className="column" key={project.id}>
               <ProjectCard key={project.id} project={project} />
             </div>
           ))}
