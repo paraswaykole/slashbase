@@ -29,7 +29,7 @@ func Init(env string) {
 }
 
 const (
-	VERSION = "v1.0.2-beta"
+	VERSION = "v1.0.0-beta"
 
 	PAGINATION_COUNT = 20
 
