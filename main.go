@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"os"
 
-	"slashbase.com/backend/src/config"
-	"slashbase.com/backend/src/daos"
-	"slashbase.com/backend/src/db"
-	"slashbase.com/backend/src/models"
-	"slashbase.com/backend/src/queryengines"
-	"slashbase.com/backend/src/server"
-	"slashbase.com/backend/src/sshtunnel"
-	"slashbase.com/backend/src/tasks"
+	"slashbase.com/backend/internal/config"
+	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/db"
+	"slashbase.com/backend/internal/models"
+	"slashbase.com/backend/internal/queryengines"
+	"slashbase.com/backend/internal/server"
+	"slashbase.com/backend/internal/sshtunnel"
+	"slashbase.com/backend/internal/tasks"
 )
 
 func main() {
