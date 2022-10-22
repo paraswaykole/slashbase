@@ -2,8 +2,8 @@ package queryengines
 
 import (
 	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/internal/queryengines/mongoqueryengine"
-	"slashbase.com/backend/internal/queryengines/pgqueryengine"
+	"slashbase.com/backend/pkg/queryengines/mongoqueryengine"
+	"slashbase.com/backend/pkg/queryengines/pgqueryengine"
 )
 
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine

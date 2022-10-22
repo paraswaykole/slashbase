@@ -7,8 +7,8 @@ import (
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/internal/queryengines"
 	"slashbase.com/backend/internal/utils"
+	"slashbase.com/backend/pkg/queryengines"
 )
 
 type QueryController struct{}

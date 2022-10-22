@@ -47,6 +47,7 @@ type DBConnectionUser struct {
 
 const (
 	DBTYPE_POSTGRES = "POSTGRES"
+	DBTYPE_MONGO    = "MONGO"
 
 	DBUSESSH_NONE        = "NONE"
 	DBUSESSH_PASSWORD    = "PASSWORD"
