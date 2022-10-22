@@ -91,7 +91,16 @@ func NewRouter() *gin.Engine {
 		router.StaticFile("logo-icon.svg", "html/logo-icon.svg")
 		router.StaticFile("logo.svg", "html/logo.svg")
 		router.NoRoute(func(c *gin.Context) {
-			c.HTML(http.StatusOK, "index.html", nil)
+			tokenString, _ := c.Cookie("session")
+			if tokenString != "" || c.Request.URL.Path == "/login" {
+				if c.Request.URL.Path == "/login" && tokenString != "" {
+					c.Redirect(http.StatusTemporaryRedirect, "/home")
+					return
+				}
+				c.HTML(http.StatusOK, "index.html", nil)
+				return
+			}
+			c.Redirect(http.StatusTemporaryRedirect, "/login")
 		})
 	}
 	return router
