@@ -46,7 +46,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	var data map[string]interface{}
 	queryType := mongoutils.GetMongoQueryType(query)
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
-		result := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Filter)
+		result := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Data)
 		if result.Err() != nil {
 			return nil, result.Err()
 		}
@@ -56,7 +56,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
-		cursor, err := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).Find(context.Background(), queryType.Filter)
+		cursor, err := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).Find(context.Background(), queryType.Data)
 		if err != nil {
 			return nil, err
 		}
@@ -70,6 +70,16 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"keys": keys,
 			"data": data,
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_RUNCMD {
+		result := conn.Database(string(dbConn.DBName)).RunCommand(context.Background(), queryType.Data)
+		if result.Err() != nil {
+			return nil, result.Err()
+		}
+		keys, data := mongoutils.MongoSingleResultToJson(result)
+		return map[string]interface{}{
+			"keys": keys,
+			"data": data,
+		}, nil
 	}
 	if createLog {
 		queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
@@ -77,4 +87,14 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	}
 
 	return data, nil
+}
+
+func (mqe *MongoQueryEngine) TestConnection(user *models.User, dbConn *models.DBConnection) bool {
+	query := "db.runCommand({ping: 1})"
+	data, err := mqe.RunQuery(user, dbConn, query, false)
+	if err != nil {
+		return false
+	}
+	test := data["data"].([]map[string]interface{})[0]["ok"].(float64)
+	return test == 1
 }

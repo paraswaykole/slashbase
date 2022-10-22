@@ -28,7 +28,7 @@ func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, host string, port
 		err = fmt.Errorf("unable to connect to database: %v", err)
 		return
 	}
-	err = client.Ping(nil, nil)
+	err = client.Ping(context.Background(), nil)
 	if err != nil {
 		err = fmt.Errorf("unable to connect to database: %v", err)
 		return

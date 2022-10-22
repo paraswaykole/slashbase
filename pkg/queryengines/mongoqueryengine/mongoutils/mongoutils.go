@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"gopkg.in/yaml.v2"
 )
 
 func MongoCursorToJson(cur *mongo.Cursor) ([]string, []map[string]interface{}) {
@@ -58,13 +59,14 @@ const (
 	QUERY_INSERTONE = iota
 	QUERY_UPDATE    = iota
 	QUERY_UPDATEONE = iota
+	QUERY_RUNCMD    = iota
 	QUERY_UNKOWN    = -1
 )
 
 type MongoQuery struct {
 	QueryType      int
 	CollectionName string
-	Filter         bson.D
+	Data           bson.D
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
@@ -75,16 +77,23 @@ func GetMongoQueryType(query string) *MongoQuery {
 		return &result
 	}
 	if len(tokens) > 1 {
-		result.CollectionName = tokens[1]
+		token := tokens[1]
+		if strings.HasPrefix(token, "runCommand(") {
+			result.QueryType = QUERY_RUNCMD
+			_, filter := splitToken(token)
+			result.Data = filter
+			return &result
+		}
+		result.CollectionName = token
 	}
 	if len(tokens) > 2 {
 		if strings.HasPrefix(tokens[2], "find(") {
 			result.QueryType = QUERY_FIND
-			result.Filter = bson.D{}
+			result.Data = bson.D{}
 			// TODO: fill up filter
 		} else if strings.HasPrefix(tokens[2], "findOne(") {
 			result.QueryType = QUERY_FINDONE
-			result.Filter = bson.D{}
+			result.Data = bson.D{}
 			// TODO: fill up filter
 		} else if strings.HasPrefix(tokens[2], "insert(") {
 			result.QueryType = QUERY_INSERT
@@ -97,4 +106,24 @@ func GetMongoQueryType(query string) *MongoQuery {
 		}
 	}
 	return &result
+}
+
+func splitToken(token string) (string, bson.D) {
+	strdata := strings.Split(strings.Trim(token, ")"), "(")
+	bsonData := bson.D{}
+	if strdata[1] == "" {
+		return strdata[0], bsonData
+	}
+	var mapData map[string]interface{}
+	err := yaml.Unmarshal([]byte(strdata[1]), &mapData)
+	if err != nil {
+		return strdata[0], bsonData
+	}
+	for key, value := range mapData {
+		bsonData = append(bsonData, bson.E{
+			Key:   key,
+			Value: value,
+		})
+	}
+	return strdata[0], bsonData
 }

@@ -1,6 +1,8 @@
 package queryengines
 
 import (
+	"errors"
+
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines/mongoqueryengine"
 	"slashbase.com/backend/pkg/queryengines/pgqueryengine"
@@ -15,7 +17,12 @@ func InitQueryEngines() {
 }
 
 func RunQuery(user *models.User, dbConn *models.DBConnection, query string, userRole string) (map[string]interface{}, error) {
-	return postgresQueryEngine.RunQuery(user, dbConn, query, true)
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.RunQuery(user, dbConn, query, true)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.RunQuery(user, dbConn, query, true)
+	}
+	return nil, errors.New("invalid db type")
 }
 
 func TestConnection(user *models.User, dbConn *models.DBConnection) bool {

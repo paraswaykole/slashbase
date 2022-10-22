@@ -9,16 +9,17 @@ import (
 
 func TestEngineConnection(t *testing.T) {
 	mqueryengine := InitMongoQueryEngine()
-	data, err := mqueryengine.RunQuery(nil, &models.DBConnection{
+	ping := mqueryengine.TestConnection(nil, &models.DBConnection{
 		Type:           models.DBTYPE_MONGO,
 		UseSSH:         models.DBUSESSH_NONE,
 		DBName:         "testdb",
 		DBHost:         "localhost",
 		DBPort:         "27888",
 		ConnectionUser: &models.DBConnectionUser{},
-	}, "db.user.findOne()", false)
-	if err != nil {
-		t.Errorf(err.Error())
+	})
+	if !ping {
+		t.Errorf("ping failed")
+	} else {
+		fmt.Println("pong")
 	}
-	fmt.Println(data)
 }
