@@ -7,7 +7,7 @@ import (
 	"slashbase.com/backend/internal/models"
 )
 
-func TestEngineConnection(t *testing.T) {
+func TestMongoEngineConnection(t *testing.T) {
 	mqueryengine := InitMongoQueryEngine()
 	ping := mqueryengine.TestConnection(nil, &models.DBConnection{
 		Type:           models.DBTYPE_MONGO,
@@ -21,5 +21,22 @@ func TestEngineConnection(t *testing.T) {
 		t.Errorf("ping failed")
 	} else {
 		fmt.Println("pong")
+	}
+}
+
+func TestGetMongoDataModels(t *testing.T) {
+	mqueryengine := InitMongoQueryEngine()
+	data, err := mqueryengine.GetDataModels(nil, &models.DBConnection{
+		Type:           models.DBTYPE_MONGO,
+		UseSSH:         models.DBUSESSH_NONE,
+		DBName:         "testdb",
+		DBHost:         "localhost",
+		DBPort:         "27888",
+		ConnectionUser: &models.DBConnectionUser{},
+	})
+	if err != nil {
+		t.Errorf("error: " + err.Error())
+	} else {
+		fmt.Println(data)
 	}
 }

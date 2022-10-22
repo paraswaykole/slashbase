@@ -53,14 +53,15 @@ func MongoSingleResultToJson(result *mongo.SingleResult) ([]string, []map[string
 }
 
 const (
-	QUERY_FIND      = iota
-	QUERY_FINDONE   = iota
-	QUERY_INSERT    = iota
-	QUERY_INSERTONE = iota
-	QUERY_UPDATE    = iota
-	QUERY_UPDATEONE = iota
-	QUERY_RUNCMD    = iota
-	QUERY_UNKOWN    = -1
+	QUERY_FIND            = iota
+	QUERY_FINDONE         = iota
+	QUERY_INSERT          = iota
+	QUERY_INSERTONE       = iota
+	QUERY_UPDATE          = iota
+	QUERY_UPDATEONE       = iota
+	QUERY_RUNCMD          = iota
+	QUERY_LISTCOLLECTIONS = iota
+	QUERY_UNKOWN          = -1
 )
 
 type MongoQuery struct {
@@ -82,6 +83,11 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_RUNCMD
 			_, filter := splitToken(token)
 			result.Data = filter
+			return &result
+		}
+		if strings.HasPrefix(token, "getCollectionNames(") {
+			result.QueryType = QUERY_LISTCOLLECTIONS
+			result.Data = bson.D{}
 			return &result
 		}
 		result.CollectionName = token

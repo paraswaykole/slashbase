@@ -2,6 +2,7 @@ package mongoqueryengine
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -43,7 +44,6 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	if err != nil {
 		return nil, err
 	}
-	var data map[string]interface{}
 	queryType := mongoutils.GetMongoQueryType(query)
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
 		result := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Data)
@@ -76,17 +76,33 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			return nil, result.Err()
 		}
 		keys, data := mongoutils.MongoSingleResultToJson(result)
+		if createLog {
+			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
+			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		}
 		return map[string]interface{}{
 			"keys": keys,
 			"data": data,
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_LISTCOLLECTIONS {
+		list, err := conn.Database(string(dbConn.DBName)).ListCollectionNames(context.Background(), queryType.Data)
+		if err != nil {
+			return nil, err
+		}
+		if createLog {
+			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
+			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		}
+		data := []map[string]interface{}{}
+		for _, name := range list {
+			data = append(data, map[string]interface{}{"collectionName": name})
+		}
+		return map[string]interface{}{
+			"keys": []string{"collectionName"},
+			"data": data,
+		}, nil
 	}
-	if createLog {
-		queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
-		go dbQueryLogDao.CreateDBQueryLog(queryLog)
-	}
-
-	return data, nil
+	return nil, errors.New("unknown query")
 }
 
 func (mqe *MongoQueryEngine) TestConnection(user *models.User, dbConn *models.DBConnection) bool {
@@ -97,4 +113,14 @@ func (mqe *MongoQueryEngine) TestConnection(user *models.User, dbConn *models.DB
 	}
 	test := data["data"].([]map[string]interface{})[0]["ok"].(float64)
 	return test == 1
+}
+
+func (mqe *MongoQueryEngine) GetDataModels(user *models.User, dbConn *models.DBConnection) ([]map[string]interface{}, error) {
+	query := "db.getCollectionNames()"
+	data, err := mqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	rdata := data["data"].([]map[string]interface{})
+	return rdata, nil
 }
