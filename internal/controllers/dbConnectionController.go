@@ -21,6 +21,7 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	authUser *models.User,
 	projectID string,
 	name string,
+	dbtype string,
 	host string,
 	port string,
 	user string,
@@ -33,7 +34,7 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	sshPassword string,
 	sshKeyFile string) (*models.DBConnection, error) {
 
-	dbConn, err := models.NewPostgresDBConnection(authUser.ID, projectID, name, host, port,
+	dbConn, err := models.NewDBConnection(authUser.ID, projectID, name, dbtype, host, port,
 		user, password, dbName, loginType, useSSH, sshHost, sshUser, sshPassword, sshKeyFile)
 	if err != nil {
 		return nil, err
@@ -46,11 +47,13 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}
-	dbUsers, err := dbcc.createRoleLogins(authUser, &dbConnCopy)
-	if err != nil {
-		return nil, err
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		dbUsers, err := dbcc.createRoleLogins(authUser, &dbConnCopy)
+		if err != nil {
+			return nil, err
+		}
+		dbConn.DBConnectionUsers = append(dbConn.DBConnectionUsers, dbUsers...)
 	}
-	dbConn.DBConnectionUsers = append(dbConn.DBConnectionUsers, dbUsers...)
 
 	err = dbConnDao.CreateDBConnection(dbConn)
 	if err != nil {

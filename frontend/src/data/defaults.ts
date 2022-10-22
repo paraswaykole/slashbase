@@ -1,5 +1,6 @@
 export enum DBConnType {
-    POSTGRES = "POSTGRES"
+    POSTGRES = "POSTGRES",
+    MONGO = "MONGO"
 }
 
 export enum ProjectMemberRole {
@@ -9,13 +10,13 @@ export enum ProjectMemberRole {
 }
 
 export enum DBConnectionUseSSHType {
-    NONE        = "NONE",
-	PASSWORD    = "PASSWORD",
-	KEYFILE     = "KEYFILE",
-	PASSKEYFILE = "PASSKEYFILE",
+    NONE = "NONE",
+    PASSWORD = "PASSWORD",
+    KEYFILE = "KEYFILE",
+    PASSKEYFILE = "PASSKEYFILE",
 }
 
 export enum DBConnectionLoginType {
-    USE_ROOT        = "USE_ROOT",
-	ROLE_ACCOUNTS    = "ROLE_ACCOUNTS",
+    USE_ROOT = "USE_ROOT",
+    ROLE_ACCOUNTS = "ROLE_ACCOUNTS",
 }

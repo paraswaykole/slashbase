@@ -7,7 +7,7 @@ import DefaultErrorPage from 'next/error'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { selectProjects } from '../../../redux/projectsSlice'
 import { AddDBConnPayload } from '../../../network/payloads'
-import { DBConnectionLoginType, DBConnectionUseSSHType, ProjectMemberRole } from '../../../data/defaults'
+import { DBConnectionLoginType, DBConnectionUseSSHType, DBConnType, ProjectMemberRole } from '../../../data/defaults'
 import { addNewDBConn } from '../../../redux/allDBConnectionsSlice'
 import Constants from '../../../constants'
 import ReactTooltip from 'react-tooltip'
@@ -23,6 +23,7 @@ const NewDBPage: NextPage = () => {
 
 	const [dbName, setDBName] = useState('')
 	const [dbHost, setDBHost] = useState('')
+	const [dbType, setDBType] = useState<string>(DBConnType.POSTGRES)
 	const [dbPort, setDBPort] = useState('5432')
 	const [dbDatabase, setDBDatabase] = useState('')
 	const [dbUsername, setDBUsername] = useState('')
@@ -49,6 +50,7 @@ const NewDBPage: NextPage = () => {
 		const payload: AddDBConnPayload = {
 			projectId: project.id,
 			name: dbName,
+			type: dbType,
 			host: dbHost,
 			port: dbPort,
 			password: dbPassword,
@@ -73,10 +75,10 @@ const NewDBPage: NextPage = () => {
 
 	return (
 		<AppLayout title="Add New Database Connection | Slashbase">
-			<h1>Add New Postgres Database Connection in Project {project.name}</h1>
+			<h1>Add new database connection</h1>
 			<div className="form-container">
 				<div className="field">
-					<label className="label">Display Name this database:</label>
+					<label className="label">Display Name:</label>
 					<div className="control">
 						<input
 							className="input"
@@ -84,6 +86,17 @@ const NewDBPage: NextPage = () => {
 							value={dbName}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setDBName(e.target.value) }}
 							placeholder="Enter a name for this database" />
+					</div>
+				</div>
+				<div className="field">
+					<label className="label">Database Type:</label>
+					<div className="control">
+						<div className="select">
+							<select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setDBType(e.target.value) }}>
+								<option value={DBConnType.POSTGRES}>PostgresDB</option>
+								<option value={DBConnType.MONGO}>MongoDB</option>
+							</select>
+						</div>
 					</div>
 				</div>
 				<div className="field">
@@ -109,7 +122,7 @@ const NewDBPage: NextPage = () => {
 					</div>
 				</div>
 				<div className="field">
-					<label className="label">Database:</label>
+					<label className="label">Database Name:</label>
 					<div className="control">
 						<input
 							className="input"
