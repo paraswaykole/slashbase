@@ -1,6 +1,7 @@
 package mongoqueryengine
 
 import (
+	"fmt"
 	"testing"
 
 	"slashbase.com/backend/internal/models"
@@ -8,7 +9,7 @@ import (
 
 func TestEngineConnection(t *testing.T) {
 	mqueryengine := InitMongoQueryEngine()
-	_, err := mqueryengine.RunQuery(nil, &models.DBConnection{
+	data, err := mqueryengine.RunQuery(nil, &models.DBConnection{
 		Type:           models.DBTYPE_MONGO,
 		UseSSH:         models.DBUSESSH_NONE,
 		DBName:         "testdb",
@@ -19,4 +20,5 @@ func TestEngineConnection(t *testing.T) {
 	if err != nil {
 		t.Errorf(err.Error())
 	}
+	fmt.Println(data)
 }

@@ -1,10 +1,55 @@
 package mongoutils
 
 import (
+	"context"
+	"log"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
+
+func MongoCursorToJson(cur *mongo.Cursor) ([]string, []map[string]interface{}) {
+	keysMap := map[string]bool{}
+	resultData := make([]map[string]interface{}, 0)
+	for cur.Next(context.Background()) {
+		var rowData bson.D
+		err := cur.Decode(&rowData)
+		if err != nil {
+			log.Fatal(err)
+		}
+		rowDataMap := make(map[string]interface{}, len(rowData))
+		for _, e := range rowData {
+			rowDataMap[e.Key] = e.Value
+			keysMap[e.Key] = true
+		}
+		resultData = append(resultData, rowDataMap)
+	}
+	keysList := []string{}
+	for key := range keysMap {
+		keysList = append(keysList, key)
+	}
+	return keysList, resultData
+}
+
+func MongoSingleResultToJson(result *mongo.SingleResult) ([]string, []map[string]interface{}) {
+	keysMap := map[string]bool{}
+	var rowData bson.D
+	err := result.Decode(&rowData)
+	if err != nil {
+		return nil, nil
+	}
+	rowDataMap := make(map[string]interface{}, len(rowData))
+	for _, e := range rowData {
+		rowDataMap[e.Key] = e.Value
+		keysMap[e.Key] = true
+	}
+	keysList := []string{}
+	for key := range keysMap {
+		keysList = append(keysList, key)
+	}
+	return keysList, []map[string]interface{}{rowDataMap}
+}
 
 const (
 	QUERY_FIND      = iota

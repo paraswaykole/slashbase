@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/models/sbsql"
@@ -45,27 +44,35 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		return nil, err
 	}
 	var data map[string]interface{}
-	queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
 	queryType := mongoutils.GetMongoQueryType(query)
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
 		result := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Filter)
 		if result.Err() != nil {
 			return nil, result.Err()
 		}
-		var bsonData bson.D
-		err = result.Decode(&bsonData)
-		if err != nil {
-			return nil, err
-		}
-		data = bsonData.Map()
+		keys, data := mongoutils.MongoSingleResultToJson(result)
+		return map[string]interface{}{
+			"keys": keys,
+			"data": data,
+		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
-		_, err := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).Find(context.Background(), queryType.Filter)
+		cursor, err := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).Find(context.Background(), queryType.Filter)
 		if err != nil {
 			return nil, err
 		}
-		// TODO: read cursor
+		defer cursor.Close(context.Background())
+		keys, data := mongoutils.MongoCursorToJson(cursor)
+		if createLog {
+			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
+			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		}
+		return map[string]interface{}{
+			"keys": keys,
+			"data": data,
+		}, nil
 	}
 	if createLog {
+		queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
 		go dbQueryLogDao.CreateDBQueryLog(queryLog)
 	}
 
