@@ -6,11 +6,14 @@ import (
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/models/sbsql"
 	"slashbase.com/backend/pkg/queryengines/mongoqueryengine/mongoutils"
 	"slashbase.com/backend/pkg/sshtunnel"
 )
+
+var dbQueryLogDao daos.DBQueryLogDao
 
 type MongoQueryEngine struct {
 	openClients map[string]mongoClientInstance
@@ -22,7 +25,7 @@ func InitMongoQueryEngine() *MongoQueryEngine {
 	}
 }
 
-func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string, createLogCallback func()) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnection, query string, createLog bool) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
 		remoteHost := string(dbConn.DBHost)
@@ -42,6 +45,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		return nil, err
 	}
 	var data map[string]interface{}
+	queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
 	queryType := mongoutils.GetMongoQueryType(query)
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
 		result := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Filter)
@@ -61,8 +65,8 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 		// TODO: read cursor
 	}
-	if createLogCallback != nil {
-		createLogCallback()
+	if createLog {
+		go dbQueryLogDao.CreateDBQueryLog(queryLog)
 	}
 
 	return data, nil
