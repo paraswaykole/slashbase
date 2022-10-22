@@ -26,11 +26,22 @@ func RunQuery(user *models.User, dbConn *models.DBConnection, query string, user
 }
 
 func TestConnection(user *models.User, dbConn *models.DBConnection) bool {
-	return postgresQueryEngine.TestConnection(user, dbConn)
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.TestConnection(user, dbConn)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.TestConnection(user, dbConn)
+	}
+	return false
 }
 
 func GetDataModels(user *models.User, dbConn *models.DBConnection) ([]*DBDataModel, error) {
-	data, err := postgresQueryEngine.GetDataModels(user, dbConn)
+	var err error
+	var data []map[string]interface{}
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		data, err = postgresQueryEngine.GetDataModels(user, dbConn)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		data, err = mongoQueryEngine.GetDataModels(user, dbConn)
+	}
 	if err != nil {
 		return nil, err
 	}
