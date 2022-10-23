@@ -1,76 +1,36 @@
-import styles from './table.module.scss'
+import styles from './jsontable.module.scss'
 import React, { useState, useRef } from 'react'
 import { Cell, useRowSelect, useTable, UseTableInstanceProps } from 'react-table'
-import toast from 'react-hot-toast';
 import { DBConnection, DBQueryData } from '../../../data/models'
-import EditableCell from './editablecell'
-import apiService from '../../../network/apiService'
-import AddModal from './addmodal';
+import JsonCell from './jsoncell'
 
-
-type TablePropType = {
+type JsonTablePropType = {
     queryData: DBQueryData,
     dbConnection: DBConnection
-    mSchema: string,
     mName: string,
     isEditable: boolean,
     showHeader?: boolean,
-    querySort?: string[],
-    updateCellData: (oldCtid: string, newCtid: string, columnName: string, newValue: string | null | boolean) => void,
-    onDeleteRows: (indexes: number[]) => void,
-    onAddData: (newData: any) => void,
-    onFilterChanged: (newFilter: string[] | undefined) => void,
-    onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader, querySort, updateCellData, onDeleteRows, onAddData, onFilterChanged, onSortChanged }: TablePropType) => {
-
-    const [editCell, setEditCell] = useState<(string | number)[]>([])
-    const [isAdding, setIsAdding] = useState<boolean>(false)
-
-    const filter0Ref = useRef<HTMLSelectElement>(null);
-    const filter1Ref = useRef<HTMLSelectElement>(null);
-    const filter2Ref = useRef<HTMLInputElement>(null);
+const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, }: JsonTablePropType) => {
 
     const data = React.useMemo(
-        () => queryData.rows,
+        () => queryData.data,
         [queryData]
     )
 
-    const displayColumns = queryData.columns.filter(col => col !== 'ctid')
-    const ctidExists = queryData.columns.length != displayColumns.length
+    const displayColumns = ["data"]
 
     const columns = React.useMemo(
         () => displayColumns.map((col, i) => ({
-            Header: <>{col}{querySort && querySort[0] === col ?
-                querySort[1] === 'ASC' ?
-                    <>&nbsp;<i className="fas fa-caret-up" /></>
-                    :
-                    <>&nbsp;<i className="fas fa-caret-down" /></>
-                : undefined}</>,
-            accessor: (ctidExists ? i + 1 : i).toString(),
+            Header: <>{col}</>,
+            accessor: (i).toString(),
         })),
-        [queryData, querySort]
+        [queryData]
     )
 
     const defaultColumn = {
-        Cell: EditableCell,
-    }
-
-    const resetEditCell = () => {
-        setEditCell([])
-    }
-
-    const onSaveCell = async (ctid: string, columnIdx: string, newValue: string) => {
-        const columnName = queryData.columns[parseInt(columnIdx)]
-        const result = await apiService.updateDBSingleData(dbConnection.id, mSchema, mName, ctid, columnName, newValue)
-        if (result.success) {
-            updateCellData(ctid, result.data.ctid, columnIdx, newValue)
-            resetEditCell()
-            toast.success('1 row updated');
-        } else {
-            toast.error(result.error!);
-        }
+        Cell: JsonCell,
     }
 
     const {
@@ -83,84 +43,26 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     } = useTable<any>({
         columns,
         data,
-        defaultColumn,
-        ...{ editCell, resetEditCell, onSaveCell }
-    },
-        useRowSelect,
-        hooks => {
-            if (isEditable)
-                hooks.visibleColumns.push(columns => [
-                    {
-                        id: 'selection',
-                        Header: HeaderSelectionComponent,
-                        Cell: CellSelectionComponent,
-                    },
-                    ...columns,
-                ]
-                )
-        }
-    )
-
-    const newState: any = state // temporary typescript hack
-    const selectedRowIds: any = newState.selectedRowIds
-    const selectedRows: number[] = Object.keys(selectedRowIds).map(x => parseInt(x))
-    const selectedCTIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
-
-    const onDeleteBtnPressed = async () => {
-        if (selectedCTIDs.length > 0) {
-            const result = await apiService.deleteDBData(dbConnection.id, mSchema, mName, selectedCTIDs)
-            if (result.success) {
-                toast.success('rows deleted');
-                onDeleteRows(selectedRows)
-            } else {
-                toast.error(result.error!);
-            }
-        }
-    }
-
-    const startEditing = (cell: Cell<any, any>) => {
+        defaultColumn
+    }, useRowSelect, hooks => {
         if (isEditable)
-            setEditCell([cell.row.index, cell.column.id])
-    }
-
-    const changeFilter = () => {
-        let filter: string[] | undefined = undefined
-        if (filter0Ref.current!.value !== 'default' && filter1Ref.current!.value !== 'default') {
-            let operator = filter1Ref.current!.value
-            if (operator === 'IS NULL' || operator === 'IS NOT NULL') {
-                filter = [filter0Ref.current!.value, operator]
-            } else {
-                filter = [filter0Ref.current!.value, operator, filter2Ref.current!.value]
-            }
-        }
-        onFilterChanged(filter)
-    }
-
-    const changeSort = (newSortIdx: string) => {
-        if (!isEditable) {
-            return
-        }
-        const newSortName: string = displayColumns.find((_, i) => {
-            const colIdx = ctidExists ? i + 1 : i
-            return colIdx.toString() === newSortIdx
-        })!
-        if (querySort && newSortName === querySort[0]) {
-            if (querySort[1] === 'ASC') {
-                onSortChanged([querySort[0], 'DESC'])
-            } else if (querySort[1] === 'DESC') {
-                onSortChanged(undefined)
-            }
-        } else {
-            onSortChanged([newSortName, 'ASC'])
-        }
-    }
+            hooks.visibleColumns.push(columns => [
+                {
+                    id: 'selection',
+                    Header: HeaderSelectionComponent,
+                    Cell: CellSelectionComponent,
+                },
+                ...columns,
+            ]
+            )
+    })
 
     return (
         <React.Fragment>
             {(showHeader || isEditable) && <div className={styles.tableHeader}>
                 <div className="columns">
                     <div className="column is-9">
-                        <div className="field has-addons">
+                        {/* <div className="field has-addons">
                             <p className="control">
                                 <span className="select">
                                     <select ref={filter0Ref}>
@@ -194,17 +96,17 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                             <p className="control">
                                 <button className="button" onClick={changeFilter}>Filter</button>
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button" disabled={selectedCTIDs.length === 0} onClick={onDeleteBtnPressed}>
+                            <button className="button">
                                 <span className="icon is-small">
                                     <i className="fas fa-trash" />
                                 </span>
                             </button>
                             &nbsp;&nbsp;
-                            <button className="button is-primary" onClick={() => { setIsAdding(true) }}>
+                            <button className="button is-primary" >
                                 <span className="icon is-small">
                                     <i className="fas fa-plus" />
                                 </span>
@@ -213,22 +115,13 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                     </React.Fragment>}
                 </div>
             </div>}
-            {isAdding &&
-                <AddModal
-                    queryData={queryData}
-                    dbConnection={dbConnection}
-                    mSchema={mSchema}
-                    mName={mName}
-                    onClose={() => { setIsAdding(false) }}
-                    onAddData={onAddData} />
-            }
             <div className="table-container">
                 <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                     <thead>
                         {headerGroups.map(headerGroup => (
                             <tr {...headerGroup.getHeaderGroupProps()} key={"header"}>
                                 {headerGroup.headers.map(column => (
-                                    <th {...column.getHeaderProps()} key={column.id} onClick={() => { changeSort(column.id) }}>
+                                    <th {...column.getHeaderProps()} key={column.id}>
                                         {column.render('Header')}
                                     </th>
                                 ))}
@@ -238,11 +131,12 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                     <tbody {...getTableBodyProps()}>
                         {rows.map(row => {
                             prepareRow(row)
+                            console.log(row)
                             const selectedRow: any = row // temp type hack 
                             return (
                                 <tr {...row.getRowProps()} key={row.id} className={selectedRow.isSelected ? 'is-selected' : ''}>
                                     {row.cells.map(cell => {
-                                        return (<td {...cell.getCellProps()} onDoubleClick={() => startEditing(cell)} key={row.id + "" + cell.column.id}>
+                                        return (<td {...cell.getCellProps()} key={row.id + "" + cell.column.id}>
                                             {cell.render('Cell')}
                                         </td>
                                         )
@@ -287,5 +181,4 @@ const CellSelectionComponent = ({ row }: any) => (
     </div>
 )
 
-
-export default Table
+export default JsonTable

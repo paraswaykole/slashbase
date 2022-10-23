@@ -7,10 +7,11 @@ import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnection
 import { useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
 import { selectProjects } from '../../redux/projectsSlice'
-import { ProjectMemberRole } from '../../data/defaults'
+import { DBConnType, ProjectMemberRole } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
+import JsonTable from './jsontable/jsontable'
 
-type DBShowDataPropType = { 
+type DBShowDataPropType = {
 
 }
 
@@ -23,48 +24,48 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const projects: Project[] = useAppSelector(selectProjects)
-    const project: Project|undefined = projects.find(x=> x.id === dbConnection?.projectId)
-    
+    const project: Project | undefined = projects.find(x => x.id === dbConnection?.projectId)
+
     const [dataModel, setDataModel] = useState<DBDataModel>()
     const [queryData, setQueryData] = useState<DBQueryData>()
     const [queryOffset, setQueryOffset] = useState(0)
-    const [queryCount, setQueryCount] = useState<number|undefined>(undefined)
+    const [queryCount, setQueryCount] = useState<number | undefined>(undefined)
     const [queryLimit] = useState(200)
-    const [queryFilter, setQueryFilter] = useState<string[]|undefined>(undefined)
-    const [querySort, setQuerySort] = useState<string[]|undefined>(undefined)
+    const [queryFilter, setQueryFilter] = useState<string[] | undefined>(undefined)
+    const [querySort, setQuerySort] = useState<string[] | undefined>(undefined)
     const [dataLoading, setDataLoading] = useState(false)
 
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         const dModel = dbDataModels.find(x => x.schemaName == mschema && x.name == mname)
-        if(dModel){
+        if (dModel) {
             setDataModel(dModel)
         }
         // else redirect to home fragment             
     }, [dbDataModels])
 
-    useEffect(()=>{
-        if (dataModel && !queryCount){ 
+    useEffect(() => {
+        if (dataModel && !queryCount) {
             fetchData(true)
         }
     }, [dataModel, queryCount])
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         fetchData(false)
     }, [queryOffset, querySort])
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchData(true)
     }, [queryFilter])
-    
-    
+
+
     const fetchData = async (fetchCount: boolean) => {
-        if(!dataModel || dataLoading) return
+        if (!dataModel || dataLoading) return
         setDataLoading(true)
         const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount, queryFilter, querySort)
         if (result.success) {
             setQueryData(result.data)
-            if (fetchCount){
+            if (fetchCount) {
                 setQueryCount(result.data.count)
             }
         }
@@ -73,32 +74,32 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
 
     const onPreviousPage = () => {
         let previousOffset = queryOffset - queryLimit
-        if(previousOffset < 0) {
+        if (previousOffset < 0) {
             previousOffset = 0
         }
         setQueryOffset(previousOffset)
     }
     const onNextPage = () => {
         let nextOffset = queryOffset + queryLimit
-        if (nextOffset > (queryCount ?? 0)){
+        if (nextOffset > (queryCount ?? 0)) {
             return
         }
         setQueryOffset(nextOffset)
     }
-    const onFilterChanged = (newFilter: string[]|undefined) => {
+    const onFilterChanged = (newFilter: string[] | undefined) => {
         setQueryFilter(newFilter)
         setQueryOffset(0)
     }
 
-    const onSortChanged = (newSort: string[]|undefined) => {
+    const onSortChanged = (newSort: string[] | undefined) => {
         setQuerySort(newSort)
     }
 
-    const updateCellData = (oldCtid: string, newCtid: string, columnIdx: string, newValue: string|null|boolean) => {
+    const updateCellData = (oldCtid: string, newCtid: string, columnIdx: string, newValue: string | null | boolean) => {
         const rowIdx = queryData!.rows.findIndex(x => x["0"] == oldCtid)
         if (rowIdx) {
-            const newQueryData: DBQueryData = {...queryData!}
-            newQueryData!.rows[rowIdx] = {...newQueryData!.rows[rowIdx], ctid: newCtid}
+            const newQueryData: DBQueryData = { ...queryData! }
+            newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx], ctid: newCtid }
             newQueryData!.rows[rowIdx][columnIdx] = newValue
             setQueryData(newQueryData)
         } else {
@@ -107,28 +108,29 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     }
 
     const onDeleteRows = (indexes: number[]) => {
-        const filteredRows = queryData!.rows.filter((_,i) => !indexes.includes(i))     
-        const newQueryData: DBQueryData = {...queryData!, rows: filteredRows}
+        const filteredRows = queryData!.rows.filter((_, i) => !indexes.includes(i))
+        const newQueryData: DBQueryData = { ...queryData!, rows: filteredRows }
         setQueryData(newQueryData)
     }
 
     const onAddData = (newData: any) => {
-        const updatedRows = [newData, ...queryData!.rows]   
-        const updateQueryData: DBQueryData = {...queryData!, rows: updatedRows}
+        const updatedRows = [newData, ...queryData!.rows]
+        const updateQueryData: DBQueryData = { ...queryData!, rows: updatedRows }
         setQueryData(updateQueryData)
     }
 
-    const queryOffsetRangeEnd = (queryData?.rows.length ?? 0) === queryLimit ? 
-        queryOffset + queryLimit : queryOffset + (queryData?.rows.length ?? 0)
+    const rowsLength = queryData ? (queryData.rows ? queryData.rows.length : queryData.data.length) : 0
+    const queryOffsetRangeEnd = (rowsLength ?? 0) === queryLimit ?
+        queryOffset + queryLimit : queryOffset + (rowsLength ?? 0)
 
     return (
         <React.Fragment>
-            { project && dbConnection && queryData && 
-                <Table 
-                    dbConnection={dbConnection} 
+            {project && dbConnection && queryData && dbConnection.type === DBConnType.POSTGRES &&
+                <Table
+                    dbConnection={dbConnection}
                     mSchema={String(mschema)}
                     mName={String(mname)}
-                    queryData={queryData} 
+                    queryData={queryData}
                     querySort={querySort}
                     isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
                     showHeader={true}
@@ -139,9 +141,18 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     onSortChanged={onSortChanged}
                 />
             }
-            <br/><br/><br/>
-            <div className={styles.bottomBar+(isShowingSidebar?' withsidebar':'')}>
-                {dataLoading ? 
+            {project && dbConnection && queryData && dbConnection.type === DBConnType.MONGO &&
+                <JsonTable
+                    dbConnection={dbConnection}
+                    mName={String(mname)}
+                    queryData={queryData}
+                    isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
+                    showHeader={true}
+                />
+            }
+            <br /><br /><br />
+            <div className={styles.bottomBar + (isShowingSidebar ? ' withsidebar' : '')}>
+                {dataLoading ?
                     <progress className="progress is-primary" max="100">loading</progress>
                     :
                     <nav className="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
