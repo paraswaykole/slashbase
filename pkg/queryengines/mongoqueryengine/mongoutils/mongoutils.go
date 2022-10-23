@@ -20,11 +20,7 @@ func MongoCursorToJson(cur *mongo.Cursor) ([]string, []map[string]interface{}) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		rowDataMap := make(map[string]interface{}, len(rowData))
-		for _, e := range rowData {
-			rowDataMap[e.Key] = e.Value
-			keysMap[e.Key] = true
-		}
+		rowDataMap := bsonDtoJsonMap(&rowData, &keysMap)
 		resultData = append(resultData, rowDataMap)
 	}
 	keysList := []string{}
@@ -41,16 +37,27 @@ func MongoSingleResultToJson(result *mongo.SingleResult) ([]string, []map[string
 	if err != nil {
 		return nil, nil
 	}
-	rowDataMap := make(map[string]interface{}, len(rowData))
-	for _, e := range rowData {
-		rowDataMap[e.Key] = e.Value
-		keysMap[e.Key] = true
-	}
+	rowDataMap := bsonDtoJsonMap(&rowData, &keysMap)
 	keysList := []string{}
 	for key := range keysMap {
 		keysList = append(keysList, key)
 	}
 	return keysList, []map[string]interface{}{rowDataMap}
+}
+
+func bsonDtoJsonMap(data *bson.D, keysMap *map[string]bool) map[string]interface{} {
+	dataMap := make(map[string]interface{}, len(*data))
+	for _, e := range *data {
+		if valueData, isTrue := e.Value.(bson.D); isTrue {
+			dataMap[e.Key] = bsonDtoJsonMap(&valueData, nil)
+		} else {
+			dataMap[e.Key] = e.Value
+		}
+		if keysMap != nil {
+			(*keysMap)[e.Key] = true
+		}
+	}
+	return dataMap
 }
 
 const (
