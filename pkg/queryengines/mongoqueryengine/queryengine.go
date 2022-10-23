@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/models/sbsql"
@@ -46,7 +47,9 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	}
 	queryType := mongoutils.GetMongoQueryType(query)
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
-		result := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Data)
+		result := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			FindOne(context.Background(), queryType.Data)
 		if result.Err() != nil {
 			return nil, result.Err()
 		}
@@ -56,7 +59,9 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
-		cursor, err := conn.Database(string(dbConn.DBName)).Collection(queryType.CollectionName).Find(context.Background(), queryType.Data)
+		cursor, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			Find(context.Background(), queryType.Data, &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip})
 		if err != nil {
 			return nil, err
 		}
@@ -101,6 +106,25 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"keys": []string{"collectionName"},
 			"data": data,
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_COUNT {
+		count, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			CountDocuments(context.Background(), queryType.Data)
+		if err != nil {
+			return nil, err
+		}
+		if createLog {
+			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
+			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		}
+		return map[string]interface{}{
+			"keys": []string{"count"},
+			"data": []map[string]interface{}{
+				{
+					"count": count,
+				},
+			},
+		}, nil
 	}
 	return nil, errors.New("unknown query")
 }
@@ -123,4 +147,28 @@ func (mqe *MongoQueryEngine) GetDataModels(user *models.User, dbConn *models.DBC
 	}
 	rdata := data["data"].([]map[string]interface{})
 	return rdata, nil
+}
+
+func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
+	// sortQuery := ""
+	// if len(sort) == 2 {
+	// update sort query
+	// }
+	query := fmt.Sprintf(`db.%s.find().limit(%d).skip(%d)`, name, limit, offset)
+	countQuery := fmt.Sprintf(`db.%s.count()`, name)
+	// if len(filter) > 1 {
+	// 	//update query & countQuery
+	// }
+	data, err := mqe.RunQuery(user, dbConn, query, false)
+	if err != nil {
+		return nil, err
+	}
+	if fetchCount {
+		countData, err := mqe.RunQuery(user, dbConn, countQuery, false)
+		if err != nil {
+			return nil, err
+		}
+		data["count"] = countData["data"].([]map[string]interface{})[0]["count"]
+	}
+	return data, err
 }

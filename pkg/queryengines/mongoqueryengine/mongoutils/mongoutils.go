@@ -3,6 +3,7 @@ package mongoutils
 import (
 	"context"
 	"log"
+	"strconv"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -59,6 +60,7 @@ const (
 	QUERY_INSERTONE       = iota
 	QUERY_UPDATE          = iota
 	QUERY_UPDATEONE       = iota
+	QUERY_COUNT           = iota
 	QUERY_RUNCMD          = iota
 	QUERY_LISTCOLLECTIONS = iota
 	QUERY_UNKOWN          = -1
@@ -68,6 +70,8 @@ type MongoQuery struct {
 	QueryType      int
 	CollectionName string
 	Data           bson.D
+	Limit          *int64
+	Skip           *int64
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
@@ -81,7 +85,7 @@ func GetMongoQueryType(query string) *MongoQuery {
 		token := tokens[1]
 		if strings.HasPrefix(token, "runCommand(") {
 			result.QueryType = QUERY_RUNCMD
-			_, filter := splitToken(token)
+			_, filter := splitBsonToken(token)
 			result.Data = filter
 			return &result
 		}
@@ -93,28 +97,40 @@ func GetMongoQueryType(query string) *MongoQuery {
 		result.CollectionName = token
 	}
 	if len(tokens) > 2 {
-		if strings.HasPrefix(tokens[2], "find(") {
+		token := tokens[2]
+		funcName, filter := splitBsonToken(token)
+		if funcName == "find" {
 			result.QueryType = QUERY_FIND
-			result.Data = bson.D{}
-			// TODO: fill up filter
-		} else if strings.HasPrefix(tokens[2], "findOne(") {
+			if len(token) > 3 {
+				for _, tkn := range tokens[3:] {
+					if strings.HasPrefix(tkn, "limit(") {
+						_, number := splitNumberToken(tkn)
+						result.Limit = number
+					} else if strings.HasPrefix(tkn, "skip(") {
+						_, number := splitNumberToken(tkn)
+						result.Skip = number
+					}
+				}
+			}
+		} else if funcName == "findOne" {
 			result.QueryType = QUERY_FINDONE
-			result.Data = bson.D{}
-			// TODO: fill up filter
-		} else if strings.HasPrefix(tokens[2], "insert(") {
+		} else if funcName == "insert" {
 			result.QueryType = QUERY_INSERT
-		} else if strings.HasPrefix(tokens[2], "insertOne(") {
+		} else if funcName == "insertOne" {
 			result.QueryType = QUERY_INSERTONE
-		} else if strings.HasPrefix(tokens[2], "update(") {
+		} else if funcName == "update" {
 			result.QueryType = QUERY_UPDATE
-		} else if strings.HasPrefix(tokens[2], "updateOne(") {
+		} else if funcName == "updateOne" {
 			result.QueryType = QUERY_UPDATEONE
+		} else if funcName == "count" {
+			result.QueryType = QUERY_COUNT
 		}
+		result.Data = filter
 	}
 	return &result
 }
 
-func splitToken(token string) (string, bson.D) {
+func splitBsonToken(token string) (string, bson.D) {
 	strdata := strings.Split(strings.Trim(token, ")"), "(")
 	bsonData := bson.D{}
 	if strdata[1] == "" {
@@ -132,4 +148,16 @@ func splitToken(token string) (string, bson.D) {
 		})
 	}
 	return strdata[0], bsonData
+}
+
+func splitNumberToken(token string) (string, *int64) {
+	strdata := strings.Split(strings.Trim(token, ")"), "(")
+	if strdata[1] == "" {
+		return strdata[0], nil
+	}
+	number, err := strconv.ParseInt(strdata[1], 10, 64)
+	if err != nil {
+		return strdata[0], nil
+	}
+	return strdata[0], &number
 }

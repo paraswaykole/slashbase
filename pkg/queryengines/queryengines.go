@@ -101,7 +101,12 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 }
 
 func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
-	return postgresQueryEngine.GetData(user, dbConn, schemaName, name, limit, offset, fetchCount, filter, sort)
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.GetData(user, dbConn, schemaName, name, limit, offset, fetchCount, filter, sort)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.GetData(user, dbConn, name, limit, offset, fetchCount, filter, sort)
+	}
+	return nil, errors.New("invalid db type")
 }
 
 func UpdateSingleData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctid string, columnName, value string) (map[string]interface{}, error) {
