@@ -44,7 +44,11 @@ func (qr QueryRoutes) GetData(c *gin.Context) {
 	schema := c.Query("schema")
 	name := c.Query("name")
 	fetchCount := c.Query("count") == "true"
-	limit := 200
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		limit = 0
+	}
 	offsetStr := c.Query("offset")
 	offset, err := strconv.ParseInt(offsetStr, 10, 64)
 	if err != nil {

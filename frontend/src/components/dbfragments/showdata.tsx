@@ -30,7 +30,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const [queryData, setQueryData] = useState<DBQueryData>()
     const [queryOffset, setQueryOffset] = useState(0)
     const [queryCount, setQueryCount] = useState<number | undefined>(undefined)
-    const [queryLimit] = useState(200)
+    const [queryLimit] = useState(dbConnection ? dbConnection.type === DBConnType.POSTGRES ? 200 : 50 : 100)
     const [queryFilter, setQueryFilter] = useState<string[] | undefined>(undefined)
     const [querySort, setQuerySort] = useState<string[] | undefined>(undefined)
     const [dataLoading, setDataLoading] = useState(false)
@@ -62,7 +62,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const fetchData = async (fetchCount: boolean) => {
         if (!dataModel || dataLoading) return
         setDataLoading(true)
-        const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryOffset, fetchCount, queryFilter, querySort)
+        const result = await apiService.getDBDataInDataModel(dbConnection!.id, dataModel!.schemaName ?? '', dataModel!.name, queryLimit, queryOffset, fetchCount, queryFilter, querySort)
         if (result.success) {
             setQueryData(result.data)
             if (fetchCount) {
