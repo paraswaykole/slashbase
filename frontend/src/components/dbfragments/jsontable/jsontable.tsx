@@ -131,7 +131,6 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, }: 
                     <tbody {...getTableBodyProps()}>
                         {rows.map(row => {
                             prepareRow(row)
-                            console.log(row)
                             const selectedRow: any = row // temp type hack 
                             return (
                                 <tr {...row.getRowProps()} key={row.id} className={selectedRow.isSelected ? 'is-selected' : ''}>
