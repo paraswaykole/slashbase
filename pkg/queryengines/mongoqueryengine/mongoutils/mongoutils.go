@@ -50,6 +50,16 @@ func bsonDtoJsonMap(data *bson.D, keysMap *map[string]bool) map[string]interface
 	for _, e := range *data {
 		if valueData, isTrue := e.Value.(bson.D); isTrue {
 			dataMap[e.Key] = bsonDtoJsonMap(&valueData, nil)
+		} else if valueData, isTrue := e.Value.(bson.A); isTrue {
+			mapArray := make([]interface{}, len(valueData))
+			for i, valueDataData := range valueData {
+				if valueDataDataData, isTrueTrue := valueDataData.(bson.D); isTrueTrue {
+					mapArray[i] = bsonDtoJsonMap(&valueDataDataData, nil)
+				} else {
+					mapArray[i] = valueDataData
+				}
+			}
+			dataMap[e.Key] = mapArray
 		} else {
 			dataMap[e.Key] = e.Value
 		}
