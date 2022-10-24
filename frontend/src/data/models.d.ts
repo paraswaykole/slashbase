@@ -109,3 +109,7 @@ export interface PaginatedApiResult<T, N> {
 export interface CTIDResponse {
     ctid: string
 }
+
+export interface InsertedIDResponse {
+    insertedId: string
+}

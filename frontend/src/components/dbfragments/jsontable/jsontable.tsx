@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react'
 import { Cell, useRowSelect, useTable, UseTableInstanceProps } from 'react-table'
 import { DBConnection, DBQueryData } from '../../../data/models'
 import JsonCell from './jsoncell'
+import AddModal from './addmodel'
 
 type JsonTablePropType = {
     queryData: DBQueryData,
@@ -10,9 +11,12 @@ type JsonTablePropType = {
     mName: string,
     isEditable: boolean,
     showHeader?: boolean,
+    onAddData: (newData: any) => void,
 }
 
-const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, }: JsonTablePropType) => {
+const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData }: JsonTablePropType) => {
+
+    const [isAdding, setIsAdding] = useState<boolean>(false)
 
     const data = React.useMemo(
         () => queryData.data,
@@ -106,7 +110,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, }: 
                                 </span>
                             </button>
                             &nbsp;&nbsp;
-                            <button className="button is-primary" >
+                            <button className="button is-primary" onClick={() => { setIsAdding(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-plus" />
                                 </span>
@@ -115,6 +119,13 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, }: 
                     </React.Fragment>}
                 </div>
             </div>}
+            {isAdding &&
+                <AddModal
+                    dbConnection={dbConnection}
+                    mName={mName}
+                    onClose={() => { setIsAdding(false) }}
+                    onAddData={onAddData} />
+            }
             <div className="table-container">
                 <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                     <thead>

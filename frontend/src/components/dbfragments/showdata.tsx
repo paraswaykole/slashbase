@@ -114,9 +114,15 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     }
 
     const onAddData = (newData: any) => {
-        const updatedRows = [newData, ...queryData!.rows]
-        const updateQueryData: DBQueryData = { ...queryData!, rows: updatedRows }
-        setQueryData(updateQueryData)
+        if (dbConnection!.type === DBConnType.POSTGRES) {
+            const updatedRows = [newData, ...queryData!.rows]
+            const updateQueryData: DBQueryData = { ...queryData!, rows: updatedRows }
+            setQueryData(updateQueryData)
+        } else if (dbConnection!.type === DBConnType.MONGO) {
+            const updatedRows = [newData, ...queryData!.data]
+            const updateQueryData: DBQueryData = { ...queryData!, data: updatedRows }
+            setQueryData(updateQueryData)
+        }
     }
 
     const rowsLength = queryData ? (queryData.rows ? queryData.rows.length : queryData.data.length) : 0
@@ -148,6 +154,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     queryData={queryData}
                     isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
                     showHeader={true}
+                    onAddData={onAddData}
                 />
             }
             <br /><br /><br />
