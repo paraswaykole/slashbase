@@ -1,7 +1,7 @@
 import styles from './jsontable.module.scss'
 import React, { useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { ApiResult, InsertedIDResponse, DBConnection, DBQueryData } from '../../../data/models'
+import { ApiResult, AddDataResponse, DBConnection, DBQueryData } from '../../../data/models'
 import apiService from '../../../network/apiService'
 import toast from 'react-hot-toast'
 
@@ -40,10 +40,10 @@ const AddModal = ({ dbConnection, mName, onAddData, onClose }: AddModal) => {
             toast.error(e.message)
             return
         }
-        const result: ApiResult<InsertedIDResponse> = await apiService.addDBData(dbConnection.id, "", mName, jsonData)
+        const result: ApiResult<AddDataResponse> = await apiService.addDBData(dbConnection.id, "", mName, jsonData)
         if (result.success) {
             toast.success('data added')
-            let mNewData = { _id: result.data.insertedId, ...jsonData }
+            let mNewData = { _id: result.data.newId, ...jsonData }
             onAddData(mNewData)
             onClose()
         } else {

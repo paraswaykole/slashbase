@@ -90,7 +90,7 @@ func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProj
 }
 
 func (qc QueryController) AddData(authUser *models.User, dbConnId string,
-	schema, name string, data map[string]interface{}) (map[string]interface{}, error) {
+	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {

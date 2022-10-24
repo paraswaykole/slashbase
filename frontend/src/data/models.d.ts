@@ -110,6 +110,6 @@ export interface CTIDResponse {
     ctid: string
 }
 
-export interface InsertedIDResponse {
-    insertedId: string
+export interface AddDataResponse {
+    newId: string
 }

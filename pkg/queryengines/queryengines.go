@@ -113,13 +113,23 @@ func UpdateSingleData(user *models.User, dbConn *models.DBConnection, schemaName
 	return postgresQueryEngine.UpdateSingleData(user, dbConn, schemaName, name, ctid, columnName, value)
 }
 
-func AddData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}) (map[string]interface{}, error) {
+func AddData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}) (*AddDataResponse, error) {
+	var result map[string]interface{}
+	var err error
 	if dbConn.Type == models.DBTYPE_POSTGRES {
-		return postgresQueryEngine.AddData(user, dbConn, schemaName, name, data)
+		result, err = postgresQueryEngine.AddData(user, dbConn, schemaName, name, data)
+		if err != nil {
+			return nil, err
+		}
 	} else if dbConn.Type == models.DBTYPE_MONGO {
-		return mongoQueryEngine.AddData(user, dbConn, schemaName, name, data)
+		result, err = mongoQueryEngine.AddData(user, dbConn, schemaName, name, data)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, errors.New("invalid db type")
 	}
-	return nil, errors.New("invalid db type")
+	return BuildAddDataResponse(dbConn, result), nil
 }
 
 func DeleteData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctids []string) (map[string]interface{}, error) {
