@@ -1,6 +1,9 @@
 package queryengines
 
-import "slashbase.com/backend/internal/models"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"slashbase.com/backend/internal/models"
+)
 
 type AddDataResponse struct {
 	NewID string `json:"newId"`
@@ -14,7 +17,7 @@ func BuildAddDataResponse(dbConn *models.DBConnection, queryData map[string]inte
 		return &view
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		view := AddDataResponse{
-			NewID: queryData["insertedId"].(string),
+			NewID: queryData["insertedId"].(primitive.ObjectID).Hex(),
 		}
 		return &view
 	}
