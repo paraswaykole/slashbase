@@ -2,10 +2,12 @@ package mongoqueryengine
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/models"
@@ -74,6 +76,36 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		return map[string]interface{}{
 			"keys": keys,
 			"data": data,
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_INSERTONE {
+		result, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			InsertOne(context.Background(), queryType.Data)
+		if err != nil {
+			return nil, err
+		}
+		return map[string]interface{}{
+			"keys": []string{"insertedID"},
+			"data": []map[string]interface{}{
+				{
+					"insertedID": result.InsertedID,
+				},
+			},
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_INSERT {
+		result, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			InsertMany(context.Background(), queryType.Data.(bson.A))
+		if err != nil {
+			return nil, err
+		}
+		return map[string]interface{}{
+			"keys": []string{"insertedIDs"},
+			"data": []map[string]interface{}{
+				{
+					"insertedIDs": result.InsertedIDs,
+				},
+			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_RUNCMD {
 		result := conn.Database(string(dbConn.DBName)).RunCommand(context.Background(), queryType.Data)
@@ -159,16 +191,33 @@ func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnect
 	// if len(filter) > 1 {
 	// 	//update query & countQuery
 	// }
-	data, err := mqe.RunQuery(user, dbConn, query, false)
+	data, err := mqe.RunQuery(user, dbConn, query, true)
 	if err != nil {
 		return nil, err
 	}
 	if fetchCount {
-		countData, err := mqe.RunQuery(user, dbConn, countQuery, false)
+		countData, err := mqe.RunQuery(user, dbConn, countQuery, true)
 		if err != nil {
 			return nil, err
 		}
 		data["count"] = countData["data"].([]map[string]interface{})[0]["count"]
 	}
 	return data, err
+}
+
+func (mqe *MongoQueryEngine) AddData(user *models.User, dbConn *models.DBConnection, schema string, name string, data map[string]interface{}) (map[string]interface{}, error) {
+	dataStr, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+	query := fmt.Sprintf(`db.%s.insertOne(%s)`, name, string(dataStr))
+	rData, err := mqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	insertedID := rData["data"].([]map[string]interface{})[0]["insertedId"]
+	rData = map[string]interface{}{
+		"insertedId": insertedID,
+	}
+	return rData, err
 }

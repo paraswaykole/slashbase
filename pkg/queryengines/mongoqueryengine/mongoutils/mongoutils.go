@@ -3,6 +3,7 @@ package mongoutils
 import (
 	"context"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -86,27 +87,30 @@ const (
 type MongoQuery struct {
 	QueryType      int
 	CollectionName string
-	Data           bson.D
+	Data           interface{}
 	Limit          *int64
 	Skip           *int64
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
 	var result MongoQuery
-	tokens := strings.Split(query, ".")
+	re := regexp.MustCompile(`(\(\{.+\}\))|(\(\[.+\]\))|(\(\d+\))|(\(\))`)
+	filteredQuery := strings.ReplaceAll(query, " ", "")
+	filteredQuery = re.ReplaceAllString(filteredQuery, "")
+	tokens := strings.Split(filteredQuery, ".")
 	if len(tokens) == 0 || tokens[0] != "db" {
 		result.QueryType = QUERY_UNKOWN
 		return &result
 	}
 	if len(tokens) > 1 {
 		token := tokens[1]
-		if strings.HasPrefix(token, "runCommand(") {
+		if token == "runCommand" {
 			result.QueryType = QUERY_RUNCMD
-			_, filter := splitBsonToken(token)
+			filter := findBsonOfToken(token, query)
 			result.Data = filter
 			return &result
 		}
-		if strings.HasPrefix(token, "getCollectionNames(") {
+		if token == "getCollectionNames" {
 			result.QueryType = QUERY_LISTCOLLECTIONS
 			result.Data = bson.D{}
 			return &result
@@ -114,18 +118,24 @@ func GetMongoQueryType(query string) *MongoQuery {
 		result.CollectionName = token
 	}
 	if len(tokens) > 2 {
-		token := tokens[2]
-		funcName, filter := splitBsonToken(token)
+		funcName := tokens[2]
+		filter := findBsonOfToken(funcName, query)
 		if funcName == "find" {
 			result.QueryType = QUERY_FIND
-			if len(token) > 3 {
+			if len(funcName) > 3 {
 				for _, tkn := range tokens[3:] {
 					if strings.HasPrefix(tkn, "limit(") {
-						_, number := splitNumberToken(tkn)
-						result.Limit = number
+						numberInterface := findBsonOfToken(tkn, query)
+						if numberInterface != nil {
+							number := numberInterface.(int64)
+							result.Limit = &number
+						}
 					} else if strings.HasPrefix(tkn, "skip(") {
-						_, number := splitNumberToken(tkn)
-						result.Skip = number
+						numberInterface := findBsonOfToken(tkn, query)
+						if numberInterface != nil {
+							number := numberInterface.(int64)
+							result.Skip = &number
+						}
 					}
 				}
 			}
@@ -147,34 +157,55 @@ func GetMongoQueryType(query string) *MongoQuery {
 	return &result
 }
 
-func splitBsonToken(token string) (string, bson.D) {
+func findBsonOfToken(tokenName string, rawQuery string) interface{} {
+	re := regexp.MustCompile(tokenName + `((?:\(\{.+\}\))|(?:\(\[.+\]\))|(?:\(\d+\))|(?:\(\)))`)
+	token := re.FindString(rawQuery)
 	strdata := strings.Split(strings.Trim(token, ")"), "(")
-	bsonData := bson.D{}
-	if strdata[1] == "" {
-		return strdata[0], bsonData
+	tokenData := strdata[1]
+	if tokenData == "" {
+		return bson.D{}
 	}
-	var mapData map[string]interface{}
-	err := yaml.Unmarshal([]byte(strdata[1]), &mapData)
-	if err != nil {
-		return strdata[0], bsonData
+	if strings.HasPrefix(tokenData, "{") && strings.HasSuffix(tokenData, "}") {
+		var mapData map[string]interface{}
+		err := yaml.Unmarshal([]byte(tokenData), &mapData)
+		if err != nil {
+			return bson.D{}
+		}
+		bsonData := bson.D{}
+		for key, value := range mapData {
+			bsonData = append(bsonData, bson.E{
+				Key:   key,
+				Value: value,
+			})
+		}
+		return bsonData
+	} else if strings.HasPrefix(tokenData, "[") && strings.HasPrefix(tokenData, "]") {
+		var arrayData []map[string]interface{}
+		err := yaml.Unmarshal([]byte(tokenData), &arrayData)
+		if err != nil {
+			return bson.D{}
+		}
+		bsonArray := make(bson.A, len(arrayData))
+		for i, value := range arrayData {
+			bsonData := bson.D{}
+			for key, value := range value {
+				bsonData = append(bsonData, bson.E{
+					Key:   key,
+					Value: value,
+				})
+			}
+			bsonArray[i] = bsonData
+		}
+		return bsonArray
+	} else {
+		strdata := strings.Split(strings.Trim(token, ")"), "(")
+		if strdata[1] == "" {
+			return nil
+		}
+		number, err := strconv.ParseInt(strdata[1], 10, 64)
+		if err != nil {
+			return nil
+		}
+		return number
 	}
-	for key, value := range mapData {
-		bsonData = append(bsonData, bson.E{
-			Key:   key,
-			Value: value,
-		})
-	}
-	return strdata[0], bsonData
-}
-
-func splitNumberToken(token string) (string, *int64) {
-	strdata := strings.Split(strings.Trim(token, ")"), "(")
-	if strdata[1] == "" {
-		return strdata[0], nil
-	}
-	number, err := strconv.ParseInt(strdata[1], 10, 64)
-	if err != nil {
-		return strdata[0], nil
-	}
-	return strdata[0], &number
 }
