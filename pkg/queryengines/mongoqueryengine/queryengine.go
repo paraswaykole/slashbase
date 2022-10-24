@@ -85,10 +85,10 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			return nil, err
 		}
 		return map[string]interface{}{
-			"keys": []string{"insertedID"},
+			"keys": []string{"insertedId"},
 			"data": []map[string]interface{}{
 				{
-					"insertedID": result.InsertedID,
+					"insertedId": result.InsertedID,
 				},
 			},
 		}, nil

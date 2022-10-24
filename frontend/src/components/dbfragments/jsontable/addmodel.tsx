@@ -43,7 +43,7 @@ const AddModal = ({ dbConnection, mName, onAddData, onClose }: AddModal) => {
         const result: ApiResult<InsertedIDResponse> = await apiService.addDBData(dbConnection.id, "", mName, jsonData)
         if (result.success) {
             toast.success('data added')
-            let mNewData = { ...jsonData, _id: result.data.insertedId }
+            let mNewData = { _id: result.data.insertedId, ...jsonData }
             onAddData(mNewData)
             onClose()
         } else {
