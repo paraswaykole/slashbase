@@ -109,7 +109,7 @@ func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 }
 
 func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
-	schema, name string, ctids []string) (map[string]interface{}, error) {
+	schema, name string, ids []string) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
@@ -120,7 +120,7 @@ func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 		return nil, err
 	}
 
-	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ctids)
+	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ids)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -104,6 +105,36 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": []map[string]interface{}{
 				{
 					"insertedIDs": result.InsertedIDs,
+				},
+			},
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_DELETEONE {
+		result, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			DeleteOne(context.Background(), queryType.Data)
+		if err != nil {
+			return nil, err
+		}
+		return map[string]interface{}{
+			"keys": []string{"deletedCount"},
+			"data": []map[string]interface{}{
+				{
+					"deletedCount": result.DeletedCount,
+				},
+			},
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_DELETEMANY {
+		result, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			DeleteMany(context.Background(), queryType.Data.(bson.D))
+		if err != nil {
+			return nil, err
+		}
+		return map[string]interface{}{
+			"keys": []string{"deletedCount"},
+			"data": []map[string]interface{}{
+				{
+					"deletedCount": result.DeletedCount,
 				},
 			},
 		}, nil
@@ -220,4 +251,14 @@ func (mqe *MongoQueryEngine) AddData(user *models.User, dbConn *models.DBConnect
 		"insertedId": insertedID,
 	}
 	return rData, err
+}
+
+func (mqe *MongoQueryEngine) DeleteData(user *models.User, dbConn *models.DBConnection, name string, underscoreIds []string) (map[string]interface{}, error) {
+	for i, id := range underscoreIds {
+		underscoreIds[i] = fmt.Sprintf(`ObjectId("%s")`, id)
+	}
+	underscoreIdsStr := strings.Join(underscoreIds, ", ")
+	query := fmt.Sprintf(`db.%s.deleteMany({ _id : { "$in" : [%s] }})`, name, underscoreIdsStr)
+	fmt.Println(query)
+	return mqe.RunQuery(user, dbConn, query, true)
 }

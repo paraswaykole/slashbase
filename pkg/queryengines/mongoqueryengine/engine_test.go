@@ -61,3 +61,20 @@ func TestGetMongoData(t *testing.T) {
 		fmt.Println(data)
 	}
 }
+
+func TestDeleteMongoData(t *testing.T) {
+	mqueryengine := InitMongoQueryEngine()
+	data, err := mqueryengine.DeleteData(nil, &models.DBConnection{
+		Type:           models.DBTYPE_MONGO,
+		UseSSH:         models.DBUSESSH_NONE,
+		DBName:         "testdb",
+		DBHost:         "localhost",
+		DBPort:         "27888",
+		ConnectionUser: &models.DBConnectionUser{},
+	}, "test", []string{"63568dad66cd0cec1229bfd0"})
+	if err != nil {
+		t.Errorf("error: " + err.Error())
+	} else {
+		fmt.Println(data)
+	}
+}

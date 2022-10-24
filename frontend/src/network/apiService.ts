@@ -162,9 +162,9 @@ const addDBData = async function (dbConnId: string, schemaName: string, mName: s
         .then(res => res.data)
 }
 
-const deleteDBData = async function (dbConnId: string, schemaName: string, mName: string, ctids: string[]): Promise<ApiResult<DBQueryResult>> {
+const deleteDBData = async function (dbConnId: string, schemaName: string, mName: string, ids: string[]): Promise<ApiResult<DBQueryResult>> {
     return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<DBQueryResult>>>(`/query/data/${dbConnId}/delete`, { schema: schemaName, name: mName, ctids })
+        .post<any, AxiosResponse<ApiResult<DBQueryResult>>>(`/query/data/${dbConnId}/delete`, { schema: schemaName, name: mName, ids })
         .then(res => res.data)
 }
 

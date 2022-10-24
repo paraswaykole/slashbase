@@ -108,9 +108,15 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     }
 
     const onDeleteRows = (indexes: number[]) => {
-        const filteredRows = queryData!.rows.filter((_, i) => !indexes.includes(i))
-        const newQueryData: DBQueryData = { ...queryData!, rows: filteredRows }
-        setQueryData(newQueryData)
+        if (dbConnection!.type === DBConnType.POSTGRES) {
+            const filteredRows = queryData!.rows.filter((_, i) => !indexes.includes(i))
+            const newQueryData: DBQueryData = { ...queryData!, rows: filteredRows }
+            setQueryData(newQueryData)
+        } else if (dbConnection!.type === DBConnType.MONGO) {
+            const filteredRows = queryData!.data.filter((_, i) => !indexes.includes(i))
+            const newQueryData: DBQueryData = { ...queryData!, data: filteredRows }
+            setQueryData(newQueryData)
+        }
     }
 
     const onAddData = (newData: any) => {
@@ -155,6 +161,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
                     showHeader={true}
                     onAddData={onAddData}
+                    onDeleteRows={onDeleteRows}
                 />
             }
             <br /><br /><br />

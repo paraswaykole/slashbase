@@ -4,6 +4,8 @@ import { Cell, useRowSelect, useTable, UseTableInstanceProps } from 'react-table
 import { DBConnection, DBQueryData } from '../../../data/models'
 import JsonCell from './jsoncell'
 import AddModal from './addmodel'
+import apiService from '../../../network/apiService'
+import toast from 'react-hot-toast'
 
 type JsonTablePropType = {
     queryData: DBQueryData,
@@ -12,9 +14,10 @@ type JsonTablePropType = {
     isEditable: boolean,
     showHeader?: boolean,
     onAddData: (newData: any) => void,
+    onDeleteRows: (indexes: number[]) => void,
 }
 
-const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData }: JsonTablePropType) => {
+const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows }: JsonTablePropType) => {
 
     const [isAdding, setIsAdding] = useState<boolean>(false)
 
@@ -61,6 +64,22 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
             )
     })
 
+    const newState: any = state // temporary typescript hack
+    const selectedRows: number[] = Object.keys(newState.selectedRowIds).map(x => parseInt(x))
+    const selectedUnderscoreIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['_id']).filter(x => x)
+
+    const onDeleteBtnPressed = async () => {
+        if (selectedUnderscoreIDs.length > 0) {
+            const result = await apiService.deleteDBData(dbConnection.id, "", mName, selectedUnderscoreIDs)
+            if (result.success) {
+                toast.success('rows deleted');
+                onDeleteRows(selectedRows)
+            } else {
+                toast.error(result.error!);
+            }
+        }
+    }
+
     return (
         <React.Fragment>
             {(showHeader || isEditable) && <div className={styles.tableHeader}>
@@ -104,7 +123,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button">
+                            <button className="button" disabled={selectedUnderscoreIDs.length === 0} onClick={onDeleteBtnPressed}>
                                 <span className="icon is-small">
                                     <i className="fas fa-trash" />
                                 </span>

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/yaml.v2"
 )
@@ -76,6 +77,8 @@ const (
 	QUERY_FINDONE         = iota
 	QUERY_INSERT          = iota
 	QUERY_INSERTONE       = iota
+	QUERY_DELETEONE       = iota
+	QUERY_DELETEMANY      = iota
 	QUERY_UPDATE          = iota
 	QUERY_UPDATEONE       = iota
 	QUERY_COUNT           = iota
@@ -145,6 +148,10 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_INSERT
 		} else if funcName == "insertOne" {
 			result.QueryType = QUERY_INSERTONE
+		} else if funcName == "deleteOne" {
+			result.QueryType = QUERY_DELETEONE
+		} else if funcName == "deleteMany" {
+			result.QueryType = QUERY_DELETEMANY
 		} else if funcName == "update" {
 			result.QueryType = QUERY_UPDATE
 		} else if funcName == "updateOne" {
@@ -160,8 +167,8 @@ func GetMongoQueryType(query string) *MongoQuery {
 func findBsonOfToken(tokenName string, rawQuery string) interface{} {
 	re := regexp.MustCompile(tokenName + `((?:\(\{.+\}\))|(?:\(\[.+\]\))|(?:\(\d+\))|(?:\(\)))`)
 	token := re.FindString(rawQuery)
-	strdata := strings.Split(strings.Trim(token, ")"), "(")
-	tokenData := strdata[1]
+	tokenData := strings.Trim(token, ")")
+	tokenData = strings.Trim(tokenData, tokenName+"(")
 	if tokenData == "" {
 		return bson.D{}
 	}
@@ -171,14 +178,7 @@ func findBsonOfToken(tokenName string, rawQuery string) interface{} {
 		if err != nil {
 			return bson.D{}
 		}
-		bsonData := bson.D{}
-		for key, value := range mapData {
-			bsonData = append(bsonData, bson.E{
-				Key:   key,
-				Value: value,
-			})
-		}
-		return bsonData
+		return mapToBsonD(&mapData)
 	} else if strings.HasPrefix(tokenData, "[") && strings.HasPrefix(tokenData, "]") {
 		var arrayData []map[string]interface{}
 		err := yaml.Unmarshal([]byte(tokenData), &arrayData)
@@ -208,4 +208,55 @@ func findBsonOfToken(tokenName string, rawQuery string) interface{} {
 		}
 		return number
 	}
+}
+
+func mapToBsonD(data *map[string]interface{}) bson.D {
+	bsonData := bson.D{}
+	for key, value := range *data {
+		var valueItr interface{}
+		if mapItr, isTrue := value.(map[interface{}]interface{}); isTrue {
+			mapData := map[string]interface{}{}
+			for mapKey, mapValue := range mapItr {
+				if mKey, isTrueTrue := mapKey.(string); isTrueTrue {
+					mapData[mKey] = mapValue
+				}
+			}
+			valueItr = mapToBsonD(&mapData)
+		}
+		if arrayItr, isTrue := value.([]interface{}); isTrue {
+			var array bson.A
+			for _, item := range arrayItr {
+				if mapItr, isTrue := value.(map[string]interface{}); isTrue {
+					array = append(array, mapToBsonD(&mapItr))
+				} else if str, isTrue := item.(string); isTrue {
+					if oID := stringToObjectID(str); oID != nil {
+						array = append(array, *oID)
+					}
+				} else {
+					array = append(array, item)
+				}
+			}
+			valueItr = array
+		}
+		if str, isTrue := value.(string); isTrue {
+			if oID := stringToObjectID(str); oID != nil {
+				valueItr = *oID
+			}
+		}
+		bsonData = append(bsonData, bson.E{
+			Key:   key,
+			Value: valueItr,
+		})
+	}
+	return bsonData
+}
+
+func stringToObjectID(str string) *primitive.ObjectID {
+	if strings.HasPrefix(str, "ObjectId(\"") && strings.HasSuffix(str, "\")") {
+		hex := strings.TrimPrefix(str, "ObjectId(\"")
+		hex = strings.TrimSuffix(hex, "\")")
+		objectID, _ := primitive.ObjectIDFromHex(hex)
+		return &objectID
+	}
+	return nil
 }

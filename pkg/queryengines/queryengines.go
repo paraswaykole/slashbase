@@ -132,8 +132,16 @@ func AddData(user *models.User, dbConn *models.DBConnection, schemaName string, 
 	return BuildAddDataResponse(dbConn, result), nil
 }
 
-func DeleteData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctids []string) (map[string]interface{}, error) {
-	return postgresQueryEngine.DeleteData(user, dbConn, schemaName, name, ctids)
+// DeleteData function to delete multiple rows in the database
+// ids is a list of unique row ids: ctid for postgres, _id for mongo
+func DeleteData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ids []string) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.DeleteData(user, dbConn, schemaName, name, ids)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.DeleteData(user, dbConn, name, ids)
+	} else {
+		return nil, errors.New("invalid db type")
+	}
 }
 
 func CheckCreateRolePermissions(user *models.User, dbConn *models.DBConnection) bool {

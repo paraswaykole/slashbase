@@ -159,11 +159,11 @@ func (qr QueryRoutes) DeleteData(c *gin.Context) {
 	var deleteBody struct {
 		Schema string   `json:"schema"`
 		Name   string   `json:"name"`
-		CTIDs  []string `json:"ctids"`
+		IDs    []string `json:"ids"` // ctid for postgres, _id for mongo
 	}
 	c.BindJSON(&deleteBody)
 
-	data, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.CTIDs)
+	data, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
