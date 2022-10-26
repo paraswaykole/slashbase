@@ -11,6 +11,8 @@ import apiService from '../../../../network/apiService'
 import toast from 'react-hot-toast'
 import Table from '../../../../components/dbfragments/table/table'
 import Constants from '../../../../constants'
+import { DBConnType } from '../../../../data/defaults'
+import JsonTable from '../../../../components/dbfragments/jsontable/jsontable'
 
 
 const DBQueryPage: NextPage = () => {
@@ -22,43 +24,43 @@ const DBQueryPage: NextPage = () => {
     const [queryData, setQueryData] = useState<DBQueryData>()
     const [queryResult, setQueryResult] = useState<DBQueryResult>()
     const [error404, setError404] = useState(false)
-    
+
     const dispatch = useAppDispatch()
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
-    useEffect(()=>{
+    useEffect(() => {
         (async () => {
-            if (id){
+            if (id) {
                 try {
-                    await dispatch((getDBConnection({dbConnId: String(id)}))).unwrap() 
-                } catch (e){
+                    await dispatch((getDBConnection({ dbConnId: String(id) }))).unwrap()
+                } catch (e) {
                     setError404(true)
                     return
                 }
-                dispatch((getDBDataModels({dbConnId: String(id)}))) 
-                dispatch((getDBQueries({dbConnId: String(id)}))) 
+                dispatch((getDBDataModels({ dbConnId: String(id) })))
+                dispatch((getDBQueries({ dbConnId: String(id) })))
             }
-            if(queryId && queryId !== 'new') {
+            if (queryId && queryId !== 'new') {
                 const result = await apiService.getSingleDBQuery(String(queryId))
-                if(result.success){
+                if (result.success) {
                     setDBQuery(result.data)
                 } else {
                     setError404(false)
                     return
                 }
             }
-            if (queryId === 'new'){
+            if (queryId === 'new') {
                 setDBQuery(undefined)
             }
             setQueryData(undefined)
         })()
     }, [dispatch, router, queryId, id])
 
-    const runQuery = async (query: string, callback: ()=>void) => {
+    const runQuery = async (query: string, callback: () => void) => {
         const result = await apiService.runQuery(dbConnection!.id, query)
-        if (result.success){
+        if (result.success) {
             toast.success('Success')
-            if ((result.data as DBQueryResult).message){
+            if ((result.data as DBQueryResult).message) {
                 setQueryResult(result.data as DBQueryResult)
             } else {
                 setQueryData(result.data as DBQueryData)
@@ -70,37 +72,47 @@ const DBQueryPage: NextPage = () => {
     }
 
     const onQuerySaved = (newQueryId: string) => {
-        if(newQueryId !== queryId)
-            router.replace(Constants.APP_PATHS.DB_QUERY.path.replace('[id]', String(id)).replace('[queryId]',newQueryId))
+        if (newQueryId !== queryId)
+            router.replace(Constants.APP_PATHS.DB_QUERY.path.replace('[id]', String(id)).replace('[queryId]', newQueryId))
     }
 
-    if(error404) {
+    if (error404) {
         return (<DefaultErrorPage statusCode={404} />)
     }
 
     return (
-        <AppLayout title={(dbQuery ? dbQuery.name +" | ":" New Query | ")+ (dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase")} key={String(queryId)}>
-           {((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId)) && 
-                <QueryEditor 
-                    initialValue={dbQuery?.query ?? ''} 
-                    initQueryName={dbQuery?.name ?? ''} 
-                    queryId={queryId === 'new'? '': String(queryId)}
+        <AppLayout title={(dbQuery ? dbQuery.name + " | " : " New Query | ") + (dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase")} key={String(queryId)}>
+            {((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId)) &&
+                <QueryEditor
+                    initialValue={dbQuery?.query ?? ''}
+                    initQueryName={dbQuery?.name ?? ''}
+                    queryId={queryId === 'new' ? '' : String(queryId)}
                     runQuery={runQuery}
-                    onSave={onQuerySaved}/> 
+                    onSave={onQuerySaved} />
             }
-            <br/>
-            { queryData && 
-                <Table 
+            <br />
+            {queryData && dbConnection!.type === DBConnType.POSTGRES &&
+                <Table
                     dbConnection={dbConnection!}
                     queryData={queryData}
                     mSchema={''}
                     mName={''}
-                    updateCellData={()=>{}}
-                    onDeleteRows={()=>{}}
-                    onAddData={()=>{}}
-                    onFilterChanged={()=>{}}
-                    onSortChanged={()=>{}}
-                    isEditable={false}/>
+                    updateCellData={() => { }}
+                    onDeleteRows={() => { }}
+                    onAddData={() => { }}
+                    onFilterChanged={() => { }}
+                    onSortChanged={() => { }}
+                    isEditable={false} />
+            }
+            {queryData && dbConnection!.type === DBConnType.MONGO &&
+                <JsonTable
+                    dbConnection={dbConnection!}
+                    queryData={queryData}
+                    mName={''}
+                    updateCellData={() => { }}
+                    onDeleteRows={() => { }}
+                    onAddData={() => { }}
+                    isEditable={false} />
             }
             {queryResult && <span><b>Result of Query: </b>{queryResult.message}</span>}
         </AppLayout>
