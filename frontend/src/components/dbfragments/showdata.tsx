@@ -95,12 +95,23 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
         setQuerySort(newSort)
     }
 
-    const updateCellData = (oldCtid: string, newCtid: string, columnIdx: string, newValue: string | null | boolean) => {
+    const updatePostgresCellData = (oldCtid: string, newCtid: string, columnIdx: string, newValue: string | null | boolean) => {
         const rowIdx = queryData!.rows.findIndex(x => x["0"] == oldCtid)
         if (rowIdx) {
             const newQueryData: DBQueryData = { ...queryData! }
             newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx], ctid: newCtid }
             newQueryData!.rows[rowIdx][columnIdx] = newValue
+            setQueryData(newQueryData)
+        } else {
+            fetchData(false)
+        }
+    }
+
+    const updateMongoCellData = (underscoreId: string, newData: object) => {
+        const rowIdx = queryData!.data.findIndex(x => x["_id"] == underscoreId)
+        if (rowIdx) {
+            const newQueryData: DBQueryData = { ...queryData! }
+            newQueryData!.data[rowIdx] = { _id: underscoreId, ...newData }
             setQueryData(newQueryData)
         } else {
             fetchData(false)
@@ -146,7 +157,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     querySort={querySort}
                     isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
                     showHeader={true}
-                    updateCellData={updateCellData}
+                    updateCellData={updatePostgresCellData}
                     onDeleteRows={onDeleteRows}
                     onAddData={onAddData}
                     onFilterChanged={onFilterChanged}
@@ -161,6 +172,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
                     showHeader={true}
                     onAddData={onAddData}
+                    updateCellData={updateMongoCellData}
                     onDeleteRows={onDeleteRows}
                 />
             }

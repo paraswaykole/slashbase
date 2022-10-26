@@ -150,9 +150,9 @@ const getDBDataInDataModel = async function (dbConnId: string, schemaName: strin
         .then(res => res.data)
 }
 
-const updateDBSingleData = async function (dbConnId: string, schemaName: string, mName: string, ctid: string, columnName: string, value: string): Promise<ApiResult<CTIDResponse>> {
+const updateDBSingleData = async function (dbConnId: string, schemaName: string, mName: string, id: string, columnName: string, value: string): Promise<ApiResult<CTIDResponse>> {
     return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<CTIDResponse>>>(`/query/data/${dbConnId}/single`, { schema: schemaName, name: mName, ctid, columnName, value })
+        .post<any, AxiosResponse<ApiResult<CTIDResponse>>>(`/query/data/${dbConnId}/single`, { schema: schemaName, name: mName, id, columnName, value })
         .then(res => res.data)
 }
 

@@ -109,8 +109,15 @@ func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, 
 	return nil, errors.New("invalid db type")
 }
 
-func UpdateSingleData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, ctid string, columnName, value string) (map[string]interface{}, error) {
-	return postgresQueryEngine.UpdateSingleData(user, dbConn, schemaName, name, ctid, columnName, value)
+// UpdateSingleData function to update single data row in the database
+// id is a unique row ids: ctid for postgres, _id for mongo
+func UpdateSingleData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, id string, columnName, value string) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.UpdateSingleData(user, dbConn, schemaName, name, id, columnName, value)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.UpdateSingleData(user, dbConn, name, id, value)
+	}
+	return nil, errors.New("invalid db type")
 }
 
 func AddData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}) (*AddDataResponse, error) {

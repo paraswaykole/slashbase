@@ -52,7 +52,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
 		result := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			FindOne(context.Background(), queryType.Data)
+			FindOne(context.Background(), queryType.Args[0])
 		if result.Err() != nil {
 			return nil, result.Err()
 		}
@@ -64,7 +64,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
 		cursor, err := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			Find(context.Background(), queryType.Data, &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip})
+			Find(context.Background(), queryType.Args[0], &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip})
 		if err != nil {
 			return nil, err
 		}
@@ -81,7 +81,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	} else if queryType.QueryType == mongoutils.QUERY_INSERTONE {
 		result, err := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			InsertOne(context.Background(), queryType.Data)
+			InsertOne(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
 		}
@@ -96,7 +96,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	} else if queryType.QueryType == mongoutils.QUERY_INSERT {
 		result, err := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			InsertMany(context.Background(), queryType.Data.(bson.A))
+			InsertMany(context.Background(), queryType.Args[0].(bson.A))
 		if err != nil {
 			return nil, err
 		}
@@ -111,7 +111,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	} else if queryType.QueryType == mongoutils.QUERY_DELETEONE {
 		result, err := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			DeleteOne(context.Background(), queryType.Data)
+			DeleteOne(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
 		}
@@ -126,7 +126,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	} else if queryType.QueryType == mongoutils.QUERY_DELETEMANY {
 		result, err := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			DeleteMany(context.Background(), queryType.Data.(bson.D))
+			DeleteMany(context.Background(), queryType.Args[0].(bson.D))
 		if err != nil {
 			return nil, err
 		}
@@ -138,8 +138,40 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 				},
 			},
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_UPDATEONE {
+		result, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			UpdateOne(context.Background(), queryType.Args[0], queryType.Args[1])
+		if err != nil {
+			return nil, err
+		}
+		return map[string]interface{}{
+			"keys": []string{"updatedCount", "upsertedCount"},
+			"data": []map[string]interface{}{
+				{
+					"updatedCount":  result.ModifiedCount,
+					"upsertedCount": result.UpsertedCount,
+				},
+			},
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_UPDATEMANY {
+		result, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			UpdateMany(context.Background(), queryType.Args[0], queryType.Args[1])
+		if err != nil {
+			return nil, err
+		}
+		return map[string]interface{}{
+			"keys": []string{"updatedCount", "upsertedCount"},
+			"data": []map[string]interface{}{
+				{
+					"updatedCount":  result.ModifiedCount,
+					"upsertedCount": result.UpsertedCount,
+				},
+			},
+		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_RUNCMD {
-		result := conn.Database(string(dbConn.DBName)).RunCommand(context.Background(), queryType.Data)
+		result := conn.Database(string(dbConn.DBName)).RunCommand(context.Background(), queryType.Args[0])
 		if result.Err() != nil {
 			return nil, result.Err()
 		}
@@ -153,7 +185,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_LISTCOLLECTIONS {
-		list, err := conn.Database(string(dbConn.DBName)).ListCollectionNames(context.Background(), queryType.Data)
+		list, err := conn.Database(string(dbConn.DBName)).ListCollectionNames(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
 		}
@@ -172,7 +204,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	} else if queryType.QueryType == mongoutils.QUERY_COUNT {
 		count, err := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			CountDocuments(context.Background(), queryType.Data)
+			CountDocuments(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
 		}
@@ -232,6 +264,19 @@ func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnect
 			return nil, err
 		}
 		data["count"] = countData["data"].([]map[string]interface{})[0]["count"]
+	}
+	return data, err
+}
+
+func (mqe *MongoQueryEngine) UpdateSingleData(user *models.User, dbConn *models.DBConnection, name string, underscoreID string, documentData string) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`db.%s.updateOne({_id: ObjectId("%s")}, {$set: %s } )`, name, underscoreID, documentData)
+	data, err := mqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	updatedCount := data["data"].([]map[string]interface{})[0]["updatedCount"]
+	data = map[string]interface{}{
+		"updatedCount": updatedCount,
 	}
 	return data, err
 }

@@ -183,13 +183,13 @@ func (qr QueryRoutes) UpdateSingleData(c *gin.Context) {
 	var updateBody struct {
 		Schema     string `json:"schema"`
 		Name       string `json:"name"`
-		CTID       string `json:"ctid"`
+		ID         string `json:"id"`
 		ColumnName string `json:"columnName"`
 		Value      string `json:"value"`
 	}
 	c.BindJSON(&updateBody)
 
-	data, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.CTID, updateBody.ColumnName, updateBody.Value)
+	data, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

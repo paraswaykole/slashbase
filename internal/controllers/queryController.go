@@ -128,7 +128,7 @@ func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 }
 
 func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
-	schema, name, ctid, columnName, columnValue string) (map[string]interface{}, error) {
+	schema, name, id, columnName, columnValue string) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
@@ -139,7 +139,7 @@ func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId strin
 		return nil, err
 	}
 
-	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, ctid, columnName, columnValue)
+	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, id, columnName, columnValue)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}

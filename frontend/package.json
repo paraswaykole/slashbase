@@ -14,7 +14,9 @@
     "axios": "^0.24.0",
     "bulma": "^0.9.3",
     "codemirror": "^5.62.3",
+    "json-beautify": "^1.1.1",
     "localforage": "^1.9.0",
+    "lodash": "^4.17.21",
     "next": "12",
     "react": "^17.0.2",
     "react-codemirror": "^1.0.0",
@@ -29,6 +31,7 @@
     "sql-formatter": "^4.0.2"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.186",
     "@types/node": "^17.0.12",
     "@types/react": "17.0.18",
     "@types/react-codemirror": "^1.0.5",

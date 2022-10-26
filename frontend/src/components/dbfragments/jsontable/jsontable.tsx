@@ -1,6 +1,6 @@
 import styles from './jsontable.module.scss'
-import React, { useState, useRef } from 'react'
-import { Cell, useRowSelect, useTable, UseTableInstanceProps } from 'react-table'
+import React, { useState } from 'react'
+import { useRowSelect, useTable } from 'react-table'
 import { DBConnection, DBQueryData } from '../../../data/models'
 import JsonCell from './jsoncell'
 import AddModal from './addmodel'
@@ -15,11 +15,13 @@ type JsonTablePropType = {
     showHeader?: boolean,
     onAddData: (newData: any) => void,
     onDeleteRows: (indexes: number[]) => void,
+    updateCellData: (underscoreId: string, newData: object) => void,
 }
 
-const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows }: JsonTablePropType) => {
+const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows, updateCellData }: JsonTablePropType) => {
 
     const [isAdding, setIsAdding] = useState<boolean>(false)
+    const [editingCellIndex, setEditingCellIndex] = useState<(number | null)>(null)
 
     const data = React.useMemo(
         () => queryData.data,
@@ -40,6 +42,21 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
         Cell: JsonCell,
     }
 
+    const startEditing = (index: number | null) => {
+        setEditingCellIndex(index)
+    }
+
+    const onSaveCell = async (underscoreId: string, newData: string) => {
+        const result = await apiService.updateDBSingleData(dbConnection.id, "", mName, underscoreId, "", newData)
+        if (result.success) {
+            updateCellData(underscoreId, JSON.parse(newData))
+            startEditing(null)
+            toast.success('1 row updated');
+        } else {
+            toast.error(result.error!);
+        }
+    }
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -50,7 +67,8 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
     } = useTable<any>({
         columns,
         data,
-        defaultColumn
+        defaultColumn,
+        ...{ editingCellIndex, startEditing, onSaveCell }
     }, useRowSelect, hooks => {
         if (isEditable)
             hooks.visibleColumns.push(columns => [
@@ -159,13 +177,13 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
                         ))}
                     </thead>
                     <tbody {...getTableBodyProps()}>
-                        {rows.map(row => {
+                        {rows.map((row, rowIndex) => {
                             prepareRow(row)
                             const selectedRow: any = row // temp type hack 
                             return (
                                 <tr {...row.getRowProps()} key={row.id} className={selectedRow.isSelected ? 'is-selected' : ''}>
                                     {row.cells.map(cell => {
-                                        return (<td {...cell.getCellProps()} key={row.id + "" + cell.column.id}>
+                                        return (<td {...cell.getCellProps()} onDoubleClick={() => startEditing(rowIndex)} key={row.id + "" + cell.column.id}>
                                             {cell.render('Cell')}
                                         </td>
                                         )
