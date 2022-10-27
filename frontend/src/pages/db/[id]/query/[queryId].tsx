@@ -87,6 +87,7 @@ const DBQueryPage: NextPage = () => {
                     initialValue={dbQuery?.query ?? ''}
                     initQueryName={dbQuery?.name ?? ''}
                     queryId={queryId === 'new' ? '' : String(queryId)}
+                    dbType={dbConnection!.type}
                     runQuery={runQuery}
                     onSave={onQuerySaved} />
             }

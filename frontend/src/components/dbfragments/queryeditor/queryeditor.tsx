@@ -6,6 +6,7 @@ import { saveDBQuery, selectDBConnection } from '../../../redux/dbConnectionSlic
 import { DBConnection } from '../../../data/models'
 import toast from 'react-hot-toast'
 import { format } from 'sql-formatter'
+import { DBConnType } from '../../../data/defaults'
 
 
 const WrappedCodeMirror = dynamic(() => {
@@ -27,11 +28,12 @@ type QueryEditorPropType = {
     initialValue: string,
     initQueryName: string,
     queryId: string,
+    dbType: DBConnType
     runQuery: (query: string, callback: () => void) => void
     onSave: (queryId: string) => void
 }
 
-const QueryEditor = ({ initialValue, initQueryName, queryId, runQuery, onSave }: QueryEditorPropType) => {
+const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, onSave }: QueryEditorPropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -65,11 +67,14 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, runQuery, onSave }:
     }
 
     const formatQuery = () => {
-        let formattedQuery = format(value, {
-            language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
-            uppercase: true, // Defaults to false
-            linesBetweenQueries: 2,
-        })
+        let formattedQuery: string = value
+        if (dbType == DBConnType.POSTGRES) {
+            formattedQuery = format(value, {
+                language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
+                uppercase: true, // Defaults to false
+                linesBetweenQueries: 2,
+            })
+        }
         setValue(formattedQuery)
         editorRef.current?.getCodeMirror().setValue(formattedQuery)
     }
