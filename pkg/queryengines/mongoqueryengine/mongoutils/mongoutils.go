@@ -315,6 +315,9 @@ func mapToBsonD(data *map[string]interface{}) bson.D {
 				valueItr = str
 			}
 		}
+		if valueItr == nil {
+			valueItr = value
+		}
 		bsonData = append(bsonData, bson.E{
 			Key:   key,
 			Value: valueItr,
