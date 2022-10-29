@@ -21,7 +21,7 @@ services:
       retries: 3
 
   slashbase-server:
-    image: slashbase/slashbase-server
+    image: slashbaseide/slashbase-server
     container_name: slashbase-server
     restart: always
     ports:
@@ -33,7 +33,7 @@ services:
         condition: service_healthy
 
   slashbase-web:
-    image: slashbase/slashbase-web
+    image: slashbaseide/slashbase-web
     container_name: slashbase-web
     restart: always
     ports:

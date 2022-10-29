@@ -320,9 +320,9 @@ EOF
 
 generate_nginx_config_file() {
     if has_curl; then
-        curl -o default.template https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/nginx/default.conf
+        curl -o default.template https://raw.githubusercontent.com/slashbaseide/slashbase/main/deploy/docker/nginx/default.conf
     elif has_wget; then
-        wget -O default.template https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/nginx/default.conf
+        wget -O default.template https://raw.githubusercontent.com/slashbaseide/slashbase/main/deploy/docker/nginx/default.conf
     fi
 
     sed "s/domain_name/$domain_name/g" default.template > default.conf
@@ -559,9 +559,9 @@ EOF
 mv default.conf "$WORK_DIR/data/nginx/conf.d/"
 
 if has_curl; then
-    curl -o docker-compose.yaml https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/docker-compose.yaml
+    curl -o docker-compose.yaml https://raw.githubusercontent.com/slashbaseide/slashbase/main/deploy/docker/docker-compose.yaml
 elif has_wget; then
-    wget -O docker-compose.yaml https://raw.githubusercontent.com/slashbase/slashbase/main/deploy/docker/docker-compose.yaml
+    wget -O docker-compose.yaml https://raw.githubusercontent.com/slashbaseide/slashbase/main/deploy/docker/docker-compose.yaml
 fi
 
 
