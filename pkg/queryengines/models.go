@@ -38,6 +38,11 @@ func BuildDBDataModel(dbConn *models.DBConnection, tableData map[string]interfac
 			SchemaName: tableData["1"].(string),
 		}
 		return &view
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		view := DBDataModel{
+			Name: tableData["collectionName"].(string),
+		}
+		return &view
 	}
 	return nil
 }

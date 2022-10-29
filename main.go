@@ -9,10 +9,10 @@ import (
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/db"
 	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/internal/queryengines"
 	"slashbase.com/backend/internal/server"
-	"slashbase.com/backend/internal/sshtunnel"
 	"slashbase.com/backend/internal/tasks"
+	"slashbase.com/backend/pkg/queryengines"
+	"slashbase.com/backend/pkg/sshtunnel"
 )
 
 func main() {

@@ -22,58 +22,58 @@ const DBPage: NextPage = () => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
-    useEffect(()=>{
+    useEffect(() => {
         (async () => {
-            if (id){
+            if (id) {
                 try {
-                    await dispatch((getDBConnection({dbConnId: String(id)}))).unwrap() 
-                } catch (e){
+                    await dispatch((getDBConnection({ dbConnId: String(id) }))).unwrap()
+                } catch (e) {
                     setError404(true)
                     return
                 }
-                dispatch((getDBDataModels({dbConnId: String(id)}))) 
-                dispatch((getDBQueries({dbConnId: String(id)}))) 
+                dispatch((getDBDataModels({ dbConnId: String(id) })))
+                dispatch((getDBQueries({ dbConnId: String(id) })))
             }
         })()
     }, [dispatch, router])
 
-    if(error404 || !['data', 'model'].includes(String(path))) {
+    if (error404 || !['data', 'model'].includes(String(path))) {
         return (<DefaultErrorPage statusCode={404} />)
     }
 
     return (
         <AppLayout title={dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase"}>
-            { mschema && mname && 
+            {mname &&
                 <React.Fragment>
                     <div className="tabs is-toggle is-toggle-rounded tabs-set">
-                        <h1>{`Showing ${mschema}.${mname}`}</h1>
+                        <h1>{`Showing ${mschema === '' ? mname : `${mschema}.${mname}`}`}</h1>
                         <ul>
-                            <Link 
-                                href={{pathname: Constants.APP_PATHS.DB_PATH.path, query: {mschema, mname}}} 
-                                as={Constants.APP_PATHS.DB_PATH.path.replace('[id]', String(id)).replace('[path]', String('data'))+"?mschema="+mschema+"&mname="+mname}
-                                >
-                                <li className={path === 'data' ? 'is-active': ''}>
+                            <Link
+                                href={{ pathname: Constants.APP_PATHS.DB_PATH.path, query: { mschema, mname } }}
+                                as={Constants.APP_PATHS.DB_PATH.path.replace('[id]', String(id)).replace('[path]', String('data')) + "?mschema=" + mschema + "&mname=" + mname}
+                            >
+                                <li className={path === 'data' ? 'is-active' : ''}>
                                     <a>
-                                        <span className="icon is-small"><i className="fas fa-table" aria-hidden="true"/></span>
+                                        <span className="icon is-small"><i className="fas fa-table" aria-hidden="true" /></span>
                                         <span>Data</span>
                                     </a>
                                 </li>
                             </Link>
-                            <Link 
-                                href={{pathname: Constants.APP_PATHS.DB_PATH.path, query: {mschema, mname}}} 
-                                as={Constants.APP_PATHS.DB_PATH.path.replace('[id]', String(id)).replace('[path]', String('model'))+"?mschema="+mschema+"&mname="+mname}
-                                >
-                                <li className={path === 'model' ? 'is-active': ''}>
+                            <Link
+                                href={{ pathname: Constants.APP_PATHS.DB_PATH.path, query: { mschema, mname } }}
+                                as={Constants.APP_PATHS.DB_PATH.path.replace('[id]', String(id)).replace('[path]', String('model')) + "?mschema=" + mschema + "&mname=" + mname}
+                            >
+                                <li className={path === 'model' ? 'is-active' : ''}>
                                     <a>
-                                        <span className="icon is-small"><i className="fas fa-list-alt" aria-hidden="true"/></span>
+                                        <span className="icon is-small"><i className="fas fa-list-alt" aria-hidden="true" /></span>
                                         <span>Model</span>
                                     </a>
                                 </li>
                             </Link>
                         </ul>
-                    </div> 
-                    { path === 'data' && <DBShowDataFragment key={String(mschema)+String(mname)}/> }
-                    { path === 'model' && <DBShowModelFragment /> }
+                    </div>
+                    {path === 'data' && <DBShowDataFragment key={String(mschema) + String(mname)} />}
+                    {path === 'model' && <DBShowModelFragment />}
                 </React.Fragment>
             }
             <style jsx>{`

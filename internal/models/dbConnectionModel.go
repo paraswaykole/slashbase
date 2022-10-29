@@ -47,6 +47,7 @@ type DBConnectionUser struct {
 
 const (
 	DBTYPE_POSTGRES = "POSTGRES"
+	DBTYPE_MONGO    = "MONGO"
 
 	DBUSESSH_NONE        = "NONE"
 	DBUSESSH_PASSWORD    = "PASSWORD"
@@ -57,7 +58,7 @@ const (
 	DBLOGINTYPE_ROLE_ACCOUNTS = "ROLE_ACCOUNTS"
 )
 
-func newDBConnection(userID string, projectID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName string, loginType string, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
+func NewDBConnection(userID string, projectID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName string, loginType string, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
 
 	if !utils.ContainsString([]string{DBUSESSH_NONE, DBUSESSH_PASSWORD, DBUSESSH_KEYFILE, DBUSESSH_PASSKEYFILE}, useSSH) {
 		return nil, errors.New("useSSH is not correct")
@@ -65,6 +66,10 @@ func newDBConnection(userID string, projectID string, name string, dbtype string
 
 	if !utils.ContainsString([]string{DBLOGINTYPE_ROOT, DBLOGINTYPE_ROLE_ACCOUNTS}, loginType) {
 		return nil, errors.New("loginType is not correct")
+	}
+
+	if !utils.ContainsString([]string{DBTYPE_POSTGRES, DBTYPE_MONGO}, dbtype) {
+		return nil, errors.New("dbtype is not correct")
 	}
 
 	if name == "" || dbhost == "" || dbport == "" || dbuser == "" ||
@@ -95,10 +100,6 @@ func newDBConnection(userID string, projectID string, name string, dbtype string
 		DBConnectionUsers: []DBConnectionUser{connUser},
 		ConnectionUser:    &connUser,
 	}, nil
-}
-
-func NewPostgresDBConnection(userID string, projectID string, name string, dbhost, dbport, dbuser, dbpassword, databaseName string, loginType string, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
-	return newDBConnection(userID, projectID, name, DBTYPE_POSTGRES, dbhost, dbport, dbuser, dbpassword, databaseName, loginType, useSSH, sshHost, sshUser, sshPassword, sshKeyFile)
 }
 
 func (dbConn DBConnection) Save() error {

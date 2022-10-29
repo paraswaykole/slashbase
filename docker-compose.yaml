@@ -36,7 +36,6 @@ services:
   slashbase-web:
     build:
       context: ./frontend
-      dockerfile: ./frontend/Dockerfile
       target: dev
     restart: always
     ports:

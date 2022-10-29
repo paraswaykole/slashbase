@@ -7,8 +7,8 @@ import (
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/internal/queryengines"
 	"slashbase.com/backend/internal/utils"
+	"slashbase.com/backend/pkg/queryengines"
 )
 
 type QueryController struct{}
@@ -90,7 +90,7 @@ func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProj
 }
 
 func (qc QueryController) AddData(authUser *models.User, dbConnId string,
-	schema, name string, data map[string]interface{}) (map[string]interface{}, error) {
+	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
@@ -109,7 +109,7 @@ func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 }
 
 func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
-	schema, name string, ctids []string) (map[string]interface{}, error) {
+	schema, name string, ids []string) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
@@ -120,7 +120,7 @@ func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 		return nil, err
 	}
 
-	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ctids)
+	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ids)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -128,7 +128,7 @@ func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 }
 
 func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
-	schema, name, ctid, columnName, columnValue string) (map[string]interface{}, error) {
+	schema, name, id, columnName, columnValue string) (map[string]interface{}, error) {
 
 	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
 	if err != nil {
@@ -139,7 +139,7 @@ func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId strin
 		return nil, err
 	}
 
-	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, ctid, columnName, columnValue)
+	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, id, columnName, columnValue)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}

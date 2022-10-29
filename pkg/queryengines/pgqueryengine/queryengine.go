@@ -9,8 +9,8 @@ import (
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/models/sbsql"
-	"slashbase.com/backend/internal/queryengines/pgqueryengine/pgxutils"
-	"slashbase.com/backend/internal/sshtunnel"
+	"slashbase.com/backend/pkg/queryengines/pgqueryengine/pgxutils"
+	"slashbase.com/backend/pkg/sshtunnel"
 )
 
 var dbQueryLogDao daos.DBQueryLogDao
@@ -52,6 +52,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 		if err != nil {
 			return nil, err
 		}
+		defer rows.Close()
 		columns, rowsData := pgxutils.PgSqlRowsToJson(rows)
 		go dbQueryLogDao.CreateDBQueryLog(queryLog)
 		return map[string]interface{}{

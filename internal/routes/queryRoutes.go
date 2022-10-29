@@ -44,7 +44,11 @@ func (qr QueryRoutes) GetData(c *gin.Context) {
 	schema := c.Query("schema")
 	name := c.Query("name")
 	fetchCount := c.Query("count") == "true"
-	limit := 200
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		limit = 0
+	}
 	offsetStr := c.Query("offset")
 	offset, err := strconv.ParseInt(offsetStr, 10, 64)
 	if err != nil {
@@ -155,11 +159,11 @@ func (qr QueryRoutes) DeleteData(c *gin.Context) {
 	var deleteBody struct {
 		Schema string   `json:"schema"`
 		Name   string   `json:"name"`
-		CTIDs  []string `json:"ctids"`
+		IDs    []string `json:"ids"` // ctid for postgres, _id for mongo
 	}
 	c.BindJSON(&deleteBody)
 
-	data, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.CTIDs)
+	data, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -179,13 +183,13 @@ func (qr QueryRoutes) UpdateSingleData(c *gin.Context) {
 	var updateBody struct {
 		Schema     string `json:"schema"`
 		Name       string `json:"name"`
-		CTID       string `json:"ctid"`
+		ID         string `json:"id"`
 		ColumnName string `json:"columnName"`
 		Value      string `json:"value"`
 	}
 	c.BindJSON(&updateBody)
 
-	data, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.CTID, updateBody.ColumnName, updateBody.Value)
+	data, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
