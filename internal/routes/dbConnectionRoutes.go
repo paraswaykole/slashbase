@@ -26,7 +26,6 @@ func (dbcr DBConnectionRoutes) CreateDBConnection(c *gin.Context) {
 		Password    string `json:"password"`
 		User        string `json:"user"`
 		DBName      string `json:"dbname"`
-		LoginType   string `json:"loginType"`
 		UseSSH      string `json:"useSSH"`
 		SSHHost     string `json:"sshHost"`
 		SSHUser     string `json:"sshUser"`
@@ -41,7 +40,7 @@ func (dbcr DBConnectionRoutes) CreateDBConnection(c *gin.Context) {
 	}
 
 	dbConn, err := dbConnController.CreateDBConnection(authUser, createBody.ProjectID, createBody.Name, createBody.Type, createBody.Host, createBody.Port,
-		createBody.User, createBody.Password, createBody.DBName, createBody.LoginType, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
+		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

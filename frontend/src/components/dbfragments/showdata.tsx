@@ -155,7 +155,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     mName={String(mname)}
                     queryData={queryData}
                     querySort={querySort}
-                    isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
+                    isEditable={true}
                     showHeader={true}
                     updateCellData={updatePostgresCellData}
                     onDeleteRows={onDeleteRows}
@@ -169,7 +169,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     dbConnection={dbConnection}
                     mName={String(mname)}
                     queryData={queryData}
-                    isEditable={project.currentMember?.role !== ProjectMemberRole.ANALYST}
+                    isEditable={true}
                     showHeader={true}
                     onAddData={onAddData}
                     updateCellData={updateMongoCellData}

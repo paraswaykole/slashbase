@@ -151,18 +151,6 @@ func DeleteData(user *models.User, dbConn *models.DBConnection, schemaName strin
 	}
 }
 
-func CheckCreateRolePermissions(user *models.User, dbConn *models.DBConnection) bool {
-	return postgresQueryEngine.CheckCreateRolePermissions(user, dbConn)
-}
-
-func CreateRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *models.DBConnectionUser) error {
-	return postgresQueryEngine.CreateRoleLogin(user, dbConn, dbUser)
-}
-
-func DeleteRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *models.DBConnectionUser) error {
-	return postgresQueryEngine.DeleteRoleLogin(user, dbConn, dbUser)
-}
-
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
 	mongoQueryEngine.RemoveUnusedConnections()

@@ -18,5 +18,5 @@ export enum DBConnectionUseSSHType {
 
 export enum DBConnectionLoginType {
     USE_ROOT = "USE_ROOT",
-    ROLE_ACCOUNTS = "ROLE_ACCOUNTS",
+    // ROLE_ACCOUNTS = "ROLE_ACCOUNTS",
 }

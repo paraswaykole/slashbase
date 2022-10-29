@@ -93,7 +93,6 @@ func (pc ProjectController) AddProjectMember(projectID, email, role string) (*mo
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
-	go pc.updateProjectMemberInDBConnections(projectID)
 	newProjectMember.User = *toAddUser
 	return newProjectMember, nil
 }
@@ -111,20 +110,6 @@ func (pc ProjectController) DeleteProjectMember(projectId, userId string) error 
 	err = projectDao.DeleteProjectMember(projectMember)
 	if err != nil {
 		return errors.New("there was some problem deleting the member")
-	}
-
-	go pc.updateProjectMemberInDBConnections(projectId)
-	return nil
-}
-
-func (pc ProjectController) updateProjectMemberInDBConnections(projectID string) error {
-	dbConns, err := dbConnDao.GetDBConnectionsByProject(projectID)
-	if err != nil {
-		return err
-	}
-	dbController := new(DBConnectionController)
-	for _, dbConn := range dbConns {
-		dbController.updateDBConnUsersProjectMemberRoles(dbConn)
 	}
 	return nil
 }

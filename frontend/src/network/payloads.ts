@@ -10,7 +10,6 @@ export interface AddDBConnPayload {
     user: string
     dbname: string
     useSSH: string
-    loginType: string
     sshHost: string
     sshUser: string
     sshPassword: string

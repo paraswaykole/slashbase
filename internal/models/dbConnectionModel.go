@@ -54,18 +54,14 @@ const (
 	DBUSESSH_KEYFILE     = "KEYFILE"
 	DBUSESSH_PASSKEYFILE = "PASSKEYFILE"
 
-	DBLOGINTYPE_ROOT          = "USE_ROOT"
-	DBLOGINTYPE_ROLE_ACCOUNTS = "ROLE_ACCOUNTS"
+	DBLOGINTYPE_ROOT = "USE_ROOT"
+	// DBLOGINTYPE_ROLE_ACCOUNTS = "ROLE_ACCOUNTS"
 )
 
-func NewDBConnection(userID string, projectID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName string, loginType string, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
+func NewDBConnection(userID string, projectID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
 
 	if !utils.ContainsString([]string{DBUSESSH_NONE, DBUSESSH_PASSWORD, DBUSESSH_KEYFILE, DBUSESSH_PASSKEYFILE}, useSSH) {
 		return nil, errors.New("useSSH is not correct")
-	}
-
-	if !utils.ContainsString([]string{DBLOGINTYPE_ROOT, DBLOGINTYPE_ROLE_ACCOUNTS}, loginType) {
-		return nil, errors.New("loginType is not correct")
 	}
 
 	if !utils.ContainsString([]string{DBTYPE_POSTGRES, DBTYPE_MONGO}, dbtype) {
@@ -91,7 +87,7 @@ func NewDBConnection(userID string, projectID string, name string, dbtype string
 		DBHost:            sbsql.CryptedData(dbhost),
 		DBPort:            sbsql.CryptedData(dbport),
 		DBName:            sbsql.CryptedData(databaseName),
-		LoginType:         loginType,
+		LoginType:         DBLOGINTYPE_ROOT,
 		UseSSH:            useSSH,
 		SSHHost:           sbsql.CryptedData(sshHost),
 		SSHUser:           sbsql.CryptedData(sshUser),

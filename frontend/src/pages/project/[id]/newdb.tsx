@@ -7,7 +7,7 @@ import DefaultErrorPage from 'next/error'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { selectProjects } from '../../../redux/projectsSlice'
 import { AddDBConnPayload } from '../../../network/payloads'
-import { DBConnectionLoginType, DBConnectionUseSSHType, DBConnType, ProjectMemberRole } from '../../../data/defaults'
+import { DBConnectionUseSSHType, DBConnType, ProjectMemberRole } from '../../../data/defaults'
 import { addNewDBConn } from '../../../redux/allDBConnectionsSlice'
 import Constants from '../../../constants'
 import ReactTooltip from 'react-tooltip'
@@ -28,7 +28,6 @@ const NewDBPage: NextPage = () => {
 	const [dbDatabase, setDBDatabase] = useState('')
 	const [dbUsername, setDBUsername] = useState('')
 	const [dbPassword, setDBPassword] = useState('')
-	const [dbLoginType, setDBLoginType] = useState<string>(DBConnectionLoginType.USE_ROOT)
 	const [dbUseSSH, setUseSSH] = useState<string>(DBConnectionUseSSHType.NONE)
 	const [dbSSHHost, setSSHHost] = useState('')
 	const [dbSSHUser, setSSHUser] = useState('')
@@ -57,7 +56,6 @@ const NewDBPage: NextPage = () => {
 			user: dbUsername,
 			dbname: dbDatabase,
 			useSSH: dbUseSSH,
-			loginType: dbLoginType,
 			sshHost: dbSSHHost,
 			sshUser: dbSSHUser,
 			sshPassword: dbSSHPassword,
@@ -85,7 +83,7 @@ const NewDBPage: NextPage = () => {
 							type="text"
 							value={dbName}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setDBName(e.target.value) }}
-							placeholder="Enter a name for this database" />
+							placeholder="Enter a display name for database" />
 					</div>
 				</div>
 				<div className="field">
@@ -93,7 +91,7 @@ const NewDBPage: NextPage = () => {
 					<div className="control">
 						<div className="select">
 							<select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setDBType(e.target.value) }}>
-								<option value={DBConnType.POSTGRES}>PostgresDB</option>
+								<option value={DBConnType.POSTGRES}>PostgresSQL</option>
 								<option value={DBConnType.MONGO}>MongoDB</option>
 							</select>
 						</div>
@@ -152,33 +150,6 @@ const NewDBPage: NextPage = () => {
 							value={dbPassword}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setDBPassword(e.target.value) }}
 							placeholder="Enter database password" />
-					</div>
-				</div>
-				<div className="field">
-					<label className="label">
-						Login type for members in project: &nbsp;
-						<span className="icon-text">
-							<span className="icon">
-								<i className="fas fa-info-circle" data-tip="Select 'Use root user' if you want to use the db login you specified above to<br>login for all project members, or Select 'Use role accounts' if you want<br>Slashbase to create and use 3 roles account for admins, developers and analysts in the project" />
-							</span>
-						</span>
-					</label>
-					<div className="select">
-						<select
-							value={dbLoginType}
-							onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-								setDBLoginType(e.target.value)
-							}}
-						>
-							<option
-								value={DBConnectionLoginType.USE_ROOT}>
-								Use root user
-							</option>
-							<option
-								value={DBConnectionLoginType.ROLE_ACCOUNTS}>
-								Use roles accounts
-							</option>
-						</select>
 					</div>
 				</div>
 				<div className="field">
