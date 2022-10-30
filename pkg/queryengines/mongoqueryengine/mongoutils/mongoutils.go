@@ -354,7 +354,7 @@ func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []m
 			} else if _, isTrue := value.(float64); isTrue {
 				types["float64"] = true
 			} else if _, isTrue := value.(primitive.ObjectID); isTrue {
-				types["ObjectId"] = true
+				types["objectid"] = true
 			} else if _, isTrue := value.([]interface{}); isTrue {
 				types["array"] = true
 			} else {

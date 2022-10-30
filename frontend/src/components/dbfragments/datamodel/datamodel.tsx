@@ -2,12 +2,16 @@ import styles from './datamodel.module.scss'
 import React, { useState } from 'react'
 import { DBDataModel } from '../../../data/models'
 import ReactTooltip from 'react-tooltip'
+import { DBConnType } from '../../../data/defaults'
 
 type DataModelPropType = {
+    dbType: DBConnType
     dataModel: DBDataModel,
 }
 
-const DataModel = ({ dataModel }: DataModelPropType) => {
+const DataModel = ({ dbType, dataModel }: DataModelPropType) => {
+
+    const label = dbType === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
 
     return (
         <React.Fragment>
@@ -15,7 +19,7 @@ const DataModel = ({ dataModel }: DataModelPropType) => {
                 <table className={"table is-bordered is-striped is-narrow is-hoverable"}>
                     <thead>
                         <tr>
-                            <th colSpan={5}>{dataModel.schemaName}.{dataModel.name}</th>
+                            <th colSpan={5}>{label}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,10 +35,10 @@ const DataModel = ({ dataModel }: DataModelPropType) => {
                                     }</td>
                                     <td>{field.name}</td>
                                     <td>{field.type}</td>
-                                    <td>
+                                    {dbType === DBConnType.POSTGRES && <td>
                                         {field.charMaxLength ? <span className="tag is-info is-light">Max Length: {field.charMaxLength}</span> : null}
                                         {field.default ? <span className="tag is-info is-light">Default: {field.default}</span> : null}
-                                    </td>
+                                    </td>}
                                 </tr>
                             ))
                         }
