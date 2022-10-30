@@ -355,6 +355,8 @@ func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []m
 				types["float64"] = true
 			} else if _, isTrue := value.(primitive.ObjectID); isTrue {
 				types["objectid"] = true
+			} else if _, isTrue := value.(primitive.DateTime); isTrue {
+				types["datetime"] = true
 			} else if _, isTrue := value.([]interface{}); isTrue {
 				types["array"] = true
 			} else {
