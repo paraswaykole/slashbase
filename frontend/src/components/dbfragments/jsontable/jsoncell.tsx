@@ -1,7 +1,6 @@
 import styles from './jsontable.module.scss'
 import React, { useRef } from 'react'
 import dynamic from 'next/dynamic'
-import ReactJson from 'react-json-view'
 import jsonBeautify from 'json-beautify'
 import _ from 'lodash'
 import toast from 'react-hot-toast'
@@ -10,6 +9,8 @@ import toast from 'react-hot-toast'
 declare module 'json-beautify' {
     export default function beautify(value: any, replacer: null, space: number | string, limit?: number): string
 }
+
+const ReactJson = dynamic(() => import('react-json-view'), { ssr: false })
 
 const WrappedCodeMirror = dynamic(() => {
     // @ts-ignore

@@ -82,12 +82,12 @@ const DBQueryPage: NextPage = () => {
 
     return (
         <AppLayout title={(dbQuery ? dbQuery.name + " | " : " New Query | ") + (dbConnection ? dbConnection.name + " | Slashbase" : "Slashbase")} key={String(queryId)}>
-            {((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId)) &&
+            {(dbConnection && ((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId))) &&
                 <QueryEditor
                     initialValue={dbQuery?.query ?? ''}
                     initQueryName={dbQuery?.name ?? ''}
                     queryId={queryId === 'new' ? '' : String(queryId)}
-                    dbType={dbConnection!.type}
+                    dbType={dbConnection!.type ?? ''}
                     runQuery={runQuery}
                     onSave={onQuerySaved} />
             }

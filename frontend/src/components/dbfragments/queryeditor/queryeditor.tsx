@@ -12,6 +12,8 @@ import { DBConnType } from '../../../data/defaults'
 const WrappedCodeMirror = dynamic(() => {
     // @ts-ignore
     import('codemirror/mode/sql/sql')
+    // @ts-ignore
+    import('codemirror/mode/javascript/javascript')
     return import('../../lib/wrappedcodemirror')
 }, { ssr: false })
 
@@ -85,7 +87,7 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
                 ref={editorRef}
                 value={value}
                 options={{
-                    mode: 'sql',
+                    mode: dbType == DBConnType.POSTGRES ? 'sql' : 'javascript',
                     theme: 'duotone-light',
                     lineNumbers: true
                 }}
