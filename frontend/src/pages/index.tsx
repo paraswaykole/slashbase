@@ -31,6 +31,10 @@ const HomePage: NextPage = () => {
               <ProjectCard key={project.id} project={project} />
             </div>
           ))}
+          {list.length !== 3 && [1, 2, 3].splice(0, 3 - list.length).map((num) => (
+            <div className="column" key={num}>
+            </div>
+          ))}
         </div>
       ))}
 
