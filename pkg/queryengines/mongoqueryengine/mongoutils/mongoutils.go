@@ -372,7 +372,7 @@ func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []m
 		}
 		field := map[string]interface{}{
 			"name":  key,
-			"types": strings.Join(types, ","),
+			"types": strings.Join(types, ", "),
 		}
 		fields = append(fields, field)
 	}
