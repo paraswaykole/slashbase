@@ -1,14 +1,9 @@
 import styles from './jsontable.module.scss'
 import React, { useRef } from 'react'
 import dynamic from 'next/dynamic'
-import jsonBeautify from 'json-beautify'
+import { js_beautify } from 'js-beautify'
 import _ from 'lodash'
 import toast from 'react-hot-toast'
-
-// temp hack
-declare module 'json-beautify' {
-    export default function beautify(value: any, replacer: null, space: number | string, limit?: number): string
-}
 
 const ReactJson = dynamic(() => import('react-json-view'), { ssr: false })
 
@@ -67,7 +62,7 @@ const JsonCell = ({
         return (<React.Fragment>
             <ForwardRefCodeMirror
                 ref={editorRef}
-                value={jsonBeautify(value, null, 2)}
+                value={js_beautify(editingValue)}
                 options={{
                     mode: 'javascript',
                     theme: 'duotone-light',

@@ -7,6 +7,7 @@ import { DBConnection } from '../../../data/models'
 import toast from 'react-hot-toast'
 import { format } from 'sql-formatter'
 import { DBConnType } from '../../../data/defaults'
+import { js_beautify } from 'js-beautify'
 
 
 const WrappedCodeMirror = dynamic(() => {
@@ -72,10 +73,12 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
         let formattedQuery: string = value
         if (dbType == DBConnType.POSTGRES) {
             formattedQuery = format(value, {
-                language: "postgresql", // Defaults to "sql" (see the above list of supported dialects)
-                uppercase: true, // Defaults to false
+                language: "postgresql",
+                uppercase: true,
                 linesBetweenQueries: 2,
             })
+        } else if (dbType == DBConnType.MONGO) {
+            formattedQuery = js_beautify(value)
         }
         setValue(formattedQuery)
         editorRef.current?.getCodeMirror().setValue(formattedQuery)
