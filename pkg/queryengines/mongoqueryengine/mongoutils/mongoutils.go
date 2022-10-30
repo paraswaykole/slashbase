@@ -84,6 +84,7 @@ const (
 	QUERY_UPDATEONE       = iota
 	QUERY_UPDATEMANY      = iota
 	QUERY_COUNT           = iota
+	QUERY_AGGREGATE       = iota
 	QUERY_RUNCMD          = iota
 	QUERY_LISTCOLLECTIONS = iota
 	QUERY_UNKOWN          = -1
@@ -162,6 +163,8 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_UPDATEMANY
 		} else if funcName == "count" {
 			result.QueryType = QUERY_COUNT
+		} else if funcName == "aggregate" {
+			result.QueryType = QUERY_AGGREGATE
 		}
 		result.Args = args
 	}
@@ -193,14 +196,7 @@ func parseTokenArgs(argsData []string) []interface{} {
 			}
 			bsonArray := make(bson.A, len(arrayData))
 			for i, value := range arrayData {
-				bsonData := bson.D{}
-				for key, value := range value {
-					bsonData = append(bsonData, bson.E{
-						Key:   key,
-						Value: value,
-					})
-				}
-				bsonArray[i] = bsonData
+				bsonArray[i] = mapToBsonD(&value)
 			}
 			finalArgs = append(finalArgs, bsonArray)
 		} else if strings.HasPrefix(arg, "\"") && strings.HasSuffix(arg, "\"") {
@@ -334,4 +330,49 @@ func stringToObjectID(str string) *primitive.ObjectID {
 		return &objectID
 	}
 	return nil
+}
+
+func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []map[string]interface{} {
+	fields := []map[string]interface{}{}
+	fieldType := map[string]map[string]bool{}
+	for _, d := range sampleData {
+		for key, value := range d {
+			types := fieldType[key]
+			if types == nil {
+				types = map[string]bool{}
+			}
+			if value == nil {
+				types["null"] = true
+			} else if _, isTrue := value.(string); isTrue {
+				types["string"] = true
+			} else if _, isTrue := value.(int32); isTrue {
+				types["int32"] = true
+			} else if _, isTrue := value.(int64); isTrue {
+				types["int64"] = true
+			} else if _, isTrue := value.(float32); isTrue {
+				types["float32"] = true
+			} else if _, isTrue := value.(float64); isTrue {
+				types["float64"] = true
+			} else if _, isTrue := value.(primitive.ObjectID); isTrue {
+				types["ObjectId"] = true
+			} else if _, isTrue := value.([]interface{}); isTrue {
+				types["array"] = true
+			} else {
+				types["object"] = true
+			}
+			fieldType[key] = types
+		}
+	}
+	for _, key := range keys {
+		types := []string{}
+		for key := range fieldType[key] {
+			types = append(types, key)
+		}
+		field := map[string]interface{}{
+			"name":  key,
+			"types": strings.Join(types, ","),
+		}
+		fields = append(fields, field)
+	}
+	return fields
 }

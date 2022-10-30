@@ -1,6 +1,8 @@
 package queryengines
 
 import (
+	"strings"
+
 	"slashbase.com/backend/internal/models"
 )
 
@@ -66,7 +68,14 @@ func BuildDBDataModelField(dbConn *models.DBConnection, fieldData map[string]int
 			maxLen := fieldData["5"].(int32)
 			view.CharMaxLength = &maxLen
 		}
-
+		return &view
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		view := DBDataModelField{
+			Name:       fieldData["name"].(string),
+			Type:       fieldData["types"].(string),
+			IsNullable: strings.Contains(fieldData["types"].(string), "null"),
+			IsPrimary:  fieldData["name"].(string) == "_id",
+		}
 		return &view
 	}
 	return nil

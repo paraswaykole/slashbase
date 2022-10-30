@@ -220,6 +220,23 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 				},
 			},
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_AGGREGATE {
+		cursor, err := conn.Database(string(dbConn.DBName)).
+			Collection(queryType.CollectionName).
+			Aggregate(context.Background(), queryType.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		defer cursor.Close(context.Background())
+		keys, data := mongoutils.MongoCursorToJson(cursor)
+		if createLog {
+			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
+			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		}
+		return map[string]interface{}{
+			"keys": keys,
+			"data": data,
+		}, nil
 	}
 	return nil, errors.New("unknown query")
 }
@@ -242,6 +259,18 @@ func (mqe *MongoQueryEngine) GetDataModels(user *models.User, dbConn *models.DBC
 	}
 	rdata := data["data"].([]map[string]interface{})
 	return rdata, nil
+}
+
+func (mqe *MongoQueryEngine) GetSingleDataModelFields(user *models.User, dbConn *models.DBConnection, name string) ([]map[string]interface{}, error) {
+	query := fmt.Sprintf(`db.%s.aggregate([{$sample: {size: 1000}}])`, name)
+	// query := fmt.Sprintf(`db.%s.find()`, name)
+	data, err := mqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	returnedKeys := data["keys"].([]string)
+	returnedData := data["data"].([]map[string]interface{})
+	return mongoutils.AnalyseFieldsSchema(returnedKeys, returnedData), err
 }
 
 func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {

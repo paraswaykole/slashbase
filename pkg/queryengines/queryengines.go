@@ -56,48 +56,66 @@ func GetDataModels(user *models.User, dbConn *models.DBConnection) ([]*DBDataMod
 }
 
 func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaName string, name string) (*DBDataModel, error) {
-	fieldsData, err := postgresQueryEngine.GetSingleDataModelFields(user, dbConn, schemaName, name)
-	if err != nil {
-		return nil, err
-	}
-	constraintsData, err := postgresQueryEngine.GetSingleDataModelConstraints(user, dbConn, schemaName, name)
-	if err != nil {
-		return nil, err
-	}
-	indexesData, err := postgresQueryEngine.GetSingleDataModelIndexes(user, dbConn, schemaName, name)
-	if err != nil {
-		return nil, err
-	}
-	allFields := []DBDataModelField{}
-	for _, field := range fieldsData {
-		fieldView := BuildDBDataModelField(dbConn, field)
-		if fieldView != nil {
-			allFields = append(allFields, *fieldView)
+	var dataModel DBDataModel
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		fieldsData, err := postgresQueryEngine.GetSingleDataModelFields(user, dbConn, schemaName, name)
+		if err != nil {
+			return nil, err
+		}
+		constraintsData, err := postgresQueryEngine.GetSingleDataModelConstraints(user, dbConn, schemaName, name)
+		if err != nil {
+			return nil, err
+		}
+		indexesData, err := postgresQueryEngine.GetSingleDataModelIndexes(user, dbConn, schemaName, name)
+		if err != nil {
+			return nil, err
+		}
+		allFields := []DBDataModelField{}
+		for _, field := range fieldsData {
+			fieldView := BuildDBDataModelField(dbConn, field)
+			if fieldView != nil {
+				allFields = append(allFields, *fieldView)
+			}
+		}
+		allConstraints := []DBDataModelConstaint{}
+		for _, constraint := range constraintsData {
+			constraintView := BuildDBDataModelConstraint(dbConn, constraint)
+			if constraintView != nil {
+				allConstraints = append(allConstraints, *constraintView)
+			}
+		}
+		allIndexes := []DBDataModelIndex{}
+		for _, index := range indexesData {
+			indexView := BuildDBDataModelIndex(dbConn, index)
+			if indexView != nil {
+				allIndexes = append(allIndexes, *indexView)
+			}
+		}
+		dataModel = DBDataModel{
+			SchemaName:  schemaName,
+			Name:        name,
+			Fields:      allFields,
+			Constraints: allConstraints,
+			Indexes:     allIndexes,
+		}
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		fieldsData, err := mongoQueryEngine.GetSingleDataModelFields(user, dbConn, name)
+		if err != nil {
+			return nil, err
+		}
+		allFields := []DBDataModelField{}
+		for _, field := range fieldsData {
+			fieldView := BuildDBDataModelField(dbConn, field)
+			if fieldView != nil {
+				allFields = append(allFields, *fieldView)
+			}
+		}
+		dataModel = DBDataModel{
+			Name:   name,
+			Fields: allFields,
 		}
 	}
-	allConstraints := []DBDataModelConstaint{}
-	for _, constraint := range constraintsData {
-		constraintView := BuildDBDataModelConstraint(dbConn, constraint)
-		if constraintView != nil {
-			allConstraints = append(allConstraints, *constraintView)
-		}
-	}
-	allIndexes := []DBDataModelIndex{}
-	for _, index := range indexesData {
-		indexView := BuildDBDataModelIndex(dbConn, index)
-		if indexView != nil {
-			allIndexes = append(allIndexes, *indexView)
-		}
-	}
-
-	dataModels := DBDataModel{
-		SchemaName:  schemaName,
-		Name:        name,
-		Fields:      allFields,
-		Constraints: allConstraints,
-		Indexes:     allIndexes,
-	}
-	return &dataModels, nil
+	return &dataModel, nil
 }
 
 func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
