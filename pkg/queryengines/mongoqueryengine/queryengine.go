@@ -64,7 +64,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
 		cursor, err := conn.Database(string(dbConn.DBName)).
 			Collection(queryType.CollectionName).
-			Find(context.Background(), queryType.Args[0], &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip})
+			Find(context.Background(), queryType.Args[0], &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort})
 		if err != nil {
 			return nil, err
 		}
@@ -273,14 +273,14 @@ func (mqe *MongoQueryEngine) GetSingleDataModelFields(user *models.User, dbConn 
 }
 
 func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
-	// TODO: add sort query
-	// if len(sort) == 1 {
-	// }
 	query := fmt.Sprintf(`db.%s.find().limit(%d).skip(%d)`, name, limit, offset)
 	countQuery := fmt.Sprintf(`db.%s.count()`, name)
 	if len(filter) == 1 && strings.HasPrefix(filter[0], "{") && strings.HasSuffix(filter[0], "}") {
 		query = fmt.Sprintf(`db.%s.find(%s).limit(%d).skip(%d)`, name, filter[0], limit, offset)
 		countQuery = fmt.Sprintf(`db.%s.count(%s)`, name, filter[0])
+	}
+	if len(sort) == 1 {
+		query = query + fmt.Sprintf(`.sort(%s)`, sort[0])
 	}
 	data, err := mqe.RunQuery(user, dbConn, query, true)
 	if err != nil {

@@ -96,6 +96,7 @@ type MongoQuery struct {
 	Args           []interface{}
 	Limit          *int64
 	Skip           *int64
+	Sort           interface{}
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
@@ -142,6 +143,9 @@ func GetMongoQueryType(query string) *MongoQuery {
 							number := numberInterface[0].(int64)
 							result.Skip = &number
 						}
+					} else if fName == "sort" {
+						dataInterface := parseTokenArgs(fArg)
+						result.Sort = dataInterface[0]
 					}
 				}
 			}

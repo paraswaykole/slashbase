@@ -17,14 +17,16 @@ type JsonTablePropType = {
     onDeleteRows: (indexes: number[]) => void,
     updateCellData: (underscoreId: string, newData: object) => void,
     onFilterChanged: (newFilter: string[] | undefined) => void,
+    onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows, updateCellData, onFilterChanged }: JsonTablePropType) => {
+const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows, updateCellData, onFilterChanged, onSortChanged }: JsonTablePropType) => {
 
     const [isAdding, setIsAdding] = useState<boolean>(false)
     const [editingCellIndex, setEditingCellIndex] = useState<(number | null)>(null)
 
     const filterRef = useRef<HTMLInputElement>(null);
+    const sortRef = useRef<HTMLInputElement>(null);
 
     const data = React.useMemo(
         () => queryData.data,
@@ -53,10 +55,23 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
         let filter: string[] | undefined = undefined
         let filterText = filterRef.current!.value.trim()
         if (filterText !== '' && filterText.startsWith("{") && filterText.endsWith("}")) {
-            filter = [filterRef.current!.value]
+            filter = [filterText]
         }
         onFilterChanged(filter)
     }
+
+    const changeSort = () => {
+        if (!isEditable) {
+            return
+        }
+        let sort: string[] | undefined = undefined
+        let sortText = sortRef.current!.value.trim()
+        if (sortText !== '' && sortText.startsWith("{") && sortText.endsWith("}")) {
+            sort = [sortText]
+        }
+        onSortChanged(sort)
+    }
+
 
     const onSaveCell = async (underscoreId: string, newData: string) => {
         const result = await apiService.updateDBSingleData(dbConnection.id, "", mName, underscoreId, "", newData)
@@ -114,13 +129,23 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
         <React.Fragment>
             {(showHeader || isEditable) && <div className={styles.tableHeader}>
                 <div className="columns">
-                    <div className="column is-9">
+                    <div className="column is-3">
                         <div className="field has-addons">
                             <p className="control">
                                 <input ref={filterRef} className="input" type="text" placeholder="{ field: 'Value'}" />
                             </p>
                             <p className="control">
                                 <button className="button" onClick={changeFilter}>Filter</button>
+                            </p>
+                        </div>
+                    </div>
+                    <div className="column is-6">
+                        <div className="field has-addons">
+                            <p className="control">
+                                <input ref={sortRef} className="input" type="text" placeholder="{ field: 1 or -1}" />
+                            </p>
+                            <p className="control">
+                                <button className="button" onClick={changeSort}>Sort</button>
                             </p>
                         </div>
                     </div>
