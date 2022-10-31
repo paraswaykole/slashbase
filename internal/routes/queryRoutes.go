@@ -54,22 +54,8 @@ func (qr QueryRoutes) GetData(c *gin.Context) {
 	if err != nil {
 		offset = int64(0)
 	}
-	filter, hasFilter := c.GetQueryArray("filter[]")
-	if hasFilter && len(filter) < 2 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"error":   "Invalid filter query",
-		})
-		return
-	}
-	sort, hasSort := c.GetQueryArray("sort[]")
-	if hasSort && len(sort) != 2 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"error":   "Invalid sort query",
-		})
-		return
-	}
+	filter, _ := c.GetQueryArray("filter[]")
+	sort, _ := c.GetQueryArray("sort[]")
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 

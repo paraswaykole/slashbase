@@ -1,5 +1,5 @@
 import styles from './jsontable.module.scss'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useRowSelect, useTable } from 'react-table'
 import { DBConnection, DBQueryData } from '../../../data/models'
 import JsonCell from './jsoncell'
@@ -16,12 +16,15 @@ type JsonTablePropType = {
     onAddData: (newData: any) => void,
     onDeleteRows: (indexes: number[]) => void,
     updateCellData: (underscoreId: string, newData: object) => void,
+    onFilterChanged: (newFilter: string[] | undefined) => void,
 }
 
-const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows, updateCellData }: JsonTablePropType) => {
+const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows, updateCellData, onFilterChanged }: JsonTablePropType) => {
 
     const [isAdding, setIsAdding] = useState<boolean>(false)
     const [editingCellIndex, setEditingCellIndex] = useState<(number | null)>(null)
+
+    const filterRef = useRef<HTMLInputElement>(null);
 
     const data = React.useMemo(
         () => queryData.data,
@@ -44,6 +47,15 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
 
     const startEditing = (index: number | null) => {
         setEditingCellIndex(index)
+    }
+
+    const changeFilter = () => {
+        let filter: string[] | undefined = undefined
+        let filterText = filterRef.current!.value.trim()
+        if (filterText !== '' && filterText.startsWith("{") && filterText.endsWith("}")) {
+            filter = [filterRef.current!.value]
+        }
+        onFilterChanged(filter)
     }
 
     const onSaveCell = async (underscoreId: string, newData: string) => {
@@ -103,41 +115,14 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
             {(showHeader || isEditable) && <div className={styles.tableHeader}>
                 <div className="columns">
                     <div className="column is-9">
-                        {/* <div className="field has-addons">
+                        <div className="field has-addons">
                             <p className="control">
-                                <span className="select">
-                                    <select ref={filter0Ref}>
-                                        <option value="default">Select column</option>
-                                        {displayColumns.map(x =>
-                                            (<option key={x}>{x}</option>)
-                                        )}
-                                    </select>
-                                </span>
-                            </p>
-                            <p className="control">
-                                <span className="select">
-                                    <select ref={filter1Ref}>
-                                        <option value="default">Select operator</option>
-                                        <option value="=">=</option>
-                                        <option value="!=">≠</option>
-                                        <option value="<">&lt;</option>
-                                        <option value=">">&gt;</option>
-                                        <option value=">=">≥</option>
-                                        <option value="<=">≤</option>
-                                        <option value="IS NULL">is null</option>
-                                        <option value="IS NOT NULL">not null</option>
-                                        <option value="LIKE">like</option>
-                                        <option value="NOT LIKE">not like</option>
-                                    </select>
-                                </span>
-                            </p>
-                            <p className="control">
-                                <input ref={filter2Ref} className="input" type="text" placeholder="Value" />
+                                <input ref={filterRef} className="input" type="text" placeholder="{ field: 'Value'}" />
                             </p>
                             <p className="control">
                                 <button className="button" onClick={changeFilter}>Filter</button>
                             </p>
-                        </div> */}
+                        </div>
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">

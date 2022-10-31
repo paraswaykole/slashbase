@@ -263,7 +263,6 @@ func (mqe *MongoQueryEngine) GetDataModels(user *models.User, dbConn *models.DBC
 
 func (mqe *MongoQueryEngine) GetSingleDataModelFields(user *models.User, dbConn *models.DBConnection, name string) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.aggregate([{$sample: {size: 1000}}])`, name)
-	// query := fmt.Sprintf(`db.%s.find()`, name)
 	data, err := mqe.RunQuery(user, dbConn, query, true)
 	if err != nil {
 		return nil, err
@@ -274,15 +273,15 @@ func (mqe *MongoQueryEngine) GetSingleDataModelFields(user *models.User, dbConn 
 }
 
 func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
-	// sortQuery := ""
-	// if len(sort) == 2 {
-	// update sort query
+	// TODO: add sort query
+	// if len(sort) == 1 {
 	// }
 	query := fmt.Sprintf(`db.%s.find().limit(%d).skip(%d)`, name, limit, offset)
 	countQuery := fmt.Sprintf(`db.%s.count()`, name)
-	// if len(filter) > 1 {
-	// 	//update query & countQuery
-	// }
+	if len(filter) == 1 && strings.HasPrefix(filter[0], "{") && strings.HasSuffix(filter[0], "}") {
+		query = fmt.Sprintf(`db.%s.find(%s).limit(%d).skip(%d)`, name, filter[0], limit, offset)
+		countQuery = fmt.Sprintf(`db.%s.count(%s)`, name, filter[0])
+	}
 	data, err := mqe.RunQuery(user, dbConn, query, true)
 	if err != nil {
 		return nil, err

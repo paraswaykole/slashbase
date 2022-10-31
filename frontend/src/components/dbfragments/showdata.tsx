@@ -174,6 +174,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     onAddData={onAddData}
                     updateCellData={updateMongoCellData}
                     onDeleteRows={onDeleteRows}
+                    onFilterChanged={onFilterChanged}
                 />
             }
             <br /><br /><br />
