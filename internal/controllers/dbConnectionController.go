@@ -17,6 +17,7 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	projectID string,
 	name string,
 	dbtype string,
+	scheme string,
 	host string,
 	port string,
 	user string,
@@ -28,7 +29,7 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	sshPassword string,
 	sshKeyFile string) (*models.DBConnection, error) {
 
-	dbConn, err := models.NewDBConnection(authUser.ID, projectID, name, dbtype, host, port,
+	dbConn, err := models.NewDBConnection(authUser.ID, projectID, name, dbtype, scheme, host, port,
 		user, password, dbName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile)
 	if err != nil {
 		return nil, err

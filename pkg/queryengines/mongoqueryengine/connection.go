@@ -15,7 +15,20 @@ type mongoClientInstance struct {
 	LastUsed            time.Time
 }
 
-func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, host string, port uint16, database, user, password string) (c *mongo.Client, err error) {
+func createMongoConnectionURI(scheme string, host string, port uint16, user, password string) string {
+	usernamePassword := ""
+	if user != "" && password != "" {
+		usernamePassword = user + ":" + password + "@"
+	}
+	if scheme == "mongodb" {
+		return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port))
+	} else if scheme == "mongodb+srv" {
+		return "mongodb+srv://" + usernamePassword + host
+	}
+	return ""
+}
+
+func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host string, port uint16, user, password string) (c *mongo.Client, err error) {
 	if mClientInstance, exists := mEngine.openClients[dbConnectionId]; exists {
 		mEngine.openClients[dbConnectionId] = mongoClientInstance{
 			mongoClientInstance: mClientInstance.mongoClientInstance,
@@ -23,7 +36,8 @@ func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, host string, port
 		}
 		return mClientInstance.mongoClientInstance, nil
 	}
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://"+host+":"+strconv.Itoa(int(port))))
+	connectionURI := createMongoConnectionURI(scheme, host, port, user, password)
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(connectionURI))
 	if err != nil {
 		err = fmt.Errorf("unable to connect to database: %v", err)
 		return

@@ -44,14 +44,14 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		dbConn.DBPort = sbsql.CryptedData(fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port))
 	}
 	port, _ = strconv.Atoi(string(dbConn.DBPort))
-	conn, err := mqe.getConnection(dbConn.ConnectionUser.ID, string(dbConn.DBHost), uint16(port), string(dbConn.DBName), string(dbConn.ConnectionUser.DBUser), string(dbConn.ConnectionUser.DBPassword))
+	conn, err := mqe.getConnection(dbConn.ConnectionUser.ID, string(dbConn.DBScheme), string(dbConn.DBHost), uint16(port), string(dbConn.ConnectionUser.DBUser), string(dbConn.ConnectionUser.DBPassword))
 	if err != nil {
 		return nil, err
 	}
+	db := conn.Database(string(dbConn.DBName))
 	queryType := mongoutils.GetMongoQueryType(query)
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
-		result := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		result := db.Collection(queryType.CollectionName).
 			FindOne(context.Background(), queryType.Args[0])
 		if result.Err() != nil {
 			return nil, result.Err()
@@ -62,8 +62,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
-		cursor, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		cursor, err := db.Collection(queryType.CollectionName).
 			Find(context.Background(), queryType.Args[0], &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort})
 		if err != nil {
 			return nil, err
@@ -79,8 +78,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_INSERTONE {
-		result, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		result, err := db.Collection(queryType.CollectionName).
 			InsertOne(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
@@ -94,8 +92,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_INSERT {
-		result, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		result, err := db.Collection(queryType.CollectionName).
 			InsertMany(context.Background(), queryType.Args[0].(bson.A))
 		if err != nil {
 			return nil, err
@@ -109,8 +106,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_DELETEONE {
-		result, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		result, err := db.Collection(queryType.CollectionName).
 			DeleteOne(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
@@ -124,8 +120,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_DELETEMANY {
-		result, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		result, err := db.Collection(queryType.CollectionName).
 			DeleteMany(context.Background(), queryType.Args[0].(bson.D))
 		if err != nil {
 			return nil, err
@@ -139,8 +134,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_UPDATEONE {
-		result, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		result, err := db.Collection(queryType.CollectionName).
 			UpdateOne(context.Background(), queryType.Args[0], queryType.Args[1])
 		if err != nil {
 			return nil, err
@@ -155,8 +149,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_UPDATEMANY {
-		result, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		result, err := db.Collection(queryType.CollectionName).
 			UpdateMany(context.Background(), queryType.Args[0], queryType.Args[1])
 		if err != nil {
 			return nil, err
@@ -171,7 +164,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_RUNCMD {
-		result := conn.Database(string(dbConn.DBName)).RunCommand(context.Background(), queryType.Args[0])
+		result := db.RunCommand(context.Background(), queryType.Args[0])
 		if result.Err() != nil {
 			return nil, result.Err()
 		}
@@ -185,7 +178,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_LISTCOLLECTIONS {
-		list, err := conn.Database(string(dbConn.DBName)).ListCollectionNames(context.Background(), queryType.Args[0])
+		list, err := db.ListCollectionNames(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
 		}
@@ -202,8 +195,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_COUNT {
-		count, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		count, err := db.Collection(queryType.CollectionName).
 			CountDocuments(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
@@ -221,8 +213,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			},
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_AGGREGATE {
-		cursor, err := conn.Database(string(dbConn.DBName)).
-			Collection(queryType.CollectionName).
+		cursor, err := db.Collection(queryType.CollectionName).
 			Aggregate(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err

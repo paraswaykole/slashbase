@@ -20,6 +20,7 @@ type DBConnection struct {
 	DBHost      sbsql.CryptedData `gorm:"type:text"`
 	DBPort      sbsql.CryptedData `gorm:"type:text"`
 	DBName      sbsql.CryptedData `gorm:"type:text"`
+	DBScheme    sbsql.CryptedData `gorm:"type:text"`
 	LoginType   string            `gorm:"not null;default:USE_ROOT;"`
 	UseSSH      string            `gorm:"not null"`
 	SSHHost     sbsql.CryptedData `gorm:"type:text"`
@@ -58,13 +59,19 @@ const (
 	// DBLOGINTYPE_ROLE_ACCOUNTS = "ROLE_ACCOUNTS"
 )
 
-func NewDBConnection(userID string, projectID string, name string, dbtype string, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
+func NewDBConnection(userID string, projectID string, name string, dbtype string, dbscheme, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
 
 	if !utils.ContainsString([]string{DBUSESSH_NONE, DBUSESSH_PASSWORD, DBUSESSH_KEYFILE, DBUSESSH_PASSKEYFILE}, useSSH) {
 		return nil, errors.New("useSSH is not correct")
 	}
 
-	if !utils.ContainsString([]string{DBTYPE_POSTGRES, DBTYPE_MONGO}, dbtype) {
+	if dbtype == DBTYPE_POSTGRES {
+		dbscheme = "postgres"
+	} else if dbtype == DBTYPE_MONGO {
+		if !utils.ContainsString([]string{"mongodb", "mongodb+srv"}, dbscheme) {
+			return nil, errors.New("invalid dbscheme")
+		}
+	} else {
 		return nil, errors.New("dbtype is not correct")
 	}
 
@@ -87,6 +94,7 @@ func NewDBConnection(userID string, projectID string, name string, dbtype string
 		DBHost:            sbsql.CryptedData(dbhost),
 		DBPort:            sbsql.CryptedData(dbport),
 		DBName:            sbsql.CryptedData(databaseName),
+		DBScheme:          sbsql.CryptedData(dbscheme),
 		LoginType:         DBLOGINTYPE_ROOT,
 		UseSSH:            useSSH,
 		SSHHost:           sbsql.CryptedData(sshHost),
