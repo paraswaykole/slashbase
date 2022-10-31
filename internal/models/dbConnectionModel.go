@@ -75,8 +75,7 @@ func NewDBConnection(userID string, projectID string, name string, dbtype string
 		return nil, errors.New("dbtype is not correct")
 	}
 
-	if name == "" || dbhost == "" || dbport == "" || dbuser == "" ||
-		dbpassword == "" || databaseName == "" {
+	if name == "" || dbhost == "" || dbport == "" || databaseName == "" {
 		return nil, errors.New("cannot be empty")
 	}
 

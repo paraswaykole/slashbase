@@ -23,8 +23,9 @@ const NewDBPage: NextPage = () => {
 
 	const [dbName, setDBName] = useState('')
 	const [dbHost, setDBHost] = useState('')
+	const [dbScheme, setDBScheme] = useState('')
 	const [dbType, setDBType] = useState<string>(DBConnType.POSTGRES)
-	const [dbPort, setDBPort] = useState('5432')
+	const [dbPort, setDBPort] = useState('')
 	const [dbDatabase, setDBDatabase] = useState('')
 	const [dbUsername, setDBUsername] = useState('')
 	const [dbPassword, setDBPassword] = useState('')
@@ -50,6 +51,7 @@ const NewDBPage: NextPage = () => {
 			projectId: project.id,
 			name: dbName,
 			type: dbType,
+			scheme: dbScheme,
 			host: dbHost,
 			port: dbPort,
 			password: dbPassword,
@@ -60,7 +62,6 @@ const NewDBPage: NextPage = () => {
 			sshUser: dbSSHUser,
 			sshPassword: dbSSHPassword,
 			sshKeyFile: dbSSHKeyFile,
-
 		}
 		try {
 			await dispatch(addNewDBConn(payload)).unwrap()
@@ -90,13 +91,25 @@ const NewDBPage: NextPage = () => {
 					<label className="label">Database Type:</label>
 					<div className="control">
 						<div className="select">
-							<select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setDBType(e.target.value) }}>
+							<select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setDBType(e.target.value); setDBScheme('') }}>
 								<option value={DBConnType.POSTGRES}>PostgresSQL</option>
 								<option value={DBConnType.MONGO}>MongoDB</option>
 							</select>
 						</div>
 					</div>
 				</div>
+				{dbType == DBConnType.MONGO && <div className="field">
+					<label className="label">Scheme:</label>
+					<div className="control">
+						<div className="select">
+							<select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setDBScheme(e.target.value) }}>
+								<option value="default">Select scheme</option>
+								<option value="mongodb">mongodb</option>
+								<option value="mongodb+srv">mongodb+srv</option>
+							</select>
+						</div>
+					</div>
+				</div>}
 				<div className="field">
 					<label className="label">Host:</label>
 					<div className="control">

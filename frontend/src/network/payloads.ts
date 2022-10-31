@@ -4,6 +4,7 @@ export interface AddDBConnPayload {
     projectId: string
     name: string
     type: string
+    scheme: string
     host: string
     port: string
     password: string
