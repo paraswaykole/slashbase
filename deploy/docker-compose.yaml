@@ -21,25 +21,11 @@ services:
       retries: 3
 
   slashbase-server:
-    image: slashbaseide/slashbase-server
+    image: slashbaseide/slashbase
     container_name: slashbase-server
     restart: always
     ports:
-      - '3001:3001'
-    volumes:
-      - ./data/app/config:/slashbase/config
+      - '3000:3000'
     depends_on:
       slashbase-db:
         condition: service_healthy
-
-  slashbase-web:
-    image: slashbaseide/slashbase-web
-    container_name: slashbase-web
-    restart: always
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - ./data/nginx/conf.d:/etc/nginx/conf.d
-      - ./data/ssl/conf:/etc/letsencrypt
-      - ./data/ssl/www:/var/www/certbot
