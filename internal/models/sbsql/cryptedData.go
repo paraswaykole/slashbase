@@ -13,7 +13,7 @@ type CryptedData string
 func (cd *CryptedData) Scan(value interface{}) error {
 	encryptedData := value.(string)
 
-	decryptedData, err := utils.DecryptAES(encryptedData, config.GetCryptedDataSecretKey())
+	decryptedData, err := utils.DecryptAES(encryptedData, config.GetConfig().CryptedDataSecret)
 	if err != nil {
 		*cd = CryptedData("")
 		return err
@@ -27,6 +27,6 @@ func (cd CryptedData) Value() (driver.Value, error) {
 	if len(cd) == 0 {
 		return nil, nil
 	}
-	encryptedData, err := utils.EncryptAES(string(cd), config.GetCryptedDataSecretKey())
+	encryptedData, err := utils.EncryptAES(string(cd), config.GetConfig().CryptedDataSecret)
 	return encryptedData, err
 }

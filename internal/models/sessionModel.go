@@ -34,7 +34,7 @@ func (session UserSession) GetAuthToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sessionID": session.ID,
 	})
-	tokenString, err := token.SignedString(config.GetAuthTokenSecret())
+	tokenString, err := token.SignedString([]byte(config.GetConfig().AuthTokenSecret))
 	if err != nil {
 		panic(err)
 	}

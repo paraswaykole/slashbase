@@ -2,6 +2,8 @@ package utils
 
 import (
 	"math/rand"
+	"net/http"
+	"strings"
 	"time"
 	"unsafe"
 )
@@ -45,4 +47,18 @@ func RandString(n int) string {
 		remain--
 	}
 	return *(*string)(unsafe.Pointer(&b))
+}
+
+func GetRequestScheme(r *http.Request) string {
+	if r.TLS != nil {
+		return "https"
+	}
+	return "http"
+}
+
+func GetRequestCookieHost(r *http.Request) string {
+	if strings.HasPrefix(r.Host, "localhost:") {
+		return "localhost"
+	}
+	return GetRequestScheme(r) + "://" + r.Host
 }

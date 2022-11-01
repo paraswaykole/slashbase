@@ -6,7 +6,7 @@ services:
     image: postgres
     restart: always
     ports:
-      - '5432:5432'
+      - '6543:5432'
     volumes:
       - slashbasepgdata:/var/lib/postgresql/data
     environment:
@@ -19,33 +19,5 @@ services:
       timeout: 5s
       retries: 3
 
-  slashbase-server:
-    build:
-      context: .
-      target: dev
-    restart: always
-    ports:
-      - '3001:3001'
-      - '2345:2345'
-    volumes:
-      - .:/slashbase
-    depends_on:
-      slashbase-db:
-        condition: service_healthy
-
-  slashbase-web:
-    build:
-      context: ./frontend
-      target: dev
-    restart: always
-    ports:
-      - '3000:3000'
-    volumes:
-      - ./frontend:/app
-      - slashbasenodemodules:/app/node_modules
-      - slashbasenext:/app/.next
-
 volumes:
   slashbasepgdata:
-  slashbasenodemodules:
-  slashbasenext:

@@ -27,7 +27,7 @@ func (d UserDao) GetUserSessionFromAuthToken(tokenString string) (*models.UserSe
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(config.GetAuthTokenSecret()), nil
+		return []byte(config.GetConfig().AuthTokenSecret), nil
 	})
 	if err != nil {
 		return nil, errors.New("invalid token")

@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	environment := flag.String("e", "local", "")
+	environment := flag.String("e", config.ENV_DEVELOPMENT, "")
 	flag.Usage = func() {
 		fmt.Println("Usage: server -e {mode}")
 		os.Exit(1)
@@ -54,8 +54,8 @@ func autoMigrate() {
 }
 
 func configureRootUser() {
-	rootUserConfig := config.GetRootUser()
-	rootUser, err := models.NewUser(rootUserConfig.Email, rootUserConfig.Password)
+	rootUserEmail, rootUserPassword := config.GetRootUser()
+	rootUser, err := models.NewUser(rootUserEmail, rootUserPassword)
 	if err != nil {
 		os.Exit(1)
 	}

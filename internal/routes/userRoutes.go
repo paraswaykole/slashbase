@@ -3,12 +3,12 @@ package routes
 import (
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/controllers"
 	"slashbase.com/backend/internal/middlewares"
+	"slashbase.com/backend/internal/utils"
 	"slashbase.com/backend/internal/views"
 )
 
@@ -31,7 +31,7 @@ func (ur UserRoutes) LoginUser(c *gin.Context) {
 		return
 	}
 	c.SetSameSite(http.SameSiteStrictMode)
-	c.SetCookie(config.SESSION_COOKIE_NAME, userSession.GetAuthToken(), config.SESSION_COOKIE_MAX_AGE, "/", config.GetApiHost(), strings.HasPrefix(config.GetApiHost(), "https://"), true)
+	c.SetCookie(config.SESSION_COOKIE_NAME, userSession.GetAuthToken(), config.SESSION_COOKIE_MAX_AGE, "/", utils.GetRequestCookieHost(c.Request), utils.GetRequestScheme(c.Request) == "https", true)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    views.BuildUserSession(userSession),
@@ -154,7 +154,7 @@ func (ur UserRoutes) Logout(c *gin.Context) {
 	authUserSession := middlewares.GetAuthSession(c)
 	authUserSession.SetInActive()
 	c.SetSameSite(http.SameSiteStrictMode)
-	c.SetCookie(config.SESSION_COOKIE_NAME, "", -1, "/", config.GetApiHost(), strings.HasPrefix(config.GetApiHost(), "https://"), true)
+	c.SetCookie(config.SESSION_COOKIE_NAME, "", -1, "/", utils.GetRequestCookieHost(c.Request), utils.GetRequestScheme(c.Request) == "https", true)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 	})

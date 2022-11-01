@@ -6,28 +6,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-var config *viper.Viper
-
-// Init is an exported method that takes the environment starts the viper
-// (external lib) and returns the configuration struct.
-func Init(env string) {
-	var err error
-	config = viper.New()
-	config.SetConfigType("yaml")
-	config.SetConfigName(env)
-	if env != ENV_PRODUCTION {
-		config.AddConfigPath("../internal/config/")
-		config.AddConfigPath("internal/config/")
-	} else {
-		config.AddConfigPath(".")
-		config.AddConfigPath("./config/")
-	}
-	err = config.ReadInConfig()
-	if err != nil {
-		log.Fatal("error on parsing configuration file", err)
-	}
-}
-
 const (
 	VERSION = "v1.0.0-beta"
 
@@ -38,55 +16,59 @@ const (
 
 	ENV_PRODUCTION  = "production"
 	ENV_DEVELOPMENT = "development"
-	ENV_LOCAL       = "local"
+
+	DEFAULT_SERVER_PORT = ":3001"
 )
 
-func IsLive() bool {
-	return config.GetString("name") == ENV_PRODUCTION
+type Config struct {
+	EnvName    string `mapstructure:"ENV_NAME"`
+	ServerPort string `mapstructure:"SERVER_PORT"`
+
+	DBHost     string `mapstructure:"DB_HOST"`
+	DBPort     string `mapstructure:"DB_PORT"`
+	DBName     string `mapstructure:"DB_NAME"`
+	DBUser     string `mapstructure:"DB_USER"`
+	DBPassword string `mapstructure:"DB_PASSWORD"`
+
+	AuthTokenSecret   string `mapstructure:"AUTH_TOKEN_SECRET"`
+	CryptedDataSecret string `mapstructure:"CRYPTED_DATA_SECRET"`
+
+	RootUserEmail    string `mapstructure:"ROOT_USER_EMAIL"`
+	RootUserPassword string `mapstructure:"ROOT_USER_PASSWORD"`
+
+	TelemetryID string `mapstructure:"TELEMETRY_ID"`
 }
 
-func IsDevelopment() bool {
-	return config.GetString("name") == ENV_DEVELOPMENT
+var config Config
+
+func Init(env string) {
+	var err error
+	viper.SetConfigType("env")
+	viper.SetConfigName(env)
+	viper.AddConfigPath(".")
+	viper.AutomaticEnv()
+	err = viper.ReadInConfig()
+	if err != nil {
+		log.Fatal("error on parsing configuration file", err)
+	}
+	viper.Unmarshal(&config)
+}
+
+func IsLive() bool {
+	return config.EnvName == ENV_PRODUCTION
+}
+
+func GetConfig() *Config {
+	return &config
 }
 
 func GetServerPort() string {
-	return config.GetString("server.port")
-}
-
-func GetDatabaseConfig() *DatabaseConfig {
-	return &DatabaseConfig{
-		Host:     config.GetString("database.host"),
-		User:     config.GetString("database.user"),
-		Port:     config.GetString("database.port"),
-		Password: config.GetString("database.password"),
-		Database: config.GetString("database.database"),
+	if config.ServerPort == "" {
+		return DEFAULT_SERVER_PORT
 	}
+	return config.ServerPort
 }
 
-func GetAuthTokenSecret() []byte {
-	tokensecret := config.GetString("secret.auth_token_secret")
-	return []byte(tokensecret)
-}
-
-func GetCryptedDataSecretKey() string {
-	return config.GetString("secret.crypted_data_secret_key")
-}
-
-func GetApiHost() string {
-	return config.GetString("constants.api_host")
-}
-
-func GetAppHost() string {
-	return config.GetString("constants.app_host")
-}
-
-func GetTelemetryId() string {
-	return config.GetString("telemetry.id")
-}
-
-func GetRootUser() *RootUserConfig {
-	return &RootUserConfig{
-		Email:    config.GetString("root_user.email"),
-		Password: config.GetString("root_user.password"),
-	}
+func GetRootUser() (string, string) {
+	return config.RootUserEmail, config.RootUserPassword
 }

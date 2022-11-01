@@ -18,7 +18,9 @@ func NewRouter() *gin.Engine {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "Authorization")
 	corsConfig.AllowCredentials = true
-	corsConfig.AllowOrigins = []string{config.GetAppHost()}
+	corsConfig.AllowOriginFunc = func(origin string) bool {
+		return true
+	}
 	router.Use(cors.New(corsConfig))
 	api := router.Group("/api/v1")
 	{
