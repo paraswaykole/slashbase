@@ -17,12 +17,12 @@ const (
 	ENV_PRODUCTION  = "production"
 	ENV_DEVELOPMENT = "development"
 
-	DEFAULT_SERVER_PORT = ":3001"
+	DEFAULT_SERVER_PORT = "3001"
 )
 
 type Config struct {
-	EnvName    string `mapstructure:"ENV_NAME"`
-	ServerPort string `mapstructure:"SERVER_PORT"`
+	EnvName string `mapstructure:"ENV_NAME"`
+	Port    string `mapstructure:"PORT"`
 
 	DBHost     string `mapstructure:"DB_HOST"`
 	DBPort     string `mapstructure:"DB_PORT"`
@@ -63,10 +63,10 @@ func GetConfig() *Config {
 }
 
 func GetServerPort() string {
-	if config.ServerPort == "" {
+	if config.Port == "" {
 		return DEFAULT_SERVER_PORT
 	}
-	return config.ServerPort
+	return config.Port
 }
 
 func GetRootUser() (string, string) {

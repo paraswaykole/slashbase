@@ -14,5 +14,5 @@ func Init() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := NewRouter()
-	router.Run(config.GetServerPort())
+	router.Run(":" + config.GetServerPort())
 }
