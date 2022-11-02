@@ -113,6 +113,8 @@ const DBQueryPage: NextPage = () => {
                     updateCellData={() => { }}
                     onDeleteRows={() => { }}
                     onAddData={() => { }}
+                    onFilterChanged={() => { }}
+                    onSortChanged={() => { }}
                     isEditable={false} />
             }
             {queryResult && <span><b>Result of Query: </b>{queryResult.message}</span>}
