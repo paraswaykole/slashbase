@@ -1,5 +1,9 @@
-#!/usr/bin/env sh
+#!/bin/bash
 set -eu
+
+exists() {
+  command -v "$1" 1>/dev/null 2>&1
+}
 
 check_dependencies() {
 	if ! exists curl; then
@@ -23,7 +27,7 @@ download() {
 }
 
 generate_variables() {
-    postgres_host="localhost"
+    postgres_host="slashbase-db"
     postgres_port="5432"
     auth_secret=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64 ; echo '')
     crypted_data_secret=$(openssl rand -hex 32)
