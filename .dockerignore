@@ -25,6 +25,9 @@ development.env
 production.env
 development.env.txt
 
+#deploy
+deploy/
+
 # Build
 backend
 server
