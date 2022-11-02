@@ -14,7 +14,7 @@ declare global {
     }
 }
 
-const LOCAL='local'
+const LOCAL = 'local'
 const PRODUCTION = 'production'
 
 const Constants: ConstantsType = {
@@ -84,9 +84,6 @@ export default Constants
 
 export const GetAPIConfig = function () {
     let API_HOST = String(process.env.NEXT_PUBLIC_API_HOST)
-    if (process.env.NEXT_PUBLIC_ENV_NAME === PRODUCTION && global.CONFIG?.API_HOST !== '#API_HOST#') {
-        API_HOST = global.CONFIG?.API_HOST
-    }
     return {
         API_HOST: API_HOST,
         API_URL: API_HOST + "/api/v1"

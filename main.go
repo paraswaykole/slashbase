@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"os"
 
-	"slashbase.com/backend/src/config"
-	"slashbase.com/backend/src/daos"
-	"slashbase.com/backend/src/db"
-	"slashbase.com/backend/src/models"
-	"slashbase.com/backend/src/queryengines"
-	"slashbase.com/backend/src/server"
-	"slashbase.com/backend/src/sshtunnel"
-	"slashbase.com/backend/src/tasks"
+	"slashbase.com/backend/internal/config"
+	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/db"
+	"slashbase.com/backend/internal/models"
+	"slashbase.com/backend/internal/server"
+	"slashbase.com/backend/internal/tasks"
+	"slashbase.com/backend/pkg/queryengines"
+	"slashbase.com/backend/pkg/sshtunnel"
 )
 
 func main() {
-	environment := flag.String("e", "local", "")
+	environment := flag.String("e", config.ENV_DEVELOPMENT, "")
 	flag.Usage = func() {
 		fmt.Println("Usage: server -e {mode}")
 		os.Exit(1)
@@ -54,8 +54,8 @@ func autoMigrate() {
 }
 
 func configureRootUser() {
-	rootUserConfig := config.GetRootUser()
-	rootUser, err := models.NewUser(rootUserConfig.Email, rootUserConfig.Password)
+	rootUserEmail, rootUserPassword := config.GetRootUser()
+	rootUser, err := models.NewUser(rootUserEmail, rootUserPassword)
 	if err != nil {
 		os.Exit(1)
 	}

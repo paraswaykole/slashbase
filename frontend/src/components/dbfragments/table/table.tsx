@@ -8,7 +8,7 @@ import apiService from '../../../network/apiService'
 import AddModal from './addmodal';
 
 
-type ProjectCardPropType = { 
+type TablePropType = {
     queryData: DBQueryData,
     dbConnection: DBConnection
     mSchema: string,
@@ -16,16 +16,16 @@ type ProjectCardPropType = {
     isEditable: boolean,
     showHeader?: boolean,
     querySort?: string[],
-    updateCellData: (oldCtid: string, newCtid: string, columnName: string, newValue: string|null|boolean)=>void,
+    updateCellData: (oldCtid: string, newCtid: string, columnName: string, newValue: string | null | boolean) => void,
     onDeleteRows: (indexes: number[]) => void,
     onAddData: (newData: any) => void,
-    onFilterChanged: (newFilter: string[]|undefined) => void,
-    onSortChanged: (newSort: string[]|undefined) => void,
+    onFilterChanged: (newFilter: string[] | undefined) => void,
+    onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader, querySort, updateCellData, onDeleteRows, onAddData, onFilterChanged, onSortChanged}: ProjectCardPropType) => {
+const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader, querySort, updateCellData, onDeleteRows, onAddData, onFilterChanged, onSortChanged }: TablePropType) => {
 
-    const [editCell, setEditCell] = useState<(string|number)[]>([])
+    const [editCell, setEditCell] = useState<(string | number)[]>([])
     const [isAdding, setIsAdding] = useState<boolean>(false)
 
     const filter0Ref = useRef<HTMLSelectElement>(null);
@@ -42,22 +42,22 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
 
     const columns = React.useMemo(
         () => displayColumns.map((col, i) => ({
-                Header: <>{col}{querySort && querySort[0] === col ? 
-                    querySort[1] === 'ASC' ? 
-                    <>&nbsp;<i className="fas fa-caret-up"/></>
+            Header: <>{col}{querySort && querySort[0] === col ?
+                querySort[1] === 'ASC' ?
+                    <>&nbsp;<i className="fas fa-caret-up" /></>
                     :
-                    <>&nbsp;<i className="fas fa-caret-down"/></>
-                    : undefined}</>,
-                accessor: (ctidExists ? i+1 : i).toString(), 
+                    <>&nbsp;<i className="fas fa-caret-down" /></>
+                : undefined}</>,
+            accessor: (ctidExists ? i + 1 : i).toString(),
         })),
         [queryData, querySort]
     )
 
     const defaultColumn = {
         Cell: EditableCell,
-    }      
+    }
 
-    const resetEditCell = ()=> {
+    const resetEditCell = () => {
         setEditCell([])
     }
 
@@ -80,16 +80,16 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
         rows,
         prepareRow,
         state,
-    } = useTable<any>({ 
-            columns, 
-            data, 
-            defaultColumn, 
-            ...{ editCell, resetEditCell, onSaveCell }
-        }, 
+    } = useTable<any>({
+        columns,
+        data,
+        defaultColumn,
+        ...{ editCell, resetEditCell, onSaveCell }
+    },
         useRowSelect,
         hooks => {
             if (isEditable)
-            hooks.visibleColumns.push(columns => [
+                hooks.visibleColumns.push(columns => [
                     {
                         id: 'selection',
                         Header: HeaderSelectionComponent,
@@ -97,17 +97,17 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
                     },
                     ...columns,
                 ]
-            )
+                )
         }
     )
 
     const newState: any = state // temporary typescript hack
     const selectedRowIds: any = newState.selectedRowIds
-    const selectedRows: number[] = Object.keys(selectedRowIds).map(x=>parseInt(x))
-    const selectedCTIDs = rows.filter((_,i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
+    const selectedRows: number[] = Object.keys(selectedRowIds).map(x => parseInt(x))
+    const selectedCTIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
 
     const onDeleteBtnPressed = async () => {
-        if (selectedCTIDs.length > 0){
+        if (selectedCTIDs.length > 0) {
             const result = await apiService.deleteDBData(dbConnection.id, mSchema, mName, selectedCTIDs)
             if (result.success) {
                 toast.success('rows deleted');
@@ -118,16 +118,16 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
         }
     }
 
-    const startEditing = (cell: Cell<any, any>)=>{
-    if (isEditable)
-        setEditCell([cell.row.index, cell.column.id])
+    const startEditing = (cell: Cell<any, any>) => {
+        if (isEditable)
+            setEditCell([cell.row.index, cell.column.id])
     }
 
     const changeFilter = () => {
         let filter: string[] | undefined = undefined
-        if (filter0Ref.current!.value !== 'default' && filter1Ref.current!.value !== 'default'){
+        if (filter0Ref.current!.value !== 'default' && filter1Ref.current!.value !== 'default') {
             let operator = filter1Ref.current!.value
-            if (operator === 'IS NULL' || operator === 'IS NOT NULL' ){
+            if (operator === 'IS NULL' || operator === 'IS NOT NULL') {
                 filter = [filter0Ref.current!.value, operator]
             } else {
                 filter = [filter0Ref.current!.value, operator, filter2Ref.current!.value]
@@ -137,11 +137,11 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
     }
 
     const changeSort = (newSortIdx: string) => {
-        if (!isEditable){
+        if (!isEditable) {
             return
         }
         const newSortName: string = displayColumns.find((_, i) => {
-            const colIdx = ctidExists ? i+1 : i
+            const colIdx = ctidExists ? i + 1 : i
             return colIdx.toString() === newSortIdx
         })!
         if (querySort && newSortName === querySort[0]) {
@@ -154,10 +154,10 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
             onSortChanged([newSortName, 'ASC'])
         }
     }
-   
+
     return (
         <React.Fragment>
-            { (showHeader || isEditable) && <div className={styles.tableHeader}>
+            {(showHeader || isEditable) && <div className={styles.tableHeader}>
                 <div className="columns">
                     <div className="column is-9">
                         <div className="field has-addons">
@@ -165,7 +165,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
                                 <span className="select">
                                     <select ref={filter0Ref}>
                                         <option value="default">Select column</option>
-                                        {displayColumns.map(x => 
+                                        {displayColumns.map(x =>
                                             (<option key={x}>{x}</option>)
                                         )}
                                     </select>
@@ -189,7 +189,7 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
                                 </span>
                             </p>
                             <p className="control">
-                                <input ref={filter2Ref} className="input" type="text" placeholder="Value"/>
+                                <input ref={filter2Ref} className="input" type="text" placeholder="Value" />
                             </p>
                             <p className="control">
                                 <button className="button" onClick={changeFilter}>Filter</button>
@@ -198,29 +198,29 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button" disabled={selectedCTIDs.length===0} onClick={onDeleteBtnPressed}>
+                            <button className="button" disabled={selectedCTIDs.length === 0} onClick={onDeleteBtnPressed}>
                                 <span className="icon is-small">
-                                    <i className="fas fa-trash"/>
+                                    <i className="fas fa-trash" />
                                 </span>
                             </button>
                             &nbsp;&nbsp;
-                            <button className="button is-primary" onClick={()=>{setIsAdding(true)}}>
+                            <button className="button is-primary" onClick={() => { setIsAdding(true) }}>
                                 <span className="icon is-small">
-                                    <i className="fas fa-plus"/>
+                                    <i className="fas fa-plus" />
                                 </span>
                             </button>
                         </div>
                     </React.Fragment>}
                 </div>
             </div>}
-            {isAdding && 
-                <AddModal 
+            {isAdding &&
+                <AddModal
                     queryData={queryData}
                     dbConnection={dbConnection}
                     mSchema={mSchema}
                     mName={mName}
-                    onClose={()=>{setIsAdding(false)}}
-                    onAddData={onAddData}/>
+                    onClose={() => { setIsAdding(false) }}
+                    onAddData={onAddData} />
             }
             <div className="table-container">
                 <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
@@ -228,21 +228,21 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
                         {headerGroups.map(headerGroup => (
                             <tr {...headerGroup.getHeaderGroupProps()} key={"header"}>
                                 {headerGroup.headers.map(column => (
-                                    <th {...column.getHeaderProps()} key={column.id} onClick={()=>{changeSort(column.id)}}>
+                                    <th {...column.getHeaderProps()} key={column.id} onClick={() => { changeSort(column.id) }}>
                                         {column.render('Header')}
                                     </th>
-                                ))}    
+                                ))}
                             </tr>
                         ))}
                     </thead>
-                    <tbody {...getTableBodyProps()}> 
+                    <tbody {...getTableBodyProps()}>
                         {rows.map(row => {
                             prepareRow(row)
                             const selectedRow: any = row // temp type hack 
                             return (
-                                <tr {...row.getRowProps()} key={row.id} className={selectedRow.isSelected?'is-selected':''}>
+                                <tr {...row.getRowProps()} key={row.id} className={selectedRow.isSelected ? 'is-selected' : ''}>
                                     {row.cells.map(cell => {
-                                        return (<td {...cell.getCellProps()} onDoubleClick={()=>startEditing(cell)} key={row.id+""+cell.column.id}>
+                                        return (<td {...cell.getCellProps()} onDoubleClick={() => startEditing(cell)} key={row.id + "" + cell.column.id}>
                                             {cell.render('Cell')}
                                         </td>
                                         )
@@ -259,18 +259,18 @@ const Table = ({queryData, dbConnection, mSchema, mName, isEditable, showHeader,
 
 const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, { indeterminate: boolean }>(
     ({ indeterminate, ...rest }, ref) => {
-      const defaultRef = React.useRef()
-      const resolvedRef: any = ref || defaultRef
-  
-      React.useEffect(() => {
-        resolvedRef.current.indeterminate = indeterminate
-      }, [resolvedRef, indeterminate])
-  
-      return (
-        <>
-          <input type="checkbox" ref={resolvedRef} {...rest} />
-        </>
-      )
+        const defaultRef = React.useRef()
+        const resolvedRef: any = ref || defaultRef
+
+        React.useEffect(() => {
+            resolvedRef.current.indeterminate = indeterminate
+        }, [resolvedRef, indeterminate])
+
+        return (
+            <>
+                <input type="checkbox" ref={resolvedRef} {...rest} />
+            </>
+        )
     }
 )
 IndeterminateCheckbox.displayName = 'IndeterminateCheckbox';

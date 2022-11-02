@@ -7,7 +7,7 @@ import { useAppSelector } from '../../redux/hooks'
 import { selectProjects } from '../../redux/projectsSlice'
 import DataModel from './datamodel/datamodel'
 
-type DBShowModelPropType = { 
+type DBShowModelPropType = {
 
 }
 
@@ -18,11 +18,11 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const projects: Project[] = useAppSelector(selectProjects)
-    const project: Project|undefined = projects.find(x=> x.id === dbConnection?.projectId)
-    
+    const project: Project | undefined = projects.find(x => x.id === dbConnection?.projectId)
+
     const [dataModel, setDataModel] = useState<DBDataModel>()
-   
-    useEffect(()=>{
+
+    useEffect(() => {
         if (!dbConnection) return
         const fetchDataModel = async () => {
             const result = await apiService.getDBSingleDataModelByConnectionId(dbConnection!.id, String(mschema), String(mname))
@@ -31,11 +31,11 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
             }
         }
         fetchDataModel()
-    }, [dbConnection, mschema, mname])    
+    }, [dbConnection, mschema, mname])
 
     return (
         <React.Fragment>
-            { dataModel && <DataModel dataModel={dataModel} /> }
+            {dataModel && <DataModel dbType={dbConnection!.type} dataModel={dataModel} />}
         </React.Fragment>
     )
 }

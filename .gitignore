@@ -20,9 +20,10 @@ __debug_bin
 *.out
 
 # Src
-src/config/*.yaml
+local.env
+development.env
+production.env
 
 # Build
 backend
-server
 build/

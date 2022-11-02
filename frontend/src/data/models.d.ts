@@ -1,6 +1,6 @@
 import { DBConnType, ProjectMemberRole } from "./defaults"
 
-export interface User{
+export interface User {
     id: string
     name: string | null
     email: string
@@ -43,20 +43,30 @@ export interface DBConnection {
 
 export interface DBDataModel {
     name: string
-    schemaName: string|null
+    schemaName: string | null
     fields?: Array<{
         name: string
         type: string
         isPrimary: boolean
         isNullable: boolean
-        charMaxLength: number|null
-        default: string|null
+        charMaxLength: number | null
+        default: string | null
+    }>
+    constraints?: Array<{
+        name: string
+        constraintDef: string
+    }>
+    indexes?: Array<{
+        name: string
+        indexDef: string
     }>
 }
 
 export interface DBQueryData {
     columns: string[]
     rows: any[]
+    keys: string[]
+    data: any[]
     count?: number
 }
 
@@ -81,7 +91,7 @@ export interface DBQueryLog {
 
 // Result Models
 
-export interface ApiResult<T> { 
+export interface ApiResult<T> {
     data: T
     success: boolean
     error?: string
@@ -96,6 +106,10 @@ export interface PaginatedApiResult<T, N> {
     error?: string
 }
 
-export interface CTIDResponse { 
+export interface CTIDResponse {
     ctid: string
+}
+
+export interface AddDataResponse {
+    newId: string
 }
