@@ -2,10 +2,12 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type DBQuery struct {
-	ID             string    `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID             string    `gorm:"type:uuid;primaryKey"`
 	Name           string    `gorm:"not null"`
 	Query          string    `gorm:"not null"`
 	CreatedBy      string    `gorm:"not null"`
@@ -19,6 +21,7 @@ type DBQuery struct {
 
 func NewQuery(createdBy *User, name string, query string, dbConnectionID string) *DBQuery {
 	return &DBQuery{
+		ID:             uuid.NewString(),
 		Name:           name,
 		Query:          query,
 		DBConnectionID: dbConnectionID,

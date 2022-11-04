@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/db"
 )
 
 type UserSession struct {
-	ID        string `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID        string `gorm:"type:uuid;primaryKey"`
 	UserID    string `gorm:"not null"`
 	IsActive  bool
 	CreatedAt time.Time `gorm:"autoCreateTime"`
@@ -25,6 +26,7 @@ func NewUserSession(userID string) (*UserSession, error) {
 		return nil, errors.New("user id cannot be empty")
 	}
 	return &UserSession{
+		ID:       uuid.NewString(),
 		UserID:   userID,
 		IsActive: true,
 	}, err

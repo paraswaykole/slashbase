@@ -19,16 +19,52 @@ __debug_bin
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Src
+# Environment
 local.env
 development.env
 production.env
 development.env.txt
 
-#deploy
+# Database
+data/app.db
+
+# Deploy folder
 deploy/
 
 # Build
 backend
 server
 build/
+
+# FRONTEND FOLDER
+# frontend/
+
+# dependencies
+frontend/node_modules
+frontend/.pnp
+frontend.pnp.js
+
+# testing
+frontend/coverage
+
+# next.js
+frontend/.next/
+frontend/out/
+
+# production
+frontend/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local

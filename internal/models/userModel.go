@@ -6,11 +6,12 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID              string `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID              string `gorm:"type:uuid;primaryKey"`
 	Email           string `gorm:"unique;not null"`
 	Password        string `gorm:"not null"`
 	IsRoot          bool   `gorm:"not null;default:false"`
@@ -32,6 +33,7 @@ func NewUser(email, textPassword string) (*User, error) {
 		return nil, errors.New("email id is not valid")
 	}
 	user := User{
+		ID:       uuid.NewString(),
 		Email:    email,
 		Password: textPassword,
 	}

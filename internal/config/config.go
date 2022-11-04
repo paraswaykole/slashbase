@@ -2,11 +2,12 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
 
-var config Config
+var config AppConfig
 
 func Init(env string) {
 	if env == ENV_DEVELOPMENT {
@@ -22,7 +23,7 @@ func IsLive() bool {
 	return config.EnvName == ENV_PRODUCTION
 }
 
-func GetConfig() *Config {
+func GetConfig() *AppConfig {
 	return &config
 }
 
@@ -34,5 +35,9 @@ func GetServerPort() string {
 }
 
 func GetRootUser() (string, string) {
-	return config.RootUserEmail, config.RootUserPassword
+	return os.Getenv("ROOT_USER_EMAIL"), os.Getenv("ROOT_USER_PASSWORD")
+}
+
+func GetTelemetryID() string {
+	return os.Getenv("TELEMETRY_ID")
 }

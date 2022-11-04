@@ -5,14 +5,15 @@ import (
 	"errors"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/models/sbsql"
+	"slashbase.com/backend/internal/db/sbsql"
 	"slashbase.com/backend/internal/utils"
 )
 
 type DBConnection struct {
-	ID          string            `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID          string            `gorm:"type:uuid;primaryKey"`
 	Name        string            `gorm:"not null"`
 	CreatedBy   string            `gorm:"not null"`
 	ProjectID   string            `gorm:"not null"`
@@ -37,7 +38,7 @@ type DBConnection struct {
 }
 
 type DBConnectionUser struct {
-	ID             string            `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID             string            `gorm:"type:uuid;primaryKey"`
 	DBUser         sbsql.CryptedData `gorm:"type:text"`
 	DBPassword     sbsql.CryptedData `gorm:"type:text"`
 	UserIDs        pq.StringArray    `gorm:"type:text[]"`
@@ -86,6 +87,7 @@ func NewDBConnection(userID string, projectID string, name string, dbtype string
 	}
 
 	return &DBConnection{
+		ID:                uuid.NewString(),
 		Name:              name,
 		CreatedBy:         userID,
 		ProjectID:         projectID,

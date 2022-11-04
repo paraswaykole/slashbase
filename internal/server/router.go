@@ -24,6 +24,7 @@ func NewRouter() *gin.Engine {
 	router.Use(cors.New(corsConfig))
 	api := router.Group("/api/v1")
 	{
+		api.GET("health", healthCheck)
 		userGroup := api.Group("user")
 		{
 			userRoutes := new(routes.UserRoutes)
@@ -107,4 +108,11 @@ func NewRouter() *gin.Engine {
 	}
 	return router
 
+}
+
+func healthCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"success": true,
+		"version": config.VERSION,
+	})
 }

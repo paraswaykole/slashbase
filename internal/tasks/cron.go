@@ -30,7 +30,7 @@ func telemetryPings(s *gocron.Scheduler) {
 			"api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
 			"event":   "Telemetry Ping",
 			"properties": map[string]string{
-				"distinct_id": config.GetConfig().TelemetryID,
+				"distinct_id": config.GetTelemetryID(),
 				"version":     config.VERSION,
 			},
 		}
