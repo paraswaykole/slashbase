@@ -7,14 +7,10 @@ WORKDIR /app
 
 ENV GO111MODULE="on"
 ENV GOOS="linux"
-ENV CGO_ENABLED=0
+ENV CGO_ENABLED=1
 
 # System dependencies
-RUN apk update \
-    && apk add --no-cache \
-    ca-certificates \
-    git \
-    && update-ca-certificates
+RUN apk update && apk add --no-cache ca-certificates git build-base && update-ca-certificates
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -24,7 +20,7 @@ FROM base as backendbuilder
 
 WORKDIR /slashbase
 COPY . .
-RUN env GOOS=linux GOARCH=amd64 go build --o backend -trimpath
+RUN go build --o backend -trimpath
 
 # Install dependencies only when needed
 FROM node:alpine AS deps

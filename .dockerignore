@@ -19,13 +19,16 @@ __debug_bin
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Src
+# Environment
 local.env
 development.env
 production.env
 development.env.txt
 
-#deploy
+# Database
+data/app.db
+
+# Deploy folder
 deploy/
 
 # Build

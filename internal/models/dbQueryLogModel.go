@@ -2,10 +2,12 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type DBQueryLog struct {
-	ID             string    `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	ID             string    `gorm:"type:uuid;primaryKey"`
 	Query          string    `gorm:"not null"`
 	UserID         string    `gorm:"type:uuid;not null"`
 	DBConnectionID string    `gorm:"type:uuid;not null"`
@@ -17,6 +19,7 @@ type DBQueryLog struct {
 
 func NewQueryLog(userID string, dbConnectionID string, query string) *DBQueryLog {
 	return &DBQueryLog{
+		ID:             uuid.NewString(),
 		Query:          query,
 		UserID:         userID,
 		DBConnectionID: dbConnectionID,
