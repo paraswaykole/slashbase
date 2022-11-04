@@ -13,5 +13,5 @@ const (
 	ENV_PRODUCTION  = "production"
 	ENV_DEVELOPMENT = "development"
 
-	DEFAULT_SERVER_PORT = "3001"
+	DEFAULT_SERVER_PORT = "3000"
 )

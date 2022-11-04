@@ -47,4 +47,4 @@ COPY --from=frontendbuilder /app/out /slashbase/html
 
 ENTRYPOINT ["/slashbase/backend"]
 CMD ["-e", "production"]
-EXPOSE 3001
+EXPOSE 3000
