@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/models/sbsql"
+	"slashbase.com/backend/internal/db/sbsql"
 	"slashbase.com/backend/internal/utils"
 )
 
