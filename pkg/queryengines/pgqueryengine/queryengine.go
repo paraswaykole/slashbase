@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"slashbase.com/backend/internal/daos"
-	"slashbase.com/backend/internal/db/sbsql"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines/pgqueryengine/pgxutils"
+	"slashbase.com/backend/pkg/sbsql"
 	"slashbase.com/backend/pkg/sshtunnel"
 )
 

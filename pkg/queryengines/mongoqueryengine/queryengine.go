@@ -11,9 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"slashbase.com/backend/internal/daos"
-	"slashbase.com/backend/internal/db/sbsql"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines/mongoqueryengine/mongoutils"
+	"slashbase.com/backend/pkg/sbsql"
 	"slashbase.com/backend/pkg/sshtunnel"
 )
 
