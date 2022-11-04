@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"slashbase.com/backend/internal/config"
 )
@@ -17,9 +17,7 @@ func GetDB() *gorm.DB {
 }
 
 func InitGormDB() {
-	configData := config.GetConfig()
-	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=Asia/Kolkata", configData.DBHost, configData.DBUser, configData.DBPassword, configData.DBName, configData.DBPort)
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(config.APP_DATABASE_FILE), &gorm.Config{})
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
