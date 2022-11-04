@@ -20,7 +20,7 @@ FROM base as backendbuilder
 
 WORKDIR /slashbase
 COPY . .
-RUN go build --o backend -trimpath
+RUN env GOOS=linux GOARCH=amd64 go build --o backend -trimpath
 
 # Install dependencies only when needed
 FROM node:alpine AS deps
