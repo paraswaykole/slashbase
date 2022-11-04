@@ -30,8 +30,6 @@ download() {
 
 generate_variables() {
     telemetry_id=$SLASHBASE_INSTALLATION_ID
-    postgres_host="slashbase-db"
-    postgres_port="5432"
     auth_secret=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64 ; echo '')
     crypted_data_secret=$(openssl rand -hex 32)
 }
@@ -80,7 +78,7 @@ wait_for_containers_start() {
 
     # The while loop is important because for-loops don't work for dynamic values
     while [[ $timeout -gt 0 ]]; do
-        status_code="$(curl -s -o /dev/null -w "%{http_code}" http://localhost/api/v1/health || true)"
+        status_code="$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/v1/health || true)"
         if [[ status_code -eq 401 ]]; then
             break
         else
