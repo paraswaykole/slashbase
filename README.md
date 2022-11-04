@@ -18,7 +18,7 @@ ___
 
 Slashbase is an open-source collaborative IDE for your databases in your browser. Connect to your database, browse data, run a bunch of queries or share queries within your team, right from your browser. Works with two types of databases: PostgreSQL and MongoDB.
 
-It's written in Golang and Nextjs React Framework (SPA) and runs as a single binary and needs PostgreSQL database.
+It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 ## Features
 
