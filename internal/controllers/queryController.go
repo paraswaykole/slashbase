@@ -18,7 +18,7 @@ var dbQueryLogDao daos.DBQueryLogDao
 
 func (qc QueryController) RunQuery(authUser *models.User, dbConnectionId, query string) (map[string]interface{}, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnectionId, authUser.ID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnectionId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -39,7 +39,7 @@ func (qc QueryController) GetData(authUser *models.User, authUserProjectIds *[]s
 	dbConnId, schema, name string, fetchCount bool, limit int, offset int64,
 	filter, sort []string) (map[string]interface{}, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -56,7 +56,7 @@ func (qc QueryController) GetData(authUser *models.User, authUserProjectIds *[]s
 
 func (qc QueryController) GetDataModels(authUser *models.User, authUserProjectIds *[]string, dbConnId string) ([]*queryengines.DBDataModel, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -74,7 +74,7 @@ func (qc QueryController) GetDataModels(authUser *models.User, authUserProjectId
 func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
 	schema, name string) (*queryengines.DBDataModel, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -92,7 +92,7 @@ func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProj
 func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -111,7 +111,7 @@ func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 	schema, name string, ids []string) (map[string]interface{}, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -130,7 +130,7 @@ func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
 	schema, name, id, columnName, columnValue string) (map[string]interface{}, error) {
 
-	dbConn, err := dbConnDao.GetConnectableDBConnection(dbConnId, authUser.ID)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}

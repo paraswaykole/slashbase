@@ -36,8 +36,6 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	}
 
 	dbConnCopy := *dbConn
-	dbConnectionUser := *dbConn.ConnectionUser
-	dbConnCopy.ConnectionUser = &dbConnectionUser
 	success := queryengines.TestConnection(authUser, &dbConnCopy)
 	if !success {
 		return nil, errors.New("failed to connect to database")
@@ -78,7 +76,7 @@ func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) (
 }
 
 func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnId string) error {
-	dbConn, err := dbConnDao.GetConnectableRootDBConnection(dbConnId)
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return errors.New("db connection not found")
 	}

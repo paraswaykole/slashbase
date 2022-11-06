@@ -40,7 +40,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 		dbConn.DBPort = sbsql.CryptedData(fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port))
 	}
 	port, _ = strconv.Atoi(string(dbConn.DBPort))
-	conn, err := pgqe.getConnection(dbConn.ConnectionUser.ID, string(dbConn.DBHost), uint16(port), string(dbConn.DBName), string(dbConn.ConnectionUser.DBUser), string(dbConn.ConnectionUser.DBPassword))
+	conn, err := pgqe.getConnection(dbConn.ID, string(dbConn.DBHost), uint16(port), string(dbConn.DBName), string(dbConn.DBUser), string(dbConn.DBPassword))
 	if err != nil {
 		return nil, err
 	}
@@ -217,80 +217,4 @@ func (pgqe *PostgresQueryEngine) DeleteData(user *models.User, dbConn *models.DB
 	ctidsStr := strings.Join(ctids, "', '")
 	query := fmt.Sprintf(`DELETE FROM "%s"."%s" WHERE ctid IN ('%s');`, schema, name, ctidsStr)
 	return pgqe.RunQuery(user, dbConn, query, true)
-}
-
-func (pgqe *PostgresQueryEngine) CheckCreateRolePermissions(user *models.User, dbConn *models.DBConnection) bool {
-	query := fmt.Sprintf(`SELECT rolcreatedb FROM "pg_roles" WHERE rolname = '%s'`, dbConn.ConnectionUser.DBUser)
-	data, err := pgqe.RunQuery(user, dbConn, query, false)
-	if err != nil {
-		return false
-	}
-	hasRolePermissions := false
-	if len(data["rows"].([]map[string]interface{})) == 1 {
-		hasRolePermissions = data["rows"].([]map[string]interface{})[0]["0"].(bool)
-	}
-	return hasRolePermissions
-}
-
-func (pgqe *PostgresQueryEngine) CreateRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *models.DBConnectionUser) error {
-
-	query := fmt.Sprintf(`CREATE ROLE %s LOGIN PASSWORD '%s'`, dbUser.DBUser, dbUser.DBPassword)
-	_, err := pgqe.RunQuery(user, dbConn, query, false)
-	if err != nil {
-		return err
-	}
-
-	query = "SELECT nspname FROM pg_namespace WHERE nspname <> 'information_schema' AND nspname NOT LIKE 'pg\\_%';"
-	data, err := pgqe.RunQuery(user, dbConn, query, false)
-	if err != nil {
-		return err
-	}
-	if len(data["rows"].([]map[string]interface{})) == 0 {
-		return nil
-	}
-
-	permissions := "SELECT"
-	if dbUser.ForRole.String == models.ROLE_ADMIN {
-		permissions = "SELECT, INSERT, UPDATE, DELETE, REFERENCES, TRUNCATE"
-	} else if dbUser.ForRole.String == models.ROLE_DEVELOPER {
-		permissions = "SELECT, INSERT, UPDATE, DELETE, REFERENCES"
-	}
-	for _, nspname := range data["rows"].([]map[string]interface{}) {
-		namespace := nspname["0"].(string)
-		query = fmt.Sprintf(`GRANT %s ON ALL TABLES IN SCHEMA %s TO %s;`, permissions, namespace, dbUser.DBUser)
-		_, err = pgqe.RunQuery(user, dbConn, query, false)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (pgqe *PostgresQueryEngine) DeleteRoleLogin(user *models.User, dbConn *models.DBConnection, dbUser *models.DBConnectionUser) error {
-
-	query := "SELECT nspname FROM pg_namespace WHERE nspname <> 'information_schema' AND nspname NOT LIKE 'pg\\_%';"
-	data, err := pgqe.RunQuery(user, dbConn, query, false)
-	if err != nil {
-		return err
-	}
-	if len(data["rows"].([]map[string]interface{})) == 0 {
-		return nil
-	}
-	for _, nspname := range data["rows"].([]map[string]interface{}) {
-		namespace := nspname["0"].(string)
-		query = fmt.Sprintf(`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA %s FROM %s;`, namespace, dbUser.DBUser)
-		_, err = pgqe.RunQuery(user, dbConn, query, false)
-		if err != nil {
-			return err
-		}
-	}
-
-	query = fmt.Sprintf(`DROP ROLE %s;`, dbUser.DBUser)
-	_, err = pgqe.RunQuery(user, dbConn, query, false)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
