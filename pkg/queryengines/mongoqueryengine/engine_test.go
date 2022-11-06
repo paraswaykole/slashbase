@@ -14,12 +14,11 @@ import (
 func TestMongoEngineConnection(t *testing.T) {
 	mqueryengine := InitMongoQueryEngine()
 	ping := mqueryengine.TestConnection(nil, &models.DBConnection{
-		Type:           models.DBTYPE_MONGO,
-		UseSSH:         models.DBUSESSH_NONE,
-		DBName:         "testdb",
-		DBHost:         "localhost",
-		DBPort:         "27888",
-		ConnectionUser: &models.DBConnectionUser{},
+		Type:   models.DBTYPE_MONGO,
+		UseSSH: models.DBUSESSH_NONE,
+		DBName: "testdb",
+		DBHost: "localhost",
+		DBPort: "27888",
 	})
 	if !ping {
 		t.Errorf("ping failed")
@@ -31,12 +30,11 @@ func TestMongoEngineConnection(t *testing.T) {
 func TestGetMongoDataModels(t *testing.T) {
 	mqueryengine := InitMongoQueryEngine()
 	data, err := mqueryengine.GetDataModels(nil, &models.DBConnection{
-		Type:           models.DBTYPE_MONGO,
-		UseSSH:         models.DBUSESSH_NONE,
-		DBName:         "testdb",
-		DBHost:         "localhost",
-		DBPort:         "27888",
-		ConnectionUser: &models.DBConnectionUser{},
+		Type:   models.DBTYPE_MONGO,
+		UseSSH: models.DBUSESSH_NONE,
+		DBName: "testdb",
+		DBHost: "localhost",
+		DBPort: "27888",
 	})
 	if err != nil {
 		t.Errorf("error: " + err.Error())
@@ -48,12 +46,11 @@ func TestGetMongoDataModels(t *testing.T) {
 func TestGetMongoData(t *testing.T) {
 	mqueryengine := InitMongoQueryEngine()
 	data, err := mqueryengine.GetData(nil, &models.DBConnection{
-		Type:           models.DBTYPE_MONGO,
-		UseSSH:         models.DBUSESSH_NONE,
-		DBName:         "testdb",
-		DBHost:         "localhost",
-		DBPort:         "27888",
-		ConnectionUser: &models.DBConnectionUser{},
+		Type:   models.DBTYPE_MONGO,
+		UseSSH: models.DBUSESSH_NONE,
+		DBName: "testdb",
+		DBHost: "localhost",
+		DBPort: "27888",
 	}, "user", 5, 0, true, []string{}, []string{})
 	if err != nil {
 		t.Errorf("error: " + err.Error())
@@ -65,12 +62,11 @@ func TestGetMongoData(t *testing.T) {
 func TestDeleteMongoData(t *testing.T) {
 	mqueryengine := InitMongoQueryEngine()
 	data, err := mqueryengine.DeleteData(nil, &models.DBConnection{
-		Type:           models.DBTYPE_MONGO,
-		UseSSH:         models.DBUSESSH_NONE,
-		DBName:         "testdb",
-		DBHost:         "localhost",
-		DBPort:         "27888",
-		ConnectionUser: &models.DBConnectionUser{},
+		Type:   models.DBTYPE_MONGO,
+		UseSSH: models.DBUSESSH_NONE,
+		DBName: "testdb",
+		DBHost: "localhost",
+		DBPort: "27888",
 	}, "test", []string{"63568dad66cd0cec1229bfd0"})
 	if err != nil {
 		t.Errorf("error: " + err.Error())

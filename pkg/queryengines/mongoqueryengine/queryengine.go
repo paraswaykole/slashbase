@@ -11,9 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"slashbase.com/backend/internal/daos"
-	"slashbase.com/backend/internal/db/sbsql"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines/mongoqueryengine/mongoutils"
+	"slashbase.com/backend/pkg/sbsql"
 	"slashbase.com/backend/pkg/sshtunnel"
 )
 
@@ -44,7 +44,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		dbConn.DBPort = sbsql.CryptedData(fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port))
 	}
 	port, _ = strconv.Atoi(string(dbConn.DBPort))
-	conn, err := mqe.getConnection(dbConn.ConnectionUser.ID, string(dbConn.DBScheme), string(dbConn.DBHost), uint16(port), string(dbConn.ConnectionUser.DBUser), string(dbConn.ConnectionUser.DBPassword))
+	conn, err := mqe.getConnection(dbConn.ID, string(dbConn.DBScheme), string(dbConn.DBHost), uint16(port), string(dbConn.DBUser), string(dbConn.DBPassword))
 	if err != nil {
 		return nil, err
 	}
