@@ -48,6 +48,9 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
     }
 
     const startEditing = (index: number | null) => {
+        if (!isEditable) {
+            return
+        }
         setEditingCellIndex(index)
     }
 
