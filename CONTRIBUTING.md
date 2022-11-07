@@ -23,7 +23,7 @@ To contribute code to the repository, you need to setup the development environm
     - Copy the file at `frontend/.env.local.txt` and paste as `frontend/.env.local`.
     - Copy the file at `development.env.sample` and paste as `development.env` in the root directory of the project.
     - Edit `development.env` file and update the root user email and password.
-3. (Optional if you have postgresdb already running. If yes, just update the enviroment variables and skip this step) You need docker installed on your desktop, follow [this link](https://docs.docker.com/desktop/) to install. Open terminal at the project root directory and run `docker-compose up`. It starts postgresdb at port 6543.
+3. Open terminal at the project root directory & run `mkdir data` for local sqlite database.
 4. Open terminal at the project root directory & run `go run main.go` to run go backend server & `cd frontend & yarn dev` to run frontend nextjs server. Go server is running at `http://localhost:3001` & Frontend client at `http://localhost:3000`
 5. Create a new branch and make changes to the code.
 6. Test and make sure the code runs
