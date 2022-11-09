@@ -29,11 +29,11 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 ## Installation
 
-Please follow the [installation guide](https://docs.slashbase.com/get-started/install-slashbase) to install Slashbase on your own cloud (in your own VPC)
+Please follow the [installation guide](https://bip.so/slashbase/c/42nyIZ7sh_nt/34260/install-slashbase/public) to install Slashbase on your own cloud (in your own VPC)
 
 ## Documentation
 
-Detailed documentation is available at [docs.slashbase.com](https://docs.slashbase.com).
+Detailed documentation is available on [slashbase guide](https://bip.so/slashbase/c/MsNHox55oQdo/34259/introduction/public).
 
 
 ## Contributing
