@@ -26,11 +26,15 @@ func InitCron() {
 
 func telemetryPings(s *gocron.Scheduler) {
 	s.Every(1).Day().Do(func() {
+		telemetryID := config.GetTelemetryID()
+		if telemetryID == "TEST" {
+			return
+		}
 		values := map[string]interface{}{
 			"api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
 			"event":   "Telemetry Ping",
 			"properties": map[string]string{
-				"distinct_id": config.GetTelemetryID(),
+				"distinct_id": telemetryID,
 				"version":     config.VERSION,
 			},
 		}
@@ -39,11 +43,7 @@ func telemetryPings(s *gocron.Scheduler) {
 			log.Fatal(err)
 		}
 
-		_, err = http.Post("https://app.posthog.com/capture/", "application/json",
+		http.Post("https://app.posthog.com/capture/", "application/json",
 			bytes.NewBuffer(json_data))
-
-		if err != nil {
-			log.Fatal(err)
-		}
 	})
 }
