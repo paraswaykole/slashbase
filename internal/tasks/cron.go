@@ -25,16 +25,16 @@ func InitCron() {
 }
 
 func telemetryPings(s *gocron.Scheduler) {
+	telemetryID := config.GetTelemetryID()
+	if telemetryID == "TEST" || telemetryID == "" || telemetryID == "disabled" {
+		return
+	}
 	s.Every(1).Day().Do(func() {
-		telemetryID := config.GetTelemetryID()
-		if telemetryID == "TEST" {
-			return
-		}
 		values := map[string]interface{}{
 			"api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
 			"event":   "Telemetry Ping",
 			"properties": map[string]string{
-				"distinct_id": telemetryID,
+				"distinct_id": config.GetTelemetryID(),
 				"version":     config.VERSION,
 			},
 		}
