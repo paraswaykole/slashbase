@@ -1,8 +1,6 @@
 #!/bin/bash
 set -eu
 
-SLASHBASE_INSTALLATION_ID=$(curl -s 'https://api64.ipify.org')
-
 exists() {
   command -v "$1" 1>/dev/null 2>&1
 }
@@ -24,12 +22,36 @@ check_dependencies() {
 	fi
 }
 
+confirm() {
+    local default="$1"  # Should be `y` or `n`.
+    local prompt="$2"
+
+    local options="y/N"
+    if [[ $default == y || $default == Y ]]; then
+        options="Y/n"
+    fi
+
+    local answer
+    read -rp "$prompt [$options] " answer
+    if [[ -z $answer ]]; then
+        answer="$default"
+    else
+        echo
+    fi
+
+    [[ yY =~ $answer ]]
+}
+
 download() {
 	curl --fail --silent --location --output "$2" "$1"
 }
 
 generate_variables() {
-    telemetry_id=$SLASHBASE_INSTALLATION_ID
+    if confirm y "Would you like to share anonymous usage data and receive better support?"; then
+        telemetry_id=$(curl -s 'https://api64.ipify.org')
+    else
+        telemetry_id="disabled"
+    fi
     auth_secret=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64 ; echo '')
     crypted_data_secret=$(openssl rand -hex 32)
 }
@@ -151,14 +173,15 @@ if [[ $status_code -eq 200 ]]; then
 fi
 
 echo ""
-echo "Please share your email to receive updates from Slashbase!"
-read -rp 'Email: ' email
-curl -XPOST -H "Content-type: application/json" -d '{
-    "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
-    "event": "New Installation",
-    "properties": {
-      "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
-      "email": "'$email'",
-      "type": "docker"
-    }
-  }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
+if confirm y "Would you like to share your email to receive updates from Slashbase?"; then
+    read -rp 'Email: ' email
+    curl -XPOST -H "Content-type: application/json" -d '{
+        "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
+        "event": "New Installation",
+        "properties": {
+        "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
+        "email": "'$email'",
+        "type": "docker"
+        }
+    }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
+fi
