@@ -35,6 +35,10 @@ Please follow the [installation guide](https://bip.so/slashbase/c/42nyIZ7sh_nt/3
 
 Detailed documentation is available on [slashbase guide](https://bip.so/slashbase/c/MsNHox55oQdo/34259/introduction/public).
 
+## Community
+
+Join our community on [discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
+
 
 ## Contributing
 
