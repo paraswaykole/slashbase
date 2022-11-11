@@ -2,6 +2,7 @@ package mongoutils
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"strconv"
 	"strings"
@@ -85,6 +86,7 @@ const (
 	QUERY_UPDATEMANY      = iota
 	QUERY_COUNT           = iota
 	QUERY_AGGREGATE       = iota
+	QUERY_GETINDEXES      = iota
 	QUERY_RUNCMD          = iota
 	QUERY_LISTCOLLECTIONS = iota
 	QUERY_UNKOWN          = -1
@@ -169,6 +171,8 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_COUNT
 		} else if funcName == "aggregate" {
 			result.QueryType = QUERY_AGGREGATE
+		} else if funcName == "getIndexes" {
+			result.QueryType = QUERY_GETINDEXES
 		}
 		result.Args = args
 	}
@@ -381,4 +385,22 @@ func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []m
 		fields = append(fields, field)
 	}
 	return fields
+}
+
+func GetCollectionIndexes(indexesData []map[string]interface{}) []map[string]interface{} {
+	extractKey := func(d map[string]interface{}) interface{} {
+		data, err := json.Marshal(d)
+		if err != nil {
+			return nil
+		}
+		return string(data)
+	}
+	indexes := []map[string]interface{}{}
+	for _, index := range indexesData {
+		indexes = append(indexes, map[string]interface{}{
+			"name": index["name"],
+			"key":  extractKey(index["key"].(map[string]interface{})),
+		})
+	}
+	return indexes
 }

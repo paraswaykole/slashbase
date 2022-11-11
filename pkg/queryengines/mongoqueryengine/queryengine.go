@@ -177,6 +177,23 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 			"keys": keys,
 			"data": data,
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_GETINDEXES {
+		cursor, err := db.RunCommandCursor(context.Background(), bson.M{
+			"listIndexes": queryType.CollectionName,
+		})
+		if err != nil {
+			return nil, err
+		}
+		defer cursor.Close(context.Background())
+		keys, data := mongoutils.MongoCursorToJson(cursor)
+		if createLog {
+			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
+			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		}
+		return map[string]interface{}{
+			"keys": keys,
+			"data": data,
+		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_LISTCOLLECTIONS {
 		list, err := db.ListCollectionNames(context.Background(), queryType.Args[0])
 		if err != nil {
@@ -261,6 +278,16 @@ func (mqe *MongoQueryEngine) GetSingleDataModelFields(user *models.User, dbConn 
 	returnedKeys := data["keys"].([]string)
 	returnedData := data["data"].([]map[string]interface{})
 	return mongoutils.AnalyseFieldsSchema(returnedKeys, returnedData), err
+}
+
+func (mqe *MongoQueryEngine) GetSingleDataModelIndexes(user *models.User, dbConn *models.DBConnection, name string) ([]map[string]interface{}, error) {
+	query := fmt.Sprintf(`db.%s.getIndexes()`, name)
+	data, err := mqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	returnedData := data["data"].([]map[string]interface{})
+	return mongoutils.GetCollectionIndexes(returnedData), err
 }
 
 func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
