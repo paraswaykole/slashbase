@@ -5,20 +5,24 @@
   box-shadow: inset -1px 0px 4px 0px rgb(0 0 0 / 20%);
   white-space: nowrap;
   overflow-x: hidden;
+
   .spacebox {
     padding: 15px 10px;
     height: calc(100% - 50px);
     overflow-y: scroll;
   }
+
   .menuList {
     a {
       overflow-x: hidden;
     }
   }
+
   .projectMenuItem {
     padding: 5px 10px;
     transition: all 0.2s;
   }
+
   .projectMenuItem:hover {
     background: #e0e0e8;
   }
@@ -26,8 +30,8 @@
 
 .sidebarHideBtn {
   position: relative;
-  width: calc(100% - 20px);
-  left: 10px;
+  float: right;
+  right: 10px;
 }
 
 .btn {
@@ -38,6 +42,7 @@
   border-radius: 8px;
   transition: all 0.2s;
   margin-right: 5px;
+
   .btnMsg {
     font-size: 14px;
   }

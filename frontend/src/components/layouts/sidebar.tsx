@@ -1,7 +1,7 @@
 import styles from './sidebar.module.scss'
 import React from 'react'
 import { useRouter } from 'next/router'
-import { DBConnection, DBDataModel, DBQuery } from '../../data/models'
+import { DBConnection, DBDataModel, DBQuery, User } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
 import { selectAllDBConnections } from '../../redux/allDBConnectionsSlice'
 import Constants from '../../constants'
@@ -10,10 +10,12 @@ import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { useDispatch } from 'react-redux'
 import { DBConnType } from '../../data/defaults'
+import { selectCurrentUser } from '../../redux/currentUserSlice'
 
 enum SidebarViewType {
     GENERIC = "GENERIC", // default
-    DATABASE = "DATABASE" // Used to show elements of single database
+    DATABASE = "DATABASE", // Used to show elements of single database
+    SETTINGS = "SETTINGS" // Used to show elements of settings screen
 }
 
 type SidebarPropType = {}
@@ -21,6 +23,7 @@ type SidebarPropType = {}
 const Sidebar = (_: SidebarPropType) => {
 
     const router = useRouter()
+    const currentUser: User = useAppSelector(selectCurrentUser)
 
     const { mschema, mname, queryId } = router.query
 
@@ -29,7 +32,7 @@ const Sidebar = (_: SidebarPropType) => {
             || router.pathname === Constants.APP_PATHS.DB_PATH.path
             || router.pathname === Constants.APP_PATHS.DB_QUERY.path
             || router.pathname === Constants.APP_PATHS.DB_HISTORY.path) ?
-            SidebarViewType.DATABASE : SidebarViewType.GENERIC
+            SidebarViewType.DATABASE : (router.pathname.startsWith("/settings")) ? SidebarViewType.SETTINGS : SidebarViewType.GENERIC
 
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const allDBConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
@@ -121,11 +124,30 @@ const Sidebar = (_: SidebarPropType) => {
                         </ul>
                     </React.Fragment>
                 }
+                {sidebarView === SidebarViewType.SETTINGS &&
+                    <React.Fragment>
+                        <p className="menu-label">
+                            Settings
+                        </p>
+                        <ul className={"menu-list " + styles.menuList}>
+                            <li>
+                                <Link href={Constants.APP_PATHS.SETTINGS_ACCOUNT.path} as={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}>
+                                    <a>Account</a>
+                                </Link>
+                            </li>
+                            {currentUser.isRoot && <li>
+                                <Link href={Constants.APP_PATHS.SETTINGS_USERS.path} as={Constants.APP_PATHS.SETTINGS_USERS.path}>
+                                    <a>Manage Users</a>
+                                </Link>
+                            </li>}
+                        </ul>
+                    </React.Fragment>
+                }
             </div>
             <div>
                 <button className={"button " + [styles.btn, styles.sidebarHideBtn].join(' ')} onClick={toggleSidebar}>
                     <i className={"fas fa-angle-double-left"} />
-                    <span className={styles.btnMsg}>&nbsp;&nbsp;hide sidebar</span>
+                    {/* <span className={styles.btnMsg}>&nbsp;&nbsp;hide sidebar</span> */}
                 </button>
             </div>
         </aside>
