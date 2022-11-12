@@ -132,12 +132,12 @@ const Sidebar = (_: SidebarPropType) => {
                         <ul className={"menu-list " + styles.menuList}>
                             <li>
                                 <Link href={Constants.APP_PATHS.SETTINGS_ACCOUNT.path} as={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}>
-                                    <a>Account</a>
+                                    <a className={router.pathname.startsWith(Constants.APP_PATHS.SETTINGS_ACCOUNT.path) ? 'is-active' : ''}>Account</a>
                                 </Link>
                             </li>
-                            {currentUser.isRoot && <li>
+                            {currentUser && currentUser.isRoot && <li>
                                 <Link href={Constants.APP_PATHS.SETTINGS_USERS.path} as={Constants.APP_PATHS.SETTINGS_USERS.path}>
-                                    <a>Manage Users</a>
+                                    <a className={router.pathname.startsWith(Constants.APP_PATHS.SETTINGS_USERS.path) ? 'is-active' : ''}>Manage Users</a>
                                 </Link>
                             </li>}
                         </ul>
