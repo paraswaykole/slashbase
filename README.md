@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://slashbase.com/install" rel="dofollow"><strong>Install on your server »</strong></a>
   <br/><br/>
-  <a href="https://discord.gg/U6fXgm3FAX">Join our Discord</a>
+  <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
   ·
   <a href="https://bip.so/slashbase/c/MsNHox55oQdo/34259/introduction/public">Explore the docs</a>
   ·
