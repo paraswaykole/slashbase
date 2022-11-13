@@ -3,6 +3,12 @@ import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataMod
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 
+const getHealthCheck = async function (): Promise<any> {
+    return await Request.getApiInstance()
+        .get<ApiResult<undefined>>('/health')
+        .then(res => res.data)
+}
+
 const loginUser = async function (email: string, password: string): Promise<ApiResult<UserSession>> {
     return await Request.getApiInstance()
         .post<any, AxiosResponse<ApiResult<UserSession>>>('/user/login', { email, password })
@@ -199,6 +205,7 @@ const runQuery = async function (dbConnId: string, query: string): Promise<ApiRe
 }
 
 export default {
+    getHealthCheck,
     loginUser,
     isUserAuthenticated,
     logoutUser,

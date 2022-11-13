@@ -6,6 +6,9 @@ interface ConstantsType {
             isAuth: boolean
         }
     }
+    EXTERNAL_PATHS: {
+        [key: string]: string
+    }
 }
 
 declare global {
@@ -66,6 +69,10 @@ const Constants: ConstantsType = {
             path: '/settings',
             isAuth: true
         },
+        SETTINGS_ABOUT: {
+            path: '/settings/about',
+            isAuth: true
+        },
         SETTINGS_ACCOUNT: {
             path: '/settings/account',
             isAuth: true
@@ -82,8 +89,12 @@ const Constants: ConstantsType = {
             path: '/settings/users/add',
             isAuth: true
         },
+    },
+    EXTERNAL_PATHS: {
+        OFFICIAL_WEBSITE: "https://slashbase.com",
+        DISCORD_COMMUNITY: "https://discord.gg/U6fXgm3FAX",
+        REPORT_BUGS: "https://github.com/slashbaseide/slashbase/issues"
     }
-
 }
 
 export default Constants

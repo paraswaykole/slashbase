@@ -141,6 +141,16 @@ const Sidebar = (_: SidebarPropType) => {
                                 </Link>
                             </li>}
                         </ul>
+                        <p className="menu-label">
+                            Info
+                        </p>
+                        <ul className={"menu-list " + styles.menuList}>
+                            <li>
+                                <Link href={Constants.APP_PATHS.SETTINGS_ABOUT.path} as={Constants.APP_PATHS.SETTINGS_ABOUT.path}>
+                                    <a className={router.pathname === Constants.APP_PATHS.SETTINGS_ABOUT.path ? 'is-active' : ''}>About App</a>
+                                </Link>
+                            </li>
+                        </ul>
                     </React.Fragment>
                 }
             </div>
