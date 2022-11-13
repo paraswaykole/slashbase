@@ -128,6 +128,12 @@ const Header = (_: HeaderPropType) => {
                                         </a>
                                     </Link>
                                     <hr className="dropdown-divider" />
+                                    <Link href={Constants.EXTERNAL_PATHS.CHANGELOG}>
+                                        <a className="dropdown-item" target="_blank">
+                                            What&apos;s New?
+                                        </a>
+                                    </Link>
+                                    <hr className="dropdown-divider" />
                                     <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
                                         <a className="dropdown-item">
                                             Logout

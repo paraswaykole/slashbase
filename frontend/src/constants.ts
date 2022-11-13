@@ -97,7 +97,8 @@ const Constants: ConstantsType = {
     EXTERNAL_PATHS: {
         OFFICIAL_WEBSITE: "https://slashbase.com",
         DISCORD_COMMUNITY: "https://discord.gg/U6fXgm3FAX",
-        REPORT_BUGS: "https://github.com/slashbaseide/slashbase/issues"
+        REPORT_BUGS: "https://github.com/slashbaseide/slashbase/issues",
+        CHANGELOG: "https://slashbase.com/updates",
     }
 }
 
