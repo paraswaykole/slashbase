@@ -9,6 +9,15 @@
   <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
   <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
 </p>
+<p align="center">
+  <a href="https://slashbase.com/install" rel="dofollow"><strong>Install on your server »</strong></a>
+  <br/><br/>
+  <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
+  ·
+  <a href="https://bip.so/slashbase/c/MsNHox55oQdo/34259/introduction/public">Explore the docs</a>
+  ·
+  <a href="https://slashbase.com/updates">Read Updates</a>
+</p>
 
 ___
 
@@ -29,7 +38,7 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 ## Installation
 
-Please follow the [installation guide](https://bip.so/slashbase/c/42nyIZ7sh_nt/34260/install-slashbase/public) to install Slashbase on your own cloud (in your own VPC)
+Please follow the [installation guide](https://slashbase.com/install) to install Slashbase on your own cloud (in your own VPC)
 
 ## Documentation
 
