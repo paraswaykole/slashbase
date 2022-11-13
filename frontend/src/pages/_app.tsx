@@ -59,7 +59,7 @@ const SlashbaseAppComponent = ({ children }: any) => {
     const qkey = queryKeys[i]
     finalPath = finalPath.replace(`[${qkey}]`, String(router.query[qkey]))
   }
-  if (typeof window !== 'undefined' && window.location.pathname !== finalPath) {
+  if (router.route != '/_error' && typeof window !== 'undefined' && window.location.pathname !== finalPath) {
     router.replace(window.location.href.slice(window.location.origin.length))
     return null
   }
