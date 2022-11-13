@@ -11,7 +11,7 @@ import (
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine
 var mongoQueryEngine *mongoqueryengine.MongoQueryEngine
 
-func InitQueryEngines() {
+func Init() {
 	postgresQueryEngine = pgqueryengine.InitPostgresQueryEngine()
 	mongoQueryEngine = mongoqueryengine.InitMongoQueryEngine()
 }

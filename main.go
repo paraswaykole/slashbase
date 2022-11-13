@@ -6,10 +6,9 @@ import (
 	"os"
 
 	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/server"
+	"slashbase.com/backend/internal/setup"
 	"slashbase.com/backend/internal/tasks"
 	"slashbase.com/backend/pkg/queryengines"
 	"slashbase.com/backend/pkg/sshtunnel"
@@ -24,44 +23,15 @@ func main() {
 	flag.Parse()
 	config.Init(*environment)
 	db.InitGormDB()
+	setup.SetupApp()
 	tasks.InitCron()
-	autoMigrate()
-	configureRootUser()
-	queryengines.InitQueryEngines()
+	// TODO: to be moved to cron
+	queryengines.Init()
 	initUnusedRemovalThreads()
 	server.Init()
 }
 
-func autoMigrate() {
-	db.GetDB().AutoMigrate(
-		&models.User{},
-		&models.UserSession{},
-		&models.Project{},
-		&models.ProjectMember{},
-		&models.DBConnection{},
-		&models.DBQuery{},
-		&models.DBQueryLog{},
-	)
-	err := db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
-	if err != nil {
-		os.Exit(1)
-	}
-}
-
-func configureRootUser() {
-	rootUserEmail, rootUserPassword := config.GetRootUser()
-	rootUser, err := models.NewUser(rootUserEmail, rootUserPassword)
-	if err != nil {
-		os.Exit(1)
-	}
-	rootUser.IsRoot = true
-	var userDao daos.UserDao
-	_, err = userDao.GetRootUserOrCreate(*rootUser)
-	if err != nil {
-		os.Exit(1)
-	}
-}
-
+// TODO: to be moved to cron
 func initUnusedRemovalThreads() {
 	go sshtunnel.RemoveUnusedTunnels()
 	go queryengines.RemoveUnusedConnections()
