@@ -9,6 +9,9 @@ interface ConstantsType {
     EXTERNAL_PATHS: {
         [key: string]: string
     }
+    SETTING_KEYS: {
+        [key: string]: string
+    }
 }
 
 declare global {
@@ -99,6 +102,10 @@ const Constants: ConstantsType = {
         DISCORD_COMMUNITY: "https://discord.gg/U6fXgm3FAX",
         REPORT_BUGS: "https://github.com/slashbaseide/slashbase/issues",
         CHANGELOG: "https://slashbase.com/updates",
+    },
+    SETTING_KEYS: {
+        APP_ID: "APP_ID",
+        TELEMETRY_ENABLED: "TELEMETRY_ENABLED"
     }
 }
 

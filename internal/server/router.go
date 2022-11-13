@@ -84,6 +84,14 @@ func NewRouter() *gin.Engine {
 				dataModelGroup.GET("/single/:dbConnId", queryRoutes.GetSingleDataModel)
 			}
 		}
+		settingGroup := api.Group("setting")
+		{
+			settingRoutes := new(routes.SettingRoutes)
+			settingGroup.Use(middlewares.FindUserMiddleware())
+			settingGroup.Use(middlewares.AuthUserMiddleware())
+			settingGroup.GET("/single", settingRoutes.GetSingleSetting)
+			settingGroup.POST("/single", settingRoutes.UpdateSingleSetting)
+		}
 	}
 
 	// Serving the Frontend files in Production

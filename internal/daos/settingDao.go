@@ -22,3 +22,8 @@ func (d SettingDao) GetSingleSetting(name string) (*models.Setting, error) {
 	err := db.GetDB().Where(&models.Setting{Name: name}).First(&setting).Error
 	return &setting, err
 }
+
+func (d SettingDao) UpdateSingleSetting(name, value string) error {
+	err := db.GetDB().Model(models.Setting{}).Where(&models.Setting{Name: name}).Update("value", value).Error
+	return err
+}

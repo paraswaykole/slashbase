@@ -204,6 +204,18 @@ const runQuery = async function (dbConnId: string, query: string): Promise<ApiRe
         .then(res => res.data)
 }
 
+const getSingleSetting = async function (name: string): Promise<ApiResult<any>> {
+    return await Request.getApiInstance()
+        .get<any, AxiosResponse<ApiResult<any>>>(`/setting/single?name=${name}`)
+        .then(res => res.data)
+}
+
+const updateSingleSetting = async function (name: string, value: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+        .post<any, AxiosResponse<ApiResult<any>>>(`/setting/single`, { name, value })
+        .then(res => res.data)
+}
+
 export default {
     getHealthCheck,
     loginUser,
@@ -235,5 +247,7 @@ export default {
     getDBQueriesInDBConn,
     getSingleDBQuery,
     getDBHistory,
-    runQuery
+    runQuery,
+    getSingleSetting,
+    updateSingleSetting
 }
