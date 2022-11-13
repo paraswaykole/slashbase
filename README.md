@@ -9,6 +9,15 @@
   <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
   <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
 </p>
+<p align="center">
+  <a href="https://slashbase.com/install" rel="dofollow"><strong>Install on your server »</strong></a>
+  <br/><br/>
+  <a href="https://discord.gg/U6fXgm3FAX">Join our Discord</a>
+  ·
+  <a href="https://bip.so/slashbase/c/MsNHox55oQdo/34259/introduction/public">Explore the docs</a>
+  ·
+  <a href="https://slashbase.com/updates">Read Updates</a>
+</p>
 
 ___
 
