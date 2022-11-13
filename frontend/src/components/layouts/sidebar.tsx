@@ -147,7 +147,12 @@ const Sidebar = (_: SidebarPropType) => {
                         <ul className={"menu-list " + styles.menuList}>
                             <li>
                                 <Link href={Constants.APP_PATHS.SETTINGS_ABOUT.path} as={Constants.APP_PATHS.SETTINGS_ABOUT.path}>
-                                    <a className={router.pathname === Constants.APP_PATHS.SETTINGS_ABOUT.path ? 'is-active' : ''}>About App</a>
+                                    <a className={router.pathname === Constants.APP_PATHS.SETTINGS_ABOUT.path ? 'is-active' : ''}>About</a>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href={Constants.APP_PATHS.SETTINGS_SUPPORT.path} as={Constants.APP_PATHS.SETTINGS_SUPPORT.path}>
+                                    <a className={router.pathname === Constants.APP_PATHS.SETTINGS_SUPPORT.path ? 'is-active' : ''}>Support</a>
                                 </Link>
                             </li>
                         </ul>

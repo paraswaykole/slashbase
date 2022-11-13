@@ -73,6 +73,10 @@ const Constants: ConstantsType = {
             path: '/settings/about',
             isAuth: true
         },
+        SETTINGS_SUPPORT: {
+            path: '/settings/support',
+            isAuth: true
+        },
         SETTINGS_ACCOUNT: {
             path: '/settings/account',
             isAuth: true

@@ -122,9 +122,9 @@ const Header = (_: HeaderPropType) => {
                                             Settings
                                         </a>
                                     </Link>
-                                    <Link href={Constants.APP_PATHS.SETTINGS_ABOUT.path} as={Constants.APP_PATHS.SETTINGS_ABOUT.path}>
+                                    <Link href={Constants.APP_PATHS.SETTINGS_SUPPORT.path} as={Constants.APP_PATHS.SETTINGS_SUPPORT.path}>
                                         <a className="dropdown-item">
-                                            About
+                                            Support
                                         </a>
                                     </Link>
                                     <hr className="dropdown-divider" />

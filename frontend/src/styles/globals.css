@@ -15,9 +15,14 @@ a {
   box-sizing: border-box;
 }
 
-h1,h2,h3,h4,h5,h6 {
-	font-family: 'PT Sans', 'Source Sans Pro';
-	line-height: 1.1;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'PT Sans', 'Source Sans Pro';
+  line-height: 1.1;
 }
 
 h1 {
@@ -55,14 +60,14 @@ h6 {
   position: absolute;
 }
 
-.appcontent{
+.appcontent {
   width: 100%;
   height: calc(100vh - 60px);
   display: flex;
   flex-direction: row;
 }
 
-.maincontainer{
+.maincontainer {
   padding: 10px;
   width: 100%;
   overflow: scroll;
@@ -72,7 +77,7 @@ h6 {
   width: calc(100% - 260px) !important;
 }
 
-.form-container{
+.form-container {
   max-width: 500px;
   margin-top: 20px;
 }
@@ -117,6 +122,11 @@ h6 {
   transform: rotate(315deg);
 }
 
-.nolink{
+.nolink {
   color: inherit;
+}
+
+.tinytext {
+  font-size: 12px;
+  color: #828282;
 }
