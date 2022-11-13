@@ -47,11 +47,6 @@ download() {
 }
 
 generate_variables() {
-    if confirm y "Would you like to share anonymous usage data and receive better support?"; then
-        telemetry_id=$(curl -s 'https://api64.ipify.org')
-    else
-        telemetry_id="disabled"
-    fi
     auth_secret=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64 ; echo '')
     crypted_data_secret=$(openssl rand -hex 32)
 }
@@ -76,8 +71,6 @@ generate_app_config_file() {
                 $slashbase_root_email
                 "slashbase_root_password"
                 $slashbase_root_password
-                "telemetry_id"
-                $telemetry_id
             )
 
     flip=0
@@ -179,9 +172,8 @@ if confirm y "Would you like to share your email to receive updates from Slashba
         "api_key": "phc_XSWvMvnTUEH9pLJDVmYfaKaKH8QZtK5fJO8NIiFoNwv",
         "event": "New Installation",
         "properties": {
-        "distinct_id": "'$SLASHBASE_INSTALLATION_ID'",
-        "email": "'$email'",
-        "type": "docker"
+        "distinct_id": "'$email'",
+        "email": "'$email'"
         }
     }' 'https://app.posthog.com/capture/' > /dev/null 2>&1
 fi
