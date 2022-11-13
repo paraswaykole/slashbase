@@ -117,6 +117,12 @@ const Header = (_: HeaderPropType) => {
                         <OutsideClickHandler onOutsideClick={() => { setIsShowingDropDown(false) }}>
                             <div className="dropdown-menu" role="menu">
                                 <div className="dropdown-content">
+                                    <Link href={Constants.EXTERNAL_PATHS.CHANGELOG}>
+                                        <a className="dropdown-item" target="_blank">
+                                            What&apos;s New?
+                                        </a>
+                                    </Link>
+                                    <hr className="dropdown-divider" />
                                     <Link href={Constants.APP_PATHS.SETTINGS_ACCOUNT.path} as={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}>
                                         <a className="dropdown-item">
                                             Settings
@@ -125,12 +131,6 @@ const Header = (_: HeaderPropType) => {
                                     <Link href={Constants.APP_PATHS.SETTINGS_SUPPORT.path} as={Constants.APP_PATHS.SETTINGS_SUPPORT.path}>
                                         <a className="dropdown-item">
                                             Support
-                                        </a>
-                                    </Link>
-                                    <hr className="dropdown-divider" />
-                                    <Link href={Constants.EXTERNAL_PATHS.CHANGELOG}>
-                                        <a className="dropdown-item" target="_blank">
-                                            What&apos;s New?
                                         </a>
                                     </Link>
                                     <hr className="dropdown-divider" />
