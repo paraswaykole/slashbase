@@ -3,6 +3,12 @@ import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataMod
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 
+const getHealthCheck = async function (): Promise<any> {
+    return await Request.getApiInstance()
+        .get<ApiResult<undefined>>('/health')
+        .then(res => res.data)
+}
+
 const loginUser = async function (email: string, password: string): Promise<ApiResult<UserSession>> {
     return await Request.getApiInstance()
         .post<any, AxiosResponse<ApiResult<UserSession>>>('/user/login', { email, password })
@@ -198,7 +204,20 @@ const runQuery = async function (dbConnId: string, query: string): Promise<ApiRe
         .then(res => res.data)
 }
 
+const getSingleSetting = async function (name: string): Promise<ApiResult<any>> {
+    return await Request.getApiInstance()
+        .get<any, AxiosResponse<ApiResult<any>>>(`/setting/single?name=${name}`)
+        .then(res => res.data)
+}
+
+const updateSingleSetting = async function (name: string, value: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+        .post<any, AxiosResponse<ApiResult<any>>>(`/setting/single`, { name, value })
+        .then(res => res.data)
+}
+
 export default {
+    getHealthCheck,
     loginUser,
     isUserAuthenticated,
     logoutUser,
@@ -228,5 +247,7 @@ export default {
     getDBQueriesInDBConn,
     getSingleDBQuery,
     getDBHistory,
-    runQuery
+    runQuery,
+    getSingleSetting,
+    updateSingleSetting
 }

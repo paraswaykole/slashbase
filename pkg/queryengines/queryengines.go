@@ -11,7 +11,7 @@ import (
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine
 var mongoQueryEngine *mongoqueryengine.MongoQueryEngine
 
-func InitQueryEngines() {
+func Init() {
 	postgresQueryEngine = pgqueryengine.InitPostgresQueryEngine()
 	mongoQueryEngine = mongoqueryengine.InitMongoQueryEngine()
 }
@@ -103,6 +103,10 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 		if err != nil {
 			return nil, err
 		}
+		indexesData, err := mongoQueryEngine.GetSingleDataModelIndexes(user, dbConn, name)
+		if err != nil {
+			return nil, err
+		}
 		allFields := []DBDataModelField{}
 		for _, field := range fieldsData {
 			fieldView := BuildDBDataModelField(dbConn, field)
@@ -110,9 +114,17 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 				allFields = append(allFields, *fieldView)
 			}
 		}
+		allIndexes := []DBDataModelIndex{}
+		for _, index := range indexesData {
+			indexView := BuildDBDataModelIndex(dbConn, index)
+			if indexView != nil {
+				allIndexes = append(allIndexes, *indexView)
+			}
+		}
 		dataModel = DBDataModel{
-			Name:   name,
-			Fields: allFields,
+			Name:    name,
+			Fields:  allFields,
+			Indexes: allIndexes,
 		}
 	}
 	return &dataModel, nil

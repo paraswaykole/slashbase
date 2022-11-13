@@ -18,7 +18,7 @@ type HeaderPropType = {
 }
 
 const Header = (_: HeaderPropType) => {
-    
+
     const router = useRouter()
 
     const currentUser: User = useAppSelector(selectCurrentUser)
@@ -33,7 +33,7 @@ const Header = (_: HeaderPropType) => {
 
     const options = [
         { value: 'home', label: 'Home', path: Constants.APP_PATHS.HOME.path },
-        ...projects.map((x: Project) => ({value: x.id, label: x.name, path: Constants.APP_PATHS.PROJECT.path.replace('[id]', x.id) }))
+        ...projects.map((x: Project) => ({ value: x.id, label: x.name, path: Constants.APP_PATHS.PROJECT.path.replace('[id]', x.id) }))
     ]
 
     const onNavigate = (option: {
@@ -56,10 +56,10 @@ const Header = (_: HeaderPropType) => {
         currentOption = String(router.query.id)
     } else if (router.pathname === Constants.APP_PATHS.PROJECT_MEMBERS.path) {
         currentOption = String(router.query.id)
-    } else if (router.pathname === Constants.APP_PATHS.DB.path 
-            || router.pathname === Constants.APP_PATHS.DB_PATH.path 
-            || router.pathname === Constants.APP_PATHS.DB_HISTORY.path
-            || router.pathname === Constants.APP_PATHS.DB_QUERY.path) {
+    } else if (router.pathname === Constants.APP_PATHS.DB.path
+        || router.pathname === Constants.APP_PATHS.DB_PATH.path
+        || router.pathname === Constants.APP_PATHS.DB_HISTORY.path
+        || router.pathname === Constants.APP_PATHS.DB_QUERY.path) {
         if (currentDBConnection)
             currentOption = currentDBConnection?.projectId
     }
@@ -69,37 +69,37 @@ const Header = (_: HeaderPropType) => {
             <div className={styles.leftBtns}>
                 <Link href={Constants.APP_PATHS.HOME.path} as={Constants.APP_PATHS.HOME.path}>
                     <a>
-                        <button className={"button is-dark "+[styles.btn].join(' ')}>
+                        <button className={"button is-dark " + [styles.btn].join(' ')}>
                             <span className="icon">
-                                <i className={`fas fa-home`}/>
+                                <i className={`fas fa-home`} />
                             </span>
                         </button>
                     </a>
                 </Link>
-                { !isShowingSidebar && <button className={"button is-dark "+[styles.btn].join(' ')} onClick={toggleSidebar}>
-                    <i className="fas fa-bars"/>
-                </button> }
+                {!isShowingSidebar && <button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
+                    <i className="fas fa-bars" />
+                </button>}
             </div>
             <div className={styles.headerCenter}>
-                <div className={`dropdown${isShowingNavDropDown ? ' is-active':''}`}>
+                <div className={`dropdown${isShowingNavDropDown ? ' is-active' : ''}`}>
                     <div className="dropdown-trigger">
-                        <button className={"button is-dark " + styles.btn} aria-haspopup="true" aria-controls="dropdown-menu" onClick={()=>{setIsShowingNavDropDown(!isShowingNavDropDown)}}>
-                        <span>{options.find(x => x.value === currentOption)?.label}</span>
-                        <span className="icon is-small">
-                            <i className="fas fa-angle-down" aria-hidden="true"></i>
-                        </span>
+                        <button className={"button is-dark " + styles.btn} aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingNavDropDown(!isShowingNavDropDown) }}>
+                            <span>{options.find(x => x.value === currentOption)?.label}</span>
+                            <span className="icon is-small">
+                                <i className="fas fa-angle-down" aria-hidden="true"></i>
+                            </span>
                         </button>
                     </div>
-                    <OutsideClickHandler onOutsideClick={()=>{setIsShowingNavDropDown(false)}}>
+                    <OutsideClickHandler onOutsideClick={() => { setIsShowingNavDropDown(false) }}>
                         <div className="dropdown-menu" id="dropdown-menu" role="menu">
                             <div className="dropdown-content">
                                 {options.map((x) => {
                                     return (
                                         <React.Fragment key={x.value}>
-                                            <a onClick={()=>{onNavigate(x)}} className={`dropdown-item${x.value === currentOption?' is-active':''}`}>
+                                            <a onClick={() => { onNavigate(x) }} className={`dropdown-item${x.value === currentOption ? ' is-active' : ''}`}>
                                                 {x.label}
                                             </a>
-                                            { x.value === 'home' && <hr className="dropdown-divider" /> }
+                                            {x.value === 'home' && <hr className="dropdown-divider" />}
                                         </React.Fragment>
                                     )
                                 })}
@@ -109,25 +109,31 @@ const Header = (_: HeaderPropType) => {
                 </div>
             </div>
             <div className={styles.headerMenu}>
-                { currentUser && 
-                    <div className={"dropdown is-right"+(isShowingDropDown ? ' is-active' : '')}>
-                        <div className="dropdown-trigger" onClick={()=>{setIsShowingDropDown(!isShowingDropDown)}}>
-                            <ProfileImage imageUrl={currentUser.profileImageUrl} size={ProfileImageSize.SMALL} classes={[styles.profileImage]}/>
+                {currentUser &&
+                    <div className={"dropdown is-right" + (isShowingDropDown ? ' is-active' : '')}>
+                        <div className="dropdown-trigger" onClick={() => { setIsShowingDropDown(!isShowingDropDown) }}>
+                            <ProfileImage imageUrl={currentUser.profileImageUrl} size={ProfileImageSize.SMALL} classes={[styles.profileImage]} />
                         </div>
-                        <OutsideClickHandler onOutsideClick={()=>{setIsShowingDropDown(false)}}>
+                        <OutsideClickHandler onOutsideClick={() => { setIsShowingDropDown(false) }}>
                             <div className="dropdown-menu" role="menu">
                                 <div className="dropdown-content">
-                                    <Link href={Constants.APP_PATHS.ACCOUNT.path} as={Constants.APP_PATHS.ACCOUNT.path}>
-                                        <a className="dropdown-item">
-                                            Account
+                                    <Link href={Constants.EXTERNAL_PATHS.CHANGELOG}>
+                                        <a className="dropdown-item" target="_blank">
+                                            What&apos;s New?
                                         </a>
                                     </Link>
-                                    { currentUser.isRoot && <Link href={Constants.APP_PATHS.SETTINGS_USER.path} as={Constants.APP_PATHS.SETTINGS_USER.path}>
+                                    <hr className="dropdown-divider" />
+                                    <Link href={Constants.APP_PATHS.SETTINGS_ACCOUNT.path} as={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}>
                                         <a className="dropdown-item">
-                                            Manage Users
+                                            Settings
                                         </a>
-                                    </Link> }
-                                    <hr className="dropdown-divider"/>
+                                    </Link>
+                                    <Link href={Constants.APP_PATHS.SETTINGS_SUPPORT.path} as={Constants.APP_PATHS.SETTINGS_SUPPORT.path}>
+                                        <a className="dropdown-item">
+                                            Support
+                                        </a>
+                                    </Link>
+                                    <hr className="dropdown-divider" />
                                     <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
                                         <a className="dropdown-item">
                                             Logout
@@ -136,7 +142,7 @@ const Header = (_: HeaderPropType) => {
                                 </div>
                             </div>
                         </OutsideClickHandler>
-                    </div>    
+                    </div>
                 }
             </div>
         </header>

@@ -37,7 +37,3 @@ func GetServerPort() string {
 func GetRootUser() (string, string) {
 	return os.Getenv("ROOT_USER_EMAIL"), os.Getenv("ROOT_USER_PASSWORD")
 }
-
-func GetTelemetryID() string {
-	return os.Getenv("TELEMETRY_ID")
-}

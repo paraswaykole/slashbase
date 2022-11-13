@@ -99,6 +99,12 @@ func BuildDBDataModelIndex(dbConn *models.DBConnection, fieldData map[string]int
 			IndexDef: fieldData["1"].(string),
 		}
 		return &view
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		view := DBDataModelIndex{
+			Name:     fieldData["name"].(string),
+			IndexDef: fieldData["key"].(string),
+		}
+		return &view
 	}
 	return nil
 }

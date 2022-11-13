@@ -6,6 +6,12 @@ interface ConstantsType {
             isAuth: boolean
         }
     }
+    EXTERNAL_PATHS: {
+        [key: string]: string
+    }
+    SETTING_KEYS: {
+        [key: string]: string
+    }
 }
 
 declare global {
@@ -28,22 +34,7 @@ const Constants: ConstantsType = {
             path: '/logout',
             isAuth: true
         },
-        ACCOUNT: {
-            path: '/account',
-            isAuth: true
-        },
-        ACCOUNT_CHANGE_PASSWORD: {
-            path: '/account/password',
-            isAuth: true
-        },
-        SETTINGS_USER: {
-            path: '/users',
-            isAuth: true
-        },
-        SETTINGS_ADD_USER: {
-            path: '/users/add',
-            isAuth: true
-        },
+        // APP
         HOME: {
             path: '/',
             isAuth: true
@@ -76,8 +67,46 @@ const Constants: ConstantsType = {
             path: '/db/[id]/history',
             isAuth: true
         },
+        // SETTINGS
+        SETTINGS: {
+            path: '/settings',
+            isAuth: true
+        },
+        SETTINGS_ABOUT: {
+            path: '/settings/about',
+            isAuth: true
+        },
+        SETTINGS_SUPPORT: {
+            path: '/settings/support',
+            isAuth: true
+        },
+        SETTINGS_ACCOUNT: {
+            path: '/settings/account',
+            isAuth: true
+        },
+        SETTINGS_ACCOUNT_CHANGE_PASSWORD: {
+            path: '/settings/account/password',
+            isAuth: true
+        },
+        SETTINGS_USERS: {
+            path: '/settings/users',
+            isAuth: true
+        },
+        SETTINGS_ADD_USER: {
+            path: '/settings/users/add',
+            isAuth: true
+        },
+    },
+    EXTERNAL_PATHS: {
+        OFFICIAL_WEBSITE: "https://slashbase.com",
+        DISCORD_COMMUNITY: "https://discord.gg/U6fXgm3FAX",
+        REPORT_BUGS: "https://github.com/slashbaseide/slashbase/issues",
+        CHANGELOG: "https://slashbase.com/updates",
+    },
+    SETTING_KEYS: {
+        APP_ID: "APP_ID",
+        TELEMETRY_ENABLED: "TELEMETRY_ENABLED"
     }
-
 }
 
 export default Constants
