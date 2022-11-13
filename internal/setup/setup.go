@@ -3,6 +3,8 @@ package setup
 import (
 	"os"
 
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/daos"
 	"slashbase.com/backend/internal/db"
@@ -11,7 +13,7 @@ import (
 
 func SetupApp() {
 	autoMigrate()
-	firstTimeSetup()
+	configureSettings()
 	configureRootUser()
 }
 
@@ -24,6 +26,7 @@ func autoMigrate() {
 		&models.DBConnection{},
 		&models.DBQuery{},
 		&models.DBQueryLog{},
+		&models.Setting{},
 	)
 	err := db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
 	if err != nil {
@@ -31,8 +34,15 @@ func autoMigrate() {
 	}
 }
 
-func firstTimeSetup() {
-	// init default settings
+func configureSettings() {
+	var settingsDao daos.SettingDao
+	_, err := settingsDao.GetSingleSetting(models.SETTING_NAME_APP_ID)
+	if err == gorm.ErrRecordNotFound {
+		settings := []models.Setting{}
+		settings = append(settings, *models.NewSetting(models.SETTING_NAME_APP_ID, uuid.New().String()))
+		settings = append(settings, *models.NewSetting(models.SETTING_NAME_TELEMETRY_ENABLED, "true"))
+		settingsDao.CreateSettings(&settings)
+	}
 }
 
 func configureRootUser() {
