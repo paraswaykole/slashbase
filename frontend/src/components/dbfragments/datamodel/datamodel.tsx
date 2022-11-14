@@ -40,14 +40,14 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                 <table className={"table is-bordered is-striped is-narrow is-hoverable"}>
                     <thead>
                         <tr>
-                            <th colSpan={4}>
+                            <th colSpan={dbConn.type === DBConnType.POSTGRES ? 4 : 5}>
                                 {label}
                                 {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditing(!isEditing) }}>
                                     {isEditing && <i className={"fas fa-check"} />}
                                     {!isEditing && <i className={"fas fa-pen"} />}
                                 </button>}
                             </th>
-                            {isEditing && <th>
+                            {dbConn.type === DBConnType.POSTGRES && isEditing && <th>
                                 <button className="button is-primary is-small" onClick={() => { setShowingAddModal(true) }}>
                                     <i className={"fas fa-plus"} />
                                 </button>
@@ -66,7 +66,7 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                                                 <i className="fas fa-circle" data-tip="Not Nullable" />
                                     }</td>
                                     <td>{field.name}</td>
-                                    <td>{field.type}</td>
+                                    <td colSpan={dbConn.type === DBConnType.MONGO ? 2 : 1}>{field.type}</td>
                                     {dbConn.type === DBConnType.POSTGRES && <td>
                                         {field.charMaxLength ? <span className="tag is-info is-light">Max Length: {field.charMaxLength}</span> : null}
                                         {field.default ? <span className="tag is-info is-light">Default: {field.default}</span> : null}
@@ -117,7 +117,7 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                             }
                         </tbody>
                     </table>}
-                {showingAddModal && <AddFieldModal
+                {dbConn.type === DBConnType.POSTGRES && showingAddModal && <AddFieldModal
                     dbConn={dbConn}
                     mSchema={dataModel.schemaName}
                     mName={dataModel.name}

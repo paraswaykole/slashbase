@@ -133,6 +133,8 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 func AddSingleDataModelField(user *models.User, dbConn *models.DBConnection, schemaName string, name string, fieldName, datatype string) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.AddSingleDataModelColumn(user, dbConn, schemaName, name, fieldName, datatype)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.AddSingleDataModelKey(user, dbConn, schemaName, name, fieldName, datatype)
 	}
 	return nil, errors.New("invalid db type")
 }
@@ -140,6 +142,8 @@ func AddSingleDataModelField(user *models.User, dbConn *models.DBConnection, sch
 func DeleteSingleDataModelField(user *models.User, dbConn *models.DBConnection, schemaName string, name string, fieldName string) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.DeleteSingleDataModelColumn(user, dbConn, schemaName, name, fieldName)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.DeleteSingleDataModelKey(user, dbConn, schemaName, name, fieldName)
 	}
 	return nil, errors.New("invalid db type")
 }
