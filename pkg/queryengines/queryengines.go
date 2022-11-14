@@ -130,6 +130,20 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 	return &dataModel, nil
 }
 
+func AddSingleDataModelField(user *models.User, dbConn *models.DBConnection, schemaName string, name string, fieldName, datatype string) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.AddSingleDataModelColumn(user, dbConn, schemaName, name, fieldName, datatype)
+	}
+	return nil, errors.New("invalid db type")
+}
+
+func DeleteSingleDataModelField(user *models.User, dbConn *models.DBConnection, schemaName string, name string, fieldName string) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.DeleteSingleDataModelColumn(user, dbConn, schemaName, name, fieldName)
+	}
+	return nil, errors.New("invalid db type")
+}
+
 func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.GetData(user, dbConn, schemaName, name, limit, offset, fetchCount, filter, sort)

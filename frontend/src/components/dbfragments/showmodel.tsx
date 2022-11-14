@@ -17,10 +17,9 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
     const { mschema, mname } = router.query
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
-    const projects: Project[] = useAppSelector(selectProjects)
-    const project: Project | undefined = projects.find(x => x.id === dbConnection?.projectId)
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
+    const [refresh, setRefresh] = useState<number>(Date.now())
 
     useEffect(() => {
         if (!dbConnection) return
@@ -31,11 +30,11 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
             }
         }
         fetchDataModel()
-    }, [dbConnection, mschema, mname])
+    }, [dbConnection, mschema, mname, refresh])
 
     return (
         <React.Fragment>
-            {dataModel && <DataModel dbType={dbConnection!.type} dataModel={dataModel} />}
+            {dataModel && <DataModel dbConn={dbConnection!} dataModel={dataModel} isEditable={true} refreshModel={() => { setRefresh(Date.now()) }} />}
         </React.Fragment>
     )
 }

@@ -140,6 +140,18 @@ const getDBSingleDataModelByConnectionId = async function (dbConnId: string, sch
         .then(res => res.data)
 }
 
+const addDBSingleDataModelField = async function (dbConnId: string, schemaName: string, mName: string, fieldName: string, dataType: string): Promise<ApiResult<DBQueryResult>> {
+    return await Request.getApiInstance()
+        .post<ApiResult<DBQueryResult>>(`/query/datamodel/single/addfield`, { dbConnectionId: dbConnId, schema: schemaName, name: mName, fieldName, dataType })
+        .then(res => res.data)
+}
+
+const deleteDBSingleDataModelField = async function (dbConnId: string, schemaName: string, mName: string, fieldName: string): Promise<ApiResult<DBQueryResult>> {
+    return await Request.getApiInstance()
+        .post<ApiResult<DBQueryResult>>(`/query/datamodel/single/deletefield`, { dbConnectionId: dbConnId, schema: schemaName, name: mName, fieldName })
+        .then(res => res.data)
+}
+
 const getDBDataInDataModel = async function (dbConnId: string, schemaName: string, mName: string, limit: number, offset: number, fetchCount: boolean, filter?: string[], sort?: string[]): Promise<ApiResult<DBQueryData>> {
     return await Request.getApiInstance()
         .get<ApiResult<DBQueryData>>(`/query/data/${dbConnId}`, {
@@ -236,6 +248,8 @@ export default {
     getDBConnectionsByProject,
     getDBDataModelsByConnectionId,
     getDBSingleDataModelByConnectionId,
+    addDBSingleDataModelField,
+    deleteDBSingleDataModelField,
     getDBDataInDataModel,
     addNewDBConn,
     addNewProjectMember,

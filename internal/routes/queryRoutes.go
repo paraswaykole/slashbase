@@ -115,6 +115,57 @@ func (qr QueryRoutes) GetSingleDataModel(c *gin.Context) {
 	})
 }
 
+func (qr QueryRoutes) AddSingleDataModelField(c *gin.Context) {
+	var reqBody struct {
+		DBConnectionID string `json:"dbConnectionId"`
+		Schema         string `json:"schema"`
+		Name           string `json:"name"`
+		FieldName      string `json:"fieldName"`
+		DataType       string `json:"dataType"`
+	}
+	c.BindJSON(&reqBody)
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+
+	data, err := queryController.AddSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName, reqBody.DataType)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    data,
+	})
+}
+
+func (qr QueryRoutes) DeleteSingleDataModelField(c *gin.Context) {
+	var reqBody struct {
+		DBConnectionID string `json:"dbConnectionId"`
+		Schema         string `json:"schema"`
+		Name           string `json:"name"`
+		FieldName      string `json:"fieldName"`
+	}
+	c.BindJSON(&reqBody)
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+
+	data, err := queryController.DeleteSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    data,
+	})
+}
+
 func (qr QueryRoutes) AddData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 	var addBody struct {

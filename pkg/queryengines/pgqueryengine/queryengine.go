@@ -136,6 +136,24 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelIndexes(user *models.User, db
 	return returnedData, err
 }
 
+func (pgqe *PostgresQueryEngine) AddSingleDataModelColumn(user *models.User, dbConn *models.DBConnection, schema, name, columnName, dataType string) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`ALTER TABLE %s.%s ADD COLUMN %s %s;`, schema, name, columnName, dataType)
+	data, err := pgqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
+func (pgqe *PostgresQueryEngine) DeleteSingleDataModelColumn(user *models.User, dbConn *models.DBConnection, schema, name, columnName string) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`ALTER TABLE %s.%s DROP COLUMN %s;`, schema, name, columnName)
+	data, err := pgqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
 func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
 	sortQuery := ""
 	if len(sort) == 2 {

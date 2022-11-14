@@ -89,6 +89,42 @@ func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProj
 	return data, nil
 }
 
+func (qc QueryController) AddSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+	schema, name string, fieldName, dataType string) (map[string]interface{}, error) {
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed to run query")
+	}
+
+	data, err := queryengines.AddSingleDataModelField(authUser, dbConn, schema, name, fieldName, dataType)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (qc QueryController) DeleteSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+	schema, name string, fieldName string) (map[string]interface{}, error) {
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed to run query")
+	}
+
+	data, err := queryengines.DeleteSingleDataModelField(authUser, dbConn, schema, name, fieldName)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
 
