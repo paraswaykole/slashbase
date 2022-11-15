@@ -7,7 +7,7 @@ import DefaultErrorPage from 'next/error'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { selectProjects } from '../../../redux/projectsSlice'
 import { AddDBConnPayload } from '../../../network/payloads'
-import { DBConnectionUseSSHType, DBConnType, ProjectMemberRole } from '../../../data/defaults'
+import { DBConnectionUseSSHType, DBConnType } from '../../../data/defaults'
 import { addNewDBConn } from '../../../redux/allDBConnectionsSlice'
 import Constants from '../../../constants'
 import ReactTooltip from 'react-tooltip'
@@ -41,7 +41,7 @@ const NewDBPage: NextPage = () => {
 		return <DefaultErrorPage statusCode={404} />
 	}
 
-	if (project.currentMember?.role !== ProjectMemberRole.ADMIN) {
+	if (project.currentMember?.role.name !== Constants.ROLES.ADMIN) {
 		return <DefaultErrorPage statusCode={401} title="Unauthorized" />
 	}
 

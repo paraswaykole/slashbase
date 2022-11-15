@@ -10,6 +10,7 @@ import (
 type ProjectController struct{}
 
 var projectDao daos.ProjectDao
+var roleDao daos.RoleDao
 
 func (pc ProjectController) CreateProject(authUser *models.User, projectName string) (*models.Project, *models.ProjectMember, error) {
 
@@ -18,7 +19,18 @@ func (pc ProjectController) CreateProject(authUser *models.User, projectName str
 	}
 
 	project := models.NewProject(authUser, projectName)
-	projectMember, err := projectDao.CreateProject(project)
+	err := projectDao.CreateProject(project)
+	if err != nil {
+		return nil, nil, errors.New("there was some problem")
+	}
+
+	role, err := roleDao.GetAdminRole()
+	if err != nil {
+		return nil, nil, errors.New("there was some problem")
+	}
+
+	projectMember := models.NewProjectMember(project.CreatedBy, project.ID, role.ID)
+	err = projectDao.CreateProjectMember(projectMember)
 	if err != nil {
 		return nil, nil, errors.New("there was some problem")
 	}
@@ -35,7 +47,11 @@ func (pc ProjectController) GetProjects(authUser *models.User) (*[]models.Projec
 	return projectMembers, nil
 }
 
-func (pc ProjectController) DeleteProject(id string) error {
+func (pc ProjectController) DeleteProject(authUser *models.User, id string) error {
+
+	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, id); err != nil || !isAllowed {
+		return err
+	}
 
 	project, err := projectDao.GetProject(id)
 	if err != nil {
@@ -76,17 +92,19 @@ func (pc ProjectController) GetProjectMembers(projectID string) (*[]models.Proje
 	return projectMembers, nil
 }
 
-func (pc ProjectController) AddProjectMember(projectID, email, role string) (*models.ProjectMember, error) {
+func (pc ProjectController) AddProjectMember(authUser *models.User, projectID, email, roleID string) (*models.ProjectMember, error) {
+
+	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, projectID); err != nil || !isAllowed {
+		return nil, err
+	}
 
 	toAddUser, err := userDao.GetUserByEmail(email)
 	if err != nil {
-		// TODO: Create user and send email if doesn't exist in users table.
 		return nil, errors.New("there was some problem")
 	}
 
-	newProjectMember, err := models.NewProjectMember(toAddUser.ID, projectID, role)
+	newProjectMember := models.NewProjectMember(toAddUser.ID, projectID, roleID)
 	if err != nil {
-		// TODO: Create user and send email if doesn't exist in users table.
 		return nil, err
 	}
 	err = projectDao.CreateProjectMember(newProjectMember)
@@ -97,7 +115,11 @@ func (pc ProjectController) AddProjectMember(projectID, email, role string) (*mo
 	return newProjectMember, nil
 }
 
-func (pc ProjectController) DeleteProjectMember(projectId, userId string) error {
+func (pc ProjectController) DeleteProjectMember(authUser *models.User, projectId, userId string) error {
+
+	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, projectId); err != nil || !isAllowed {
+		return err
+	}
 
 	projectMember, notFound, err := projectDao.FindProjectMember(projectId, userId)
 	if err != nil {

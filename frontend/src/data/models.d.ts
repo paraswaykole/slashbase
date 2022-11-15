@@ -26,10 +26,15 @@ export interface Project {
 
 export interface ProjectMember {
     id: string
-    role: ProjectMemberRole
+    role: Role
     user: User
     createdAt: string
     updatedAt: string
+}
+
+export interface Role {
+    id: string
+    name: string
 }
 
 export interface DBConnection {

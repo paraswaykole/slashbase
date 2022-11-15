@@ -3,12 +3,6 @@ export enum DBConnType {
     MONGO = "MONGO"
 }
 
-export enum ProjectMemberRole {
-    ADMIN = "ADMIN",
-    DEVELOPER = "DEVELOPER",
-    ANALYST = "ANALYST"
-}
-
 export enum DBConnectionUseSSHType {
     NONE = "NONE",
     PASSWORD = "PASSWORD",

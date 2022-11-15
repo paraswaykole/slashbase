@@ -4,7 +4,6 @@ import { Project } from '../../../data/models'
 import Constants from '../../../constants'
 import Link from 'next/link'
 import OutsideClickHandler from 'react-outside-click-handler'
-import { ProjectMemberRole } from '../../../data/defaults'
 import { deleteProject } from '../../../redux/projectsSlice'
 import { useDispatch } from 'react-redux'
 
@@ -22,7 +21,7 @@ const ProjectCard = ({ project }: ProjectCardPropType) => {
         setShowDropdown(!showDropdown)
     }
 
-    const isAdmin = project?.currentMember?.role === ProjectMemberRole.ADMIN
+    const isAdmin = project?.currentMember?.role.name === Constants.ROLES.ADMIN
 
     const onDeleteProject = async () => {
         await dispatch(deleteProject({ projectId: project.id }))

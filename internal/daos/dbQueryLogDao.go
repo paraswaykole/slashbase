@@ -19,7 +19,7 @@ func (d DBQueryLogDao) CreateDBQueryLog(queryLog *models.DBQueryLog) error {
 func (d DBQueryLogDao) GetDBQueryLogsDBConnID(dbConnID string, projectMember *models.ProjectMember, before time.Time) ([]*models.DBQueryLog, error) {
 	var dbQueryLogs []*models.DBQueryLog
 	var query *gorm.DB
-	if projectMember.Role == models.ROLE_ADMIN {
+	if projectMember.Role.Name == models.ROLE_ADMIN {
 		query = db.GetDB().Where(&models.DBQueryLog{DBConnectionID: dbConnID})
 	} else {
 		query = db.GetDB().Where(&models.DBQueryLog{UserID: projectMember.UserID, DBConnectionID: dbConnID})

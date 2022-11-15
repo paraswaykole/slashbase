@@ -12,6 +12,9 @@ interface ConstantsType {
     SETTING_KEYS: {
         [key: string]: string
     }
+    ROLES: {
+        [key: string]: string
+    }
 }
 
 declare global {
@@ -106,6 +109,9 @@ const Constants: ConstantsType = {
     SETTING_KEYS: {
         APP_ID: "APP_ID",
         TELEMETRY_ENABLED: "TELEMETRY_ENABLED"
+    },
+    ROLES: {
+        ADMIN: "Admin"
     }
 }
 

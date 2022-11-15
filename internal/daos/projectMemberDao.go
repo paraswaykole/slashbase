@@ -20,7 +20,7 @@ func (d ProjectDao) CreateProjectMember(projectMember *models.ProjectMember) err
 
 func (d ProjectDao) GetProjectMembers(projectID string) (*[]models.ProjectMember, error) {
 	var projectMembers []models.ProjectMember
-	err := db.GetDB().Where(models.ProjectMember{ProjectID: projectID}).Preload("User").Find(&projectMembers).Error
+	err := db.GetDB().Where(models.ProjectMember{ProjectID: projectID}).Preload("User").Preload("Role").Find(&projectMembers).Error
 	return &projectMembers, err
 }
 
@@ -31,13 +31,13 @@ func (d ProjectDao) DeleteAllProjectMembersInProject(projectID string) error {
 
 func (d ProjectDao) GetProjectMembersForUser(userID string) (*[]models.ProjectMember, error) {
 	var projectMembers []models.ProjectMember
-	err := db.GetDB().Where(models.ProjectMember{UserID: userID}).Preload("Project").Find(&projectMembers).Error
+	err := db.GetDB().Where(models.ProjectMember{UserID: userID}).Preload("Project").Preload("Role").Find(&projectMembers).Error
 	return &projectMembers, err
 }
 
 func (d ProjectDao) FindProjectMember(projectID string, userID string) (*models.ProjectMember, bool, error) {
 	var projectMember models.ProjectMember
-	err := db.GetDB().Where(models.ProjectMember{UserID: userID, ProjectID: projectID}).Preload("Project").First(&projectMember).Error
+	err := db.GetDB().Where(models.ProjectMember{UserID: userID, ProjectID: projectID}).Preload("Project").Preload("Role").First(&projectMember).Error
 	return &projectMember, errors.Is(err, gorm.ErrRecordNotFound), err
 }
 

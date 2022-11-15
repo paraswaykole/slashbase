@@ -16,7 +16,7 @@ func Init() {
 	mongoQueryEngine = mongoqueryengine.InitMongoQueryEngine()
 }
 
-func RunQuery(user *models.User, dbConn *models.DBConnection, query string, userRole string) (map[string]interface{}, error) {
+func RunQuery(user *models.User, dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.RunQuery(user, dbConn, query, true)
 	} else if dbConn.Type == models.DBTYPE_MONGO {

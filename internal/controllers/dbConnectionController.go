@@ -29,6 +29,10 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	sshPassword string,
 	sshKeyFile string) (*models.DBConnection, error) {
 
+	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, projectID); err != nil || !isAllowed {
+		return nil, err
+	}
+
 	dbConn, err := models.NewDBConnection(authUser.ID, projectID, name, dbtype, scheme, host, port,
 		user, password, dbName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile)
 	if err != nil {
@@ -81,7 +85,7 @@ func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbC
 		return errors.New("db connection not found")
 	}
 
-	if _, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN}); err != nil {
+	if _, err := getAuthUserHasAdminRoleForProject(authUser, dbConn.ProjectID); err != nil {
 		return err
 	}
 

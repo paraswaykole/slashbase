@@ -22,6 +22,7 @@ func autoMigrate() {
 		&models.User{},
 		&models.UserSession{},
 		&models.Project{},
+		&models.Role{},
 		&models.ProjectMember{},
 		&models.DBConnection{},
 		&models.DBQuery{},
