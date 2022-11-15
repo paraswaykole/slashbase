@@ -62,10 +62,6 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 		if err != nil {
 			return nil, err
 		}
-		constraintsData, err := postgresQueryEngine.GetSingleDataModelConstraints(user, dbConn, schemaName, name)
-		if err != nil {
-			return nil, err
-		}
 		indexesData, err := postgresQueryEngine.GetSingleDataModelIndexes(user, dbConn, schemaName, name)
 		if err != nil {
 			return nil, err
@@ -77,13 +73,6 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 				allFields = append(allFields, *fieldView)
 			}
 		}
-		allConstraints := []DBDataModelConstaint{}
-		for _, constraint := range constraintsData {
-			constraintView := BuildDBDataModelConstraint(dbConn, constraint)
-			if constraintView != nil {
-				allConstraints = append(allConstraints, *constraintView)
-			}
-		}
 		allIndexes := []DBDataModelIndex{}
 		for _, index := range indexesData {
 			indexView := BuildDBDataModelIndex(dbConn, index)
@@ -92,11 +81,10 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 			}
 		}
 		dataModel = DBDataModel{
-			SchemaName:  schemaName,
-			Name:        name,
-			Fields:      allFields,
-			Constraints: allConstraints,
-			Indexes:     allIndexes,
+			SchemaName: schemaName,
+			Name:       name,
+			Fields:     allFields,
+			Indexes:    allIndexes,
 		}
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		fieldsData, err := mongoQueryEngine.GetSingleDataModelFields(user, dbConn, name)

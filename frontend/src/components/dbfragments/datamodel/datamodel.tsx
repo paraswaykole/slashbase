@@ -68,8 +68,9 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                                     <td>{field.name}</td>
                                     <td colSpan={dbConn.type === DBConnType.MONGO ? 2 : 1}>{field.type}</td>
                                     {dbConn.type === DBConnType.POSTGRES && <td>
-                                        {field.charMaxLength ? <span className="tag is-info is-light">Max Length: {field.charMaxLength}</span> : null}
-                                        {field.default ? <span className="tag is-info is-light">Default: {field.default}</span> : null}
+                                        {field.tags.length > 0 && field.tags.map<React.ReactNode>(tag => (
+                                            <span className="tag is-info is-light">{tag}</span>
+                                        )).reduce((prev, curr) => [prev, ' ', curr])}
                                     </td>}
                                     {isEditing && <td>
                                         <button className="button is-danger is-small" style={{ float: 'right' }} onClick={() => { setIsDeletingField(field.name) }}>
@@ -81,24 +82,6 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                         }
                     </tbody>
                 </table>
-                {dataModel.constraints && dataModel.constraints.length > 0 &&
-                    <table className={"table is-bordered is-striped is-narrow is-hoverable"}>
-                        <thead>
-                            <tr>
-                                <th colSpan={2}>Constraints</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                dataModel.constraints?.map(field => (
-                                    <tr key={field.name}>
-                                        <td>{field.name}</td>
-                                        <td>{field.constraintDef}</td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>}
                 {dataModel.indexes && dataModel.indexes.length > 0 &&
                     <table className={"table is-bordered is-striped is-narrow is-hoverable"}>
                         <thead>

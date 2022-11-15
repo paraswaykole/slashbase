@@ -49,12 +49,7 @@ export interface DBDataModel {
         type: string
         isPrimary: boolean
         isNullable: boolean
-        charMaxLength: number | null
-        default: string | null
-    }>
-    constraints?: Array<{
-        name: string
-        constraintDef: string
+        tags: string[]
     }>
     indexes?: Array<{
         name: string

@@ -253,3 +253,57 @@ func GetPSQLQueryType(query string) int {
 	}
 	return QUERY_UNKOWN
 }
+
+func QueryToDataModel(fieldQueryData []map[string]interface{}, constraintsQueryData []map[string]interface{}) []map[string]interface{} {
+	fields := []map[string]interface{}{}
+
+	constraintMap := map[int32]map[string]interface{}{}
+	for _, constraint := range constraintsQueryData {
+		conkey := constraint["0"].([]pgtype.Int2)
+		for _, colKey := range conkey {
+			constraintMap[int32(colKey.Int)] = constraint
+		}
+	}
+
+	for _, fieldData := range fieldQueryData {
+		conkey := fieldData["0"].(int32)
+		constraint := constraintMap[conkey]
+		field := map[string]interface{}{
+			"name":       fieldData["1"].(string),
+			"type":       fieldData["2"].(string),
+			"isNullable": fieldData["3"].(string) == "YES",
+			"isPrimary":  false,
+		}
+		tags := []string{}
+		if constraint["2"] != nil {
+			field["isPrimary"] = rune(constraint["2"].(int8)) == 'p'
+			if rune(constraint["2"].(int8)) == 'u' {
+				tags = append(tags, "Unique")
+			}
+			if rune(constraint["2"].(int8)) == 'c' {
+				tags = append(tags, "Check: "+constraint["1"].(string))
+			}
+			if rune(constraint["2"].(int8)) == 'f' {
+				tags = append(tags, "Foreign Key: "+constraint["1"].(string))
+			}
+			if rune(constraint["2"].(int8)) == 't' {
+				tags = append(tags, "Trigger: "+constraint["1"].(string))
+			}
+			if rune(constraint["2"].(int8)) == 'x' {
+				tags = append(tags, "Exclusion: "+constraint["1"].(string))
+			}
+		}
+		if fieldData["4"] != nil {
+			coldef := fieldData["4"].(string)
+			tags = append(tags, "Default: "+coldef)
+		}
+		if fieldData["5"] != nil {
+			maxLen := fieldData["5"].(int32)
+			tags = append(tags, "Max Length: "+strconv.Itoa(int(maxLen)))
+		}
+		field["tags"] = tags
+		fields = append(fields, field)
+	}
+
+	return fields
+}
