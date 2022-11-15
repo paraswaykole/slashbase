@@ -17,3 +17,14 @@ func (d RoleDao) GetAdminRole() (*models.Role, error) {
 	err := db.GetDB().Where(models.Role{Name: models.ROLE_ADMIN}).FirstOrCreate(&role).Error
 	return &role, err
 }
+
+func (d RoleDao) GetAllRoles() (*[]models.Role, error) {
+	var roles []models.Role
+	err := db.GetDB().Model(models.Role{}).Find(&roles).Error
+	return &roles, err
+}
+
+func (d RoleDao) DeleteRoleById(roleId string) error {
+	err := db.GetDB().Where(models.Role{ID: roleId}).Delete(&models.Role{}).Error
+	return err
+}

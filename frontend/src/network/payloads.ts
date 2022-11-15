@@ -19,5 +19,5 @@ export interface AddDBConnPayload {
 
 export interface AddProjectMemberPayload {
     email: string
-    role: string
+    roleId: string
 }

@@ -1,7 +1,7 @@
 import styles from './projectmembercard.module.scss'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { Project, ProjectMember, User } from '../../../data/models'
+import { Project, ProjectMember, Role, User } from '../../../data/models'
 import { useAppSelector } from '../../../redux/hooks'
 import { selectCurrentUser } from '../../../redux/currentUserSlice'
 import apiService from '../../../network/apiService'
@@ -26,6 +26,16 @@ const AddNewProjectMemberCard = ({ project, onAdded }: AddNewProjectMemberCardPr
     const [memberRole, setMemberRole] = useState<string>(Constants.ROLES.ADMIN)
     const [searching, setSearching] = useState(false)
     const [adding, setAdding] = useState(false)
+    const [roles, setRoles] = useState<Role[]>([])
+
+    const selectRoleRef = useRef<HTMLSelectElement>(null)
+
+    useEffect(() => {
+        (async () => {
+            const result = await apiService.getRoles()
+            setRoles(result.data)
+        })()
+    }, [])
 
     if (!currentUser || (currentUser && !currentUser.isRoot)) {
         return null
@@ -69,7 +79,7 @@ const AddNewProjectMemberCard = ({ project, onAdded }: AddNewProjectMemberCardPr
         setAdding(true)
         const payload: AddProjectMemberPayload = {
             email: memberEmail,
-            role: memberRole,
+            roleId: selectRoleRef.current!.value,
         }
         let response = await apiService.addNewProjectMember(project.id, payload)
         if (response.success) {
@@ -157,28 +167,12 @@ const AddNewProjectMemberCard = ({ project, onAdded }: AddNewProjectMemberCardPr
                                 </div>
                                 <div className="control">
                                     <div className="select">
-                                        <select
-                                            value={memberRole}
-                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                setMemberRole(e.target.value)
-                                            }}
-                                        >
-                                            {/* TODO: Fetch roles and display
-                                            <option 
-                                                value={ProjectMemberRole.ADMIN}
-                                                >
-                                                Admin
-                                            </option>
-                                            <option 
-                                                value={ProjectMemberRole.DEVELOPER}
-                                                >
-                                                Developer
-                                            </option>
-                                            <option 
-                                                value={ProjectMemberRole.ANALYST}
-                                                >
-                                                Analyst
-                                            </option> */}
+                                        <select ref={selectRoleRef}>
+                                            {roles.map(role => (
+                                                <option key={role.id} value={role.id}>
+                                                    {role.name}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>

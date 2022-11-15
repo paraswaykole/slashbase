@@ -99,6 +99,10 @@ const Constants: ConstantsType = {
             path: '/settings/users/add',
             isAuth: true
         },
+        SETTINGS_ROLES: {
+            path: '/settings/roles',
+            isAuth: true
+        },
     },
     EXTERNAL_PATHS: {
         OFFICIAL_WEBSITE: "https://slashbase.com",

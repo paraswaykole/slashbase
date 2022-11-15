@@ -53,3 +53,13 @@ func BuildProjectMember(projectMember *models.ProjectMember) ProjectMemberView {
 	}
 	return projectMemberView
 }
+
+func BuildRole(role *models.Role) RoleView {
+	roleView := RoleView{
+		ID:        role.ID,
+		Name:      role.Name,
+		CreatedAt: role.CreatedAt,
+		UpdatedAt: role.UpdatedAt,
+	}
+	return roleView
+}

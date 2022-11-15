@@ -135,3 +135,53 @@ func (pc ProjectController) DeleteProjectMember(authUser *models.User, projectId
 	}
 	return nil
 }
+
+func (pc ProjectController) GetAllRoles(user *models.User) (*[]models.Role, error) {
+
+	if !user.IsRoot {
+		return nil, errors.New("not allowed")
+	}
+
+	roles, err := roleDao.GetAllRoles()
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+	return roles, nil
+}
+
+func (pc ProjectController) AddRole(user *models.User, name string) (*models.Role, error) {
+
+	if !user.IsRoot {
+		return nil, errors.New("not allowed")
+	}
+
+	role := models.NewRole(name)
+	err := roleDao.CreateRole(role)
+	if err != nil {
+		return nil, errors.New("cannot create role: " + name)
+	}
+	return role, nil
+}
+
+func (pc ProjectController) DeleteRole(user *models.User, roleID string) error {
+
+	if !user.IsRoot {
+		return errors.New("not allowed")
+	}
+
+	role, err := roleDao.GetAdminRole()
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	if role.ID == roleID {
+		return errors.New("cannot delete admin role")
+	}
+
+	err = roleDao.DeleteRoleById(roleID)
+	if err != nil {
+		return errors.New("cannot delete role")
+	}
+
+	return nil
+}
