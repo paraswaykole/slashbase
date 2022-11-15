@@ -38,7 +38,7 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 ## Installation
 
-Please follow the [installation guide](https://slashbase.com/install) to install Slashbase on your own cloud (in your own VPC)
+Please follow the [installation guide](https://slashbase.com/install) to self-host Slashbase on your own cloud.
 
 ## Documentation
 
