@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"errors"
@@ -11,11 +11,11 @@ import (
 	"slashbase.com/backend/internal/views"
 )
 
-type DBConnectionRoutes struct{}
+type DBConnectionHandlers struct{}
 
 var dbConnController controllers.DBConnectionController
 
-func (dbcr DBConnectionRoutes) CreateDBConnection(c *gin.Context) {
+func (DBConnectionHandlers) CreateDBConnection(c *gin.Context) {
 	var createBody struct {
 		ProjectID   string `json:"projectId"`
 		Name        string `json:"name"`
@@ -51,7 +51,7 @@ func (dbcr DBConnectionRoutes) CreateDBConnection(c *gin.Context) {
 	})
 }
 
-func (dbcr DBConnectionRoutes) GetDBConnections(c *gin.Context) {
+func (DBConnectionHandlers) GetDBConnections(c *gin.Context) {
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
 	dbConns, err := dbConnController.GetDBConnections(authUserProjectIds)
@@ -72,7 +72,7 @@ func (dbcr DBConnectionRoutes) GetDBConnections(c *gin.Context) {
 	})
 }
 
-func (dbcr DBConnectionRoutes) DeleteDBConnection(c *gin.Context) {
+func (DBConnectionHandlers) DeleteDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
 	err := dbConnController.DeleteDBConnection(authUser, dbConnID)
@@ -88,7 +88,7 @@ func (dbcr DBConnectionRoutes) DeleteDBConnection(c *gin.Context) {
 	})
 }
 
-func (dbcr DBConnectionRoutes) GetSingleDBConnection(c *gin.Context) {
+func (DBConnectionHandlers) GetSingleDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
 	dbConn, err := dbConnController.GetSingleDBConnection(authUser, dbConnID)
@@ -106,7 +106,7 @@ func (dbcr DBConnectionRoutes) GetSingleDBConnection(c *gin.Context) {
 	})
 }
 
-func (dbcr DBConnectionRoutes) GetDBConnectionsByProject(c *gin.Context) {
+func (DBConnectionHandlers) GetDBConnectionsByProject(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	if !utils.ContainsString(*authUserProjectIds, projectID) {

@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"net/http"
@@ -12,11 +12,11 @@ import (
 	"slashbase.com/backend/internal/views"
 )
 
-type QueryRoutes struct{}
+type QueryHandlers struct{}
 
 var queryController controllers.QueryController
 
-func (qr QueryRoutes) RunQuery(c *gin.Context) {
+func (QueryHandlers) RunQuery(c *gin.Context) {
 	var runBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Query          string `json:"query"`
@@ -38,7 +38,7 @@ func (qr QueryRoutes) RunQuery(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) GetData(c *gin.Context) {
+func (QueryHandlers) GetData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 
 	schema := c.Query("schema")
@@ -73,7 +73,7 @@ func (qr QueryRoutes) GetData(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) GetDataModels(c *gin.Context) {
+func (QueryHandlers) GetDataModels(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
@@ -93,7 +93,7 @@ func (qr QueryRoutes) GetDataModels(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) GetSingleDataModel(c *gin.Context) {
+func (QueryHandlers) GetSingleDataModel(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 
 	schema := c.Query("schema")
@@ -115,7 +115,7 @@ func (qr QueryRoutes) GetSingleDataModel(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) AddSingleDataModelField(c *gin.Context) {
+func (QueryHandlers) AddSingleDataModelField(c *gin.Context) {
 	var reqBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Schema         string `json:"schema"`
@@ -141,7 +141,7 @@ func (qr QueryRoutes) AddSingleDataModelField(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) DeleteSingleDataModelField(c *gin.Context) {
+func (QueryHandlers) DeleteSingleDataModelField(c *gin.Context) {
 	var reqBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Schema         string `json:"schema"`
@@ -166,7 +166,7 @@ func (qr QueryRoutes) DeleteSingleDataModelField(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) AddData(c *gin.Context) {
+func (QueryHandlers) AddData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 	var addBody struct {
 		Schema string                 `json:"schema"`
@@ -190,7 +190,7 @@ func (qr QueryRoutes) AddData(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) DeleteData(c *gin.Context) {
+func (QueryHandlers) DeleteData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
 	var deleteBody struct {
@@ -214,7 +214,7 @@ func (qr QueryRoutes) DeleteData(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) UpdateSingleData(c *gin.Context) {
+func (QueryHandlers) UpdateSingleData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
 	var updateBody struct {
@@ -240,7 +240,7 @@ func (qr QueryRoutes) UpdateSingleData(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) SaveDBQuery(c *gin.Context) {
+func (QueryHandlers) SaveDBQuery(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
@@ -265,7 +265,7 @@ func (qr QueryRoutes) SaveDBQuery(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) GetDBQueriesInDBConnection(c *gin.Context) {
+func (QueryHandlers) GetDBQueriesInDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
@@ -287,7 +287,7 @@ func (qr QueryRoutes) GetDBQueriesInDBConnection(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) GetSingleDBQuery(c *gin.Context) {
+func (QueryHandlers) GetSingleDBQuery(c *gin.Context) {
 	queryID := c.Param("queryId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
@@ -305,7 +305,7 @@ func (qr QueryRoutes) GetSingleDBQuery(c *gin.Context) {
 	})
 }
 
-func (qr QueryRoutes) GetQueryHistoryInDBConnection(c *gin.Context) {
+func (QueryHandlers) GetQueryHistoryInDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
