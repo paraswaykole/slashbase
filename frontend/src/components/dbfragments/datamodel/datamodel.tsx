@@ -69,7 +69,7 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                                     <td colSpan={dbConn.type === DBConnType.MONGO ? 2 : 1}>{field.type}</td>
                                     {dbConn.type === DBConnType.POSTGRES && <td>
                                         {field.tags.length > 0 && field.tags.map<React.ReactNode>(tag => (
-                                            <span className="tag is-info is-light">{tag}</span>
+                                            <span key={tag} className="tag is-info is-light">{tag}</span>
                                         )).reduce((prev, curr) => [prev, ' ', curr])}
                                     </td>}
                                     {isEditing && <td>
