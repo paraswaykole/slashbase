@@ -29,7 +29,7 @@ const AddNewUserPage: NextPage = () => {
     setAdding(true)
     const result = await apiService.addUser(email, password)
     if (result.success) {
-      router.push(Constants.APP_PATHS.SETTINGS_USER.path)
+      router.push(Constants.APP_PATHS.SETTINGS_USERS.path)
     } else {
       toast.error(result.error!)
     }
