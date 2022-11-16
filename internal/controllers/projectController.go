@@ -103,7 +103,12 @@ func (pc ProjectController) AddProjectMember(authUser *models.User, projectID, e
 		return nil, errors.New("there was some problem")
 	}
 
-	newProjectMember := models.NewProjectMember(toAddUser.ID, projectID, roleID)
+	role, err := roleDao.GetRoleByID(roleID)
+	if err != nil {
+		return nil, errors.New("role not found")
+	}
+
+	newProjectMember := models.NewProjectMember(toAddUser.ID, projectID, role.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -112,6 +117,7 @@ func (pc ProjectController) AddProjectMember(authUser *models.User, projectID, e
 		return nil, errors.New("there was some problem")
 	}
 	newProjectMember.User = *toAddUser
+	newProjectMember.Role = *role
 	return newProjectMember, nil
 }
 
@@ -178,7 +184,7 @@ func (pc ProjectController) DeleteRole(user *models.User, roleID string) error {
 		return errors.New("cannot delete admin role")
 	}
 
-	err = roleDao.DeleteRoleById(roleID)
+	err = roleDao.DeleteRoleByID(roleID)
 	if err != nil {
 		return errors.New("cannot delete role")
 	}
