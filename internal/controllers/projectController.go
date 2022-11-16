@@ -34,6 +34,7 @@ func (pc ProjectController) CreateProject(authUser *models.User, projectName str
 	if err != nil {
 		return nil, nil, errors.New("there was some problem")
 	}
+	projectMember.Role = *role
 
 	return project, projectMember, nil
 }
