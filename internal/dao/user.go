@@ -1,4 +1,4 @@
-package daos
+package dao
 
 import (
 	"database/sql"
@@ -9,32 +9,34 @@ import (
 	"slashbase.com/backend/internal/models"
 )
 
-type UserDao struct{}
+type userDao struct{}
 
-func (d UserDao) CreateUser(user *models.User) error {
+var User userDao
+
+func (userDao) CreateUser(user *models.User) error {
 	result := db.GetDB().Create(user)
 	return result.Error
 }
 
-func (d UserDao) GetRootUserOrCreate(user models.User) (*models.User, error) {
+func (userDao) GetRootUserOrCreate(user models.User) (*models.User, error) {
 	var result models.User
 	err := db.GetDB().Model(&models.User{}).Where(&models.User{Email: user.Email}).Attrs(&user).FirstOrCreate(&result).Error
 	return &result, err
 }
 
-func (d UserDao) GetUserByEmail(email string) (*models.User, error) {
+func (userDao) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	err := db.GetDB().Where(&models.User{Email: email}).First(&user).Error
 	return &user, err
 }
 
-func (d UserDao) GetUserByID(userID string) (*models.User, error) {
+func (userDao) GetUserByID(userID string) (*models.User, error) {
 	var user models.User
 	err := db.GetDB().Where(&models.User{ID: userID}).Preload("Projects").First(&user).Error
 	return &user, err
 }
 
-func (d UserDao) EditUser(userID string, name string, profileImageURL string) error {
+func (userDao) EditUser(userID string, name string, profileImageURL string) error {
 	err := db.GetDB().Where(&models.User{ID: userID}).Updates(&models.User{
 		FullName: sql.NullString{
 			String: name,
@@ -48,14 +50,14 @@ func (d UserDao) EditUser(userID string, name string, profileImageURL string) er
 	return err
 }
 
-func (d UserDao) UpdatePassword(userID string, newPasswordHash string) error {
+func (userDao) UpdatePassword(userID string, newPasswordHash string) error {
 	err := db.GetDB().Where(&models.User{ID: userID}).Updates(&models.User{
 		Password: newPasswordHash,
 	}).Error
 	return err
 }
 
-func (d UserDao) GetUsersPaginated(offset int) (*[]models.User, error) {
+func (userDao) GetUsersPaginated(offset int) (*[]models.User, error) {
 	var users []models.User
 	err := db.GetDB().
 		Model(&models.User{}).
@@ -64,7 +66,7 @@ func (d UserDao) GetUsersPaginated(offset int) (*[]models.User, error) {
 	return &users, err
 }
 
-func (d UserDao) SearchUsersPaginated(searchTerm string, offset int) (*[]models.User, error) {
+func (userDao) SearchUsersPaginated(searchTerm string, offset int) (*[]models.User, error) {
 	searchTerm = "%" + strings.ToLower(searchTerm) + "%"
 	var users []models.User
 	err := db.GetDB().

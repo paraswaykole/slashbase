@@ -3,17 +3,15 @@ package controllers
 import (
 	"errors"
 
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/utils"
 )
 
 type SettingController struct{}
 
-var settingDao daos.SettingDao
-
 func (sc SettingController) GetSingleSetting(name string) (interface{}, error) {
-	setting, err := settingDao.GetSingleSetting(name)
+	setting, err := dao.Setting.GetSingleSetting(name)
 	if err != nil {
 		return "", errors.New("there was some problem")
 	}
@@ -35,7 +33,7 @@ func (sc SettingController) UpdateSingleSetting(name string, value string) error
 			return errors.New("cannot update the setting: " + name)
 		}
 	}
-	err := settingDao.UpdateSingleSetting(name, value)
+	err := dao.Setting.UpdateSingleSetting(name, value)
 	if err != nil {
 		return errors.New("there was some problem updating the setting")
 	}

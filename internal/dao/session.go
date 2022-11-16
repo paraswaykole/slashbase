@@ -1,4 +1,4 @@
-package daos
+package dao
 
 import (
 	"errors"
@@ -11,18 +11,18 @@ import (
 	"slashbase.com/backend/internal/models"
 )
 
-func (d UserDao) CreateUserSession(session *models.UserSession) error {
+func (userDao) CreateUserSession(session *models.UserSession) error {
 	result := db.GetDB().Create(session)
 	return result.Error
 }
 
-func (d UserDao) GetUserSessionByID(sessionID string) (*models.UserSession, error) {
+func (userDao) GetUserSessionByID(sessionID string) (*models.UserSession, error) {
 	var userSession models.UserSession
 	err := db.GetDB().Where(&models.UserSession{ID: sessionID}).Preload("User.Projects").First(&userSession).Error
 	return &userSession, err
 }
 
-func (d UserDao) GetUserSessionFromAuthToken(tokenString string) (*models.UserSession, error) {
+func (d userDao) GetUserSessionFromAuthToken(tokenString string) (*models.UserSession, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

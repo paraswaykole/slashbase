@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-co-op/gocron"
 	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 )
 
@@ -27,15 +27,14 @@ func InitCron() {
 
 func telemetryPings(s *gocron.Scheduler) {
 	s.Every(1).Day().Do(func() {
-		var settingsDao daos.SettingDao
-		setting, err := settingsDao.GetSingleSetting(models.SETTING_NAME_TELEMETRY_ENABLED)
+		setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_TELEMETRY_ENABLED)
 		if err != nil {
 			return
 		}
 		if !setting.Bool() {
 			return
 		}
-		setting, err = settingsDao.GetSingleSetting(models.SETTING_NAME_APP_ID)
+		setting, err = dao.Setting.GetSingleSetting(models.SETTING_NAME_APP_ID)
 		if err != nil {
 			return
 		}

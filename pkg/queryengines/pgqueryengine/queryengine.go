@@ -6,14 +6,12 @@ import (
 	"strconv"
 	"strings"
 
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines/pgqueryengine/pgxutils"
 	"slashbase.com/backend/pkg/sbsql"
 	"slashbase.com/backend/pkg/sshtunnel"
 )
-
-var dbQueryLogDao daos.DBQueryLogDao
 
 type PostgresQueryEngine struct {
 	openConnections map[string]pgxConnPoolInstance
@@ -54,7 +52,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 		}
 		defer rows.Close()
 		columns, rowsData := pgxutils.PgSqlRowsToJson(rows)
-		go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 		return map[string]interface{}{
 			"columns": columns,
 			"rows":    rowsData,
@@ -65,7 +63,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 		return nil, err
 	}
 	if createLog {
-		go dbQueryLogDao.CreateDBQueryLog(queryLog)
+		go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 	}
 	return map[string]interface{}{
 		"message": cmdTag.String(),

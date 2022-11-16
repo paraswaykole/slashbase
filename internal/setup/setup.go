@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/db"
 	"slashbase.com/backend/internal/models"
 )
@@ -37,13 +37,12 @@ func autoMigrate() {
 }
 
 func configureSettings() {
-	var settingsDao daos.SettingDao
-	_, err := settingsDao.GetSingleSetting(models.SETTING_NAME_APP_ID)
+	_, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_APP_ID)
 	if err == gorm.ErrRecordNotFound {
 		settings := []models.Setting{}
 		settings = append(settings, *models.NewSetting(models.SETTING_NAME_APP_ID, uuid.New().String()))
 		settings = append(settings, *models.NewSetting(models.SETTING_NAME_TELEMETRY_ENABLED, "true"))
-		settingsDao.CreateSettings(&settings)
+		dao.Setting.CreateSettings(&settings)
 	}
 }
 
@@ -54,16 +53,14 @@ func configureRootUser() {
 		os.Exit(1)
 	}
 	rootUser.IsRoot = true
-	var userDao daos.UserDao
-	_, err = userDao.GetRootUserOrCreate(*rootUser)
+	_, err = dao.User.GetRootUserOrCreate(*rootUser)
 	if err != nil {
 		os.Exit(1)
 	}
 }
 
 func configureRoles() {
-	var roleDao daos.RoleDao
-	_, err := roleDao.GetAdminRole()
+	_, err := dao.Role.GetAdminRole()
 	if err != nil {
 		os.Exit(1)
 	}

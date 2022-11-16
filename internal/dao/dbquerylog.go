@@ -1,4 +1,4 @@
-package daos
+package dao
 
 import (
 	"time"
@@ -9,14 +9,16 @@ import (
 	"slashbase.com/backend/internal/models"
 )
 
-type DBQueryLogDao struct{}
+type dbQueryLogDao struct{}
 
-func (d DBQueryLogDao) CreateDBQueryLog(queryLog *models.DBQueryLog) error {
+var DBQueryLog dbQueryLogDao
+
+func (dbQueryLogDao) CreateDBQueryLog(queryLog *models.DBQueryLog) error {
 	err := db.GetDB().Create(queryLog).Error
 	return err
 }
 
-func (d DBQueryLogDao) GetDBQueryLogsDBConnID(dbConnID string, projectMember *models.ProjectMember, before time.Time) ([]*models.DBQueryLog, error) {
+func (dbQueryLogDao) GetDBQueryLogsDBConnID(dbConnID string, projectMember *models.ProjectMember, before time.Time) ([]*models.DBQueryLog, error) {
 	var dbQueryLogs []*models.DBQueryLog
 	var query *gorm.DB
 	if projectMember.Role.Name == models.ROLE_ADMIN {
