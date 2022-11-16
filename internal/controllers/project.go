@@ -9,7 +9,7 @@ import (
 
 type ProjectController struct{}
 
-func (pc ProjectController) CreateProject(authUser *models.User, projectName string) (*models.Project, *models.ProjectMember, error) {
+func (ProjectController) CreateProject(authUser *models.User, projectName string) (*models.Project, *models.ProjectMember, error) {
 
 	if !authUser.IsRoot {
 		return nil, nil, errors.New("not allowed")
@@ -36,7 +36,7 @@ func (pc ProjectController) CreateProject(authUser *models.User, projectName str
 	return project, projectMember, nil
 }
 
-func (pc ProjectController) GetProjects(authUser *models.User) (*[]models.ProjectMember, error) {
+func (ProjectController) GetProjects(authUser *models.User) (*[]models.ProjectMember, error) {
 
 	projectMembers, err := dao.Project.GetProjectMembersForUser(authUser.ID)
 	if err != nil {
@@ -45,7 +45,7 @@ func (pc ProjectController) GetProjects(authUser *models.User) (*[]models.Projec
 	return projectMembers, nil
 }
 
-func (pc ProjectController) DeleteProject(authUser *models.User, id string) error {
+func (ProjectController) DeleteProject(authUser *models.User, id string) error {
 
 	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, id); err != nil || !isAllowed {
 		return err
@@ -81,7 +81,7 @@ func (pc ProjectController) DeleteProject(authUser *models.User, id string) erro
 	return nil
 }
 
-func (pc ProjectController) GetProjectMembers(projectID string) (*[]models.ProjectMember, error) {
+func (ProjectController) GetProjectMembers(projectID string) (*[]models.ProjectMember, error) {
 
 	projectMembers, err := dao.Project.GetProjectMembers(projectID)
 	if err != nil {
@@ -90,7 +90,7 @@ func (pc ProjectController) GetProjectMembers(projectID string) (*[]models.Proje
 	return projectMembers, nil
 }
 
-func (pc ProjectController) AddProjectMember(authUser *models.User, projectID, email, roleID string) (*models.ProjectMember, error) {
+func (ProjectController) AddProjectMember(authUser *models.User, projectID, email, roleID string) (*models.ProjectMember, error) {
 
 	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, projectID); err != nil || !isAllowed {
 		return nil, err
@@ -119,7 +119,7 @@ func (pc ProjectController) AddProjectMember(authUser *models.User, projectID, e
 	return newProjectMember, nil
 }
 
-func (pc ProjectController) DeleteProjectMember(authUser *models.User, projectId, userId string) error {
+func (ProjectController) DeleteProjectMember(authUser *models.User, projectId, userId string) error {
 
 	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, projectId); err != nil || !isAllowed {
 		return err
@@ -140,7 +140,7 @@ func (pc ProjectController) DeleteProjectMember(authUser *models.User, projectId
 	return nil
 }
 
-func (pc ProjectController) GetAllRoles(user *models.User) (*[]models.Role, error) {
+func (ProjectController) GetAllRoles(user *models.User) (*[]models.Role, error) {
 
 	if !user.IsRoot {
 		return nil, errors.New("not allowed")
@@ -153,7 +153,7 @@ func (pc ProjectController) GetAllRoles(user *models.User) (*[]models.Role, erro
 	return roles, nil
 }
 
-func (pc ProjectController) AddRole(user *models.User, name string) (*models.Role, error) {
+func (ProjectController) AddRole(user *models.User, name string) (*models.Role, error) {
 
 	if !user.IsRoot {
 		return nil, errors.New("not allowed")
@@ -167,7 +167,7 @@ func (pc ProjectController) AddRole(user *models.User, name string) (*models.Rol
 	return role, nil
 }
 
-func (pc ProjectController) DeleteRole(user *models.User, roleID string) error {
+func (ProjectController) DeleteRole(user *models.User, roleID string) error {
 
 	if !user.IsRoot {
 		return errors.New("not allowed")

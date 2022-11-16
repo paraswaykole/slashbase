@@ -10,7 +10,7 @@ import (
 
 type DBConnectionController struct{}
 
-func (dbcc DBConnectionController) CreateDBConnection(
+func (DBConnectionController) CreateDBConnection(
 	authUser *models.User,
 	projectID string,
 	name string,
@@ -50,7 +50,7 @@ func (dbcc DBConnectionController) CreateDBConnection(
 	return dbConn, nil
 }
 
-func (dbcc DBConnectionController) GetDBConnections(authUserProjectIds *[]string) ([]*models.DBConnection, error) {
+func (DBConnectionController) GetDBConnections(authUserProjectIds *[]string) ([]*models.DBConnection, error) {
 
 	dbConns, err := dao.DBConnection.GetDBConnectionsByProjectIds(*authUserProjectIds)
 	if err != nil {
@@ -59,7 +59,7 @@ func (dbcc DBConnectionController) GetDBConnections(authUserProjectIds *[]string
 	return dbConns, err
 }
 
-func (dbcc DBConnectionController) GetSingleDBConnection(authUser *models.User, dbConnID string) (*models.DBConnection, error) {
+func (DBConnectionController) GetSingleDBConnection(authUser *models.User, dbConnID string) (*models.DBConnection, error) {
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnID)
 	if err != nil {
 		return nil, errors.New("there was some problem")
@@ -68,7 +68,7 @@ func (dbcc DBConnectionController) GetSingleDBConnection(authUser *models.User, 
 	return dbConn, nil
 }
 
-func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) ([]*models.DBConnection, error) {
+func (DBConnectionController) GetDBConnectionsByProject(projectID string) ([]*models.DBConnection, error) {
 
 	dbConns, err := dao.DBConnection.GetDBConnectionsByProject(projectID)
 	if err != nil {
@@ -77,7 +77,7 @@ func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) (
 	return dbConns, nil
 }
 
-func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnId string) error {
+func (DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnId string) error {
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return errors.New("db connection not found")

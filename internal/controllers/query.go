@@ -13,7 +13,7 @@ import (
 
 type QueryController struct{}
 
-func (qc QueryController) RunQuery(authUser *models.User, dbConnectionId, query string) (map[string]interface{}, error) {
+func (QueryController) RunQuery(authUser *models.User, dbConnectionId, query string) (map[string]interface{}, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnectionId)
 	if err != nil {
@@ -33,7 +33,7 @@ func (qc QueryController) RunQuery(authUser *models.User, dbConnectionId, query 
 	return data, nil
 }
 
-func (qc QueryController) GetData(authUser *models.User, authUserProjectIds *[]string,
+func (QueryController) GetData(authUser *models.User, authUserProjectIds *[]string,
 	dbConnId, schema, name string, fetchCount bool, limit int, offset int64,
 	filter, sort []string) (map[string]interface{}, error) {
 
@@ -52,7 +52,7 @@ func (qc QueryController) GetData(authUser *models.User, authUserProjectIds *[]s
 	return data, nil
 }
 
-func (qc QueryController) GetDataModels(authUser *models.User, authUserProjectIds *[]string, dbConnId string) ([]*queryengines.DBDataModel, error) {
+func (QueryController) GetDataModels(authUser *models.User, authUserProjectIds *[]string, dbConnId string) ([]*queryengines.DBDataModel, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
@@ -69,7 +69,7 @@ func (qc QueryController) GetDataModels(authUser *models.User, authUserProjectId
 	return dataModels, nil
 }
 
-func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+func (QueryController) GetSingleDataModel(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
 	schema, name string) (*queryengines.DBDataModel, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -87,7 +87,7 @@ func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProj
 	return data, nil
 }
 
-func (qc QueryController) AddSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+func (QueryController) AddSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
 	schema, name string, fieldName, dataType string) (map[string]interface{}, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -105,7 +105,7 @@ func (qc QueryController) AddSingleDataModelField(authUser *models.User, authUse
 	return data, nil
 }
 
-func (qc QueryController) DeleteSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+func (QueryController) DeleteSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
 	schema, name string, fieldName string) (map[string]interface{}, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -123,7 +123,7 @@ func (qc QueryController) DeleteSingleDataModelField(authUser *models.User, auth
 	return data, nil
 }
 
-func (qc QueryController) AddData(authUser *models.User, dbConnId string,
+func (QueryController) AddData(authUser *models.User, dbConnId string,
 	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -143,7 +143,7 @@ func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 	return resultData, nil
 }
 
-func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
+func (QueryController) DeleteData(authUser *models.User, dbConnId string,
 	schema, name string, ids []string) (map[string]interface{}, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -163,7 +163,7 @@ func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 	return data, nil
 }
 
-func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
+func (QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
 	schema, name, id, columnName, columnValue string) (map[string]interface{}, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -183,7 +183,7 @@ func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId strin
 	return data, nil
 }
 
-func (qc QueryController) SaveDBQuery(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+func (QueryController) SaveDBQuery(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
 	name, query, queryId string) (*models.DBQuery, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -218,7 +218,7 @@ func (qc QueryController) SaveDBQuery(authUser *models.User, authUserProjectIds 
 	return queryObj, nil
 }
 
-func (qc QueryController) GetDBQueriesInDBConnection(authUserProjectIds *[]string, dbConnId string) ([]*models.DBQuery, error) {
+func (QueryController) GetDBQueriesInDBConnection(authUserProjectIds *[]string, dbConnId string) ([]*models.DBQuery, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
@@ -235,7 +235,7 @@ func (qc QueryController) GetDBQueriesInDBConnection(authUserProjectIds *[]strin
 	return dbQueries, nil
 }
 
-func (qc QueryController) GetSingleDBQuery(authUserProjectIds *[]string, queryId string) (*models.DBQuery, error) {
+func (QueryController) GetSingleDBQuery(authUserProjectIds *[]string, queryId string) (*models.DBQuery, error) {
 
 	dbQuery, err := dao.DBQuery.GetSingleDBQuery(queryId)
 	if err != nil {
@@ -249,7 +249,7 @@ func (qc QueryController) GetSingleDBQuery(authUserProjectIds *[]string, queryId
 	return dbQuery, nil
 }
 
-func (qc QueryController) GetQueryHistoryInDBConnection(authUser *models.User, authUserProjectIds *[]string,
+func (QueryController) GetQueryHistoryInDBConnection(authUser *models.User, authUserProjectIds *[]string,
 	dbConnId string, before time.Time) ([]*models.DBQueryLog, int64, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)

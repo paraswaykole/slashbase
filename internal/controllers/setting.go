@@ -10,7 +10,7 @@ import (
 
 type SettingController struct{}
 
-func (sc SettingController) GetSingleSetting(name string) (interface{}, error) {
+func (SettingController) GetSingleSetting(name string) (interface{}, error) {
 	setting, err := dao.Setting.GetSingleSetting(name)
 	if err != nil {
 		return "", errors.New("there was some problem")
@@ -24,7 +24,7 @@ func (sc SettingController) GetSingleSetting(name string) (interface{}, error) {
 	return setting.Value, nil
 }
 
-func (sc SettingController) UpdateSingleSetting(name string, value string) error {
+func (SettingController) UpdateSingleSetting(name string, value string) error {
 	switch name {
 	case models.SETTING_NAME_APP_ID:
 		return errors.New("cannot update the setting: " + name)

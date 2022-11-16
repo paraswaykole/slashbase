@@ -12,7 +12,7 @@ import (
 
 type UserController struct{}
 
-func (uc UserController) LoginUser(email, password string) (*models.UserSession, error) {
+func (UserController) LoginUser(email, password string) (*models.UserSession, error) {
 
 	usr, err := dao.User.GetUserByEmail(email)
 	if err != nil {
@@ -33,7 +33,7 @@ func (uc UserController) LoginUser(email, password string) (*models.UserSession,
 	return nil, errors.New("invalid user")
 }
 
-func (uc UserController) EditAccount(authUser *models.User, name, profileImageUrl string) error {
+func (UserController) EditAccount(authUser *models.User, name, profileImageUrl string) error {
 
 	err := dao.User.EditUser(authUser.ID, name, profileImageUrl)
 	if err != nil {
@@ -51,7 +51,7 @@ func (uc UserController) EditAccount(authUser *models.User, name, profileImageUr
 	return nil
 }
 
-func (uc UserController) ChangePassword(authUser *models.User, oldPassword, newPassword string) error {
+func (UserController) ChangePassword(authUser *models.User, oldPassword, newPassword string) error {
 
 	isOldPaswordValid := authUser.VerifyPassword(oldPassword)
 	if !isOldPaswordValid {
@@ -71,7 +71,7 @@ func (uc UserController) ChangePassword(authUser *models.User, oldPassword, newP
 	return nil
 }
 
-func (uc UserController) GetUsersPaginated(authUser *models.User, searchTerm string, offset int) (*[]models.User, int, error) {
+func (UserController) GetUsersPaginated(authUser *models.User, searchTerm string, offset int) (*[]models.User, int, error) {
 
 	if !authUser.IsRoot {
 		return nil, 0, errors.New("not allowed")
@@ -97,7 +97,7 @@ func (uc UserController) GetUsersPaginated(authUser *models.User, searchTerm str
 	return users, next, nil
 }
 
-func (uc UserController) AddUser(authUser *models.User, email, password string) error {
+func (UserController) AddUser(authUser *models.User, email, password string) error {
 	if !authUser.IsRoot {
 		return errors.New("not allowed")
 	}
