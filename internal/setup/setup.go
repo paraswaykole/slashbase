@@ -15,6 +15,7 @@ func SetupApp() {
 	autoMigrate()
 	configureSettings()
 	configureRootUser()
+	configureRoles()
 }
 
 func autoMigrate() {
@@ -22,6 +23,7 @@ func autoMigrate() {
 		&models.User{},
 		&models.UserSession{},
 		&models.Project{},
+		&models.Role{},
 		&models.ProjectMember{},
 		&models.DBConnection{},
 		&models.DBQuery{},
@@ -54,6 +56,14 @@ func configureRootUser() {
 	rootUser.IsRoot = true
 	var userDao daos.UserDao
 	_, err = userDao.GetRootUserOrCreate(*rootUser)
+	if err != nil {
+		os.Exit(1)
+	}
+}
+
+func configureRoles() {
+	var roleDao daos.RoleDao
+	_, err := roleDao.GetAdminRole()
 	if err != nil {
 		os.Exit(1)
 	}

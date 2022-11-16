@@ -7,17 +7,12 @@ import (
 
 type ProjectDao struct{}
 
-func (d ProjectDao) CreateProject(project *models.Project) (*models.ProjectMember, error) {
+func (d ProjectDao) CreateProject(project *models.Project) error {
 	result := db.GetDB().Create(project)
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	projectMember := models.NewProjectAdmin(project.CreatedBy, project.ID)
-	err := d.CreateProjectMember(projectMember)
-	if err != nil {
-		return nil, result.Error
-	}
-	return projectMember, err
+	return result.Error
 }
 
 func (d ProjectDao) GetProject(id string) (*models.Project, error) {

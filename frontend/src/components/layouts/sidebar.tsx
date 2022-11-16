@@ -135,12 +135,24 @@ const Sidebar = (_: SidebarPropType) => {
                                     <a className={router.pathname.startsWith(Constants.APP_PATHS.SETTINGS_ACCOUNT.path) ? 'is-active' : ''}>Account</a>
                                 </Link>
                             </li>
-                            {currentUser && currentUser.isRoot && <li>
-                                <Link href={Constants.APP_PATHS.SETTINGS_USERS.path} as={Constants.APP_PATHS.SETTINGS_USERS.path}>
-                                    <a className={router.pathname.startsWith(Constants.APP_PATHS.SETTINGS_USERS.path) ? 'is-active' : ''}>Manage Users</a>
-                                </Link>
-                            </li>}
                         </ul>
+                        {currentUser && currentUser.isRoot && <React.Fragment>
+                            <p className="menu-label">
+                                Admin (for root-user)
+                            </p>
+                            <ul className={"menu-list " + styles.menuList}>
+                                <li>
+                                    <Link href={Constants.APP_PATHS.SETTINGS_USERS.path} as={Constants.APP_PATHS.SETTINGS_USERS.path}>
+                                        <a className={router.pathname.startsWith(Constants.APP_PATHS.SETTINGS_USERS.path) ? 'is-active' : ''}>Manage Users</a>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href={Constants.APP_PATHS.SETTINGS_ROLES.path} as={Constants.APP_PATHS.SETTINGS_ROLES.path}>
+                                        <a className={router.pathname == Constants.APP_PATHS.SETTINGS_ROLES.path ? 'is-active' : ''}>Manage Roles</a>
+                                    </Link>
+                                </li>
+                            </ul>
+                        </React.Fragment>}
                         <p className="menu-label">
                             Info
                         </p>

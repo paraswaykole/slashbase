@@ -1,5 +1,5 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult } from '../data/models'
+import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult, Role } from '../data/models'
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 
@@ -228,6 +228,24 @@ const updateSingleSetting = async function (name: string, value: string): Promis
         .then(res => res.data)
 }
 
+const getRoles = async function (): Promise<ApiResult<Role[]>> {
+    return await Request.getApiInstance()
+        .get<any, AxiosResponse<ApiResult<Role[]>>>(`/role/all`)
+        .then(res => res.data)
+}
+
+const addRole = async function (name: string): Promise<ApiResult<Role>> {
+    return await Request.getApiInstance()
+        .post<any, AxiosResponse<ApiResult<Role>>>(`/role/add`, { name })
+        .then(res => res.data)
+}
+
+const deleteRole = async function (roleId: string): Promise<ApiResult<Role>> {
+    return await Request.getApiInstance()
+        .delete<any, AxiosResponse<ApiResult<Role>>>(`/role/${roleId}`)
+        .then(res => res.data)
+}
+
 export default {
     getHealthCheck,
     loginUser,
@@ -263,5 +281,8 @@ export default {
     getDBHistory,
     runQuery,
     getSingleSetting,
-    updateSingleSetting
+    updateSingleSetting,
+    getRoles,
+    addRole,
+    deleteRole
 }

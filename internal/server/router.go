@@ -94,6 +94,15 @@ func NewRouter() *gin.Engine {
 			settingGroup.GET("/single", settingRoutes.GetSingleSetting)
 			settingGroup.POST("/single", settingRoutes.UpdateSingleSetting)
 		}
+		roleGroup := api.Group("role")
+		{
+			roleRoutes := new(routes.RoleRoutes)
+			roleGroup.Use(middlewares.FindUserMiddleware())
+			roleGroup.Use(middlewares.AuthUserMiddleware())
+			roleGroup.GET("/all", roleRoutes.GetAllRoles)
+			roleGroup.POST("/add", roleRoutes.AddRole)
+			roleGroup.DELETE("/:id", roleRoutes.DeleteRole)
+		}
 	}
 
 	// Serving the Frontend files in Production
