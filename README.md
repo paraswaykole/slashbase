@@ -8,6 +8,7 @@
   <img src="https://img.shields.io/github/license/slashbaseide/slashbase" alt="License">
   <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
   <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
+  <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pull">
 </p>
 <p align="center">
   <a href="https://slashbase.com/install" rel="dofollow"><strong>Install on your server »</strong></a>
