@@ -14,7 +14,7 @@ func (d RoleDao) CreateRole(role *models.Role) error {
 
 func (d RoleDao) GetAdminRole() (*models.Role, error) {
 	var role models.Role
-	err := db.GetDB().Where(models.Role{Name: models.ROLE_ADMIN}).FirstOrCreate(&role).Error
+	err := db.GetDB().Where(models.Role{Name: models.ROLE_ADMIN}).Attrs(models.NewRole(models.ROLE_ADMIN)).FirstOrCreate(&role).Error
 	return &role, err
 }
 

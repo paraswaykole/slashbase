@@ -13,7 +13,7 @@ type ProjectMember struct {
 
 	User    User    `gorm:"foreignkey:user_id"`
 	Project Project `gorm:"foreignkey:project_id"`
-	Role    Role    `gorm:"foreignkey:role_id"`
+	Role    Role    `gorm:"foreignkey:role_id;constraint:OnDelete:SET NULL;"`
 }
 
 func NewProjectMember(userID string, projectID string, roleID string) *ProjectMember {
