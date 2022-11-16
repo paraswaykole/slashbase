@@ -7,7 +7,7 @@ import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnection
 import { useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
 import { selectProjects } from '../../redux/projectsSlice'
-import { DBConnType, ProjectMemberRole } from '../../data/defaults'
+import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
 

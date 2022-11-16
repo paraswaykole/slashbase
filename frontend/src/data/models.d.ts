@@ -1,4 +1,4 @@
-import { DBConnType, ProjectMemberRole } from "./defaults"
+import { DBConnType } from "./defaults"
 
 export interface User {
     id: string
