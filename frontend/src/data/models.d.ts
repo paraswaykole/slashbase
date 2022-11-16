@@ -26,8 +26,15 @@ export interface Project {
 
 export interface ProjectMember {
     id: string
-    role: ProjectMemberRole
+    role: Role
     user: User
+    createdAt: string
+    updatedAt: string
+}
+
+export interface Role {
+    id: string
+    name: string
     createdAt: string
     updatedAt: string
 }
@@ -49,12 +56,7 @@ export interface DBDataModel {
         type: string
         isPrimary: boolean
         isNullable: boolean
-        charMaxLength: number | null
-        default: string | null
-    }>
-    constraints?: Array<{
-        name: string
-        constraintDef: string
+        tags: string[]
     }>
     indexes?: Array<{
         name: string

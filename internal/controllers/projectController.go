@@ -10,6 +10,7 @@ import (
 type ProjectController struct{}
 
 var projectDao daos.ProjectDao
+var roleDao daos.RoleDao
 
 func (pc ProjectController) CreateProject(authUser *models.User, projectName string) (*models.Project, *models.ProjectMember, error) {
 
@@ -18,10 +19,22 @@ func (pc ProjectController) CreateProject(authUser *models.User, projectName str
 	}
 
 	project := models.NewProject(authUser, projectName)
-	projectMember, err := projectDao.CreateProject(project)
+	err := projectDao.CreateProject(project)
 	if err != nil {
 		return nil, nil, errors.New("there was some problem")
 	}
+
+	role, err := roleDao.GetAdminRole()
+	if err != nil {
+		return nil, nil, errors.New("there was some problem")
+	}
+
+	projectMember := models.NewProjectMember(project.CreatedBy, project.ID, role.ID)
+	err = projectDao.CreateProjectMember(projectMember)
+	if err != nil {
+		return nil, nil, errors.New("there was some problem")
+	}
+	projectMember.Role = *role
 
 	return project, projectMember, nil
 }
@@ -35,7 +48,11 @@ func (pc ProjectController) GetProjects(authUser *models.User) (*[]models.Projec
 	return projectMembers, nil
 }
 
-func (pc ProjectController) DeleteProject(id string) error {
+func (pc ProjectController) DeleteProject(authUser *models.User, id string) error {
+
+	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, id); err != nil || !isAllowed {
+		return err
+	}
 
 	project, err := projectDao.GetProject(id)
 	if err != nil {
@@ -76,17 +93,24 @@ func (pc ProjectController) GetProjectMembers(projectID string) (*[]models.Proje
 	return projectMembers, nil
 }
 
-func (pc ProjectController) AddProjectMember(projectID, email, role string) (*models.ProjectMember, error) {
+func (pc ProjectController) AddProjectMember(authUser *models.User, projectID, email, roleID string) (*models.ProjectMember, error) {
+
+	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, projectID); err != nil || !isAllowed {
+		return nil, err
+	}
 
 	toAddUser, err := userDao.GetUserByEmail(email)
 	if err != nil {
-		// TODO: Create user and send email if doesn't exist in users table.
 		return nil, errors.New("there was some problem")
 	}
 
-	newProjectMember, err := models.NewProjectMember(toAddUser.ID, projectID, role)
+	role, err := roleDao.GetRoleByID(roleID)
 	if err != nil {
-		// TODO: Create user and send email if doesn't exist in users table.
+		return nil, errors.New("role not found")
+	}
+
+	newProjectMember := models.NewProjectMember(toAddUser.ID, projectID, role.ID)
+	if err != nil {
 		return nil, err
 	}
 	err = projectDao.CreateProjectMember(newProjectMember)
@@ -94,10 +118,15 @@ func (pc ProjectController) AddProjectMember(projectID, email, role string) (*mo
 		return nil, errors.New("there was some problem")
 	}
 	newProjectMember.User = *toAddUser
+	newProjectMember.Role = *role
 	return newProjectMember, nil
 }
 
-func (pc ProjectController) DeleteProjectMember(projectId, userId string) error {
+func (pc ProjectController) DeleteProjectMember(authUser *models.User, projectId, userId string) error {
+
+	if isAllowed, err := getAuthUserHasAdminRoleForProject(authUser, projectId); err != nil || !isAllowed {
+		return err
+	}
 
 	projectMember, notFound, err := projectDao.FindProjectMember(projectId, userId)
 	if err != nil {
@@ -111,5 +140,55 @@ func (pc ProjectController) DeleteProjectMember(projectId, userId string) error 
 	if err != nil {
 		return errors.New("there was some problem deleting the member")
 	}
+	return nil
+}
+
+func (pc ProjectController) GetAllRoles(user *models.User) (*[]models.Role, error) {
+
+	if !user.IsRoot {
+		return nil, errors.New("not allowed")
+	}
+
+	roles, err := roleDao.GetAllRoles()
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+	return roles, nil
+}
+
+func (pc ProjectController) AddRole(user *models.User, name string) (*models.Role, error) {
+
+	if !user.IsRoot {
+		return nil, errors.New("not allowed")
+	}
+
+	role := models.NewRole(name)
+	err := roleDao.CreateRole(role)
+	if err != nil {
+		return nil, errors.New("cannot create role: " + name)
+	}
+	return role, nil
+}
+
+func (pc ProjectController) DeleteRole(user *models.User, roleID string) error {
+
+	if !user.IsRoot {
+		return errors.New("not allowed")
+	}
+
+	role, err := roleDao.GetAdminRole()
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	if role.ID == roleID {
+		return errors.New("cannot delete admin role")
+	}
+
+	err = roleDao.DeleteRoleByID(roleID)
+	if err != nil {
+		return errors.New("cannot delete role")
+	}
+
 	return nil
 }

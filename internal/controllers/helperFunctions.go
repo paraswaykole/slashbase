@@ -4,23 +4,22 @@ import (
 	"errors"
 
 	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/internal/utils"
 )
 
-func GetAuthUserHasRolesForProject(authUser *models.User, projectID string, hasRoles []string) (bool, error) {
+func getAuthUserHasAdminRoleForProject(authUser *models.User, projectID string) (bool, error) {
 	pMember, notFound, err := projectDao.FindProjectMember(projectID, authUser.ID)
 	if notFound {
 		return false, errors.New("not allowed")
 	} else if err != nil {
 		return false, errors.New("there was some problem")
 	}
-	if utils.ContainsString(hasRoles, pMember.Role) {
+	if pMember.Role.Name == models.ROLE_ADMIN {
 		return true, nil
 	}
 	return false, errors.New("not allowed")
 }
 
-func GetAuthUserProjectMemberForProject(authUser *models.User, projectID string) (*models.ProjectMember, error) {
+func getAuthUserProjectMemberForProject(authUser *models.User, projectID string) (*models.ProjectMember, error) {
 	pMember, notFound, err := projectDao.FindProjectMember(projectID, authUser.ID)
 	if err != nil {
 		if notFound {

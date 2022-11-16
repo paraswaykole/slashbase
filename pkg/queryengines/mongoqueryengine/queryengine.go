@@ -290,6 +290,19 @@ func (mqe *MongoQueryEngine) GetSingleDataModelIndexes(user *models.User, dbConn
 	return mongoutils.GetCollectionIndexes(returnedData), err
 }
 
+func (mqe *MongoQueryEngine) AddSingleDataModelKey(user *models.User, dbConn *models.DBConnection, schema, name, columnName, dataType string) (map[string]interface{}, error) {
+	return nil, errors.New("not supported yet")
+}
+
+func (mqe *MongoQueryEngine) DeleteSingleDataModelKey(user *models.User, dbConn *models.DBConnection, schema, name, columnName string) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`db.%s.updateMany({}, {$unset: {%s: ""}})`, name, columnName)
+	data, err := mqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
 func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.find().limit(%d).skip(%d)`, name, limit, offset)
 	countQuery := fmt.Sprintf(`db.%s.count()`, name)

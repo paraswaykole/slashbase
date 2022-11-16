@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/internal/controllers"
 	"slashbase.com/backend/internal/middlewares"
-	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/utils"
 	"slashbase.com/backend/internal/views"
 )
@@ -88,16 +87,12 @@ func (pr ProjectRoutes) AddProjectMember(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUser := middlewares.GetAuthUser(c)
 	var addMemberBody struct {
-		Email string `json:"email"`
-		Role  string `json:"role"`
+		Email  string `json:"email"`
+		RoleID string `json:"roleId"`
 	}
 	c.BindJSON(&addMemberBody)
 
-	if isAllowed, err := controllers.GetAuthUserHasRolesForProject(authUser, projectID, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
-		return
-	}
-
-	newProjectMember, err := projectController.AddProjectMember(projectID, addMemberBody.Email, addMemberBody.Role)
+	newProjectMember, err := projectController.AddProjectMember(authUser, projectID, addMemberBody.Email, addMemberBody.RoleID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -116,11 +111,7 @@ func (pr ProjectRoutes) DeleteProjectMember(c *gin.Context) {
 	userId := c.Param("userId")
 	authUser := middlewares.GetAuthUser(c)
 
-	if isAllowed, err := controllers.GetAuthUserHasRolesForProject(authUser, projectId, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
-		return
-	}
-
-	err := projectController.DeleteProjectMember(projectId, userId)
+	err := projectController.DeleteProjectMember(authUser, projectId, userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -137,11 +128,7 @@ func (pr ProjectRoutes) DeleteProject(c *gin.Context) {
 	projectId := c.Param("projectId")
 	authUser := middlewares.GetAuthUser(c)
 
-	if isAllowed, err := controllers.GetAuthUserHasRolesForProject(authUser, projectId, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
-		return
-	}
-
-	err := projectController.DeleteProject(projectId)
+	err := projectController.DeleteProject(authUser, projectId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

@@ -23,12 +23,13 @@ func (qc QueryController) RunQuery(authUser *models.User, dbConnectionId, query 
 		return nil, errors.New("there was some problem")
 	}
 
-	authUserProjectMember, err := GetAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	// TODO: check role permissions
+	_, err = getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := queryengines.RunQuery(authUser, dbConn, query, authUserProjectMember.Role)
+	data, err := queryengines.RunQuery(authUser, dbConn, query)
 	if err != nil {
 		return nil, err
 	}
@@ -89,6 +90,42 @@ func (qc QueryController) GetSingleDataModel(authUser *models.User, authUserProj
 	return data, nil
 }
 
+func (qc QueryController) AddSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+	schema, name string, fieldName, dataType string) (map[string]interface{}, error) {
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed to run query")
+	}
+
+	data, err := queryengines.AddSingleDataModelField(authUser, dbConn, schema, name, fieldName, dataType)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (qc QueryController) DeleteSingleDataModelField(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
+	schema, name string, fieldName string) (map[string]interface{}, error) {
+
+	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
+		return nil, errors.New("not allowed to run query")
+	}
+
+	data, err := queryengines.DeleteSingleDataModelField(authUser, dbConn, schema, name, fieldName)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
 
@@ -97,9 +134,10 @@ func (qc QueryController) AddData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-		return nil, err
-	}
+	// TODO: fix this is isAllowed
+	// if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+	// 	return nil, err
+	// }
 
 	resultData, err := queryengines.AddData(authUser, dbConn, schema, name, data)
 	if err != nil {
@@ -116,9 +154,10 @@ func (qc QueryController) DeleteData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-		return nil, err
-	}
+	// TODO: fix this is isAllowed
+	// if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+	// 	return nil, err
+	// }
 
 	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ids)
 	if err != nil {
@@ -135,9 +174,10 @@ func (qc QueryController) UpdateSingleData(authUser *models.User, dbConnId strin
 		return nil, errors.New("there was some problem")
 	}
 
-	if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-		return nil, err
-	}
+	// TODO: fix this is isAllowed
+	// if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
+	// 	return nil, err
+	// }
 
 	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, id, columnName, columnValue)
 	if err != nil {
@@ -223,7 +263,7 @@ func (qc QueryController) GetQueryHistoryInDBConnection(authUser *models.User, a
 		return nil, 0, errors.New("not allowed")
 	}
 
-	authUserProjectMember, err := GetAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	authUserProjectMember, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, 0, err
 	}

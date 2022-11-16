@@ -1,5 +1,5 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult } from '../data/models'
+import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult, Role } from '../data/models'
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 
@@ -140,6 +140,18 @@ const getDBSingleDataModelByConnectionId = async function (dbConnId: string, sch
         .then(res => res.data)
 }
 
+const addDBSingleDataModelField = async function (dbConnId: string, schemaName: string, mName: string, fieldName: string, dataType: string): Promise<ApiResult<DBQueryResult>> {
+    return await Request.getApiInstance()
+        .post<ApiResult<DBQueryResult>>(`/query/datamodel/single/addfield`, { dbConnectionId: dbConnId, schema: schemaName, name: mName, fieldName, dataType })
+        .then(res => res.data)
+}
+
+const deleteDBSingleDataModelField = async function (dbConnId: string, schemaName: string, mName: string, fieldName: string): Promise<ApiResult<DBQueryResult>> {
+    return await Request.getApiInstance()
+        .post<ApiResult<DBQueryResult>>(`/query/datamodel/single/deletefield`, { dbConnectionId: dbConnId, schema: schemaName, name: mName, fieldName })
+        .then(res => res.data)
+}
+
 const getDBDataInDataModel = async function (dbConnId: string, schemaName: string, mName: string, limit: number, offset: number, fetchCount: boolean, filter?: string[], sort?: string[]): Promise<ApiResult<DBQueryData>> {
     return await Request.getApiInstance()
         .get<ApiResult<DBQueryData>>(`/query/data/${dbConnId}`, {
@@ -216,6 +228,24 @@ const updateSingleSetting = async function (name: string, value: string): Promis
         .then(res => res.data)
 }
 
+const getRoles = async function (): Promise<ApiResult<Role[]>> {
+    return await Request.getApiInstance()
+        .get<any, AxiosResponse<ApiResult<Role[]>>>(`/role/all`)
+        .then(res => res.data)
+}
+
+const addRole = async function (name: string): Promise<ApiResult<Role>> {
+    return await Request.getApiInstance()
+        .post<any, AxiosResponse<ApiResult<Role>>>(`/role/add`, { name })
+        .then(res => res.data)
+}
+
+const deleteRole = async function (roleId: string): Promise<ApiResult<Role>> {
+    return await Request.getApiInstance()
+        .delete<any, AxiosResponse<ApiResult<Role>>>(`/role/${roleId}`)
+        .then(res => res.data)
+}
+
 export default {
     getHealthCheck,
     loginUser,
@@ -236,6 +266,8 @@ export default {
     getDBConnectionsByProject,
     getDBDataModelsByConnectionId,
     getDBSingleDataModelByConnectionId,
+    addDBSingleDataModelField,
+    deleteDBSingleDataModelField,
     getDBDataInDataModel,
     addNewDBConn,
     addNewProjectMember,
@@ -249,5 +281,8 @@ export default {
     getDBHistory,
     runQuery,
     getSingleSetting,
-    updateSingleSetting
+    updateSingleSetting,
+    getRoles,
+    addRole,
+    deleteRole
 }

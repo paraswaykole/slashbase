@@ -12,6 +12,9 @@ interface ConstantsType {
     SETTING_KEYS: {
         [key: string]: string
     }
+    ROLES: {
+        [key: string]: string
+    }
 }
 
 declare global {
@@ -96,6 +99,10 @@ const Constants: ConstantsType = {
             path: '/settings/users/add',
             isAuth: true
         },
+        SETTINGS_ROLES: {
+            path: '/settings/roles',
+            isAuth: true
+        },
     },
     EXTERNAL_PATHS: {
         OFFICIAL_WEBSITE: "https://slashbase.com",
@@ -106,6 +113,9 @@ const Constants: ConstantsType = {
     SETTING_KEYS: {
         APP_ID: "APP_ID",
         TELEMETRY_ENABLED: "TELEMETRY_ENABLED"
+    },
+    ROLES: {
+        ADMIN: "Admin"
     }
 }
 

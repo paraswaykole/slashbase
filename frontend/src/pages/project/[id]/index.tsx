@@ -6,7 +6,6 @@ import DBConnCard from '../../../components/cards/dbconncard/dbconncard'
 import NewDBConnButton from '../../../components/cards/dbconncard/newdbconnectionbutton'
 import AppLayout from '../../../components/layouts/applayout'
 import Constants from '../../../constants'
-import { ProjectMemberRole } from '../../../data/defaults'
 import { DBConnection, Project } from '../../../data/models'
 import apiService from '../../../network/apiService'
 import { useAppSelector } from '../../../redux/hooks'
@@ -22,10 +21,10 @@ const ProjectPage: NextPage = () => {
   const projects: Project[] = useAppSelector(selectProjects)
   const project: Project | undefined = projects.find(x => x.id === id)
 
-  useEffect(()=>{
+  useEffect(() => {
     (async () => {
       let response = await apiService.getDBConnectionsByProject(String(id))
-      if(response.success){
+      if (response.success) {
         setDatabases(response.data)
       }
     })()
@@ -33,28 +32,28 @@ const ProjectPage: NextPage = () => {
 
   const onDeleteDB = async (dbConnId: string) => {
     let response = await apiService.deleteDBConnection(dbConnId)
-    if(response.success){
+    if (response.success) {
       setDatabases(databases.filter(db => db.id !== dbConnId))
     }
   }
 
   return (
-    <AppLayout title={project ? project.name + " | Slashbase": "Slashbase"}>
+    <AppLayout title={project ? project.name + " | Slashbase" : "Slashbase"}>
       <h1>Showing Databases in {project?.name}</h1>
       {databases.map((db: DBConnection) => (
-        <DBConnCard key={db.id} dbConn={db} isAdmin={project?.currentMember?.role === ProjectMemberRole.ADMIN} onDeleteDB={onDeleteDB} />
+        <DBConnCard key={db.id} dbConn={db} isAdmin={project?.currentMember?.role.name === Constants.ROLES.ADMIN} onDeleteDB={onDeleteDB} />
       ))}
-      { project && <NewDBConnButton project={project}/> }
+      {project && <NewDBConnButton project={project} />}
       &nbsp;&nbsp;
-      { project && <Link href={Constants.APP_PATHS.PROJECT_MEMBERS.path} as={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
+      {project && <Link href={Constants.APP_PATHS.PROJECT_MEMBERS.path} as={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
         <a>
           <button className="button" >
-              <i className={"fas fa-users"}/>
-              &nbsp;&nbsp;
-              View Project Members
+            <i className={"fas fa-users"} />
+            &nbsp;&nbsp;
+            View Project Members
           </button>
         </a>
-      </Link> }
+      </Link>}
     </AppLayout>
   )
 }

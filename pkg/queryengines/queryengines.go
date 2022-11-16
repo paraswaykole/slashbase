@@ -16,7 +16,7 @@ func Init() {
 	mongoQueryEngine = mongoqueryengine.InitMongoQueryEngine()
 }
 
-func RunQuery(user *models.User, dbConn *models.DBConnection, query string, userRole string) (map[string]interface{}, error) {
+func RunQuery(user *models.User, dbConn *models.DBConnection, query string) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.RunQuery(user, dbConn, query, true)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -62,10 +62,6 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 		if err != nil {
 			return nil, err
 		}
-		constraintsData, err := postgresQueryEngine.GetSingleDataModelConstraints(user, dbConn, schemaName, name)
-		if err != nil {
-			return nil, err
-		}
 		indexesData, err := postgresQueryEngine.GetSingleDataModelIndexes(user, dbConn, schemaName, name)
 		if err != nil {
 			return nil, err
@@ -77,13 +73,6 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 				allFields = append(allFields, *fieldView)
 			}
 		}
-		allConstraints := []DBDataModelConstaint{}
-		for _, constraint := range constraintsData {
-			constraintView := BuildDBDataModelConstraint(dbConn, constraint)
-			if constraintView != nil {
-				allConstraints = append(allConstraints, *constraintView)
-			}
-		}
 		allIndexes := []DBDataModelIndex{}
 		for _, index := range indexesData {
 			indexView := BuildDBDataModelIndex(dbConn, index)
@@ -92,11 +81,10 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 			}
 		}
 		dataModel = DBDataModel{
-			SchemaName:  schemaName,
-			Name:        name,
-			Fields:      allFields,
-			Constraints: allConstraints,
-			Indexes:     allIndexes,
+			SchemaName: schemaName,
+			Name:       name,
+			Fields:     allFields,
+			Indexes:    allIndexes,
 		}
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		fieldsData, err := mongoQueryEngine.GetSingleDataModelFields(user, dbConn, name)
@@ -128,6 +116,24 @@ func GetSingleDataModel(user *models.User, dbConn *models.DBConnection, schemaNa
 		}
 	}
 	return &dataModel, nil
+}
+
+func AddSingleDataModelField(user *models.User, dbConn *models.DBConnection, schemaName string, name string, fieldName, datatype string) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.AddSingleDataModelColumn(user, dbConn, schemaName, name, fieldName, datatype)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.AddSingleDataModelKey(user, dbConn, schemaName, name, fieldName, datatype)
+	}
+	return nil, errors.New("invalid db type")
+}
+
+func DeleteSingleDataModelField(user *models.User, dbConn *models.DBConnection, schemaName string, name string, fieldName string) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.DeleteSingleDataModelColumn(user, dbConn, schemaName, name, fieldName)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return mongoQueryEngine.DeleteSingleDataModelKey(user, dbConn, schemaName, name, fieldName)
+	}
+	return nil, errors.New("invalid db type")
 }
 
 func GetData(user *models.User, dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {

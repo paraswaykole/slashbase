@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/internal/controllers"
 	"slashbase.com/backend/internal/middlewares"
-	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/internal/utils"
 	"slashbase.com/backend/internal/views"
 )
@@ -35,10 +34,6 @@ func (dbcr DBConnectionRoutes) CreateDBConnection(c *gin.Context) {
 	}
 	c.BindJSON(&createBody)
 	authUser := middlewares.GetAuthUser(c)
-
-	if isAllowed, err := controllers.GetAuthUserHasRolesForProject(authUser, createBody.ProjectID, []string{models.ROLE_ADMIN}); err != nil || !isAllowed {
-		return
-	}
 
 	dbConn, err := dbConnController.CreateDBConnection(authUser, createBody.ProjectID, createBody.Name, createBody.Type, createBody.Scheme, createBody.Host, createBody.Port,
 		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)

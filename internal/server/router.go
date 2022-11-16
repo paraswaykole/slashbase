@@ -82,6 +82,8 @@ func NewRouter() *gin.Engine {
 			{
 				dataModelGroup.GET("/all/:dbConnId", queryRoutes.GetDataModels)
 				dataModelGroup.GET("/single/:dbConnId", queryRoutes.GetSingleDataModel)
+				dataModelGroup.POST("/single/addfield", queryRoutes.AddSingleDataModelField)
+				dataModelGroup.POST("/single/deletefield", queryRoutes.DeleteSingleDataModelField)
 			}
 		}
 		settingGroup := api.Group("setting")
@@ -91,6 +93,15 @@ func NewRouter() *gin.Engine {
 			settingGroup.Use(middlewares.AuthUserMiddleware())
 			settingGroup.GET("/single", settingRoutes.GetSingleSetting)
 			settingGroup.POST("/single", settingRoutes.UpdateSingleSetting)
+		}
+		roleGroup := api.Group("role")
+		{
+			roleRoutes := new(routes.RoleRoutes)
+			roleGroup.Use(middlewares.FindUserMiddleware())
+			roleGroup.Use(middlewares.AuthUserMiddleware())
+			roleGroup.GET("/all", roleRoutes.GetAllRoles)
+			roleGroup.POST("/add", roleRoutes.AddRole)
+			roleGroup.DELETE("/:id", roleRoutes.DeleteRole)
 		}
 	}
 

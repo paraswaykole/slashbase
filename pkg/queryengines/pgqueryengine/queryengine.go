@@ -92,37 +92,27 @@ func (pgqe *PostgresQueryEngine) GetDataModels(user *models.User, dbConn *models
 }
 
 func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(user *models.User, dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
+	// get fields
 	query := fmt.Sprintf(`
-		SELECT column_name, data_type, is_nullable, column_default, contype, character_maximum_length
-		FROM
-		(SELECT *
+		SELECT ordinal_position, column_name, data_type, is_nullable, column_default, character_maximum_length
 		FROM information_schema.columns
-		WHERE table_schema = '%s' AND table_name = '%s') AS t1
-		LEFT JOIN
-		(SELECT conname,
-				contype,
-				unnest(conkey) AS conkey,
-				pg_get_constraintdef(oid, TRUE) AS pretty_source
-		FROM pg_constraint
-		WHERE conrelid = '"%s"."%s"'::regclass AND contype = 'p') AS t2 ON t1.ordinal_position = t2.conkey order by t1.ordinal_position;`,
-		schema, name, schema, name)
+		WHERE table_schema = '%s' AND table_name = '%s'
+		ORDER BY ordinal_position;`,
+		schema, name)
 	data, err := pgqe.RunQuery(user, dbConn, query, true)
 	if err != nil {
 		return nil, err
 	}
-	returnedData := data["rows"].([]map[string]interface{})
-	return returnedData, err
-}
-
-func (pgqe *PostgresQueryEngine) GetSingleDataModelConstraints(user *models.User, dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
-	query := fmt.Sprintf(`SELECT conname, pg_get_constraintdef(oid, true) as pretty_source
+	fieldsData := data["rows"].([]map[string]interface{})
+	// get constraints
+	query = fmt.Sprintf(`SELECT conkey, conname, contype
 		FROM pg_constraint WHERE conrelid = '"%s"."%s"'::regclass;`, schema, name)
-	data, err := pgqe.RunQuery(user, dbConn, query, true)
+	data, err = pgqe.RunQuery(user, dbConn, query, true)
 	if err != nil {
 		return nil, err
 	}
-	returnedData := data["rows"].([]map[string]interface{})
-	return returnedData, err
+	constraintsData := data["rows"].([]map[string]interface{})
+	return pgxutils.QueryToDataModel(fieldsData, constraintsData), err
 }
 
 func (pgqe *PostgresQueryEngine) GetSingleDataModelIndexes(user *models.User, dbConn *models.DBConnection, schema string, name string) ([]map[string]interface{}, error) {
@@ -134,6 +124,24 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelIndexes(user *models.User, db
 	}
 	returnedData := data["rows"].([]map[string]interface{})
 	return returnedData, err
+}
+
+func (pgqe *PostgresQueryEngine) AddSingleDataModelColumn(user *models.User, dbConn *models.DBConnection, schema, name, columnName, dataType string) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`ALTER TABLE %s.%s ADD COLUMN %s %s;`, schema, name, columnName, dataType)
+	data, err := pgqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
+func (pgqe *PostgresQueryEngine) DeleteSingleDataModelColumn(user *models.User, dbConn *models.DBConnection, schema, name, columnName string) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`ALTER TABLE %s.%s DROP COLUMN %s;`, schema, name, columnName)
+	data, err := pgqe.RunQuery(user, dbConn, query, true)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
 }
 
 func (pgqe *PostgresQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string) (map[string]interface{}, error) {

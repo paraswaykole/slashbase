@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/yaml.v2"
+	"slashbase.com/backend/internal/utils"
 )
 
 func MongoCursorToJson(cur *mongo.Cursor) ([]string, []map[string]interface{}) {
@@ -379,8 +380,10 @@ func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []m
 			types = append(types, key)
 		}
 		field := map[string]interface{}{
-			"name":  key,
-			"types": strings.Join(types, ", "),
+			"name":       key,
+			"types":      strings.Join(types, ", "),
+			"isNullable": utils.ContainsString(types, "null"),
+			"isPrimary":  key == "_id",
 		}
 		fields = append(fields, field)
 	}
