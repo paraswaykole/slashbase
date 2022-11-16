@@ -1,28 +1,29 @@
-import React, { useEffect, useState }  from 'react'
+import React, { useEffect, useState } from 'react'
 import { DBConnection, DBQueryLog } from '../../data/models'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
 import apiService from '../../network/apiService'
 import toast from 'react-hot-toast'
-import ProfileImage from '../user/profileimage'
+import ProfileImage, { ProfileImageSize } from '../user/profileimage'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import dateformat from 'dateformat'
 
 
-type DBHistoryPropType = { 
+type DBHistoryPropType = {
 }
 
-const DBHistoryFragment = ({}: DBHistoryPropType) => {
+const DBHistoryFragment = ({ }: DBHistoryPropType) => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
 
     const [dbQueryLogs, setDBQueryLogs] = useState<DBQueryLog[]>([])
-    const [dbQueryLogsNext, setDBQueryLogsNext] = useState<number|undefined>(undefined)
+    const [dbQueryLogsNext, setDBQueryLogsNext] = useState<number | undefined>(undefined)
 
-    useEffect(()=>{
-        if(dbConnection){
+    useEffect(() => {
+        if (dbConnection) {
             fetchDBQueryLogs()
         }
-    },[dbConnection])
+    }, [dbConnection])
 
     const fetchDBQueryLogs = async () => {
         let result = await apiService.getDBHistory(dbConnection!.id, dbQueryLogsNext)
@@ -36,10 +37,10 @@ const DBHistoryFragment = ({}: DBHistoryPropType) => {
 
     return (
         <React.Fragment>
-            {dbConnection && 
+            {dbConnection &&
                 <React.Fragment>
                     <h1>Showing History in {dbConnection.name}</h1>
-                    <br/>
+                    <br />
                     <InfiniteScroll
                         dataLength={dbQueryLogs.length}
                         next={fetchDBQueryLogs}
@@ -55,21 +56,21 @@ const DBHistoryFragment = ({}: DBHistoryPropType) => {
                             </p>
                         }
                         scrollableTarget="mainContainer"
-                        >
+                    >
                         <table className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
-                            <tbody> 
-                                {dbQueryLogs.map((log)=>{
+                            <tbody>
+                                {dbQueryLogs.map((log) => {
                                     return (
                                         <tr key={log.id}>
-                                            <td>
-                                                <ProfileImage imageUrl={log.user.profileImageUrl}/>
-                                                &nbsp;&nbsp;{log.user.name ? log.user.name : log.user.email}
+                                            <td style={{ fontSize: '14px' }}>
+                                                <ProfileImage imageUrl={log.user.profileImageUrl} size={ProfileImageSize.TINY} /><br />
+                                                {log.user.name ? log.user.name : log.user.email}
                                             </td>
                                             <td>
-                                                {log.query}
+                                                <code>{log.query}</code>
                                             </td>
-                                            <td>
-                                                {log.createdAt}
+                                            <td style={{ fontSize: '14px', width: '120px' }}>
+                                                {dateformat(log.createdAt, "mmm dd, yyyy HH:MM:ss")}
                                             </td>
                                         </tr>
                                     )
