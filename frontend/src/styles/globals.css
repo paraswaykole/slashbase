@@ -134,3 +134,12 @@ code {
   font-size: 12px;
   color: #828282;
 }
+
+.empty-state {
+  text-align: center;
+}
+
+.empty-state-image {
+  width: 200px;
+  margin-bottom: 10px;
+}

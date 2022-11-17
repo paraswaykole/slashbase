@@ -109,6 +109,7 @@ func NewRouter() *gin.Engine {
 	if config.IsLive() {
 		router.LoadHTMLGlob("html/*.html")
 		router.Static("_next", "html/_next")
+		router.Static("static", "html/static")
 		router.StaticFile("favicon.ico", "html/favicon.ico")
 		router.StaticFile("logo-icon.svg", "html/logo-icon.svg")
 		router.NoRoute(func(c *gin.Context) {

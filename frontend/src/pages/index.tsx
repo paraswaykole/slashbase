@@ -24,6 +24,12 @@ const HomePage: NextPage = () => {
   return (
     <AppLayout title="Home">
       <h1>All Projects</h1>
+      {projects.length === 0 && <div className="empty-state">
+        <img className="empty-state-image" src="/static/images/empty-state-project.svg" />
+        <h2>No Projects</h2>
+        <p>Create a new project to get started</p>
+        <hr />
+      </div>}
       {projectsGrid.map((list: Project[], index: number) => (
         <div className="columns" key={index}>
           {list.map((project: Project) => (
@@ -37,7 +43,6 @@ const HomePage: NextPage = () => {
           ))}
         </div>
       ))}
-
       <CreateNewProjectCard />
     </AppLayout >
   )
