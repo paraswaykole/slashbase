@@ -111,7 +111,6 @@ func NewRouter() *gin.Engine {
 		router.Static("_next", "html/_next")
 		router.StaticFile("favicon.ico", "html/favicon.ico")
 		router.StaticFile("logo-icon.svg", "html/logo-icon.svg")
-		router.StaticFile("logo.svg", "html/logo.svg")
 		router.NoRoute(func(c *gin.Context) {
 			tokenString, _ := c.Cookie("session")
 			if tokenString != "" || c.Request.URL.Path == "/login" {
