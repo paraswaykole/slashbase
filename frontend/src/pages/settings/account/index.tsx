@@ -34,7 +34,7 @@ const AccountPage: NextPage = () => {
   }
 
   const refreshImageUrl = async () => {
-    const response = await axios.get('https://source.unsplash.com/random/200x200')
+    const response = await axios.get(`https://picsum.photos/seed/${Date.now()}/200/200`)
     const newImageURL = response.request.responseURL
     setEditableUser({ ...editableUser!, profileImageUrl: newImageURL })
   }

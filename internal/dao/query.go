@@ -1,30 +1,32 @@
-package daos
+package dao
 
 import (
 	"slashbase.com/backend/internal/db"
 	"slashbase.com/backend/internal/models"
 )
 
-type DBQueryDao struct{}
+type dbQueryDao struct{}
 
-func (d DBQueryDao) CreateQuery(query *models.DBQuery) error {
+var DBQuery dbQueryDao
+
+func (dbQueryDao) CreateQuery(query *models.DBQuery) error {
 	err := db.GetDB().Create(query).Error
 	return err
 }
 
-func (d DBQueryDao) GetDBQueriesByDBConnId(dbConnID string) ([]*models.DBQuery, error) {
+func (dbQueryDao) GetDBQueriesByDBConnId(dbConnID string) ([]*models.DBQuery, error) {
 	var dbQueries []*models.DBQuery
 	err := db.GetDB().Where(&models.DBQuery{DBConnectionID: dbConnID}).Find(&dbQueries).Error
 	return dbQueries, err
 }
 
-func (d DBQueryDao) GetSingleDBQuery(queryID string) (*models.DBQuery, error) {
+func (dbQueryDao) GetSingleDBQuery(queryID string) (*models.DBQuery, error) {
 	var dbQuery models.DBQuery
 	err := db.GetDB().Where(&models.DBQuery{ID: queryID}).Preload("DBConnection").First(&dbQuery).Error
 	return &dbQuery, err
 }
 
-func (d DBQueryDao) UpdateDBQuery(queryID string, dbQuery *models.DBQuery) error {
+func (dbQueryDao) UpdateDBQuery(queryID string, dbQuery *models.DBQuery) error {
 	err := db.GetDB().Where(&models.DBQuery{ID: queryID}).Updates(dbQuery).Error
 	return err
 }

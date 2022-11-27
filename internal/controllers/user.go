@@ -6,17 +6,15 @@ import (
 
 	"gorm.io/gorm"
 	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 )
 
 type UserController struct{}
 
-var userDao daos.UserDao
+func (UserController) LoginUser(email, password string) (*models.UserSession, error) {
 
-func (uc UserController) LoginUser(email, password string) (*models.UserSession, error) {
-
-	usr, err := userDao.GetUserByEmail(email)
+	usr, err := dao.User.GetUserByEmail(email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("invalid user")
@@ -25,7 +23,7 @@ func (uc UserController) LoginUser(email, password string) (*models.UserSession,
 	}
 	if usr.VerifyPassword(password) {
 		userSession, _ := models.NewUserSession(usr.ID)
-		err = userDao.CreateUserSession(userSession)
+		err = dao.User.CreateUserSession(userSession)
 		userSession.User = *usr
 		if err != nil {
 			return nil, errors.New("there was some problem")
@@ -35,9 +33,9 @@ func (uc UserController) LoginUser(email, password string) (*models.UserSession,
 	return nil, errors.New("invalid user")
 }
 
-func (uc UserController) EditAccount(authUser *models.User, name, profileImageUrl string) error {
+func (UserController) EditAccount(authUser *models.User, name, profileImageUrl string) error {
 
-	err := userDao.EditUser(authUser.ID, name, profileImageUrl)
+	err := dao.User.EditUser(authUser.ID, name, profileImageUrl)
 	if err != nil {
 		return errors.New("there was some problem")
 	}
@@ -53,7 +51,7 @@ func (uc UserController) EditAccount(authUser *models.User, name, profileImageUr
 	return nil
 }
 
-func (uc UserController) ChangePassword(authUser *models.User, oldPassword, newPassword string) error {
+func (UserController) ChangePassword(authUser *models.User, oldPassword, newPassword string) error {
 
 	isOldPaswordValid := authUser.VerifyPassword(oldPassword)
 	if !isOldPaswordValid {
@@ -65,7 +63,7 @@ func (uc UserController) ChangePassword(authUser *models.User, oldPassword, newP
 		return errors.New("there was some problem")
 	}
 
-	err = userDao.UpdatePassword(authUser.ID, authUser.Password)
+	err = dao.User.UpdatePassword(authUser.ID, authUser.Password)
 	if err != nil {
 		return errors.New("there was some problem")
 	}
@@ -73,7 +71,7 @@ func (uc UserController) ChangePassword(authUser *models.User, oldPassword, newP
 	return nil
 }
 
-func (uc UserController) GetUsersPaginated(authUser *models.User, searchTerm string, offset int) (*[]models.User, int, error) {
+func (UserController) GetUsersPaginated(authUser *models.User, searchTerm string, offset int) (*[]models.User, int, error) {
 
 	if !authUser.IsRoot {
 		return nil, 0, errors.New("not allowed")
@@ -82,9 +80,9 @@ func (uc UserController) GetUsersPaginated(authUser *models.User, searchTerm str
 	var users *[]models.User
 	var err error
 	if searchTerm == "" {
-		users, err = userDao.GetUsersPaginated(offset)
+		users, err = dao.User.GetUsersPaginated(offset)
 	} else {
-		users, err = userDao.SearchUsersPaginated(searchTerm, offset)
+		users, err = dao.User.SearchUsersPaginated(searchTerm, offset)
 	}
 
 	if err != nil {
@@ -99,11 +97,11 @@ func (uc UserController) GetUsersPaginated(authUser *models.User, searchTerm str
 	return users, next, nil
 }
 
-func (uc UserController) AddUser(authUser *models.User, email, password string) error {
+func (UserController) AddUser(authUser *models.User, email, password string) error {
 	if !authUser.IsRoot {
 		return errors.New("not allowed")
 	}
-	usr, err := userDao.GetUserByEmail(email)
+	usr, err := dao.User.GetUserByEmail(email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			usr, err = models.NewUser(email, password)
@@ -114,7 +112,7 @@ func (uc UserController) AddUser(authUser *models.User, email, password string) 
 			return errors.New("there was some problem")
 		}
 	}
-	err = userDao.CreateUser(usr)
+	err = dao.User.CreateUser(usr)
 	if err != nil {
 		return errors.New("there was some problem")
 	}

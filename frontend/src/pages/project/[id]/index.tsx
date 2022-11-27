@@ -40,6 +40,12 @@ const ProjectPage: NextPage = () => {
   return (
     <AppLayout title={project ? project.name + " | Slashbase" : "Slashbase"}>
       <h1>Showing Databases in {project?.name}</h1>
+      {project && databases.length === 0 && <div className="empty-state">
+        <img className="empty-state-image" src="/static/images/empty-state-database.svg" />
+        <h2>No Database Connections</h2>
+        <p>Add a new database connection and connect to the database</p>
+        <hr />
+      </div>}
       {databases.map((db: DBConnection) => (
         <DBConnCard key={db.id} dbConn={db} isAdmin={project?.currentMember?.role.name === Constants.ROLES.ADMIN} onDeleteDB={onDeleteDB} />
       ))}

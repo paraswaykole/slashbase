@@ -3,16 +3,14 @@ package controllers
 import (
 	"errors"
 
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines"
 )
 
 type DBConnectionController struct{}
 
-var dbConnDao daos.DBConnectionDao
-
-func (dbcc DBConnectionController) CreateDBConnection(
+func (DBConnectionController) CreateDBConnection(
 	authUser *models.User,
 	projectID string,
 	name string,
@@ -45,24 +43,24 @@ func (dbcc DBConnectionController) CreateDBConnection(
 		return nil, errors.New("failed to connect to database")
 	}
 
-	err = dbConnDao.CreateDBConnection(dbConn)
+	err = dao.DBConnection.CreateDBConnection(dbConn)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
 	return dbConn, nil
 }
 
-func (dbcc DBConnectionController) GetDBConnections(authUserProjectIds *[]string) ([]*models.DBConnection, error) {
+func (DBConnectionController) GetDBConnections(authUserProjectIds *[]string) ([]*models.DBConnection, error) {
 
-	dbConns, err := dbConnDao.GetDBConnectionsByProjectIds(*authUserProjectIds)
+	dbConns, err := dao.DBConnection.GetDBConnectionsByProjectIds(*authUserProjectIds)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
 	return dbConns, err
 }
 
-func (dbcc DBConnectionController) GetSingleDBConnection(authUser *models.User, dbConnID string) (*models.DBConnection, error) {
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnID)
+func (DBConnectionController) GetSingleDBConnection(authUser *models.User, dbConnID string) (*models.DBConnection, error) {
+	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnID)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -70,17 +68,17 @@ func (dbcc DBConnectionController) GetSingleDBConnection(authUser *models.User, 
 	return dbConn, nil
 }
 
-func (dbcc DBConnectionController) GetDBConnectionsByProject(projectID string) ([]*models.DBConnection, error) {
+func (DBConnectionController) GetDBConnectionsByProject(projectID string) ([]*models.DBConnection, error) {
 
-	dbConns, err := dbConnDao.GetDBConnectionsByProject(projectID)
+	dbConns, err := dao.DBConnection.GetDBConnectionsByProject(projectID)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
 	return dbConns, nil
 }
 
-func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnId string) error {
-	dbConn, err := dbConnDao.GetDBConnectionByID(dbConnId)
+func (DBConnectionController) DeleteDBConnection(authUser *models.User, dbConnId string) error {
+	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return errors.New("db connection not found")
 	}
@@ -89,7 +87,7 @@ func (dbcc DBConnectionController) DeleteDBConnection(authUser *models.User, dbC
 		return err
 	}
 
-	err = dbConnDao.DeleteDBConnectionById(dbConn.ID)
+	err = dao.DBConnection.DeleteDBConnectionById(dbConn.ID)
 	if err != nil {
 		return errors.New("there was some problem")
 	}

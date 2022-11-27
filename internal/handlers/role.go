@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"net/http"
@@ -8,9 +8,9 @@ import (
 	"slashbase.com/backend/internal/views"
 )
 
-type RoleRoutes struct{}
+type RoleHandlers struct{}
 
-func (rr RoleRoutes) GetAllRoles(c *gin.Context) {
+func (RoleHandlers) GetAllRoles(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	allRoles, err := projectController.GetAllRoles(authUser)
 	if err != nil {
@@ -30,7 +30,7 @@ func (rr RoleRoutes) GetAllRoles(c *gin.Context) {
 	})
 }
 
-func (rr RoleRoutes) AddRole(c *gin.Context) {
+func (RoleHandlers) AddRole(c *gin.Context) {
 	var reqBody struct {
 		Name string `json:"name"`
 	}
@@ -50,7 +50,7 @@ func (rr RoleRoutes) AddRole(c *gin.Context) {
 	})
 }
 
-func (rr RoleRoutes) DeleteRole(c *gin.Context) {
+func (RoleHandlers) DeleteRole(c *gin.Context) {
 	roleID := c.Param("id")
 	authUser := middlewares.GetAuthUser(c)
 	err := projectController.DeleteRole(authUser, roleID)

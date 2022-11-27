@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"net/http"
@@ -10,11 +10,11 @@ import (
 	"slashbase.com/backend/internal/views"
 )
 
-type ProjectRoutes struct{}
+type ProjectHandlers struct{}
 
 var projectController controllers.ProjectController
 
-func (pr ProjectRoutes) CreateProject(c *gin.Context) {
+func (ProjectHandlers) CreateProject(c *gin.Context) {
 	var createBody struct {
 		Name string `json:"name"`
 	}
@@ -35,7 +35,7 @@ func (pr ProjectRoutes) CreateProject(c *gin.Context) {
 	})
 }
 
-func (pr ProjectRoutes) GetProjects(c *gin.Context) {
+func (ProjectHandlers) GetProjects(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	projectMembers, err := projectController.GetProjects(authUser)
 	if err != nil {
@@ -55,7 +55,7 @@ func (pr ProjectRoutes) GetProjects(c *gin.Context) {
 	})
 }
 
-func (pr ProjectRoutes) GetProjectMembers(c *gin.Context) {
+func (ProjectHandlers) GetProjectMembers(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	if !utils.ContainsString(*authUserProjectIds, projectID) {
@@ -83,7 +83,7 @@ func (pr ProjectRoutes) GetProjectMembers(c *gin.Context) {
 	})
 }
 
-func (pr ProjectRoutes) AddProjectMember(c *gin.Context) {
+func (ProjectHandlers) AddProjectMember(c *gin.Context) {
 	projectID := c.Param("projectId")
 	authUser := middlewares.GetAuthUser(c)
 	var addMemberBody struct {
@@ -106,7 +106,7 @@ func (pr ProjectRoutes) AddProjectMember(c *gin.Context) {
 	})
 }
 
-func (pr ProjectRoutes) DeleteProjectMember(c *gin.Context) {
+func (ProjectHandlers) DeleteProjectMember(c *gin.Context) {
 	projectId := c.Param("projectId")
 	userId := c.Param("userId")
 	authUser := middlewares.GetAuthUser(c)
@@ -124,7 +124,7 @@ func (pr ProjectRoutes) DeleteProjectMember(c *gin.Context) {
 	})
 }
 
-func (pr ProjectRoutes) DeleteProject(c *gin.Context) {
+func (ProjectHandlers) DeleteProject(c *gin.Context) {
 	projectId := c.Param("projectId")
 	authUser := middlewares.GetAuthUser(c)
 

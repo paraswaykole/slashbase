@@ -6,11 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 )
-
-var userDao daos.UserDao
 
 const (
 	USER_SESSION = "USER_SESSION"
@@ -27,7 +25,7 @@ func FindUserMiddleware() gin.HandlerFunc {
 			}
 		}
 		if tokenString != "" {
-			userSession, err := userDao.GetUserSessionFromAuthToken(tokenString)
+			userSession, err := dao.User.GetUserSessionFromAuthToken(tokenString)
 			if err != nil {
 				c.Next()
 				return

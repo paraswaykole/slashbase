@@ -1,13 +1,15 @@
-package daos
+package dao
 
 import (
 	"slashbase.com/backend/internal/db"
 	"slashbase.com/backend/internal/models"
 )
 
-type ProjectDao struct{}
+type projectDao struct{}
 
-func (d ProjectDao) CreateProject(project *models.Project) error {
+var Project projectDao
+
+func (projectDao) CreateProject(project *models.Project) error {
 	result := db.GetDB().Create(project)
 	if result.Error != nil {
 		return result.Error
@@ -15,7 +17,7 @@ func (d ProjectDao) CreateProject(project *models.Project) error {
 	return result.Error
 }
 
-func (d ProjectDao) GetProject(id string) (*models.Project, error) {
+func (projectDao) GetProject(id string) (*models.Project, error) {
 	var project models.Project
 	result := db.GetDB().Where(models.Project{ID: id}).First(&project)
 	if result.Error != nil {
@@ -24,7 +26,7 @@ func (d ProjectDao) GetProject(id string) (*models.Project, error) {
 	return &project, nil
 }
 
-func (d ProjectDao) DeleteProject(id string) error {
+func (projectDao) DeleteProject(id string) error {
 	result := db.GetDB().Where(models.Project{ID: id}).Delete(models.Project{})
 	if result.Error != nil {
 		return result.Error

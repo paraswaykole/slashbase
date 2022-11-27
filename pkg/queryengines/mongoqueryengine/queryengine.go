@@ -10,14 +10,12 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"slashbase.com/backend/internal/daos"
+	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines/mongoqueryengine/mongoutils"
 	"slashbase.com/backend/pkg/sbsql"
 	"slashbase.com/backend/pkg/sshtunnel"
 )
-
-var dbQueryLogDao daos.DBQueryLogDao
 
 type MongoQueryEngine struct {
 	openClients map[string]mongoClientInstance
@@ -71,7 +69,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		keys, data := mongoutils.MongoCursorToJson(cursor)
 		if createLog {
 			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
-			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+			go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 		}
 		return map[string]interface{}{
 			"keys": keys,
@@ -171,7 +169,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		keys, data := mongoutils.MongoSingleResultToJson(result)
 		if createLog {
 			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
-			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+			go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 		}
 		return map[string]interface{}{
 			"keys": keys,
@@ -188,7 +186,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		keys, data := mongoutils.MongoCursorToJson(cursor)
 		if createLog {
 			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
-			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+			go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 		}
 		return map[string]interface{}{
 			"keys": keys,
@@ -201,7 +199,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		}
 		if createLog {
 			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
-			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+			go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 		}
 		data := []map[string]interface{}{}
 		for _, name := range list {
@@ -219,7 +217,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		}
 		if createLog {
 			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
-			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+			go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 		}
 		return map[string]interface{}{
 			"keys": []string{"count"},
@@ -239,7 +237,7 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 		keys, data := mongoutils.MongoCursorToJson(cursor)
 		if createLog {
 			queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
-			go dbQueryLogDao.CreateDBQueryLog(queryLog)
+			go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 		}
 		return map[string]interface{}{
 			"keys": keys,

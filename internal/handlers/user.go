@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"net/http"
@@ -12,11 +12,11 @@ import (
 	"slashbase.com/backend/internal/views"
 )
 
-type UserRoutes struct{}
+type UserHandlers struct{}
 
 var userController controllers.UserController
 
-func (ur UserRoutes) LoginUser(c *gin.Context) {
+func (UserHandlers) LoginUser(c *gin.Context) {
 	var loginBody struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -38,7 +38,7 @@ func (ur UserRoutes) LoginUser(c *gin.Context) {
 	})
 }
 
-func (ur UserRoutes) CheckAuth(c *gin.Context) {
+func (UserHandlers) CheckAuth(c *gin.Context) {
 	tokenString, _ := c.Cookie("session")
 	if tokenString != "" {
 		c.JSON(http.StatusOK, gin.H{
@@ -51,7 +51,7 @@ func (ur UserRoutes) CheckAuth(c *gin.Context) {
 	})
 }
 
-func (ur UserRoutes) EditAccount(c *gin.Context) {
+func (UserHandlers) EditAccount(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	var userBody struct {
 		Name            string `json:"name"`
@@ -73,7 +73,7 @@ func (ur UserRoutes) EditAccount(c *gin.Context) {
 	})
 }
 
-func (ur UserRoutes) ChangePassword(c *gin.Context) {
+func (UserHandlers) ChangePassword(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	var body struct {
 		OldPassword string `json:"oldPassword"`
@@ -94,7 +94,7 @@ func (ur UserRoutes) ChangePassword(c *gin.Context) {
 	})
 }
 
-func (ur UserRoutes) GetUsers(c *gin.Context) {
+func (UserHandlers) GetUsers(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
 	if err != nil {
@@ -130,7 +130,7 @@ func (ur UserRoutes) GetUsers(c *gin.Context) {
 
 }
 
-func (ur UserRoutes) AddUser(c *gin.Context) {
+func (UserHandlers) AddUser(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
 	var addUserBody struct {
 		Email    string `json:"email"`
@@ -150,7 +150,7 @@ func (ur UserRoutes) AddUser(c *gin.Context) {
 	})
 }
 
-func (ur UserRoutes) Logout(c *gin.Context) {
+func (UserHandlers) Logout(c *gin.Context) {
 	authUserSession := middlewares.GetAuthSession(c)
 	authUserSession.SetInActive()
 	c.SetSameSite(http.SameSiteStrictMode)

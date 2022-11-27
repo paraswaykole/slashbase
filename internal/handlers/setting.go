@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"net/http"
@@ -7,11 +7,11 @@ import (
 	"slashbase.com/backend/internal/controllers"
 )
 
-type SettingRoutes struct{}
+type SettingHandlers struct{}
 
 var settingController controllers.SettingController
 
-func (sr SettingRoutes) GetSingleSetting(c *gin.Context) {
+func (SettingHandlers) GetSingleSetting(c *gin.Context) {
 
 	name := c.Query("name")
 
@@ -29,7 +29,7 @@ func (sr SettingRoutes) GetSingleSetting(c *gin.Context) {
 	})
 }
 
-func (sr SettingRoutes) UpdateSingleSetting(c *gin.Context) {
+func (SettingHandlers) UpdateSingleSetting(c *gin.Context) {
 
 	var reqBody struct {
 		Name  string `json:"name"`
