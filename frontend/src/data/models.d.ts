@@ -35,9 +35,19 @@ export interface ProjectMember {
 export interface Role {
     id: string
     name: string
+    permissions?: RolePermission[]
     createdAt: string
     updatedAt: string
 }
+
+export interface RolePermission {
+    id: string
+    name: string
+    value: bool
+    createdAt: string
+    updatedAt: string
+}
+
 
 export interface DBConnection {
     id: string

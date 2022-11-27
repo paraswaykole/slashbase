@@ -22,13 +22,6 @@ type ProjectMemberView struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-type RoleView struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-}
-
 func BuildProject(pProject *models.Project, currentMember *models.ProjectMember) ProjectView {
 	projectView := ProjectView{
 		ID:            pProject.ID,
@@ -52,14 +45,4 @@ func BuildProjectMember(projectMember *models.ProjectMember) ProjectMemberView {
 		UpdatedAt: projectMember.UpdatedAt,
 	}
 	return projectMemberView
-}
-
-func BuildRole(role *models.Role) RoleView {
-	roleView := RoleView{
-		ID:        role.ID,
-		Name:      role.Name,
-		CreatedAt: role.CreatedAt,
-		UpdatedAt: role.UpdatedAt,
-	}
-	return roleView
 }

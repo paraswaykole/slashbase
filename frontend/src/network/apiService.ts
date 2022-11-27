@@ -1,5 +1,5 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult, Role } from '../data/models'
+import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult, Role, RolePermission } from '../data/models'
 import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 
@@ -246,6 +246,12 @@ const deleteRole = async function (roleId: string): Promise<ApiResult<Role>> {
         .then(res => res.data)
 }
 
+const updateRolePermission = async function (roleId: string, name: string, value: boolean): Promise<ApiResult<RolePermission>> {
+    return await Request.getApiInstance()
+        .post<any, AxiosResponse<ApiResult<RolePermission>>>(`/role/${roleId}/permission`, { roleId, name, value })
+        .then(res => res.data)
+}
+
 export default {
     getHealthCheck,
     loginUser,
@@ -284,5 +290,6 @@ export default {
     updateSingleSetting,
     getRoles,
     addRole,
-    deleteRole
+    deleteRole,
+    updateRolePermission
 }

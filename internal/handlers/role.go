@@ -4,15 +4,18 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"slashbase.com/backend/internal/controllers"
 	"slashbase.com/backend/internal/middlewares"
 	"slashbase.com/backend/internal/views"
 )
 
 type RoleHandlers struct{}
 
+var roleController controllers.RoleController
+
 func (RoleHandlers) GetAllRoles(c *gin.Context) {
 	authUser := middlewares.GetAuthUser(c)
-	allRoles, err := projectController.GetAllRoles(authUser)
+	allRoles, allRolePermissions, err := roleController.GetAllRoles(authUser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -20,9 +23,23 @@ func (RoleHandlers) GetAllRoles(c *gin.Context) {
 		})
 		return
 	}
+	rolePermissionViews := map[string][]views.RolePermissionView{}
+
+	for _, rp := range *allRolePermissions {
+		rpview := views.BuildRolePermission(&rp)
+		if _, exists := rolePermissionViews[rp.RoleID]; !exists {
+			rolePermissionViews[rpview.RoleID] = []views.RolePermissionView{}
+		}
+		rolePermissionViews[rpview.RoleID] = append(rolePermissionViews[rpview.RoleID], rpview)
+	}
+
 	roleViews := []views.RoleView{}
 	for _, r := range *allRoles {
-		roleViews = append(roleViews, views.BuildRole(&r))
+		roleView := views.BuildRole(&r)
+		if rpviews, exists := rolePermissionViews[r.ID]; exists {
+			roleView.Permissions = rpviews
+		}
+		roleViews = append(roleViews, roleView)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
@@ -36,7 +53,7 @@ func (RoleHandlers) AddRole(c *gin.Context) {
 	}
 	c.BindJSON(&reqBody)
 	authUser := middlewares.GetAuthUser(c)
-	role, err := projectController.AddRole(authUser, reqBody.Name)
+	role, err := roleController.AddRole(authUser, reqBody.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -53,7 +70,7 @@ func (RoleHandlers) AddRole(c *gin.Context) {
 func (RoleHandlers) DeleteRole(c *gin.Context) {
 	roleID := c.Param("id")
 	authUser := middlewares.GetAuthUser(c)
-	err := projectController.DeleteRole(authUser, roleID)
+	err := roleController.DeleteRole(authUser, roleID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -63,5 +80,27 @@ func (RoleHandlers) DeleteRole(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
+	})
+}
+
+func (RoleHandlers) UpdateRolePermission(c *gin.Context) {
+	roleID := c.Param("id")
+	var reqBody struct {
+		Name  string `json:"name"`
+		Value bool   `json:"value"`
+	}
+	c.BindJSON(&reqBody)
+	authUser := middlewares.GetAuthUser(c)
+	rp, err := roleController.AddOrUpdateRolePermission(authUser, roleID, reqBody.Name, reqBody.Value)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    views.BuildRolePermission(rp),
 	})
 }

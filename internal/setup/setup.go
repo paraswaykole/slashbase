@@ -25,6 +25,7 @@ func autoMigrate() {
 		&models.Project{},
 		&models.Role{},
 		&models.ProjectMember{},
+		&models.RolePermission{},
 		&models.DBConnection{},
 		&models.DBQuery{},
 		&models.DBQueryLog{},

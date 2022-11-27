@@ -102,6 +102,7 @@ func NewRouter() *gin.Engine {
 			roleGroup.GET("/all", roleHandlers.GetAllRoles)
 			roleGroup.POST("/add", roleHandlers.AddRole)
 			roleGroup.DELETE("/:id", roleHandlers.DeleteRole)
+			roleGroup.POST("/:id/permission", roleHandlers.UpdateRolePermission)
 		}
 	}
 
