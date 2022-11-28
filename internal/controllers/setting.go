@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"strconv"
 
 	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
@@ -20,6 +21,8 @@ func (SettingController) GetSingleSetting(name string) (interface{}, error) {
 		return setting.UUID().String(), nil
 	case models.SETTING_NAME_TELEMETRY_ENABLED:
 		return setting.Bool(), nil
+	case models.SETTING_NAME_LOGS_EXPIRE:
+		return setting.Int(), nil
 	}
 	return setting.Value, nil
 }
@@ -32,6 +35,12 @@ func (SettingController) UpdateSingleSetting(name string, value string) error {
 		if !utils.ContainsString([]string{"true", "false"}, value) {
 			return errors.New("cannot update the setting: " + name)
 		}
+	case models.SETTING_NAME_LOGS_EXPIRE:
+		if _, err := strconv.Atoi(value); err != nil {
+			return errors.New("cannot update the setting: " + name)
+		}
+	default:
+		return errors.New("invalid setting name: " + name)
 	}
 	err := dao.Setting.UpdateSingleSetting(name, value)
 	if err != nil {

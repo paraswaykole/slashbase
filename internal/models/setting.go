@@ -14,6 +14,7 @@ type Setting struct {
 const (
 	SETTING_NAME_APP_ID            = "APP_ID"
 	SETTING_NAME_TELEMETRY_ENABLED = "TELEMETRY_ENABLED"
+	SETTING_NAME_LOGS_EXPIRE       = "LOGS_EXPIRE"
 )
 
 func NewSetting(name string, value string) *Setting {

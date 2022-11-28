@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"gorm.io/gorm/clause"
 	"slashbase.com/backend/internal/db"
 	"slashbase.com/backend/internal/models"
 )
@@ -26,6 +27,10 @@ func (settingDao) GetSingleSetting(name string) (*models.Setting, error) {
 }
 
 func (settingDao) UpdateSingleSetting(name, value string) error {
-	err := db.GetDB().Model(models.Setting{}).Where(&models.Setting{Name: name}).Update("value", value).Error
+	setting := models.NewSetting(name, value)
+	err := db.GetDB().Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "name"}},
+		DoUpdates: clause.AssignmentColumns([]string{"value"}),
+	}).Create(setting).Error
 	return err
 }
