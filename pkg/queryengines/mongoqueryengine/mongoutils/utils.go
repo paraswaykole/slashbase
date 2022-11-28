@@ -102,6 +102,10 @@ type MongoQuery struct {
 	Sort           interface{}
 }
 
+func IsQueryTypeRead(queryType int) bool {
+	return utils.ContainsInt([]int{QUERY_FIND, QUERY_FINDONE, QUERY_AGGREGATE, QUERY_GETINDEXES, QUERY_LISTCOLLECTIONS, QUERY_COUNT}, queryType)
+}
+
 func GetMongoQueryType(query string) *MongoQuery {
 	var result MongoQuery
 	tokenNames, arguments, _ := JsToTokensLexer(query)

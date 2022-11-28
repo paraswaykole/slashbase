@@ -6,7 +6,7 @@ import apiService from '../../network/apiService'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
-import { selectProjects } from '../../redux/projectsSlice'
+import { ProjectPermissions, selectCurrentProject, selectProjectMemberPermissions, selectProjects } from '../../redux/projectsSlice'
 import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
@@ -23,8 +23,8 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
-    const projects: Project[] = useAppSelector(selectProjects)
-    const project: Project | undefined = projects.find(x => x.id === dbConnection?.projectId)
+    const project: Project | undefined = useAppSelector(selectCurrentProject)
+    const projectMemberPermissions: ProjectPermissions = useAppSelector(selectProjectMemberPermissions)
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
     const [queryData, setQueryData] = useState<DBQueryData>()
@@ -155,7 +155,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     mName={String(mname)}
                     queryData={queryData}
                     querySort={querySort}
-                    isEditable={true}
+                    isEditable={!projectMemberPermissions.readOnly}
                     showHeader={true}
                     updateCellData={updatePostgresCellData}
                     onDeleteRows={onDeleteRows}
@@ -169,7 +169,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     dbConnection={dbConnection}
                     mName={String(mname)}
                     queryData={queryData}
-                    isEditable={true}
+                    isEditable={!projectMemberPermissions.readOnly}
                     showHeader={true}
                     onAddData={onAddData}
                     updateCellData={updateMongoCellData}

@@ -15,6 +15,9 @@ interface ConstantsType {
     ROLES: {
         [key: string]: string
     }
+    ROLES_PERMISSIONS: {
+        [key: string]: string
+    }
 }
 
 declare global {
@@ -116,6 +119,9 @@ const Constants: ConstantsType = {
     },
     ROLES: {
         ADMIN: "Admin"
+    },
+    ROLES_PERMISSIONS: {
+        READ_ONLY: "READ_ONLY"
     }
 }
 

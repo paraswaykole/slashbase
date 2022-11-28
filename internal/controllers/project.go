@@ -25,6 +25,8 @@ func (ProjectController) CreateProject(authUser *models.User, projectName string
 	if err != nil {
 		return nil, nil, errors.New("there was some problem")
 	}
+	rolePermissions, _ := dao.RolePermission.GetRolePermissionsForRole(role.ID)
+	role.Permissions = *rolePermissions
 
 	projectMember := models.NewProjectMember(project.CreatedBy, project.ID, role.ID)
 	err = dao.Project.CreateProjectMember(projectMember)
@@ -137,55 +139,5 @@ func (ProjectController) DeleteProjectMember(authUser *models.User, projectId, u
 	if err != nil {
 		return errors.New("there was some problem deleting the member")
 	}
-	return nil
-}
-
-func (ProjectController) GetAllRoles(user *models.User) (*[]models.Role, error) {
-
-	if !user.IsRoot {
-		return nil, errors.New("not allowed")
-	}
-
-	roles, err := dao.Role.GetAllRoles()
-	if err != nil {
-		return nil, errors.New("there was some problem")
-	}
-	return roles, nil
-}
-
-func (ProjectController) AddRole(user *models.User, name string) (*models.Role, error) {
-
-	if !user.IsRoot {
-		return nil, errors.New("not allowed")
-	}
-
-	role := models.NewRole(name)
-	err := dao.Role.CreateRole(role)
-	if err != nil {
-		return nil, errors.New("cannot create role: " + name)
-	}
-	return role, nil
-}
-
-func (ProjectController) DeleteRole(user *models.User, roleID string) error {
-
-	if !user.IsRoot {
-		return errors.New("not allowed")
-	}
-
-	role, err := dao.Role.GetAdminRole()
-	if err != nil {
-		return errors.New("there was some problem")
-	}
-
-	if role.ID == roleID {
-		return errors.New("cannot delete admin role")
-	}
-
-	err = dao.Role.DeleteRoleByID(roleID)
-	if err != nil {
-		return errors.New("cannot delete role")
-	}
-
 	return nil
 }

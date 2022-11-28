@@ -7,11 +7,12 @@ import (
 )
 
 type Role struct {
-	ID   string `gorm:"type:uuid;primaryKey"`
-	Name string `gorm:"uniqueIndex"`
-
+	ID        string    `gorm:"type:uuid;primaryKey"`
+	Name      string    `gorm:"uniqueIndex"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+
+	Permissions []RolePermission
 }
 
 const (
