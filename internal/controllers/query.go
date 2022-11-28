@@ -20,13 +20,12 @@ func (QueryController) RunQuery(authUser *models.User, dbConnectionId, query str
 		return nil, errors.New("there was some problem")
 	}
 
-	// TODO: check role permissions
-	_, err = getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := queryengines.RunQuery(authUser, dbConn, query)
+	data, err := queryengines.RunQuery(authUser, dbConn, query, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +44,12 @@ func (QueryController) GetData(authUser *models.User, authUserProjectIds *[]stri
 		return nil, errors.New("not allowed to run query")
 	}
 
-	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount, filter, sort)
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount, filter, sort, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +66,12 @@ func (QueryController) GetDataModels(authUser *models.User, authUserProjectIds *
 		return nil, errors.New("not allowed to run query")
 	}
 
-	dataModels, err := queryengines.GetDataModels(authUser, dbConn)
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	dataModels, err := queryengines.GetDataModels(authUser, dbConn, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +89,12 @@ func (QueryController) GetSingleDataModel(authUser *models.User, authUserProject
 		return nil, errors.New("not allowed to run query")
 	}
 
-	data, err := queryengines.GetSingleDataModel(authUser, dbConn, schema, name)
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := queryengines.GetSingleDataModel(authUser, dbConn, schema, name, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +111,12 @@ func (QueryController) AddSingleDataModelField(authUser *models.User, authUserPr
 	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
 		return nil, errors.New("not allowed to run query")
 	}
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
 
-	data, err := queryengines.AddSingleDataModelField(authUser, dbConn, schema, name, fieldName, dataType)
+	data, err := queryengines.AddSingleDataModelField(authUser, dbConn, schema, name, fieldName, dataType, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -115,8 +133,12 @@ func (QueryController) DeleteSingleDataModelField(authUser *models.User, authUse
 	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
 		return nil, errors.New("not allowed to run query")
 	}
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
 
-	data, err := queryengines.DeleteSingleDataModelField(authUser, dbConn, schema, name, fieldName)
+	data, err := queryengines.DeleteSingleDataModelField(authUser, dbConn, schema, name, fieldName, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -131,12 +153,12 @@ func (QueryController) AddData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	// TODO: fix this is isAllowed
-	// if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-	// 	return nil, err
-	// }
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
 
-	resultData, err := queryengines.AddData(authUser, dbConn, schema, name, data)
+	resultData, err := queryengines.AddData(authUser, dbConn, schema, name, data, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -151,12 +173,12 @@ func (QueryController) DeleteData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	// TODO: fix this is isAllowed
-	// if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-	// 	return nil, err
-	// }
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
 
-	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ids)
+	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ids, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -171,12 +193,12 @@ func (QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	// TODO: fix this is isAllowed
-	// if isAllowed, err := GetAuthUserHasRolesForProject(authUser, dbConn.ProjectID, []string{models.ROLE_ADMIN, models.ROLE_DEVELOPER}); err != nil || !isAllowed {
-	// 	return nil, err
-	// }
+	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
 
-	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, id, columnName, columnValue)
+	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, id, columnName, columnValue, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}

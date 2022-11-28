@@ -6,6 +6,7 @@ import (
 	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines"
+	"slashbase.com/backend/pkg/queryengines/queryconfig"
 )
 
 type DBConnectionController struct{}
@@ -38,7 +39,7 @@ func (DBConnectionController) CreateDBConnection(
 	}
 
 	dbConnCopy := *dbConn
-	success := queryengines.TestConnection(authUser, &dbConnCopy)
+	success := queryengines.TestConnection(authUser, &dbConnCopy, queryconfig.NewQueryConfig(true, nil))
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}
