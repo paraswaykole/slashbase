@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"reflect"
-	"regexp"
 	"strconv"
-	"strings"
 
+	"github.com/auxten/postgresql-parser/pkg/sql/parser"
+	"github.com/auxten/postgresql-parser/pkg/sql/sem/tree"
+	"github.com/auxten/postgresql-parser/pkg/walk"
 	"github.com/jackc/pgproto3/v2"
 	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
-	"slashbase.com/backend/internal/utils"
 )
 
 func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
@@ -226,32 +226,43 @@ const (
 )
 
 const (
-	QUERY_READ   = iota
-	QUERY_WRITE  = iota
-	QUERY_ALTER  = iota
-	QUERY_UNKOWN = -1
+	QUERY_READ          = iota
+	QUERY_WRITE         = iota
+	QUERY_MODIFY_SCHEMA = iota
+	QUERY_UNKOWN        = -1
 )
 
-func GetPSQLQueryType(query string) int {
-	filteredQuery := strings.TrimSpace(strings.ToLower(query))
-	filteredQuery = strings.ReplaceAll(filteredQuery, "\n", " ")
-	regexr, _ := regexp.Compile(`'.+'|".+"`)
-	regexr.ReplaceAllString(filteredQuery, "")
-	filteredQuery = strings.ReplaceAll(filteredQuery, "  ", " ")
-	tokens := strings.Split(filteredQuery, " ")
-	if utils.ContainsString(tokens, "returning") || utils.ContainsString(tokens, "with") {
-		return QUERY_READ
+func GetPSQLQueryType(query string) (queryType int, isReturningRows bool) {
+	queryType = QUERY_UNKOWN
+	selectFound := false
+	isReturningRows = false
+	w := &walk.AstWalker{
+		Fn: func(ctx interface{}, node interface{}) (stop bool) {
+			if stmt, ok := node.(tree.Statement); ok {
+				if stmt.StatementType() == tree.Rows {
+					selectFound = true
+					isReturningRows = true
+				}
+				if tree.CanModifySchema(node.(tree.Statement)) {
+					queryType = QUERY_MODIFY_SCHEMA
+					return true
+				}
+				if tree.CanWriteData(node.(tree.Statement)) {
+					queryType = QUERY_WRITE
+					return true
+				}
+			}
+			return false
+		},
 	}
-	if utils.ContainsString(tokens, "update") || utils.ContainsString(tokens, "insert") || utils.ContainsString(tokens, "truncate") {
-		return QUERY_WRITE
+	stmts, err := parser.Parse(query)
+	if err == nil {
+		_, _ = w.Walk(stmts, nil)
 	}
-	if utils.ContainsString(tokens, "alter") || utils.ContainsString(tokens, "drop") || utils.ContainsString(tokens, "create") {
-		return QUERY_ALTER
+	if queryType == QUERY_UNKOWN && selectFound {
+		queryType = QUERY_READ
 	}
-	if utils.ContainsString(tokens, "select") {
-		return QUERY_READ
-	}
-	return QUERY_UNKOWN
+	return
 }
 
 func QueryToDataModel(fieldQueryData []map[string]interface{}, constraintsQueryData []map[string]interface{}) []map[string]interface{} {

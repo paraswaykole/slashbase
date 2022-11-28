@@ -44,8 +44,8 @@ func (pgqe *PostgresQueryEngine) RunQuery(user *models.User, dbConn *models.DBCo
 	}
 	queryLog := models.NewQueryLog(user.ID, dbConn.ID, query)
 
-	queryType := pgxutils.GetPSQLQueryType(query)
-	if queryType == pgxutils.QUERY_READ {
+	_, isReturningRows := pgxutils.GetPSQLQueryType(query)
+	if isReturningRows {
 		rows, err := conn.Query(context.Background(), query)
 		if err != nil {
 			return nil, err
