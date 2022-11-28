@@ -2,6 +2,7 @@ package pgqueryengine
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -43,7 +44,12 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 		return nil, err
 	}
 
-	_, isReturningRows := pgxutils.GetPSQLQueryType(query)
+	queryType, isReturningRows := pgxutils.GetPSQLQueryType(query)
+
+	if queryType != pgxutils.QUERY_READ && config.ReadOnly {
+		return nil, errors.New("not allowed run this query")
+	}
+
 	if isReturningRows {
 		rows, err := conn.Query(context.Background(), query)
 		if err != nil {

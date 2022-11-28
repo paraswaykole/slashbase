@@ -48,6 +48,12 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 	}
 	db := conn.Database(string(dbConn.DBName))
 	queryType := mongoutils.GetMongoQueryType(query)
+
+	queryTypeRead := mongoutils.IsQueryTypeRead(queryType.QueryType)
+	if !queryTypeRead && config.ReadOnly {
+		return nil, errors.New("not allowed run this query")
+	}
+
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
 		result := db.Collection(queryType.CollectionName).
 			FindOne(context.Background(), queryType.Args[0])

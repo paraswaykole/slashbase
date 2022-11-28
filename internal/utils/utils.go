@@ -17,6 +17,15 @@ func ContainsString(s []string, str string) bool {
 	return false
 }
 
+func ContainsInt(a []int, integer int) bool {
+	for _, v := range a {
+		if v == integer {
+			return true
+		}
+	}
+	return false
+}
+
 func UnixNanoToTime(nanoInt int64) time.Time {
 	msInt := nanoInt / 1000000000
 	remainder := nanoInt % 1000000000

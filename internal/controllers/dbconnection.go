@@ -39,7 +39,7 @@ func (DBConnectionController) CreateDBConnection(
 	}
 
 	dbConnCopy := *dbConn
-	success := queryengines.TestConnection(&dbConnCopy, queryconfig.NewQueryConfig(true, nil))
+	success := queryengines.TestConnection(&dbConnCopy, queryconfig.NewQueryConfig(false, nil))
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}
