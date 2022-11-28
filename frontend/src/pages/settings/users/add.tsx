@@ -21,7 +21,7 @@ const AddNewUserPage: NextPage = () => {
 
   useEffect(() => {
     if (currentUser && !currentUser.isRoot) {
-      router.push(Constants.APP_PATHS.HOME.path)
+      router.push(Constants.APP_PATHS.SETTINGS_ACCOUNT.path)
     }
   }, [currentUser])
 

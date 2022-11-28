@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import AppLayout from '../../components/layouts/applayout'
@@ -6,8 +7,12 @@ import ConfirmModal from '../../components/widgets/confirmModal'
 import Constants from '../../constants'
 import { Role } from '../../data/models'
 import apiService from '../../network/apiService'
+import { selectCurrentUser } from '../../redux/currentUserSlice'
+import { useAppSelector } from '../../redux/hooks'
 
 const ManageRolesPage: NextPage = () => {
+
+    const router = useRouter()
 
     const [roles, setRoles] = useState<Role[]>([])
     const [isDeletingRole, setIsDeletingRole] = useState<Role | undefined>(undefined)
@@ -15,6 +20,13 @@ const ManageRolesPage: NextPage = () => {
     const [adding, setAdding] = useState<boolean>(false)
 
     const newRoleInputRef = useRef<HTMLInputElement>(null)
+
+    const currentUser = useAppSelector(selectCurrentUser)
+    useEffect(() => {
+        if (currentUser && !currentUser.isRoot) {
+            router.push(Constants.APP_PATHS.SETTINGS_ACCOUNT.path)
+        }
+    }, [currentUser])
 
     useEffect(() => {
         (async () => {

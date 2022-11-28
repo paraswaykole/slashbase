@@ -90,6 +90,10 @@ const Constants: ConstantsType = {
             path: '/settings/account',
             isAuth: true
         },
+        SETTINGS_ADVANCED: {
+            path: '/settings/advanced',
+            isAuth: true
+        },
         SETTINGS_ACCOUNT_CHANGE_PASSWORD: {
             path: '/settings/account/password',
             isAuth: true
@@ -115,7 +119,8 @@ const Constants: ConstantsType = {
     },
     SETTING_KEYS: {
         APP_ID: "APP_ID",
-        TELEMETRY_ENABLED: "TELEMETRY_ENABLED"
+        TELEMETRY_ENABLED: "TELEMETRY_ENABLED",
+        LOGS_EXPIRE: "LOGS_EXPIRE"
     },
     ROLES: {
         ADMIN: "Admin"

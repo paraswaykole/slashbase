@@ -29,3 +29,9 @@ func (dbQueryLogDao) GetDBQueryLogsDBConnID(dbConnID string, projectMember *mode
 	err := query.Where("created_at < ?", before).Preload("User").Order("created_at desc").Limit(config.PAGINATION_COUNT).Find(&dbQueryLogs).Error
 	return dbQueryLogs, err
 }
+
+func (dbQueryLogDao) ClearOldLogs(days int) error {
+	before := time.Now().AddDate(0, 0, -days)
+	err := db.GetDB().Where("created_at < ?", before).Delete(&models.DBQueryLog{}).Error
+	return err
+}

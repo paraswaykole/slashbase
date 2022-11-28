@@ -13,19 +13,30 @@ import (
 )
 
 func InitCron() {
-
-	if !config.IsLive() {
-		return
-	}
-
 	scheduler := gocron.NewScheduler(time.UTC)
-
+	clearOldLogs(scheduler)
 	telemetryPings(scheduler)
-
 	scheduler.StartAsync()
 }
 
+func clearOldLogs(s *gocron.Scheduler) {
+	s.Every(1).Day().Do(func() {
+		setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_LOGS_EXPIRE)
+		if err != nil {
+			return
+		}
+		days := setting.Int()
+		err = dao.DBQueryLog.ClearOldLogs(days)
+		if err != nil {
+			return
+		}
+	})
+}
+
 func telemetryPings(s *gocron.Scheduler) {
+	if !config.IsLive() {
+		return
+	}
 	s.Every(1).Day().Do(func() {
 		setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_TELEMETRY_ENABLED)
 		if err != nil {
