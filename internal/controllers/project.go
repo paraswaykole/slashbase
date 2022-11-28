@@ -25,6 +25,8 @@ func (ProjectController) CreateProject(authUser *models.User, projectName string
 	if err != nil {
 		return nil, nil, errors.New("there was some problem")
 	}
+	rolePermissions, _ := dao.RolePermission.GetRolePermissionsForRole(role.ID)
+	role.Permissions = *rolePermissions
 
 	projectMember := models.NewProjectMember(project.CreatedBy, project.ID, role.ID)
 	err = dao.Project.CreateProjectMember(projectMember)

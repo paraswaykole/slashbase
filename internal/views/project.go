@@ -35,12 +35,9 @@ func BuildProject(pProject *models.Project, currentMember *models.ProjectMember)
 
 func BuildProjectMember(projectMember *models.ProjectMember) ProjectMemberView {
 	projectMemberView := ProjectMemberView{
-		ID:   projectMember.UserID + ":" + projectMember.ProjectID,
-		User: BuildUser(&projectMember.User),
-		Role: RoleView{
-			ID:   projectMember.Role.ID,
-			Name: projectMember.Role.Name,
-		},
+		ID:        projectMember.UserID + ":" + projectMember.ProjectID,
+		User:      BuildUser(&projectMember.User),
+		Role:      BuildRole(&projectMember.Role),
 		CreatedAt: projectMember.CreatedAt,
 		UpdatedAt: projectMember.UpdatedAt,
 	}

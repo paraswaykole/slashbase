@@ -30,6 +30,13 @@ func BuildRole(role *models.Role) RoleView {
 		CreatedAt: role.CreatedAt,
 		UpdatedAt: role.UpdatedAt,
 	}
+	if len(role.Permissions) > 0 {
+		pViews := []RolePermissionView{}
+		for _, rp := range role.Permissions {
+			pViews = append(pViews, BuildRolePermission(&rp))
+		}
+		roleView.Permissions = pViews
+	}
 	return roleView
 }
 
