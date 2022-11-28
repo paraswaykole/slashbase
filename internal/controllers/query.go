@@ -25,7 +25,7 @@ func (QueryController) RunQuery(authUser *models.User, dbConnectionId, query str
 		return nil, err
 	}
 
-	data, err := queryengines.RunQuery(authUser, dbConn, query, getQueryConfigsForProjectMember(pm, dbConn))
+	data, err := queryengines.RunQuery(dbConn, query, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (QueryController) GetData(authUser *models.User, authUserProjectIds *[]stri
 		return nil, err
 	}
 
-	data, err := queryengines.GetData(authUser, dbConn, schema, name, limit, offset, fetchCount, filter, sort, getQueryConfigsForProjectMember(pm, dbConn))
+	data, err := queryengines.GetData(dbConn, schema, name, limit, offset, fetchCount, filter, sort, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (QueryController) GetDataModels(authUser *models.User, authUserProjectIds *
 		return nil, err
 	}
 
-	dataModels, err := queryengines.GetDataModels(authUser, dbConn, getQueryConfigsForProjectMember(pm, dbConn))
+	dataModels, err := queryengines.GetDataModels(dbConn, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (QueryController) GetSingleDataModel(authUser *models.User, authUserProject
 		return nil, err
 	}
 
-	data, err := queryengines.GetSingleDataModel(authUser, dbConn, schema, name, getQueryConfigsForProjectMember(pm, dbConn))
+	data, err := queryengines.GetSingleDataModel(dbConn, schema, name, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func (QueryController) AddSingleDataModelField(authUser *models.User, authUserPr
 		return nil, err
 	}
 
-	data, err := queryengines.AddSingleDataModelField(authUser, dbConn, schema, name, fieldName, dataType, getQueryConfigsForProjectMember(pm, dbConn))
+	data, err := queryengines.AddSingleDataModelField(dbConn, schema, name, fieldName, dataType, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +138,7 @@ func (QueryController) DeleteSingleDataModelField(authUser *models.User, authUse
 		return nil, err
 	}
 
-	data, err := queryengines.DeleteSingleDataModelField(authUser, dbConn, schema, name, fieldName, getQueryConfigsForProjectMember(pm, dbConn))
+	data, err := queryengines.DeleteSingleDataModelField(dbConn, schema, name, fieldName, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +158,7 @@ func (QueryController) AddData(authUser *models.User, dbConnId string,
 		return nil, err
 	}
 
-	resultData, err := queryengines.AddData(authUser, dbConn, schema, name, data, getQueryConfigsForProjectMember(pm, dbConn))
+	resultData, err := queryengines.AddData(dbConn, schema, name, data, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -178,7 +178,7 @@ func (QueryController) DeleteData(authUser *models.User, dbConnId string,
 		return nil, err
 	}
 
-	data, err := queryengines.DeleteData(authUser, dbConn, schema, name, ids, getQueryConfigsForProjectMember(pm, dbConn))
+	data, err := queryengines.DeleteData(dbConn, schema, name, ids, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -198,7 +198,7 @@ func (QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
 		return nil, err
 	}
 
-	data, err := queryengines.UpdateSingleData(authUser, dbConn, schema, name, id, columnName, columnValue, getQueryConfigsForProjectMember(pm, dbConn))
+	data, err := queryengines.UpdateSingleData(dbConn, schema, name, id, columnName, columnValue, getQueryConfigsForProjectMember(pm, dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}

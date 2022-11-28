@@ -27,7 +27,7 @@ func InitMongoQueryEngine() *MongoQueryEngine {
 	}
 }
 
-func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnection, query string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
 		remoteHost := string(dbConn.DBHost)
@@ -241,9 +241,9 @@ func (mqe *MongoQueryEngine) RunQuery(user *models.User, dbConn *models.DBConnec
 	return nil, errors.New("unknown query")
 }
 
-func (mqe *MongoQueryEngine) TestConnection(user *models.User, dbConn *models.DBConnection, config *queryconfig.QueryConfig) bool {
+func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config *queryconfig.QueryConfig) bool {
 	query := "db.runCommand({ping: 1})"
-	data, err := mqe.RunQuery(user, dbConn, query, config)
+	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return false
 	}
@@ -251,9 +251,9 @@ func (mqe *MongoQueryEngine) TestConnection(user *models.User, dbConn *models.DB
 	return test == 1
 }
 
-func (mqe *MongoQueryEngine) GetDataModels(user *models.User, dbConn *models.DBConnection, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetDataModels(dbConn *models.DBConnection, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
 	query := "db.getCollectionNames()"
-	data, err := mqe.RunQuery(user, dbConn, query, config)
+	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
@@ -261,9 +261,9 @@ func (mqe *MongoQueryEngine) GetDataModels(user *models.User, dbConn *models.DBC
 	return rdata, nil
 }
 
-func (mqe *MongoQueryEngine) GetSingleDataModelFields(user *models.User, dbConn *models.DBConnection, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnection, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.aggregate([{$sample: {size: 1000}}])`, name)
-	data, err := mqe.RunQuery(user, dbConn, query, config)
+	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
@@ -272,9 +272,9 @@ func (mqe *MongoQueryEngine) GetSingleDataModelFields(user *models.User, dbConn 
 	return mongoutils.AnalyseFieldsSchema(returnedKeys, returnedData), err
 }
 
-func (mqe *MongoQueryEngine) GetSingleDataModelIndexes(user *models.User, dbConn *models.DBConnection, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConnection, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.getIndexes()`, name)
-	data, err := mqe.RunQuery(user, dbConn, query, config)
+	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
@@ -282,20 +282,20 @@ func (mqe *MongoQueryEngine) GetSingleDataModelIndexes(user *models.User, dbConn
 	return mongoutils.GetCollectionIndexes(returnedData), err
 }
 
-func (mqe *MongoQueryEngine) AddSingleDataModelKey(user *models.User, dbConn *models.DBConnection, schema, name, columnName, dataType string) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) AddSingleDataModelKey(dbConn *models.DBConnection, schema, name, columnName, dataType string) (map[string]interface{}, error) {
 	return nil, errors.New("not supported yet")
 }
 
-func (mqe *MongoQueryEngine) DeleteSingleDataModelKey(user *models.User, dbConn *models.DBConnection, schema, name, columnName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) DeleteSingleDataModelKey(dbConn *models.DBConnection, schema, name, columnName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.updateMany({}, {$unset: {%s: ""}})`, name, columnName)
-	data, err := mqe.RunQuery(user, dbConn, query, config)
+	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.find().limit(%d).skip(%d)`, name, limit, offset)
 	countQuery := fmt.Sprintf(`db.%s.count()`, name)
 	if len(filter) == 1 && strings.HasPrefix(filter[0], "{") && strings.HasSuffix(filter[0], "}") {
@@ -305,12 +305,12 @@ func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnect
 	if len(sort) == 1 {
 		query = query + fmt.Sprintf(`.sort(%s)`, sort[0])
 	}
-	data, err := mqe.RunQuery(user, dbConn, query, config)
+	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
 	if fetchCount {
-		countData, err := mqe.RunQuery(user, dbConn, countQuery, config)
+		countData, err := mqe.RunQuery(dbConn, countQuery, config)
 		if err != nil {
 			return nil, err
 		}
@@ -319,9 +319,9 @@ func (mqe *MongoQueryEngine) GetData(user *models.User, dbConn *models.DBConnect
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) UpdateSingleData(user *models.User, dbConn *models.DBConnection, name string, underscoreID string, documentData string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, underscoreID string, documentData string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.updateOne({_id: ObjectId("%s")}, {$set: %s } )`, name, underscoreID, documentData)
-	data, err := mqe.RunQuery(user, dbConn, query, config)
+	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
@@ -332,13 +332,13 @@ func (mqe *MongoQueryEngine) UpdateSingleData(user *models.User, dbConn *models.
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) AddData(user *models.User, dbConn *models.DBConnection, schema string, name string, data map[string]interface{}, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) AddData(dbConn *models.DBConnection, schema string, name string, data map[string]interface{}, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
 	dataStr, err := json.Marshal(data)
 	if err != nil {
 		return nil, err
 	}
 	query := fmt.Sprintf(`db.%s.insertOne(%s)`, name, string(dataStr))
-	rData, err := mqe.RunQuery(user, dbConn, query, config)
+	rData, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
@@ -349,12 +349,12 @@ func (mqe *MongoQueryEngine) AddData(user *models.User, dbConn *models.DBConnect
 	return rData, err
 }
 
-func (mqe *MongoQueryEngine) DeleteData(user *models.User, dbConn *models.DBConnection, name string, underscoreIds []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) DeleteData(dbConn *models.DBConnection, name string, underscoreIds []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
 	for i, id := range underscoreIds {
 		underscoreIds[i] = fmt.Sprintf(`ObjectId("%s")`, id)
 	}
 	underscoreIdsStr := strings.Join(underscoreIds, ", ")
 	query := fmt.Sprintf(`db.%s.deleteMany({ _id : { "$in" : [%s] }})`, name, underscoreIdsStr)
 	fmt.Println(query)
-	return mqe.RunQuery(user, dbConn, query, config)
+	return mqe.RunQuery(dbConn, query, config)
 }
