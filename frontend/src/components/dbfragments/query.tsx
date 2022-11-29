@@ -1,3 +1,4 @@
+import styles from './query.module.scss'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { DBConnection, DBQuery, DBQueryData, DBQueryResult } from '../../data/models'
@@ -8,6 +9,7 @@ import { useAppSelector } from '../../redux/hooks'
 import { DBConnType } from '../../data/defaults'
 import JsonTable from './jsontable/jsontable'
 import Table from './table/table'
+import Chart from './chart/chart'
 
 
 type DBQueryPropType = {
@@ -47,7 +49,10 @@ const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved }: DBQueryPropType) =>
         callback()
     }
 
-    console.log(dbConnection, queryId, dbQuery)
+    const toggleIsChartEnabled = () => {
+        setIsChartEnabled(!isChartEnabled)
+    }
+
     return (
         <React.Fragment>
             {(dbConnection && ((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId))) &&
@@ -60,16 +65,16 @@ const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved }: DBQueryPropType) =>
                     onSave={onQuerySaved} />
             }
             <br />
-            {queryData && <div className="tabs is-small is-toggle is-toggle-rounded tabs-set">
+            {queryData && <div className="tabs is-small is-centered is-toggle is-toggle-rounded tabs-set ">
                 <ul>
                     <li className={!isChartEnabled ? 'is-active' : ''}>
-                        <a>
+                        <a onClick={toggleIsChartEnabled}>
                             <span className="icon is-small"><i className="fas fa-table" aria-hidden="true" /></span>
                             <span>Data</span>
                         </a>
                     </li>
                     <li className={isChartEnabled ? 'is-active' : ''}>
-                        <a>
+                        <a onClick={toggleIsChartEnabled}>
                             <span className="icon is-small"><i className="fas fa-chart-bar" aria-hidden="true" /></span>
                             <span>Chart</span>
                         </a>
@@ -79,7 +84,7 @@ const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved }: DBQueryPropType) =>
             </div>}
             {queryData ? isChartEnabled ?
                 <React.Fragment>
-
+                    <Chart dbConn={dbConnection!} queryData={queryData} />
                 </React.Fragment>
                 :
                 <React.Fragment>
