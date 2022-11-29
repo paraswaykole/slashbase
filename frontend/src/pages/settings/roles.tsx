@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import AppLayout from '../../components/layouts/applayout'
@@ -6,8 +7,12 @@ import ConfirmModal from '../../components/widgets/confirmModal'
 import Constants from '../../constants'
 import { Role } from '../../data/models'
 import apiService from '../../network/apiService'
+import { selectCurrentUser } from '../../redux/currentUserSlice'
+import { useAppSelector } from '../../redux/hooks'
 
 const ManageRolesPage: NextPage = () => {
+
+    const router = useRouter()
 
     const [roles, setRoles] = useState<Role[]>([])
     const [isDeletingRole, setIsDeletingRole] = useState<Role | undefined>(undefined)
@@ -15,6 +20,13 @@ const ManageRolesPage: NextPage = () => {
     const [adding, setAdding] = useState<boolean>(false)
 
     const newRoleInputRef = useRef<HTMLInputElement>(null)
+
+    const currentUser = useAppSelector(selectCurrentUser)
+    useEffect(() => {
+        if (currentUser && !currentUser.isRoot) {
+            router.push(Constants.APP_PATHS.SETTINGS_ACCOUNT.path)
+        }
+    }, [currentUser])
 
     useEffect(() => {
         (async () => {
@@ -45,6 +57,28 @@ const ManageRolesPage: NextPage = () => {
         setShowAddingRole(false)
     }
 
+
+    const updateRolePermission = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const roleId = e.target.dataset.roleid!
+        const perName = e.target.dataset.name!
+        const result = await apiService.updateRolePermission(roleId, perName, e.target.checked)
+        if (result.success) {
+            const newRoles = [...roles]
+            const roleIndex = roles.findIndex(role => role.id === roleId)!
+            const role = roles[roleIndex]
+            const rp: number | undefined = role.permissions?.findIndex(rp => rp.name === perName)
+            if (rp === undefined)
+                role.permissions = [result.data, ...role.permissions ?? []]
+            else
+                role.permissions![rp] = result.data
+            newRoles[roleIndex] = role
+            setRoles(newRoles)
+            toast.success("successfully updated role permission")
+        }
+        else
+            toast.error(result.error!)
+    }
+
     return (
         <AppLayout title="Settings - Manage Roles | Slashbase">
 
@@ -53,7 +87,12 @@ const ManageRolesPage: NextPage = () => {
             {roles.length > 0 && <table className={"table is-bordered is-striped is-narrow is-hoverable"} style={{ minWidth: '200px' }}>
                 <thead>
                     <tr>
-                        <th colSpan={2}>Roles</th>
+                        <th colSpan={1} rowSpan={2}>Roles</th>
+                        <th colSpan={1}>Permissions</th>
+                        <th rowSpan={2}></th>
+                    </tr>
+                    <tr>
+                        <th colSpan={1}>Read-only</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,6 +100,15 @@ const ManageRolesPage: NextPage = () => {
                         roles.map(role => (
                             <tr key={role.id}>
                                 <td>{role.name}</td>
+                                <td>
+                                    <input
+                                        disabled={role.name === Constants.ROLES.ADMIN}
+                                        data-roleid={role.id}
+                                        data-name={Constants.ROLES_PERMISSIONS.READ_ONLY}
+                                        checked={role.permissions ? role.permissions.find(rp => rp.name === Constants.ROLES_PERMISSIONS.READ_ONLY)?.value : false}
+                                        onChange={updateRolePermission}
+                                        type='checkbox' />
+                                </td>
                                 <td style={{ width: '54px' }}>
                                     <button className="button is-danger is-small" disabled={role.name === Constants.ROLES.ADMIN} onClick={() => { setIsDeletingRole(role) }}>
                                         <i className={"fas fa-trash"} />

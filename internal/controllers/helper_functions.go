@@ -5,6 +5,7 @@ import (
 
 	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
+	"slashbase.com/backend/pkg/queryengines/queryconfig"
 )
 
 func getAuthUserHasAdminRoleForProject(authUser *models.User, projectID string) (bool, error) {
@@ -30,4 +31,19 @@ func getAuthUserProjectMemberForProject(authUser *models.User, projectID string)
 	}
 
 	return pMember, nil
+}
+
+func getQueryConfigsForProjectMember(projectMember *models.ProjectMember, dbConn *models.DBConnection) *queryconfig.QueryConfig {
+	createLog := func(query string) {
+		queryLog := models.NewQueryLog(projectMember.UserID, dbConn.ID, query)
+		go dao.DBQueryLog.CreateDBQueryLog(queryLog)
+	}
+	rolePermissions, _ := dao.RolePermission.GetRolePermissionsForRole(projectMember.RoleID)
+	readOnly := false
+	for _, perm := range *rolePermissions {
+		if perm.Name == models.ROLE_PERMISSION_NAME_READ_ONLY {
+			readOnly = true
+		}
+	}
+	return queryconfig.NewQueryConfig(readOnly, createLog)
 }
