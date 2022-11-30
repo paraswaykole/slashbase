@@ -20,7 +20,7 @@ func (QueryController) RunQuery(authUser *models.User, dbConnectionId, query str
 		return nil, errors.New("there was some problem")
 	}
 
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (QueryController) GetData(authUser *models.User, authUserProjectIds *[]stri
 		return nil, errors.New("not allowed to run query")
 	}
 
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (QueryController) GetDataModels(authUser *models.User, authUserProjectIds *
 		return nil, errors.New("not allowed to run query")
 	}
 
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (QueryController) GetSingleDataModel(authUser *models.User, authUserProject
 		return nil, errors.New("not allowed to run query")
 	}
 
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (QueryController) AddSingleDataModelField(authUser *models.User, authUserPr
 	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
 		return nil, errors.New("not allowed to run query")
 	}
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (QueryController) DeleteSingleDataModelField(authUser *models.User, authUse
 	if !utils.ContainsString(*authUserProjectIds, dbConn.ProjectID) {
 		return nil, errors.New("not allowed to run query")
 	}
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +153,7 @@ func (QueryController) AddData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +173,7 @@ func (QueryController) DeleteData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func (QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	pm, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, err
 	}
@@ -282,7 +282,7 @@ func (QueryController) GetQueryHistoryInDBConnection(authUser *models.User, auth
 		return nil, 0, errors.New("not allowed")
 	}
 
-	authUserProjectMember, err := getAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	authUserProjectMember, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
 	if err != nil {
 		return nil, 0, err
 	}

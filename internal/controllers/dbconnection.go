@@ -61,11 +61,17 @@ func (DBConnectionController) GetDBConnections(authUserProjectIds *[]string) ([]
 }
 
 func (DBConnectionController) GetSingleDBConnection(authUser *models.User, dbConnID string) (*models.DBConnection, error) {
+	
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnID)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
-	// TODO: check if authUser is member of project
+
+	// check if authUser is member of project
+	if _, err = getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID); err != nil {
+		return nil, err
+	}
+
 	return dbConn, nil
 }
 
