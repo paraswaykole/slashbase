@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"time"
 
 	"github.com/auxten/postgresql-parser/pkg/sql/parser"
 	"github.com/auxten/postgresql-parser/pkg/sql/sem/tree"
@@ -170,6 +171,20 @@ func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 					entry[iStr] = nil
 				} else {
 					entry[iStr] = tid.Elements
+				}
+				continue
+			}
+			if tid, ok := val.(pgtype.Interval); ok {
+				if tid.Status == pgtype.Null || tid.Status == pgtype.Undefined {
+					entry[iStr] = nil
+				} else {
+					if tid.Microseconds != 0 {
+						zero := time.UnixMicro(0)
+						plus := time.UnixMicro(tid.Microseconds)
+						entry[iStr] = fmt.Sprintf("%d years, %d months, %d days, %s", tid.Months/12, tid.Months%12, tid.Days, plus.Sub(zero).String())
+					} else {
+						entry[iStr] = fmt.Sprintf("%d years, %d months, %d days", tid.Months/12, tid.Months%12, tid.Days)
+					}
 				}
 				continue
 			}
