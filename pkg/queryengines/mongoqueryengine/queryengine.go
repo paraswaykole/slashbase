@@ -66,8 +66,13 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
-		cursor, err := db.Collection(queryType.CollectionName).
-			Find(context.Background(), queryType.Args[0], &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort})
+		collection := db.Collection(queryType.CollectionName)
+		opts := &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort}
+		if len(queryType.Args) > 1 {
+			opts.SetProjection(queryType.Args[1])
+		}
+		cursor, err := collection.
+			Find(context.Background(), queryType.Args[0], opts)
 		if err != nil {
 			return nil, err
 		}
