@@ -1,0 +1,20 @@
+app_root: .
+binary_name: refresh-build
+build_delay: 200ns
+build_flags: []
+build_path: /var/folders/00/nfy691j564dchmft4_3cdhpr0000gn/T/
+build_target_path: ""
+command_env: []
+command_flags: []
+enable_colors: true
+ignored_folders:
+- vendor
+- log
+- logs
+- tmp
+- node_modules
+- bin
+- templates
+included_extensions:
+- .go
+log_name: ""

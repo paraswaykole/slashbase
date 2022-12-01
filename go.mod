@@ -44,8 +44,8 @@ require (
 	github.com/xdg-go/stringprep v1.0.3 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	google.golang.org/genproto v0.0.0-20200911024640-645f7a48b24f // indirect
-	google.golang.org/grpc v1.33.1 // indirect
+	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
+	google.golang.org/grpc v1.38.0 // indirect
 )
 
 require (
@@ -68,7 +68,7 @@ require (
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lib/pq v1.10.4 // indirect
-	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
