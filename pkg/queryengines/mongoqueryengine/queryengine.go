@@ -253,8 +253,38 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"message": "droped collection: " + queryType.CollectionName,
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_DROPINDEX {
+		indexName, ok := queryType.Args[0].(string)
+		if !ok {
+			return nil, errors.New("invalid query")
+		}
+		if indexName == "*" {
+			_, err := db.Collection(queryType.CollectionName).Indexes().DropAll(context.Background(), options.DropIndexes())
+			if err != nil {
+				return nil, err
+			}
+			if config.CreateLogFn != nil {
+				config.CreateLogFn(query)
+			}
+			return map[string]interface{}{
+				"message": "droped all indexes in collection: " + queryType.CollectionName,
+			}, nil
+		}
+		_, err := db.Collection(queryType.CollectionName).Indexes().DropOne(context.Background(), indexName, options.DropIndexes())
+		if err != nil {
+			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+		return map[string]interface{}{
+			"message": "droped index: " + indexName,
 		}, nil
 	}
 	return nil, errors.New("unknown query")
