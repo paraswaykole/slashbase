@@ -124,7 +124,9 @@ func IsQueryTypeRead(query *MongoQuery) bool {
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
-	var result MongoQuery
+	var result MongoQuery = MongoQuery{
+		QueryType: QUERY_UNKOWN,
+	}
 	tokenNames, arguments, _ := JsToTokensLexer(query)
 	if len(tokenNames) == 0 || tokenNames[0] != "db" {
 		result.QueryType = QUERY_UNKOWN
