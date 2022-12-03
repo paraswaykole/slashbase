@@ -15,7 +15,7 @@
   <br/><br/>
   <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
   ·
-  <a href="https://bip.so/slashbase/c/MsNHox55oQdo/34259/introduction/public">Explore the docs</a>
+  <a href="https://slashbase.bip.wiki">Explore the docs</a>
   ·
   <a href="https://slashbase.com/updates">Read Updates</a>
 </p>
@@ -43,7 +43,7 @@ Please follow the [installation guide](https://slashbase.com/install) to self-ho
 
 ## Documentation
 
-Detailed documentation is available on [slashbase guide](https://bip.so/slashbase/c/MsNHox55oQdo/34259/introduction/public).
+Detailed documentation is available on [slashbase guide](https://slashbase.bip.wiki).
 
 ## Community
 
