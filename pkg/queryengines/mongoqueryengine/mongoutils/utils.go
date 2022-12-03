@@ -88,6 +88,7 @@ const (
 	QUERY_COUNT           = iota
 	QUERY_AGGREGATE       = iota
 	QUERY_GETINDEXES      = iota
+	QUERY_DROP            = iota
 	QUERY_RUNCMD          = iota
 	QUERY_LISTCOLLECTIONS = iota
 	QUERY_UNKOWN          = -1
@@ -197,6 +198,8 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_AGGREGATE
 		} else if funcName == "getIndexes" {
 			result.QueryType = QUERY_GETINDEXES
+		} else if funcName == "drop" {
+			result.QueryType = QUERY_DROP
 		}
 		result.Args = args
 	}

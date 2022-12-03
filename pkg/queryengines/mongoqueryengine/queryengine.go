@@ -248,6 +248,14 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			"keys": keys,
 			"data": data,
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_DROP {
+		err := db.Collection(queryType.CollectionName).Drop(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		return map[string]interface{}{
+			"message": "droped collection: " + queryType.CollectionName,
+		}, nil
 	}
 	return nil, errors.New("unknown query")
 }
