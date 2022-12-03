@@ -102,8 +102,25 @@ type MongoQuery struct {
 	Sort           interface{}
 }
 
-func IsQueryTypeRead(queryType int) bool {
-	return utils.ContainsInt([]int{QUERY_FIND, QUERY_FINDONE, QUERY_AGGREGATE, QUERY_GETINDEXES, QUERY_LISTCOLLECTIONS, QUERY_COUNT}, queryType)
+func IsQueryTypeRead(query *MongoQuery) bool {
+	if utils.ContainsInt([]int{QUERY_FIND, QUERY_FINDONE, QUERY_GETINDEXES, QUERY_LISTCOLLECTIONS, QUERY_COUNT}, query.QueryType) {
+		return true
+	}
+	if query.QueryType == QUERY_AGGREGATE {
+		if ops, ok := query.Args[0].(bson.A); ok {
+			for _, op := range ops {
+				opmap := op.(bson.D).Map()
+				if _, exists := opmap["$out"]; exists {
+					return false
+				}
+				if _, exists := opmap["$merge"]; exists {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	return false
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
