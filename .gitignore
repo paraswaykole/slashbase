@@ -30,3 +30,6 @@ data/*.db
 # Build
 backend
 build/
+
+# Air Build
+/tmp

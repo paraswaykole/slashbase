@@ -99,7 +99,7 @@ func (DBConnectionHandlers) GetSingleDBConnection(c *gin.Context) {
 		})
 		return
 	}
-	// TODO: check if authUser is member of project
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    views.BuildDBConnection(dbConn),

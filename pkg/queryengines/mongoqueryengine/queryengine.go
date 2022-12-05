@@ -49,7 +49,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 	db := conn.Database(string(dbConn.DBName))
 	queryType := mongoutils.GetMongoQueryType(query)
 
-	queryTypeRead := mongoutils.IsQueryTypeRead(queryType.QueryType)
+	queryTypeRead := mongoutils.IsQueryTypeRead(queryType)
 	if !queryTypeRead && config.ReadOnly {
 		return nil, errors.New("not allowed run this query")
 	}
@@ -66,8 +66,13 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
-		cursor, err := db.Collection(queryType.CollectionName).
-			Find(context.Background(), queryType.Args[0], &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort})
+		collection := db.Collection(queryType.CollectionName)
+		opts := &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort}
+		if len(queryType.Args) > 1 {
+			opts.SetProjection(queryType.Args[1])
+		}
+		cursor, err := collection.
+			Find(context.Background(), queryType.Args[0], opts)
 		if err != nil {
 			return nil, err
 		}
@@ -242,6 +247,44 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		return map[string]interface{}{
 			"keys": keys,
 			"data": data,
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_DROP {
+		err := db.Collection(queryType.CollectionName).Drop(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+		return map[string]interface{}{
+			"message": "droped collection: " + queryType.CollectionName,
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_DROPINDEX {
+		indexName, ok := queryType.Args[0].(string)
+		if !ok {
+			return nil, errors.New("invalid query")
+		}
+		if indexName == "*" {
+			_, err := db.Collection(queryType.CollectionName).Indexes().DropAll(context.Background(), options.DropIndexes())
+			if err != nil {
+				return nil, err
+			}
+			if config.CreateLogFn != nil {
+				config.CreateLogFn(query)
+			}
+			return map[string]interface{}{
+				"message": "droped all indexes in collection: " + queryType.CollectionName,
+			}, nil
+		}
+		_, err := db.Collection(queryType.CollectionName).Indexes().DropOne(context.Background(), indexName, options.DropIndexes())
+		if err != nil {
+			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+		return map[string]interface{}{
+			"message": "droped index: " + indexName,
 		}, nil
 	}
 	return nil, errors.New("unknown query")

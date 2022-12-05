@@ -88,6 +88,8 @@ const (
 	QUERY_COUNT           = iota
 	QUERY_AGGREGATE       = iota
 	QUERY_GETINDEXES      = iota
+	QUERY_DROP            = iota
+	QUERY_DROPINDEX       = iota
 	QUERY_RUNCMD          = iota
 	QUERY_LISTCOLLECTIONS = iota
 	QUERY_UNKOWN          = -1
@@ -102,12 +104,31 @@ type MongoQuery struct {
 	Sort           interface{}
 }
 
-func IsQueryTypeRead(queryType int) bool {
-	return utils.ContainsInt([]int{QUERY_FIND, QUERY_FINDONE, QUERY_AGGREGATE, QUERY_GETINDEXES, QUERY_LISTCOLLECTIONS, QUERY_COUNT}, queryType)
+func IsQueryTypeRead(query *MongoQuery) bool {
+	if utils.ContainsInt([]int{QUERY_FIND, QUERY_FINDONE, QUERY_GETINDEXES, QUERY_LISTCOLLECTIONS, QUERY_COUNT}, query.QueryType) {
+		return true
+	}
+	if query.QueryType == QUERY_AGGREGATE {
+		if ops, ok := query.Args[0].(bson.A); ok {
+			for _, op := range ops {
+				opmap := op.(bson.D).Map()
+				if _, exists := opmap["$out"]; exists {
+					return false
+				}
+				if _, exists := opmap["$merge"]; exists {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	return false
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
-	var result MongoQuery
+	var result MongoQuery = MongoQuery{
+		QueryType: QUERY_UNKOWN,
+	}
 	tokenNames, arguments, _ := JsToTokensLexer(query)
 	if len(tokenNames) == 0 || tokenNames[0] != "db" {
 		result.QueryType = QUERY_UNKOWN
@@ -178,6 +199,10 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_AGGREGATE
 		} else if funcName == "getIndexes" {
 			result.QueryType = QUERY_GETINDEXES
+		} else if funcName == "dropIndex" {
+			result.QueryType = QUERY_DROPINDEX
+		} else if funcName == "drop" {
+			result.QueryType = QUERY_DROP
 		}
 		result.Args = args
 	}

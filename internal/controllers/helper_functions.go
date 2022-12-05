@@ -9,19 +9,18 @@ import (
 )
 
 func getAuthUserHasAdminRoleForProject(authUser *models.User, projectID string) (bool, error) {
-	pMember, notFound, err := dao.Project.FindProjectMember(projectID, authUser.ID)
-	if notFound {
-		return false, errors.New("not allowed")
-	} else if err != nil {
-		return false, errors.New("there was some problem")
+	pMember, err := getIfAuthUserProjectMemberForProject(authUser, projectID)
+	if err != nil {
+		return false, err
 	}
+
 	if pMember.Role.Name == models.ROLE_ADMIN {
 		return true, nil
 	}
 	return false, errors.New("not allowed")
 }
 
-func getAuthUserProjectMemberForProject(authUser *models.User, projectID string) (*models.ProjectMember, error) {
+func getIfAuthUserProjectMemberForProject(authUser *models.User, projectID string) (*models.ProjectMember, error) {
 	pMember, notFound, err := dao.Project.FindProjectMember(projectID, authUser.ID)
 	if err != nil {
 		if notFound {
