@@ -10,13 +10,23 @@ import (
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
+	"slashbase.com/backend/pkg/queryengines"
+	"slashbase.com/backend/pkg/sshtunnel"
 )
 
 func InitCron() {
 	scheduler := gocron.NewScheduler(time.UTC)
+	clearQueryEngineUnusedConnections(scheduler)
 	clearOldLogs(scheduler)
 	telemetryPings(scheduler)
 	scheduler.StartAsync()
+}
+
+func clearQueryEngineUnusedConnections(s *gocron.Scheduler) {
+	s.Every(5).Minutes().Do(func() {
+		sshtunnel.RemoveUnusedTunnels()
+		queryengines.RemoveUnusedConnections()
+	})
 }
 
 func clearOldLogs(s *gocron.Scheduler) {

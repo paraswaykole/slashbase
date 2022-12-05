@@ -40,15 +40,12 @@ func GetSSHTunnel(dbConnID string, sshAuthType, sshHost string, remoteHost strin
 }
 
 func RemoveUnusedTunnels() {
-	for {
-		time.Sleep(time.Minute * time.Duration(5))
-		for dbConnID, instance := range sshtunnels {
-			now := time.Now()
-			diff := now.Sub(instance.LastUsed)
-			if diff.Minutes() > 20 {
-				delete(sshtunnels, dbConnID)
-				go instance.sshTun.Stop()
-			}
+	for dbConnID, instance := range sshtunnels {
+		now := time.Now()
+		diff := now.Sub(instance.LastUsed)
+		if diff.Minutes() > 20 {
+			delete(sshtunnels, dbConnID)
+			go instance.sshTun.Stop()
 		}
 	}
 }

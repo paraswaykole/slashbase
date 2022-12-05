@@ -38,15 +38,12 @@ func (pxEngine *PostgresQueryEngine) getConnection(dbConnectionId, host string, 
 }
 
 func (pxEngine *PostgresQueryEngine) RemoveUnusedConnections() {
-	for {
-		time.Sleep(time.Minute * time.Duration(5))
-		for dbConnID, instance := range pxEngine.openConnections {
-			now := time.Now()
-			diff := now.Sub(instance.LastUsed)
-			if diff.Minutes() > 20 {
-				delete(pxEngine.openConnections, dbConnID)
-				go instance.pgxConnPoolInstance.Close()
-			}
+	for dbConnID, instance := range pxEngine.openConnections {
+		now := time.Now()
+		diff := now.Sub(instance.LastUsed)
+		if diff.Minutes() > 20 {
+			delete(pxEngine.openConnections, dbConnID)
+			go instance.pgxConnPoolInstance.Close()
 		}
 	}
 }

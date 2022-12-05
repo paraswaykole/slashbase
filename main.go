@@ -11,7 +11,6 @@ import (
 	"slashbase.com/backend/internal/setup"
 	"slashbase.com/backend/internal/tasks"
 	"slashbase.com/backend/pkg/queryengines"
-	"slashbase.com/backend/pkg/sshtunnel"
 )
 
 func main() {
@@ -24,15 +23,7 @@ func main() {
 	config.Init(*environment)
 	db.InitGormDB()
 	setup.SetupApp()
-	tasks.InitCron()
-	// TODO: to be moved to cron
 	queryengines.Init()
-	initUnusedRemovalThreads()
+	tasks.InitCron()
 	server.Init()
-}
-
-// TODO: to be moved to cron
-func initUnusedRemovalThreads() {
-	go sshtunnel.RemoveUnusedTunnels()
-	go queryengines.RemoveUnusedConnections()
 }
