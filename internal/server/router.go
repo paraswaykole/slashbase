@@ -70,6 +70,7 @@ func NewRouter() *gin.Engine {
 			queryGroup.POST("/save/:dbConnId", queryHandlers.SaveDBQuery)
 			queryGroup.GET("/getall/:dbConnId", queryHandlers.GetDBQueriesInDBConnection)
 			queryGroup.GET("/get/:queryId", queryHandlers.GetSingleDBQuery)
+			queryGroup.DELETE("/delete/:queryId", queryHandlers.DeleteDBQuery)
 			queryGroup.GET("/history/:dbConnId", queryHandlers.GetQueryHistoryInDBConnection)
 			dataGroup := queryGroup.Group("data")
 			{

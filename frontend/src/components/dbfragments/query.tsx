@@ -16,9 +16,10 @@ type DBQueryPropType = {
     queryId: string
     dbQuery?: DBQuery
     onQuerySaved: (newQueryId: string) => void,
+    onDelete: () => void,
 }
 
-const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved }: DBQueryPropType) => {
+const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved, onDelete }: DBQueryPropType) => {
 
     const [queryData, setQueryData] = useState<DBQueryData>()
     const [queryResult, setQueryResult] = useState<DBQueryResult>()
@@ -62,7 +63,8 @@ const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved }: DBQueryPropType) =>
                     queryId={queryId === 'new' ? '' : String(queryId)}
                     dbType={dbConnection!.type ?? ''}
                     runQuery={runQuery}
-                    onSave={onQuerySaved} />
+                    onSave={onQuerySaved}
+                    onDelete={onDelete} />
             }
             <br />
             {queryData && <div className="tabs is-small is-centered is-toggle is-toggle-rounded tabs-set ">

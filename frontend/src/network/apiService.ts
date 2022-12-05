@@ -192,6 +192,12 @@ const saveDBQuery = async function (dbConnId: string, name: string, query: strin
         .then(res => res.data)
 }
 
+const deleteDBQuery = async function (queryId: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+        .delete<any, AxiosResponse<ApiResult<undefined>>>(`/query/delete/${queryId}`)
+        .then(res => res.data)
+}
+
 const getDBQueriesInDBConn = async function (dbConnId: string): Promise<ApiResult<DBQuery[]>> {
     return await Request.getApiInstance()
         .get<ApiResult<DBQuery[]>>(`/query/getall/${dbConnId}`)
@@ -282,6 +288,7 @@ export default {
     addDBData,
     deleteDBData,
     saveDBQuery,
+    deleteDBQuery,
     getDBQueriesInDBConn,
     getSingleDBQuery,
     getDBHistory,

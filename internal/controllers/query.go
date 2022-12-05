@@ -240,6 +240,24 @@ func (QueryController) SaveDBQuery(authUser *models.User, authUserProjectIds *[]
 	return queryObj, nil
 }
 
+func (QueryController) DeleteDBQuery(authUser *models.User, authUserProjectIds *[]string, queryId string) error {
+
+	query, err := dao.DBQuery.GetSingleDBQuery(queryId)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	if !utils.ContainsString(*authUserProjectIds, query.DBConnection.ProjectID) {
+		return errors.New("not allowed")
+	}
+
+	err = dao.DBQuery.DeleteDBQuery(queryId)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+	return nil
+}
+
 func (QueryController) GetDBQueriesInDBConnection(authUserProjectIds *[]string, dbConnId string) ([]*models.DBQuery, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)

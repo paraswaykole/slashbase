@@ -265,6 +265,24 @@ func (QueryHandlers) SaveDBQuery(c *gin.Context) {
 	})
 }
 
+func (QueryHandlers) DeleteDBQuery(c *gin.Context) {
+	queryID := c.Param("queryId")
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
+
+	err := queryController.DeleteDBQuery(authUser, authUserProjectIds, queryID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
+}
+
 func (QueryHandlers) GetDBQueriesInDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
 	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)

@@ -2,7 +2,7 @@ import styles from './queryeditor.module.scss'
 import React, { useState, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { saveDBQuery, selectDBConnection } from '../../../redux/dbConnectionSlice'
+import { deleteDBQuery, saveDBQuery, selectDBConnection } from '../../../redux/dbConnectionSlice'
 import { DBConnection } from '../../../data/models'
 import toast from 'react-hot-toast'
 import { format } from 'sql-formatter'
@@ -34,15 +34,17 @@ type QueryEditorPropType = {
     dbType: DBConnType
     runQuery: (query: string, callback: () => void) => void
     onSave: (queryId: string) => void
+    onDelete: () => void
 }
 
-const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, onSave }: QueryEditorPropType) => {
+const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, onSave, onDelete }: QueryEditorPropType) => {
 
     const dispatch = useAppDispatch()
 
     const [value, setValue] = useState(initialValue)
     const [queryName, setQueryName] = useState(initQueryName)
     const [saving, setSaving] = useState(false)
+    const [deleting, setDeleting] = useState(false)
     const [running, setRunning] = useState(false)
     const editorRef = useRef<ReactCodeMirror.ReactCodeMirror | null>(null);
 
@@ -61,6 +63,21 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
             toast.error("There was some problem saving! Please try again.")
         }
         setSaving(false)
+    }
+
+    const startDeleting = async () => {
+        if (queryId === 'new') {
+            return
+        }
+        setDeleting(true)
+        try {
+            await dispatch(deleteDBQuery({ queryId })).unwrap()
+            toast.success("Query Deleted")
+            onDelete()
+        } catch (e) {
+            toast.error("There was some problem saving! Please try again.")
+        }
+        setDeleting(false)
     }
 
     const startRunningQuery = () => {
@@ -121,6 +138,13 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
                                 <i className="fas fa-align-left" aria-hidden="true"></i>
                             </span>
                         </button>
+                        &nbsp;&nbsp;
+                        {!deleting && <button className="button is-danger" onClick={startDeleting}>
+                            <span className="icon is-small">
+                                <i className="fas fa-trash" aria-hidden="true"></i>
+                            </span>
+                        </button>}
+                        {deleting && <button className="button is-danger is-loading">Deleting</button>}
                         &nbsp;&nbsp;
                         {!running && <button className="button is-primary" onClick={startRunningQuery}>
                             <span className="icon is-small">
