@@ -2,7 +2,7 @@
   <a href="https://slashbase.com" alt="Slashbase">
     <img src="https://slashbase.com/github-logo.png" alt="Slashbase" width="220">
   </a>
-  <p align="center">The open-source collaborative IDE for your databases in your browser.</p>
+  <p align="center">The open-source collaborative in-browser database IDE for everyone on your team.</p>
 </p>
 <p align="center">
   <img src="https://img.shields.io/github/license/slashbaseide/slashbase" alt="License">
