@@ -188,6 +188,26 @@ func DeleteData(dbConn *models.DBConnection, schemaName string, name string, ids
 	}
 }
 
+func AddSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, indexName string, fieldNames []string, isUnique bool, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.AddSingleDataModelIndex(dbConn, schemaName, name, indexName, fieldNames, isUnique, config)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return nil, errors.New("not implemented")
+	} else {
+		return nil, errors.New("invalid db type")
+	}
+}
+
+func DeleteSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, indexName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+	if dbConn.Type == models.DBTYPE_POSTGRES {
+		return postgresQueryEngine.DeleteSingleDataModelIndex(dbConn, indexName, config)
+	} else if dbConn.Type == models.DBTYPE_MONGO {
+		return nil, errors.New("not implemented")
+	} else {
+		return nil, errors.New("invalid db type")
+	}
+}
+
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
 	mongoQueryEngine.RemoveUnusedConnections()

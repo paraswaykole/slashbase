@@ -240,6 +240,56 @@ func (QueryHandlers) UpdateSingleData(c *gin.Context) {
 	})
 }
 
+func (QueryHandlers) AddSingleDataModelIndex(c *gin.Context) {
+	authUser := middlewares.GetAuthUser(c)
+	var reqBody struct {
+		DBConnectionID string   `json:"dbConnectionId"`
+		Schema         string   `json:"schema"`
+		Name           string   `json:"name"`
+		IndexName      string   `json:"indexName"`
+		FieldNames     []string `json:"fieldNames"`
+		IsUnique       bool     `json:"isUnique"`
+	}
+	c.BindJSON(&reqBody)
+
+	data, err := queryController.AddSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName, reqBody.FieldNames, reqBody.IsUnique)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    data,
+	})
+}
+
+func (QueryHandlers) DeleteSingleDataModelIndex(c *gin.Context) {
+	authUser := middlewares.GetAuthUser(c)
+	var reqBody struct {
+		DBConnectionID string `json:"dbConnectionId"`
+		Schema         string `json:"schema"`
+		Name           string `json:"name"`
+		IndexName      string `json:"indexName"`
+	}
+	c.BindJSON(&reqBody)
+
+	data, err := queryController.DeleteSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    data,
+	})
+}
+
 func (QueryHandlers) SaveDBQuery(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
 	authUser := middlewares.GetAuthUser(c)

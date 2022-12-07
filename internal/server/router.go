@@ -85,6 +85,8 @@ func NewRouter() *gin.Engine {
 				dataModelGroup.GET("/single/:dbConnId", queryHandlers.GetSingleDataModel)
 				dataModelGroup.POST("/single/addfield", queryHandlers.AddSingleDataModelField)
 				dataModelGroup.POST("/single/deletefield", queryHandlers.DeleteSingleDataModelField)
+				dataModelGroup.POST("/single/addindex", queryHandlers.AddSingleDataModelIndex)
+				dataModelGroup.POST("/single/deleteindex", queryHandlers.DeleteSingleDataModelIndex)
 			}
 		}
 		settingGroup := api.Group("setting")

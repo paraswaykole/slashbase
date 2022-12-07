@@ -231,3 +231,25 @@ func (pgqe *PostgresQueryEngine) DeleteData(dbConn *models.DBConnection, schema 
 	query := fmt.Sprintf(`DELETE FROM "%s"."%s" WHERE ctid IN ('%s');`, schema, name, ctidsStr)
 	return pgqe.RunQuery(dbConn, query, config)
 }
+
+func (pgqe *PostgresQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, schema, name, indexName string, colNames []string, isUnique bool, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+	isUniqueStr := ""
+	if isUnique {
+		isUniqueStr = "UNIQUE "
+	}
+	query := fmt.Sprintf(`CREATE %sINDEX %s ON "%s"."%s" (%s);`, isUniqueStr, indexName, schema, name, strings.Join(colNames, ", "))
+	data, err := pgqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
+func (pgqe *PostgresQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, indexName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`DROP INDEX %s;`, indexName)
+	data, err := pgqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}

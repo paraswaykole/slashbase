@@ -205,6 +205,46 @@ func (QueryController) UpdateSingleData(authUser *models.User, dbConnId string,
 	return data, nil
 }
 
+func (QueryController) AddSingleDataModelIndex(authUser *models.User, dbConnId string,
+	schema, name string, indexName string, fieldNames []string, isUnique bool) (map[string]interface{}, error) {
+
+	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := queryengines.AddSingleDataModelIndex(dbConn, schema, name, indexName, fieldNames, isUnique, getQueryConfigsForProjectMember(pm, dbConn))
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (QueryController) DeleteSingleDataModelIndex(authUser *models.User, dbConnId string,
+	schema, name string, indexName string) (map[string]interface{}, error) {
+
+	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
+	if err != nil {
+		return nil, errors.New("there was some problem")
+	}
+
+	pm, err := getIfAuthUserProjectMemberForProject(authUser, dbConn.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := queryengines.DeleteSingleDataModelIndex(dbConn, schema, name, indexName, getQueryConfigsForProjectMember(pm, dbConn))
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 func (QueryController) SaveDBQuery(authUser *models.User, authUserProjectIds *[]string, dbConnId string,
 	name, query, queryId string) (*models.DBQuery, error) {
 
