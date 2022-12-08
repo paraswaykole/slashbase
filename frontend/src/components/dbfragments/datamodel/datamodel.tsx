@@ -108,7 +108,7 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                                         {!isEditingIndex && <i className={"fas fa-pen"} />}
                                     </button>}
                                 </th>
-                                {dbConn.type === DBConnType.POSTGRES && isEditingIndex && <th>
+                                {isEditingIndex && <th>
                                     <button className="button is-primary is-small" onClick={() => { setShowingAddIndexModal(true) }}>
                                         <i className={"fas fa-plus"} />
                                     </button>
@@ -137,7 +137,7 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                     mName={dataModel.name}
                     onAddField={() => { refreshModel?.() }}
                     onClose={() => { setShowingAddIndexModal(false) }} />}
-                {dbConn.type === DBConnType.POSTGRES && showingAddIndexModal && <AddIndexModal
+                {showingAddIndexModal && <AddIndexModal
                     dbConn={dbConn}
                     mSchema={dataModel.schemaName}
                     mName={dataModel.name}

@@ -192,7 +192,7 @@ func AddSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, inde
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.AddSingleDataModelIndex(dbConn, schemaName, name, indexName, fieldNames, isUnique, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
-		return nil, errors.New("not implemented")
+		return mongoQueryEngine.AddSingleDataModelIndex(dbConn, name, indexName, fieldNames, isUnique, config)
 	} else {
 		return nil, errors.New("invalid db type")
 	}
@@ -202,7 +202,7 @@ func DeleteSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, i
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.DeleteSingleDataModelIndex(dbConn, indexName, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
-		return nil, errors.New("not implemented")
+		return mongoQueryEngine.DeleteSingleDataModelIndex(dbConn, name, indexName, config)
 	} else {
 		return nil, errors.New("invalid db type")
 	}
