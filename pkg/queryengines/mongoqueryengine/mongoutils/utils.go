@@ -88,6 +88,7 @@ const (
 	QUERY_COUNT           = iota
 	QUERY_AGGREGATE       = iota
 	QUERY_GETINDEXES      = iota
+	QUERY_CREATEINDEX     = iota
 	QUERY_DROP            = iota
 	QUERY_DROPINDEX       = iota
 	QUERY_RUNCMD          = iota
@@ -203,6 +204,8 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_DROPINDEX
 		} else if funcName == "drop" {
 			result.QueryType = QUERY_DROP
+		} else if funcName == "createIndex" {
+			result.QueryType = QUERY_CREATEINDEX
 		}
 		result.Args = args
 	}

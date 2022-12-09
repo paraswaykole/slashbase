@@ -152,6 +152,18 @@ const deleteDBSingleDataModelField = async function (dbConnId: string, schemaNam
         .then(res => res.data)
 }
 
+const addDBSingleDataModelIndex = async function (dbConnId: string, schemaName: string, mName: string, indexName: string, fieldNames: string[], isUnique: boolean): Promise<ApiResult<DBQueryResult>> {
+    return await Request.getApiInstance()
+        .post<ApiResult<DBQueryResult>>(`/query/datamodel/single/addindex`, { dbConnectionId: dbConnId, schema: schemaName, name: mName, indexName, fieldNames, isUnique })
+        .then(res => res.data)
+}
+
+const deleteDBSingleDataModelIndex = async function (dbConnId: string, schemaName: string, mName: string, indexName: string): Promise<ApiResult<DBQueryResult>> {
+    return await Request.getApiInstance()
+        .post<ApiResult<DBQueryResult>>(`/query/datamodel/single/deleteindex`, { dbConnectionId: dbConnId, schema: schemaName, name: mName, indexName })
+        .then(res => res.data)
+}
+
 const getDBDataInDataModel = async function (dbConnId: string, schemaName: string, mName: string, limit: number, offset: number, fetchCount: boolean, filter?: string[], sort?: string[]): Promise<ApiResult<DBQueryData>> {
     return await Request.getApiInstance()
         .get<ApiResult<DBQueryData>>(`/query/data/${dbConnId}`, {
@@ -189,6 +201,12 @@ const deleteDBData = async function (dbConnId: string, schemaName: string, mName
 const saveDBQuery = async function (dbConnId: string, name: string, query: string, queryId: string): Promise<ApiResult<DBQuery>> {
     return await Request.getApiInstance()
         .post<any, AxiosResponse<ApiResult<DBQuery>>>(`/query/save/${dbConnId}`, { name, queryId, query })
+        .then(res => res.data)
+}
+
+const deleteDBQuery = async function (queryId: string): Promise<ApiResult<undefined>> {
+    return await Request.getApiInstance()
+        .delete<any, AxiosResponse<ApiResult<undefined>>>(`/query/delete/${queryId}`)
         .then(res => res.data)
 }
 
@@ -274,6 +292,8 @@ export default {
     getDBSingleDataModelByConnectionId,
     addDBSingleDataModelField,
     deleteDBSingleDataModelField,
+    addDBSingleDataModelIndex,
+    deleteDBSingleDataModelIndex,
     getDBDataInDataModel,
     addNewDBConn,
     addNewProjectMember,
@@ -282,6 +302,7 @@ export default {
     addDBData,
     deleteDBData,
     saveDBQuery,
+    deleteDBQuery,
     getDBQueriesInDBConn,
     getSingleDBQuery,
     getDBHistory,

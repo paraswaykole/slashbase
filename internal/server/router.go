@@ -70,6 +70,7 @@ func NewRouter() *gin.Engine {
 			queryGroup.POST("/save/:dbConnId", queryHandlers.SaveDBQuery)
 			queryGroup.GET("/getall/:dbConnId", queryHandlers.GetDBQueriesInDBConnection)
 			queryGroup.GET("/get/:queryId", queryHandlers.GetSingleDBQuery)
+			queryGroup.DELETE("/delete/:queryId", queryHandlers.DeleteDBQuery)
 			queryGroup.GET("/history/:dbConnId", queryHandlers.GetQueryHistoryInDBConnection)
 			dataGroup := queryGroup.Group("data")
 			{
@@ -84,6 +85,8 @@ func NewRouter() *gin.Engine {
 				dataModelGroup.GET("/single/:dbConnId", queryHandlers.GetSingleDataModel)
 				dataModelGroup.POST("/single/addfield", queryHandlers.AddSingleDataModelField)
 				dataModelGroup.POST("/single/deletefield", queryHandlers.DeleteSingleDataModelField)
+				dataModelGroup.POST("/single/addindex", queryHandlers.AddSingleDataModelIndex)
+				dataModelGroup.POST("/single/deleteindex", queryHandlers.DeleteSingleDataModelIndex)
 			}
 		}
 		settingGroup := api.Group("setting")

@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines/mongoqueryengine/mongoutils"
@@ -259,6 +260,32 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		return map[string]interface{}{
 			"message": "droped collection: " + queryType.CollectionName,
 		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_CREATEINDEX {
+		opts := options.Index()
+		if len(queryType.Args) > 1 {
+			if d, ok := queryType.Args[1].(bson.D); ok {
+				if unique, ok := d.Map()["unique"].(bool); ok {
+					opts.SetUnique(unique)
+				}
+				if name, ok := d.Map()["name"].(string); ok {
+					opts.SetName(name)
+				}
+			}
+		}
+		indexModel := mongo.IndexModel{
+			Keys:    queryType.Args[0],
+			Options: opts,
+		}
+		idxName, err := db.Collection(queryType.CollectionName).Indexes().CreateOne(context.Background(), indexModel)
+		if err != nil {
+			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+		return map[string]interface{}{
+			"message": "created index: " + idxName,
+		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_DROPINDEX {
 		indexName, ok := queryType.Args[0].(string)
 		if !ok {
@@ -406,4 +433,25 @@ func (mqe *MongoQueryEngine) DeleteData(dbConn *models.DBConnection, name string
 	query := fmt.Sprintf(`db.%s.deleteMany({ _id : { "$in" : [%s] }})`, name, underscoreIdsStr)
 	fmt.Println(query)
 	return mqe.RunQuery(dbConn, query, config)
+}
+
+func (mqe *MongoQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, keyNames []string, isUnique bool, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+	for i := range keyNames {
+		keyNames[i] = keyNames[i] + ": 1"
+	}
+	query := fmt.Sprintf(`db.%s.createIndex({%s}, {unqiue: %t, name: %s});`, name, strings.Join(keyNames, ", "), isUnique, indexName)
+	data, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
+func (mqe *MongoQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`db.%s.dropIndex("%s")`, name, indexName)
+	data, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
 }

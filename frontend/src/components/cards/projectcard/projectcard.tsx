@@ -6,6 +6,7 @@ import Link from 'next/link'
 import OutsideClickHandler from 'react-outside-click-handler'
 import { deleteProject } from '../../../redux/projectsSlice'
 import { useDispatch } from 'react-redux'
+import ConfirmModal from '../../widgets/confirmModal'
 
 type ProjectCardPropType = {
     project: Project
@@ -14,6 +15,7 @@ type ProjectCardPropType = {
 const ProjectCard = ({ project }: ProjectCardPropType) => {
 
     const [showDropdown, setShowDropdown] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
     const dispatch = useDispatch()
 
 
@@ -46,7 +48,7 @@ const ProjectCard = ({ project }: ProjectCardPropType) => {
                                     <OutsideClickHandler onOutsideClick={() => { setShowDropdown(false) }}>
                                         <div className="dropdown-menu" id="dropdown-menu" role="menu">
                                             <div className="dropdown-content">
-                                                <a onClick={onDeleteProject} className="dropdown-item">
+                                                <a onClick={() => { setIsDeleting(true) }} className="dropdown-item">
                                                     Delete Project
                                                 </a>
                                             </div>
@@ -58,6 +60,10 @@ const ProjectCard = ({ project }: ProjectCardPropType) => {
                     </div>
                 </a>
             </Link>
+            {isDeleting && <ConfirmModal
+                message={`Are you sure you want to delete  ${project.name}?`}
+                onConfirm={onDeleteProject}
+                onClose={() => { setIsDeleting(false) }} />}
         </div>
 
     )

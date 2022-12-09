@@ -30,3 +30,8 @@ func (dbQueryDao) UpdateDBQuery(queryID string, dbQuery *models.DBQuery) error {
 	err := db.GetDB().Where(&models.DBQuery{ID: queryID}).Updates(dbQuery).Error
 	return err
 }
+
+func (dbQueryDao) DeleteDBQuery(queryID string) error {
+	err := db.GetDB().Where(models.DBQuery{ID: queryID}).Delete(models.DBQuery{}).Error
+	return err
+}

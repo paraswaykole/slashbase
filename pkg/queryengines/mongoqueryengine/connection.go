@@ -52,15 +52,12 @@ func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host stri
 }
 
 func (mEngine *MongoQueryEngine) RemoveUnusedConnections() {
-	for {
-		time.Sleep(time.Minute * time.Duration(5))
-		for dbConnID, instance := range mEngine.openClients {
-			now := time.Now()
-			diff := now.Sub(instance.LastUsed)
-			if diff.Minutes() > 20 {
-				delete(mEngine.openClients, dbConnID)
-				go instance.mongoClientInstance.Disconnect(context.Background())
-			}
+	for dbConnID, instance := range mEngine.openClients {
+		now := time.Now()
+		diff := now.Sub(instance.LastUsed)
+		if diff.Minutes() > 20 {
+			delete(mEngine.openClients, dbConnID)
+			go instance.mongoClientInstance.Disconnect(context.Background())
 		}
 	}
 }

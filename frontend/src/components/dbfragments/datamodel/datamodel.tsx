@@ -7,6 +7,7 @@ import AddFieldModal from './addfieldmodal'
 import ConfirmModal from '../../widgets/confirmModal'
 import apiService from '../../../network/apiService'
 import toast from 'react-hot-toast'
+import AddIndexModal from './addindexmodal'
 
 type DataModelPropType = {
     dbConn: DBConnection
@@ -19,9 +20,12 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
 
     const label = dbConn.type === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
 
-    const [isEditing, setIsEditing] = useState<boolean>(false)
-    const [showingAddModal, setShowingAddModal] = useState<boolean>(false)
+    const [isEditingModel, setIsEditingModel] = useState<boolean>(false)
+    const [isEditingIndex, setIsEditingIndex] = useState<boolean>(false)
+    const [showingAddFieldModal, setShowingAddFieldModal] = useState<boolean>(false)
+    const [showingAddIndexModal, setShowingAddIndexModal] = useState<boolean>(false)
     const [isDeletingField, setIsDeletingField] = useState<string>('')
+    const [isDeletingIndex, setIsDeletingIndex] = useState<string>('')
 
     const deleteField = async () => {
         const result = await apiService.deleteDBSingleDataModelField(dbConn.id, dataModel.schemaName!, dataModel.name, isDeletingField)
@@ -29,6 +33,17 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
             toast.success(`deleted field ${isDeletingField}`)
             refreshModel?.()
             setIsDeletingField('')
+        } else {
+            toast.error(result.error!)
+        }
+    }
+
+    const deleteIndex = async () => {
+        const result = await apiService.deleteDBSingleDataModelIndex(dbConn.id, dataModel.schemaName!, dataModel.name, isDeletingIndex)
+        if (result.success) {
+            toast.success(`deleted index ${isDeletingField}`)
+            refreshModel?.()
+            setIsDeletingIndex('')
         } else {
             toast.error(result.error!)
         }
@@ -42,13 +57,13 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                         <tr>
                             <th colSpan={dbConn.type === DBConnType.POSTGRES ? 4 : 5}>
                                 {label}
-                                {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditing(!isEditing) }}>
-                                    {isEditing && <i className={"fas fa-check"} />}
-                                    {!isEditing && <i className={"fas fa-pen"} />}
+                                {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditingModel(!isEditingModel) }}>
+                                    {isEditingModel && <i className={"fas fa-check"} />}
+                                    {!isEditingModel && <i className={"fas fa-pen"} />}
                                 </button>}
                             </th>
-                            {dbConn.type === DBConnType.POSTGRES && isEditing && <th>
-                                <button className="button is-primary is-small" onClick={() => { setShowingAddModal(true) }}>
+                            {dbConn.type === DBConnType.POSTGRES && isEditingModel && <th>
+                                <button className="button is-primary is-small" onClick={() => { setShowingAddFieldModal(true) }}>
                                     <i className={"fas fa-plus"} />
                                 </button>
                             </th>}
@@ -72,7 +87,7 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                                             <span key={tag} className="tag is-info is-light">{tag}</span>
                                         )).reduce((prev, curr) => [prev, ' ', curr])}
                                     </td>}
-                                    {isEditing && <td>
+                                    {isEditingModel && <td>
                                         <button className="button is-danger is-small" style={{ float: 'right' }} onClick={() => { setIsDeletingField(field.name) }}>
                                             <i className={"fas fa-trash"} />
                                         </button>
@@ -86,30 +101,56 @@ const DataModel = ({ dbConn, dataModel, isEditable, refreshModel }: DataModelPro
                     <table className={"table is-bordered is-striped is-narrow is-hoverable"}>
                         <thead>
                             <tr>
-                                <th colSpan={2}>Indexes</th>
+                                <th colSpan={2}>
+                                    Indexes
+                                    {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditingIndex(!isEditingIndex) }}>
+                                        {isEditingIndex && <i className={"fas fa-check"} />}
+                                        {!isEditingIndex && <i className={"fas fa-pen"} />}
+                                    </button>}
+                                </th>
+                                {isEditingIndex && <th>
+                                    <button className="button is-primary is-small" onClick={() => { setShowingAddIndexModal(true) }}>
+                                        <i className={"fas fa-plus"} />
+                                    </button>
+                                </th>}
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                dataModel.indexes?.map(field => (
-                                    <tr key={field.name}>
-                                        <td>{field.name}</td>
-                                        <td>{field.indexDef}</td>
+                                dataModel.indexes?.map(idx => (
+                                    <tr key={idx.name}>
+                                        <td>{idx.name}</td>
+                                        <td>{idx.indexDef}</td>
+                                        {isEditingIndex && <td>
+                                            <button className="button is-danger is-small" style={{ float: 'right' }} onClick={() => { setIsDeletingIndex(idx.name) }}>
+                                                <i className={"fas fa-trash"} />
+                                            </button>
+                                        </td>}
                                     </tr>
                                 ))
                             }
                         </tbody>
                     </table>}
-                {dbConn.type === DBConnType.POSTGRES && showingAddModal && <AddFieldModal
+                {dbConn.type === DBConnType.POSTGRES && showingAddFieldModal && <AddFieldModal
                     dbConn={dbConn}
                     mSchema={dataModel.schemaName}
                     mName={dataModel.name}
                     onAddField={() => { refreshModel?.() }}
-                    onClose={() => { setShowingAddModal(false) }} />}
+                    onClose={() => { setShowingAddIndexModal(false) }} />}
+                {showingAddIndexModal && <AddIndexModal
+                    dbConn={dbConn}
+                    mSchema={dataModel.schemaName}
+                    mName={dataModel.name}
+                    onAddIndex={() => { refreshModel?.() }}
+                    onClose={() => { setShowingAddIndexModal(false) }} />}
                 {isDeletingField !== '' && <ConfirmModal
-                    message={`Delete ${isDeletingField}?`}
+                    message={`Delete field: ${isDeletingField}?`}
                     onConfirm={deleteField}
                     onClose={() => { setIsDeletingField('') }} />}
+                {isDeletingIndex !== '' && <ConfirmModal
+                    message={`Delete index: ${isDeletingIndex}?`}
+                    onConfirm={deleteIndex}
+                    onClose={() => { setIsDeletingIndex('') }} />}
                 <ReactTooltip place="bottom" type="dark" effect="solid" />
             </div>
         </React.Fragment>

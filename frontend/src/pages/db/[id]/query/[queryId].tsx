@@ -54,6 +54,10 @@ const DBQueryPage: NextPage = () => {
             router.replace(Constants.APP_PATHS.DB_QUERY.path.replace('[id]', String(id)).replace('[queryId]', newQueryId))
     }
 
+    const onDelete = () => {
+        router.replace(Constants.APP_PATHS.DB_QUERY.path.replace('[id]', String(id)).replace('[queryId]', 'new'))
+    }
+
     if (error404) {
         return (<DefaultErrorPage statusCode={404} />)
     }
@@ -64,6 +68,7 @@ const DBQueryPage: NextPage = () => {
                 queryId={String(queryId)}
                 dbQuery={dbQuery}
                 onQuerySaved={onQuerySaved}
+                onDelete={onDelete}
             />
         </AppLayout>
     )
