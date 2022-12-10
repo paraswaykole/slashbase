@@ -34,7 +34,10 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 - **Browser based**: Runs in your favourite browser.
 - **Easy to use**: with minimal interface it is simple to use. 
-- **Database Support**: Works with two types of databases: PostgreSQL and MongoDB.
+- **Database Support**: PostgreSQL and MongoDB.
+- **Save Queries**: Write and Save queries to re-run in future.
+- **Create Charts**: Create charts from your query results.
+
 
 # Installation
 
