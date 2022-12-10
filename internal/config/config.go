@@ -2,7 +2,6 @@ package config
 
 import (
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -32,8 +31,4 @@ func GetServerPort() string {
 		return DEFAULT_SERVER_PORT
 	}
 	return config.Port
-}
-
-func GetRootUser() (string, string) {
-	return os.Getenv("ROOT_USER_EMAIL"), os.Getenv("ROOT_USER_PASSWORD")
 }
