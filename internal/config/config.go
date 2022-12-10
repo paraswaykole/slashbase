@@ -15,7 +15,7 @@ func Init(env string) {
 			log.Fatal("Error loading development.env file")
 		}
 	}
-	config = newConfig()
+	config = newConfig(env)
 }
 
 func IsLive() bool {
