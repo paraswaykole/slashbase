@@ -103,16 +103,6 @@ export const selectProjects = (state: AppState) => state.projects.projects
 
 export const selectCurrentProject = (state: AppState) => state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)
 
-export const selectProjectMember = (state: AppState) => state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)?.currentMember
-
-export const selectProjectMemberPermissions = (state: AppState): ProjectPermissions => {
-  const allPermissions = state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)?.currentMember?.role.permissions
-  const permission: ProjectPermissions = {
-    readOnly: allPermissions?.find(x => x.name === Constants.ROLES_PERMISSIONS.READ_ONLY)?.value ? true : false
-  }
-  return permission
-}
-
 export interface ProjectPermissions {
   readOnly: boolean
 }

@@ -5,8 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/internal/controllers"
-	"slashbase.com/backend/internal/middlewares"
-	"slashbase.com/backend/internal/utils"
 	"slashbase.com/backend/internal/views"
 )
 
@@ -19,9 +17,8 @@ func (ProjectHandlers) CreateProject(c *gin.Context) {
 		Name string `json:"name"`
 	}
 	c.BindJSON(&createBody)
-	authUser := middlewares.GetAuthUser(c)
 
-	project, projectMember, err := projectController.CreateProject(authUser, createBody.Name)
+	project, err := projectController.CreateProject(createBody.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -31,13 +28,13 @@ func (ProjectHandlers) CreateProject(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"data":    views.BuildProject(project, projectMember),
+		"data":    views.BuildProject(project),
 	})
 }
 
 func (ProjectHandlers) GetProjects(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
-	projectMembers, err := projectController.GetProjects(authUser)
+
+	projects, err := projectController.GetProjects()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -46,8 +43,8 @@ func (ProjectHandlers) GetProjects(c *gin.Context) {
 		return
 	}
 	projectViews := []views.ProjectView{}
-	for _, t := range *projectMembers {
-		projectViews = append(projectViews, views.BuildProject(&t.Project, &t))
+	for _, p := range *projects {
+		projectViews = append(projectViews, views.BuildProject(&p))
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
@@ -55,80 +52,10 @@ func (ProjectHandlers) GetProjects(c *gin.Context) {
 	})
 }
 
-func (ProjectHandlers) GetProjectMembers(c *gin.Context) {
-	projectID := c.Param("projectId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
-	if !utils.ContainsString(*authUserProjectIds, projectID) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"error":   "not allowed",
-		})
-		return
-	}
-	projectMembers, err := projectController.GetProjectMembers(projectID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
-	}
-	projectMemberViews := []views.ProjectMemberView{}
-	for _, t := range *projectMembers {
-		projectMemberViews = append(projectMemberViews, views.BuildProjectMember(&t))
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    projectMemberViews,
-	})
-}
-
-func (ProjectHandlers) AddProjectMember(c *gin.Context) {
-	projectID := c.Param("projectId")
-	authUser := middlewares.GetAuthUser(c)
-	var addMemberBody struct {
-		Email  string `json:"email"`
-		RoleID string `json:"roleId"`
-	}
-	c.BindJSON(&addMemberBody)
-
-	newProjectMember, err := projectController.AddProjectMember(authUser, projectID, addMemberBody.Email, addMemberBody.RoleID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    views.BuildProjectMember(newProjectMember),
-	})
-}
-
-func (ProjectHandlers) DeleteProjectMember(c *gin.Context) {
-	projectId := c.Param("projectId")
-	userId := c.Param("userId")
-	authUser := middlewares.GetAuthUser(c)
-
-	err := projectController.DeleteProjectMember(authUser, projectId, userId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"error":   err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-	})
-}
-
 func (ProjectHandlers) DeleteProject(c *gin.Context) {
 	projectId := c.Param("projectId")
-	authUser := middlewares.GetAuthUser(c)
 
-	err := projectController.DeleteProject(authUser, projectId)
+	err := projectController.DeleteProject(projectId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

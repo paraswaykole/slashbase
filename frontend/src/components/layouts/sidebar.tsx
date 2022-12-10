@@ -1,7 +1,7 @@
 import styles from './sidebar.module.scss'
 import React from 'react'
 import { useRouter } from 'next/router'
-import { DBConnection, DBDataModel, DBQuery, User } from '../../data/models'
+import { DBConnection, DBDataModel, DBQuery } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
 import { selectAllDBConnections } from '../../redux/allDBConnectionsSlice'
 import Constants from '../../constants'
@@ -10,7 +10,6 @@ import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { useDispatch } from 'react-redux'
 import { DBConnType } from '../../data/defaults'
-import { selectCurrentUser } from '../../redux/currentUserSlice'
 
 enum SidebarViewType {
     GENERIC = "GENERIC", // default
@@ -23,7 +22,6 @@ type SidebarPropType = {}
 const Sidebar = (_: SidebarPropType) => {
 
     const router = useRouter()
-    const currentUser: User = useAppSelector(selectCurrentUser)
 
     const { mschema, mname, queryId } = router.query
 
@@ -131,33 +129,11 @@ const Sidebar = (_: SidebarPropType) => {
                         </p>
                         <ul className={"menu-list " + styles.menuList}>
                             <li>
-                                <Link href={Constants.APP_PATHS.SETTINGS_ACCOUNT.path} as={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}>
-                                    <a className={router.pathname.startsWith(Constants.APP_PATHS.SETTINGS_ACCOUNT.path) ? 'is-active' : ''}>Account</a>
+                                <Link href={Constants.APP_PATHS.SETTINGS_ADVANCED.path} as={Constants.APP_PATHS.SETTINGS_ADVANCED.path}>
+                                    <a className={router.pathname == Constants.APP_PATHS.SETTINGS_ADVANCED.path ? 'is-active' : ''}>Advanced</a>
                                 </Link>
                             </li>
                         </ul>
-                        {currentUser && currentUser.isRoot && <React.Fragment>
-                            <p className="menu-label">
-                                Admin (for root-user)
-                            </p>
-                            <ul className={"menu-list " + styles.menuList}>
-                                <li>
-                                    <Link href={Constants.APP_PATHS.SETTINGS_ADVANCED.path} as={Constants.APP_PATHS.SETTINGS_ADVANCED.path}>
-                                        <a className={router.pathname == Constants.APP_PATHS.SETTINGS_ADVANCED.path ? 'is-active' : ''}>Advanced</a>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href={Constants.APP_PATHS.SETTINGS_USERS.path} as={Constants.APP_PATHS.SETTINGS_USERS.path}>
-                                        <a className={router.pathname.startsWith(Constants.APP_PATHS.SETTINGS_USERS.path) ? 'is-active' : ''}>Manage Users</a>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href={Constants.APP_PATHS.SETTINGS_ROLES.path} as={Constants.APP_PATHS.SETTINGS_ROLES.path}>
-                                        <a className={router.pathname == Constants.APP_PATHS.SETTINGS_ROLES.path ? 'is-active' : ''}>Manage Roles</a>
-                                    </Link>
-                                </li>
-                            </ul>
-                        </React.Fragment>}
                         <p className="menu-label">
                             Info
                         </p>

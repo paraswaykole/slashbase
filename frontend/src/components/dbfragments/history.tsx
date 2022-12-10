@@ -4,7 +4,6 @@ import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
 import apiService from '../../network/apiService'
 import toast from 'react-hot-toast'
-import ProfileImage, { ProfileImageSize } from '../user/profileimage'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import dateformat from 'dateformat'
 
@@ -62,10 +61,6 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                                 {dbQueryLogs.map((log) => {
                                     return (
                                         <tr key={log.id}>
-                                            <td style={{ fontSize: '14px' }}>
-                                                <ProfileImage imageUrl={log.user.profileImageUrl} size={ProfileImageSize.TINY} /><br />
-                                                {log.user.name ? log.user.name : log.user.email}
-                                            </td>
                                             <td>
                                                 <code>{log.query}</code>
                                             </td>

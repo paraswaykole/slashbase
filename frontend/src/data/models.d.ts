@@ -1,53 +1,12 @@
 import { DBConnType } from "./defaults"
 
-export interface User {
-    id: string
-    name: string | null
-    email: string
-    profileImageUrl: string
-    isRoot: bool
-    createdAt: string
-    updatedAt: string
-}
-
-export interface UserSession {
-    id: string
-    user: User
-    isActive: boolean
-}
 
 export interface Project {
     id: string
     name: string
-    currentMember?: ProjectMember
     createdAt: string
     updatedAt: string
 }
-
-export interface ProjectMember {
-    id: string
-    role: Role
-    user: User
-    createdAt: string
-    updatedAt: string
-}
-
-export interface Role {
-    id: string
-    name: string
-    permissions?: RolePermission[]
-    createdAt: string
-    updatedAt: string
-}
-
-export interface RolePermission {
-    id: string
-    name: string
-    value: bool
-    createdAt: string
-    updatedAt: string
-}
-
 
 export interface DBConnection {
     id: string
@@ -96,7 +55,6 @@ export interface DBQuery {
 export interface DBQueryLog {
     id: string
     query: string
-    user: User
     dbConnectionId: string
     createdAt: string
 }

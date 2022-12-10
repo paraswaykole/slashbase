@@ -2,14 +2,12 @@ import styles from './header.module.scss'
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import OutsideClickHandler from 'react-outside-click-handler'
-import { DBConnection, Project, User } from '../../data/models'
+import { DBConnection, Project } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
 import { useRouter } from 'next/router'
-import { selectCurrentUser } from '../../redux/currentUserSlice'
 import Constants from '../../constants'
 import { selectProjects } from '../../redux/projectsSlice'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
-import ProfileImage, { ProfileImageSize } from '../user/profileimage'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { useDispatch } from 'react-redux'
 
@@ -21,7 +19,6 @@ const Header = (_: HeaderPropType) => {
 
     const router = useRouter()
 
-    const currentUser: User = useAppSelector(selectCurrentUser)
     const projects: Project[] = useAppSelector(selectProjects)
     const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
@@ -53,8 +50,6 @@ const Header = (_: HeaderPropType) => {
     if (router.pathname === Constants.APP_PATHS.PROJECT.path) {
         currentOption = String(router.query.id)
     } else if (router.pathname === Constants.APP_PATHS.NEW_DB.path) {
-        currentOption = String(router.query.id)
-    } else if (router.pathname === Constants.APP_PATHS.PROJECT_MEMBERS.path) {
         currentOption = String(router.query.id)
     } else if (router.pathname === Constants.APP_PATHS.DB.path
         || router.pathname === Constants.APP_PATHS.DB_PATH.path
@@ -109,41 +104,34 @@ const Header = (_: HeaderPropType) => {
                 </div>
             </div>
             <div className={styles.headerMenu}>
-                {currentUser &&
-                    <div className={"dropdown is-right" + (isShowingDropDown ? ' is-active' : '')}>
-                        <div className="dropdown-trigger" onClick={() => { setIsShowingDropDown(!isShowingDropDown) }}>
-                            <ProfileImage imageUrl={currentUser.profileImageUrl} size={ProfileImageSize.SMALL} classes={[styles.profileImage]} />
-                        </div>
-                        <OutsideClickHandler onOutsideClick={() => { setIsShowingDropDown(false) }}>
-                            <div className="dropdown-menu" role="menu">
-                                <div className="dropdown-content">
-                                    <Link href={Constants.EXTERNAL_PATHS.CHANGELOG}>
-                                        <a className="dropdown-item" target="_blank">
-                                            What&apos;s New?
-                                        </a>
-                                    </Link>
-                                    <hr className="dropdown-divider" />
-                                    <Link href={Constants.APP_PATHS.SETTINGS_ACCOUNT.path} as={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}>
-                                        <a className="dropdown-item">
-                                            Settings
-                                        </a>
-                                    </Link>
-                                    <Link href={Constants.APP_PATHS.SETTINGS_SUPPORT.path} as={Constants.APP_PATHS.SETTINGS_SUPPORT.path}>
-                                        <a className="dropdown-item">
-                                            Support
-                                        </a>
-                                    </Link>
-                                    <hr className="dropdown-divider" />
-                                    <Link href={Constants.APP_PATHS.LOGOUT.path} as={Constants.APP_PATHS.LOGOUT.path}>
-                                        <a className="dropdown-item">
-                                            Logout
-                                        </a>
-                                    </Link>
-                                </div>
-                            </div>
-                        </OutsideClickHandler>
+
+                <div className={"dropdown is-right" + (isShowingDropDown ? ' is-active' : '')}>
+                    <div className="dropdown-trigger" onClick={() => { setIsShowingDropDown(!isShowingDropDown) }}>
+                        <i className={"fas fa-cog"} />
                     </div>
-                }
+                    <OutsideClickHandler onOutsideClick={() => { setIsShowingDropDown(false) }}>
+                        <div className="dropdown-menu" role="menu">
+                            <div className="dropdown-content">
+                                <Link href={Constants.EXTERNAL_PATHS.CHANGELOG}>
+                                    <a className="dropdown-item" target="_blank">
+                                        What&apos;s New?
+                                    </a>
+                                </Link>
+                                <hr className="dropdown-divider" />
+                                <Link href={Constants.APP_PATHS.SETTINGS_ADVANCED.path} as={Constants.APP_PATHS.SETTINGS_ADVANCED.path}>
+                                    <a className="dropdown-item">
+                                        Settings
+                                    </a>
+                                </Link>
+                                <Link href={Constants.APP_PATHS.SETTINGS_SUPPORT.path} as={Constants.APP_PATHS.SETTINGS_SUPPORT.path}>
+                                    <a className="dropdown-item">
+                                        Support
+                                    </a>
+                                </Link>
+                            </div>
+                        </div>
+                    </OutsideClickHandler>
+                </div>
             </div>
         </header>
     )

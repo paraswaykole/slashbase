@@ -13,7 +13,6 @@ import (
 type DBConnection struct {
 	ID          string            `gorm:"type:uuid;primaryKey"`
 	Name        string            `gorm:"not null"`
-	CreatedBy   string            `gorm:"not null"`
 	ProjectID   string            `gorm:"not null"`
 	Type        string            `gorm:"not null"`
 	DBScheme    sbsql.CryptedData `gorm:"type:text"`
@@ -31,8 +30,7 @@ type DBConnection struct {
 	CreatedAt   time.Time         `gorm:"autoCreateTime"`
 	UpdatedAt   time.Time         `gorm:"autoUpdateTime"`
 
-	CreatedByUser User    `gorm:"foreignkey:CreatedBy"`
-	Project       Project `gorm:"foreignkey:ProjectID"`
+	Project Project `gorm:"foreignkey:ProjectID"`
 }
 
 const (
@@ -48,7 +46,7 @@ const (
 	// DBLOGINTYPE_ROLE_ACCOUNTS = "ROLE_ACCOUNTS"
 )
 
-func NewDBConnection(userID string, projectID string, name string, dbtype string, dbscheme, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
+func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
 
 	if !utils.ContainsString([]string{DBUSESSH_NONE, DBUSESSH_PASSWORD, DBUSESSH_KEYFILE, DBUSESSH_PASSKEYFILE}, useSSH) {
 		return nil, errors.New("useSSH is not correct")
@@ -71,7 +69,6 @@ func NewDBConnection(userID string, projectID string, name string, dbtype string
 	return &DBConnection{
 		ID:          uuid.NewString(),
 		Name:        name,
-		CreatedBy:   userID,
 		ProjectID:   projectID,
 		Type:        dbtype,
 		DBScheme:    sbsql.CryptedData(dbscheme),
