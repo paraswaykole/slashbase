@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pull">
 </p>
 <p align="center">
-  <a href="#installation" rel="dofollow"><strong>Install »</strong></a>
+  <a href="#installation" rel="dofollow"><strong>Get Started »</strong></a>
   <br/><br/>
   <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
   ·
