@@ -47,7 +47,6 @@ download() {
 }
 
 generate_variables() {
-    auth_secret=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64 ; echo '')
     crypted_data_secret=$(openssl rand -hex 32)
 }
 
@@ -63,14 +62,8 @@ generate_app_config_file() {
     rm -f replace.sed
     touch replace.sed
 
-    variables=( "auth_secret"
-                $auth_secret
-                "crypted_data_secret"
+    variables=( "crypted_data_secret"
                 $crypted_data_secret
-                "slashbase_root_email"
-                $slashbase_root_email
-                "slashbase_root_password"
-                $slashbase_root_password
             )
 
     flip=0
@@ -106,38 +99,7 @@ wait_for_containers_start() {
     echo ""
 }
 
-# This function prompts the user for an input for a non-empty slashbase root user email.
-read_rootuser_email() {
-    read -rp 'Set the slashbase root user email (admin user): ' slashbase_root_email
-    while [[ -z $slashbase_root_email ]]; do
-        echo ""
-        echo ""
-        echo "+++++++++++ ERROR ++++++++++++++++++++++"
-        echo "The slashbase user email cannot be empty. Please input a valid slashbase user email string."
-        echo "++++++++++++++++++++++++++++++++++++++++"
-        echo ""
-        read -rp 'Set the slashbase root user email (admin user): ' slashbase_root_email
-    done
-}
-
-# This function prompts the user for an input for a non-empty slashbase root user password.
-read_rootuser_password() {
-    read -srp 'Set the slashbase root user password (admin user): ' slashbase_root_password
-    while [[ -z $slashbase_root_password ]]; do
-        echo ""
-        echo ""
-        echo "+++++++++++ ERROR ++++++++++++++++++++++"
-        echo "The slashbase user password cannot be empty. Please input a valid slashbase user password string."
-        echo "++++++++++++++++++++++++++++++++++++++++"
-        echo ""
-        read -srp 'Set the slashbase root user password (admin user): ' slashbase_root_password
-    done
-    echo ""
-}
-
 # Generate slashbase app.env file
-read_rootuser_email
-read_rootuser_password
 generate_variables
 generate_app_config_file
 get_containers
