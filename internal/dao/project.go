@@ -26,6 +26,15 @@ func (projectDao) GetProject(id string) (*models.Project, error) {
 	return &project, nil
 }
 
+func (projectDao) GetAllProjects() (*[]models.Project, error) {
+	var projects []models.Project
+	err := db.GetDB().Model(models.Project{}).Find(&projects).Error
+	if err != nil {
+		return nil, err
+	}
+	return &projects, nil
+}
+
 func (projectDao) DeleteProject(id string) error {
 	result := db.GetDB().Where(models.Project{ID: id}).Delete(models.Project{})
 	if result.Error != nil {

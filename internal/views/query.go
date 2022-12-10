@@ -16,7 +16,6 @@ type DBQueryView struct {
 type DBQueryLogView struct {
 	ID             string    `json:"id"`
 	Query          string    `json:"query"`
-	User           UserView  `json:"user"`
 	DBConnectionID string    `json:"dbConnectionId"`
 	CreatedAt      time.Time `json:"createdAt"`
 }
@@ -34,7 +33,6 @@ func BuildDBQueryLogView(log *models.DBQueryLog) *DBQueryLogView {
 	return &DBQueryLogView{
 		ID:             log.ID,
 		Query:          log.Query,
-		User:           BuildUser(&log.User),
 		DBConnectionID: log.DBConnectionID,
 		CreatedAt:      log.CreatedAt,
 	}

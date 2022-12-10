@@ -1,13 +1,10 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/internal/controllers"
-	"slashbase.com/backend/internal/middlewares"
-	"slashbase.com/backend/internal/utils"
 	"slashbase.com/backend/internal/views"
 )
 
@@ -33,9 +30,8 @@ func (DBConnectionHandlers) CreateDBConnection(c *gin.Context) {
 		SSHKeyFile  string `json:"sshKeyFile"`
 	}
 	c.BindJSON(&createBody)
-	authUser := middlewares.GetAuthUser(c)
 
-	dbConn, err := dbConnController.CreateDBConnection(authUser, createBody.ProjectID, createBody.Name, createBody.Type, createBody.Scheme, createBody.Host, createBody.Port,
+	dbConn, err := dbConnController.CreateDBConnection(createBody.ProjectID, createBody.Name, createBody.Type, createBody.Scheme, createBody.Host, createBody.Port,
 		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -52,9 +48,8 @@ func (DBConnectionHandlers) CreateDBConnection(c *gin.Context) {
 }
 
 func (DBConnectionHandlers) GetDBConnections(c *gin.Context) {
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	dbConns, err := dbConnController.GetDBConnections(authUserProjectIds)
+	dbConns, err := dbConnController.GetDBConnections()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -74,8 +69,7 @@ func (DBConnectionHandlers) GetDBConnections(c *gin.Context) {
 
 func (DBConnectionHandlers) DeleteDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	err := dbConnController.DeleteDBConnection(authUser, dbConnID)
+	err := dbConnController.DeleteDBConnection(dbConnID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -90,8 +84,7 @@ func (DBConnectionHandlers) DeleteDBConnection(c *gin.Context) {
 
 func (DBConnectionHandlers) GetSingleDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	dbConn, err := dbConnController.GetSingleDBConnection(authUser, dbConnID)
+	dbConn, err := dbConnController.GetSingleDBConnection(dbConnID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -108,14 +101,6 @@ func (DBConnectionHandlers) GetSingleDBConnection(c *gin.Context) {
 
 func (DBConnectionHandlers) GetDBConnectionsByProject(c *gin.Context) {
 	projectID := c.Param("projectId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
-	if !utils.ContainsString(*authUserProjectIds, projectID) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"error":   errors.New("not allowed"),
-		})
-		return
-	}
 
 	dbConns, err := dbConnController.GetDBConnectionsByProject(projectID)
 	if err != nil {
