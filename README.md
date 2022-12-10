@@ -45,7 +45,7 @@ The app should be installed on your desktop/laptop and should used as a part of 
 
 ### Docker
 
-Run the following commands on terminal to run the app inside docker container:
+Run the following commands on terminal to start the app inside docker container:
 
 1. `docker pull slashbaseide/slashbase`
 2. `docker run -p 3000:3000 slashbaseide/slashbase`
