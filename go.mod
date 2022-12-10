@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.4
-	github.com/golang-jwt/jwt/v4 v4.1.0
 	github.com/jackc/pgproto3/v2 v2.1.1
 	github.com/jackc/pgtype v1.8.1
 	github.com/jackc/pgx/v4 v4.13.0
