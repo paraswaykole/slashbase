@@ -1,11 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import type { AppState } from './store'
 import { Project } from '../data/models'
 import apiService from '../network/apiService'
-import { AddProjectMemberPayload } from '../network/payloads'
 import { getAllDBConnections } from './allDBConnectionsSlice'
-import Constants from '../constants'
 
 export interface ProjectState {
   projects: Array<Project>
