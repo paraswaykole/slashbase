@@ -32,7 +32,7 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 ## Features
 
-- **Cloud based**: Setup on your server. Works in browser.
+- **Browser based**: Runs in your favourite browser.
 - **Easy to use**: with minimal interface it is simple to use. 
 - **Database Support**: Works with two types of databases: PostgreSQL and MongoDB.
 
