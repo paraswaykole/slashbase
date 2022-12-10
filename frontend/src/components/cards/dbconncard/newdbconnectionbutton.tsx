@@ -9,10 +9,6 @@ type NewDBConnButtonPropType = {
 
 const NewDBConnButton = ({ project }: NewDBConnButtonPropType) => {
 
-    if (project.currentMember?.role.name !== Constants.ROLES.ADMIN) {
-        return null
-    }
-
     return (
         <Link href={Constants.APP_PATHS.NEW_DB.path} as={Constants.APP_PATHS.NEW_DB.path.replace('[id]', project.id)}>
             <a>

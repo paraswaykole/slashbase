@@ -4,7 +4,7 @@ import { DBConnection, DBDataModel, Project } from '../../data/models'
 import apiService from '../../network/apiService'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
-import { ProjectPermissions, selectCurrentProject, selectProjectMemberPermissions } from '../../redux/projectsSlice'
+import { ProjectPermissions, selectCurrentProject } from '../../redux/projectsSlice'
 import DataModel from './datamodel/datamodel'
 
 type DBShowModelPropType = {
@@ -18,7 +18,6 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
-    const projectMemberPermissions: ProjectPermissions = useAppSelector(selectProjectMemberPermissions)
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
     const [refresh, setRefresh] = useState<number>(Date.now())
@@ -36,11 +35,11 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
 
     return (
         <React.Fragment>
-            {project && projectMemberPermissions && dataModel &&
+            {project && dataModel &&
                 <DataModel
                     dbConn={dbConnection!}
                     dataModel={dataModel}
-                    isEditable={!projectMemberPermissions.readOnly}
+                    isEditable={true}
                     refreshModel={() => { setRefresh(Date.now()) }} />
             }
         </React.Fragment>

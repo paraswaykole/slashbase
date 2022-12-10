@@ -6,7 +6,7 @@ import apiService from '../../network/apiService'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
-import { ProjectPermissions, selectCurrentProject, selectProjectMemberPermissions, selectProjects } from '../../redux/projectsSlice'
+import { ProjectPermissions, selectCurrentProject, } from '../../redux/projectsSlice'
 import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
@@ -24,7 +24,6 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
-    const projectMemberPermissions: ProjectPermissions = useAppSelector(selectProjectMemberPermissions)
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
     const [queryData, setQueryData] = useState<DBQueryData>()
@@ -155,7 +154,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     mName={String(mname)}
                     queryData={queryData}
                     querySort={querySort}
-                    isEditable={!projectMemberPermissions.readOnly}
+                    isEditable={true}
                     showHeader={true}
                     updateCellData={updatePostgresCellData}
                     onDeleteRows={onDeleteRows}
@@ -169,7 +168,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     dbConnection={dbConnection}
                     mName={String(mname)}
                     queryData={queryData}
-                    isEditable={!projectMemberPermissions.readOnly}
+                    isEditable={true}
                     showHeader={true}
                     onAddData={onAddData}
                     updateCellData={updateMongoCellData}

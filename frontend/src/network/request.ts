@@ -1,7 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 import { GetAPIConfig } from '../constants'
-import { clearLogin } from '../redux/currentUserSlice'
-import reduxStore from '../redux/store'
 
 const getApiInstance = () => {
     const apiInstance: AxiosInstance = axios.create({
@@ -17,8 +15,6 @@ const getApiInstance = () => {
         async function (error: any) {
             const status = error.status || error.response.status;
             if (status === 401) {
-                const { dispatch } = reduxStore
-                await dispatch(clearLogin())
                 return Promise.resolve(error.response)
             }
             if (status === 500) {

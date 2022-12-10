@@ -19,7 +19,7 @@ func (dbQueryLogDao) CreateDBQueryLog(queryLog *models.DBQueryLog) error {
 
 func (dbQueryLogDao) GetDBQueryLogsDBConnID(dbConnID string, before time.Time) ([]*models.DBQueryLog, error) {
 	var dbQueryLogs []*models.DBQueryLog
-	err := db.GetDB().Where(&models.DBQueryLog{DBConnectionID: dbConnID}).Where("created_at < ?", before).Preload("User").Order("created_at desc").Limit(config.PAGINATION_COUNT).Find(&dbQueryLogs).Error
+	err := db.GetDB().Model(&models.DBQueryLog{}).Where("db_connection_id = ? AND created_at < ?", dbConnID, before).Order("created_at desc").Limit(config.PAGINATION_COUNT).Find(&dbQueryLogs).Error
 	return dbQueryLogs, err
 }
 

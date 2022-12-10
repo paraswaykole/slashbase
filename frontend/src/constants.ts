@@ -3,19 +3,12 @@ interface ConstantsType {
     APP_PATHS: {
         [key: string]: {
             path: string
-            isAuth: boolean
         }
     }
     EXTERNAL_PATHS: {
         [key: string]: string
     }
     SETTING_KEYS: {
-        [key: string]: string
-    }
-    ROLES: {
-        [key: string]: string
-    }
-    ROLES_PERMISSIONS: {
         [key: string]: string
     }
 }
@@ -32,83 +25,40 @@ const PRODUCTION = 'production'
 const Constants: ConstantsType = {
     IS_LIVE: Boolean(process.env.NEXT_PUBLIC_ENV_NAME === PRODUCTION),
     APP_PATHS: {
-        LOGIN: {
-            path: '/login',
-            isAuth: false
-        },
-        LOGOUT: {
-            path: '/logout',
-            isAuth: true
-        },
         // APP
         HOME: {
             path: '/',
-            isAuth: true
         },
         PROJECT: {
             path: '/project/[id]',
-            isAuth: true
         },
         NEW_DB: {
             path: '/project/[id]/newdb',
-            isAuth: true
-        },
-        PROJECT_MEMBERS: {
-            path: '/project/[id]/members',
-            isAuth: true
         },
         DB: {
             path: '/db/[id]',
-            isAuth: true
         },
         DB_PATH: {
             path: '/db/[id]/[path]',
-            isAuth: true
         },
         DB_QUERY: {
             path: '/db/[id]/query/[queryId]',
-            isAuth: true
         },
         DB_HISTORY: {
             path: '/db/[id]/history',
-            isAuth: true
         },
         // SETTINGS
         SETTINGS: {
             path: '/settings',
-            isAuth: true
         },
         SETTINGS_ABOUT: {
             path: '/settings/about',
-            isAuth: true
         },
         SETTINGS_SUPPORT: {
             path: '/settings/support',
-            isAuth: true
-        },
-        SETTINGS_ACCOUNT: {
-            path: '/settings/account',
-            isAuth: true
         },
         SETTINGS_ADVANCED: {
             path: '/settings/advanced',
-            isAuth: true
-        },
-        SETTINGS_ACCOUNT_CHANGE_PASSWORD: {
-            path: '/settings/account/password',
-            isAuth: true
-        },
-        SETTINGS_USERS: {
-            path: '/settings/users',
-            isAuth: true
-        },
-        SETTINGS_ADD_USER: {
-            path: '/settings/users/add',
-            isAuth: true
-        },
-        SETTINGS_ROLES: {
-            path: '/settings/roles',
-            isAuth: true
         },
     },
     EXTERNAL_PATHS: {
@@ -122,12 +72,6 @@ const Constants: ConstantsType = {
         TELEMETRY_ENABLED: "TELEMETRY_ENABLED",
         LOGS_EXPIRE: "LOGS_EXPIRE"
     },
-    ROLES: {
-        ADMIN: "Admin"
-    },
-    ROLES_PERMISSIONS: {
-        READ_ONLY: "READ_ONLY"
-    }
 }
 
 export default Constants
