@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pull">
 </p>
 <p align="center">
-  <a href="https://slashbase.com/install" rel="dofollow"><strong>Install on your server »</strong></a>
+  <a href="https://slashbase.com/install" rel="dofollow"><strong>Install »</strong></a>
   <br/><br/>
   <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
   ·
@@ -24,7 +24,7 @@ ___
 
 <img src="https://slashbase.com/screenshot.png" alt="Slashbase" width="100%">
 
-## About
+# About
 
 Slashbase is an open-source in-browser database IDE for your team. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Works with two types of databases: PostgreSQL and MongoDB.
 
@@ -36,27 +36,34 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 - **Easy to use**: with minimal interface it is simple to use. 
 - **Database Support**: Works with two types of databases: PostgreSQL and MongoDB.
 
-## Installation
+# Installation
 
-Please follow the [installation guide](https://slashbase.com/install) to self-host Slashbase on your own cloud.
+The app should be installed on your desktop/laptop and should used as a part of your local development enviroment.
 
-## Documentation
+### Docker
+
+Run the following commands on terminal to run the app inside docker container:
+
+1. `docker pull slashbaseide/slashbase`
+2. `docker run -p 3000:3000 slashbaseide/slashbase`
+
+# Documentation
 
 Detailed documentation is available on [slashbase guide](https://slashbase.bip.wiki).
 
-## Community
+# Community
 
 Join our community on [discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
 
 
-## Contributing
+# Contributing
 
 Read our [contribution guide](CONTRIBUTING.md) for getting started on contributing to the project.
 
-## Support
+# Support
 
 If you face any issues installing or using slashbase, send us a mail on slashbaseide@gmail.com or contact support chat on our website [slashbase.com](https://slashbase.com).
 
-## License
+# License
 
 See the [LICENSE file](LICENSE.txt) for license rights and limitations.
