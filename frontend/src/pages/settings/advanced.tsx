@@ -1,26 +1,14 @@
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import AppLayout from '../../components/layouts/applayout'
 import Constants from '../../constants'
-import { User } from '../../data/models'
 import apiService from '../../network/apiService'
-import { selectCurrentUser } from '../../redux/currentUserSlice'
-import { useAppSelector } from '../../redux/hooks'
 
 const AdvancedSettingsPage: NextPage = () => {
 
-    const router = useRouter()
 
     const [telemetryEnabled, setTelemetryEnabled] = useState<boolean | undefined>(undefined)
     const [logsExpire, setLogsExpire] = useState<number | undefined>(undefined)
-
-    const currentUser: User = useAppSelector(selectCurrentUser)
-    useEffect(() => {
-        if (currentUser && !currentUser.isRoot) {
-            router.push(Constants.APP_PATHS.SETTINGS_ACCOUNT.path)
-        }
-    }, [currentUser])
 
     useEffect(() => {
         (async () => {

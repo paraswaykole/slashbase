@@ -1,11 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import type { AppState } from './store'
 import { Project } from '../data/models'
 import apiService from '../network/apiService'
-import { AddProjectMemberPayload } from '../network/payloads'
 import { getAllDBConnections } from './allDBConnectionsSlice'
-import Constants from '../constants'
 
 export interface ProjectState {
   projects: Array<Project>
@@ -102,16 +100,6 @@ export const { reset } = projectsSlice.actions
 export const selectProjects = (state: AppState) => state.projects.projects
 
 export const selectCurrentProject = (state: AppState) => state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)
-
-export const selectProjectMember = (state: AppState) => state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)?.currentMember
-
-export const selectProjectMemberPermissions = (state: AppState): ProjectPermissions => {
-  const allPermissions = state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)?.currentMember?.role.permissions
-  const permission: ProjectPermissions = {
-    readOnly: allPermissions?.find(x => x.name === Constants.ROLES_PERMISSIONS.READ_ONLY)?.value ? true : false
-  }
-  return permission
-}
 
 export interface ProjectPermissions {
   readOnly: boolean

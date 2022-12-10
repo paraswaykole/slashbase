@@ -2,7 +2,7 @@
   <a href="https://slashbase.com" alt="Slashbase">
     <img src="https://slashbase.com/github-logo.png" alt="Slashbase" width="220">
   </a>
-  <p align="center">The open-source collaborative in-browser database IDE for everyone on your team.</p>
+  <p align="center">The open-source in-browser database IDE</p>
 </p>
 <p align="center">
   <img src="https://img.shields.io/github/license/slashbaseide/slashbase" alt="License">
@@ -26,7 +26,7 @@ ___
 
 ## About
 
-Slashbase is an open-source collaborative in-browser database IDE for your team. Use Slashbase to connect to any of your database, browse data and schema, write, run and share queries with your team, right from your browser. Works with two types of databases: PostgreSQL and MongoDB.
+Slashbase is an open-source in-browser database IDE for your team. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Works with two types of databases: PostgreSQL and MongoDB.
 
 It's written in Golang and Nextjs React Framework and runs as a single binary.
 
@@ -34,7 +34,6 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 - **Cloud based**: Setup on your server. Works in browser.
 - **Easy to use**: with minimal interface it is simple to use. 
-- **Collaborative**: Works with your teams. Easy sharing queries within team.
 - **Database Support**: Works with two types of databases: PostgreSQL and MongoDB.
 
 ## Installation

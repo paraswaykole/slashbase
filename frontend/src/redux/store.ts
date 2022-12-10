@@ -1,7 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import Constants from '../constants'
 
-import currentUserReducer from './currentUserSlice'
 import projectsReducer from './projectsSlice'
 import dbConnectionReducer from './dbConnectionSlice'
 import allDBConnectionsReducer from './allDBConnectionsSlice'
@@ -10,7 +9,6 @@ import configReducer from './configSlice'
 export function makeStore() {
   return configureStore({
     reducer: {
-      currentUser: currentUserReducer,
       projects: projectsReducer,
       dbConnection: dbConnectionReducer,
       allDBConnections: allDBConnectionsReducer,

@@ -16,8 +16,3 @@ export interface AddDBConnPayload {
     sshPassword: string
     sshKeyFile: string
 }
-
-export interface AddProjectMemberPayload {
-    email: string
-    roleId: string
-}

@@ -1,19 +1,33 @@
 package config
 
-import "os"
+import (
+	"log"
+	"os"
+
+	"slashbase.com/backend/internal/utils"
+)
 
 type AppConfig struct {
 	EnvName           string
 	Port              string
-	AuthTokenSecret   string
 	CryptedDataSecret string
 }
 
-func newConfig() AppConfig {
+func newConfig(envName string) AppConfig {
+	cryptedDataSecret := os.Getenv("CRYPTED_DATA_SECRET")
+	if cryptedDataSecret == "" {
+		hex, err := utils.RandomHex(32)
+		if err != nil {
+			log.Fatal("env CRYPTED_DATA_SECRET not found")
+		}
+		cryptedDataSecret = hex
+	}
+	if os.Getenv("ENV_NAME") != "" {
+		envName = os.Getenv("ENV_NAME")
+	}
 	return AppConfig{
-		EnvName:           os.Getenv("ENV_NAME"),
+		EnvName:           envName,
 		Port:              os.Getenv("PORT"),
-		AuthTokenSecret:   os.Getenv("AUTH_TOKEN_SECRET"),
-		CryptedDataSecret: os.Getenv("CRYPTED_DATA_SECRET"),
+		CryptedDataSecret: cryptedDataSecret,
 	}
 }

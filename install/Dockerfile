@@ -20,7 +20,7 @@ FROM base as backendbuilder
 
 WORKDIR /slashbase
 COPY . .
-RUN env GOOS=linux GOARCH=amd64 go build --o backend -trimpath
+RUN env GOOS=linux go build --o backend -trimpath
 
 # Install dependencies only when needed
 FROM node:alpine AS deps
@@ -42,6 +42,7 @@ RUN yarn build
 FROM alpine:3.14
 
 WORKDIR /slashbase
+RUN mkdir -p /slashbase/data
 COPY --from=backendbuilder /slashbase/backend /slashbase
 COPY --from=frontendbuilder /app/out /slashbase/html
 

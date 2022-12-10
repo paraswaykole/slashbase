@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/hex"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -31,6 +32,14 @@ func UnixNanoToTime(nanoInt int64) time.Time {
 	remainder := nanoInt % 1000000000
 	value := time.Unix(msInt, remainder*int64(time.Nanosecond))
 	return value
+}
+
+func RandomHex(n int) (string, error) {
+	bytes := make([]byte, n)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
 }
 
 // fast & unsafe pointer function

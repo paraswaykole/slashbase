@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"slashbase.com/backend/internal/controllers"
-	"slashbase.com/backend/internal/middlewares"
 	"slashbase.com/backend/internal/utils"
 	"slashbase.com/backend/internal/views"
 )
@@ -22,9 +21,8 @@ func (QueryHandlers) RunQuery(c *gin.Context) {
 		Query          string `json:"query"`
 	}
 	c.BindJSON(&runBody)
-	authUser := middlewares.GetAuthUser(c)
 
-	data, err := queryController.RunQuery(authUser, runBody.DBConnectionID, runBody.Query)
+	data, err := queryController.RunQuery(runBody.DBConnectionID, runBody.Query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -56,10 +54,8 @@ func (QueryHandlers) GetData(c *gin.Context) {
 	}
 	filter, _ := c.GetQueryArray("filter[]")
 	sort, _ := c.GetQueryArray("sort[]")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	data, err := queryController.GetData(authUser, authUserProjectIds, dbConnId, schema, name, fetchCount, limit, offset, filter, sort)
+	data, err := queryController.GetData(dbConnId, schema, name, fetchCount, limit, offset, filter, sort)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -75,10 +71,8 @@ func (QueryHandlers) GetData(c *gin.Context) {
 
 func (QueryHandlers) GetDataModels(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	dataModels, err := queryController.GetDataModels(authUser, authUserProjectIds, dbConnId)
+	dataModels, err := queryController.GetDataModels(dbConnId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -98,10 +92,8 @@ func (QueryHandlers) GetSingleDataModel(c *gin.Context) {
 
 	schema := c.Query("schema")
 	name := c.Query("name")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	data, err := queryController.GetSingleDataModel(authUser, authUserProjectIds, dbConnId, schema, name)
+	data, err := queryController.GetSingleDataModel(dbConnId, schema, name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -124,10 +116,8 @@ func (QueryHandlers) AddSingleDataModelField(c *gin.Context) {
 		DataType       string `json:"dataType"`
 	}
 	c.BindJSON(&reqBody)
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	data, err := queryController.AddSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName, reqBody.DataType)
+	data, err := queryController.AddSingleDataModelField(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName, reqBody.DataType)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -149,10 +139,8 @@ func (QueryHandlers) DeleteSingleDataModelField(c *gin.Context) {
 		FieldName      string `json:"fieldName"`
 	}
 	c.BindJSON(&reqBody)
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	data, err := queryController.DeleteSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName)
+	data, err := queryController.DeleteSingleDataModelField(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -174,9 +162,8 @@ func (QueryHandlers) AddData(c *gin.Context) {
 		Data   map[string]interface{} `json:"data"`
 	}
 	c.BindJSON(&addBody)
-	authUser := middlewares.GetAuthUser(c)
 
-	data, err := queryController.AddData(authUser, dbConnId, addBody.Schema, addBody.Name, addBody.Data)
+	data, err := queryController.AddData(dbConnId, addBody.Schema, addBody.Name, addBody.Data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -192,7 +179,6 @@ func (QueryHandlers) AddData(c *gin.Context) {
 
 func (QueryHandlers) DeleteData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
 	var deleteBody struct {
 		Schema string   `json:"schema"`
 		Name   string   `json:"name"`
@@ -200,7 +186,7 @@ func (QueryHandlers) DeleteData(c *gin.Context) {
 	}
 	c.BindJSON(&deleteBody)
 
-	data, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
+	data, err := queryController.DeleteData(dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -216,7 +202,6 @@ func (QueryHandlers) DeleteData(c *gin.Context) {
 
 func (QueryHandlers) UpdateSingleData(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
 	var updateBody struct {
 		Schema     string `json:"schema"`
 		Name       string `json:"name"`
@@ -226,7 +211,7 @@ func (QueryHandlers) UpdateSingleData(c *gin.Context) {
 	}
 	c.BindJSON(&updateBody)
 
-	data, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
+	data, err := queryController.UpdateSingleData(dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -241,7 +226,6 @@ func (QueryHandlers) UpdateSingleData(c *gin.Context) {
 }
 
 func (QueryHandlers) AddSingleDataModelIndex(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
 	var reqBody struct {
 		DBConnectionID string   `json:"dbConnectionId"`
 		Schema         string   `json:"schema"`
@@ -252,7 +236,7 @@ func (QueryHandlers) AddSingleDataModelIndex(c *gin.Context) {
 	}
 	c.BindJSON(&reqBody)
 
-	data, err := queryController.AddSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName, reqBody.FieldNames, reqBody.IsUnique)
+	data, err := queryController.AddSingleDataModelIndex(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName, reqBody.FieldNames, reqBody.IsUnique)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -267,7 +251,6 @@ func (QueryHandlers) AddSingleDataModelIndex(c *gin.Context) {
 }
 
 func (QueryHandlers) DeleteSingleDataModelIndex(c *gin.Context) {
-	authUser := middlewares.GetAuthUser(c)
 	var reqBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Schema         string `json:"schema"`
@@ -276,7 +259,7 @@ func (QueryHandlers) DeleteSingleDataModelIndex(c *gin.Context) {
 	}
 	c.BindJSON(&reqBody)
 
-	data, err := queryController.DeleteSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName)
+	data, err := queryController.DeleteSingleDataModelIndex(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -292,8 +275,6 @@ func (QueryHandlers) DeleteSingleDataModelIndex(c *gin.Context) {
 
 func (QueryHandlers) SaveDBQuery(c *gin.Context) {
 	dbConnId := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	var createBody struct {
 		Name    string `json:"name"`
 		Query   string `json:"query"`
@@ -301,7 +282,7 @@ func (QueryHandlers) SaveDBQuery(c *gin.Context) {
 	}
 	c.BindJSON(&createBody)
 
-	queryObj, err := queryController.SaveDBQuery(authUser, authUserProjectIds, dbConnId, createBody.Name, createBody.Query, createBody.QueryID)
+	queryObj, err := queryController.SaveDBQuery(dbConnId, createBody.Name, createBody.Query, createBody.QueryID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -317,10 +298,8 @@ func (QueryHandlers) SaveDBQuery(c *gin.Context) {
 
 func (QueryHandlers) DeleteDBQuery(c *gin.Context) {
 	queryID := c.Param("queryId")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	err := queryController.DeleteDBQuery(authUser, authUserProjectIds, queryID)
+	err := queryController.DeleteDBQuery(queryID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -335,9 +314,8 @@ func (QueryHandlers) DeleteDBQuery(c *gin.Context) {
 
 func (QueryHandlers) GetDBQueriesInDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	dbQueries, err := queryController.GetDBQueriesInDBConnection(authUserProjectIds, dbConnID)
+	dbQueries, err := queryController.GetDBQueriesInDBConnection(dbConnID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -357,9 +335,8 @@ func (QueryHandlers) GetDBQueriesInDBConnection(c *gin.Context) {
 
 func (QueryHandlers) GetSingleDBQuery(c *gin.Context) {
 	queryID := c.Param("queryId")
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
-	dbQuery, err := queryController.GetSingleDBQuery(authUserProjectIds, queryID)
+	dbQuery, err := queryController.GetSingleDBQuery(queryID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -375,8 +352,6 @@ func (QueryHandlers) GetSingleDBQuery(c *gin.Context) {
 
 func (QueryHandlers) GetQueryHistoryInDBConnection(c *gin.Context) {
 	dbConnID := c.Param("dbConnId")
-	authUser := middlewares.GetAuthUser(c)
-	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 
 	beforeInt, err := strconv.ParseInt(c.Query("before"), 10, 64)
 	var before time.Time
@@ -386,7 +361,7 @@ func (QueryHandlers) GetQueryHistoryInDBConnection(c *gin.Context) {
 		before = utils.UnixNanoToTime(beforeInt)
 	}
 
-	dbQueryLogs, next, err := queryController.GetQueryHistoryInDBConnection(authUser, authUserProjectIds, dbConnID, before)
+	dbQueryLogs, next, err := queryController.GetQueryHistoryInDBConnection(dbConnID, before)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

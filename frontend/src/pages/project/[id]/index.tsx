@@ -47,19 +47,9 @@ const ProjectPage: NextPage = () => {
         <hr />
       </div>}
       {databases.map((db: DBConnection) => (
-        <DBConnCard key={db.id} dbConn={db} isAdmin={project?.currentMember?.role.name === Constants.ROLES.ADMIN} onDeleteDB={onDeleteDB} />
+        <DBConnCard key={db.id} dbConn={db} onDeleteDB={onDeleteDB} />
       ))}
       {project && <NewDBConnButton project={project} />}
-      &nbsp;&nbsp;
-      {project && <Link href={Constants.APP_PATHS.PROJECT_MEMBERS.path} as={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
-        <a>
-          <button className="button" >
-            <i className={"fas fa-users"} />
-            &nbsp;&nbsp;
-            View Project Members
-          </button>
-        </a>
-      </Link>}
     </AppLayout>
   )
 }

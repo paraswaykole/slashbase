@@ -20,10 +20,9 @@ func (dbConnectionDao) GetDBConnectionsByProject(projectId string) ([]*models.DB
 	return dbConns, err
 }
 
-func (dbConnectionDao) GetDBConnectionsByProjectIds(projectIds []string) ([]*models.DBConnection, error) {
+func (dbConnectionDao) GetAllDBConnections() ([]*models.DBConnection, error) {
 	var dbConns []*models.DBConnection
-	sqlQuery := "SELECT * FROM ( SELECT ROW_NUMBER() OVER (PARTITION BY project_id ORDER BY name) AS r, t.* FROM db_connections t where project_id in ?) x WHERE x.r <= 5;"
-	err := db.GetDB().Raw(sqlQuery, projectIds).Find(&dbConns).Error
+	err := db.GetDB().Model(&models.DBConnection{}).Find(&dbConns).Error
 	return dbConns, err
 }
 

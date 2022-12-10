@@ -1,60 +1,11 @@
 import Request from './request'
-import { UserSession, ApiResult, Project, DBConnection, ProjectMember, DBDataModel, DBQueryData, User, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult, Role, RolePermission } from '../data/models'
-import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
+import { ApiResult, Project, DBConnection, DBDataModel, DBQueryData, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult } from '../data/models'
+import { AddDBConnPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 
 const getHealthCheck = async function (): Promise<any> {
     return await Request.getApiInstance()
         .get<ApiResult<undefined>>('/health')
-        .then(res => res.data)
-}
-
-const loginUser = async function (email: string, password: string): Promise<ApiResult<UserSession>> {
-    return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<UserSession>>>('/user/login', { email, password })
-        .then(res => res.data)
-}
-
-const isUserAuthenticated = async function (): Promise<boolean> {
-    return await Request.getApiInstance()
-        .get<ApiResult<undefined>>('/user/checkauth')
-        .then(res => res.data.success)
-}
-
-const logoutUser = async function (): Promise<ApiResult<null>> {
-    return await Request.getApiInstance()
-        .get<ApiResult<null>>('/user/logout')
-        .then(res => res.data)
-}
-
-const editUser = async function (name: string, profileImageUrl: string): Promise<ApiResult<User>> {
-    return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<User>>>('/user/edit', { name, profileImageUrl })
-        .then(res => res.data)
-}
-
-const changeUserPassword = async function (oldPassword: string, newPassword: string): Promise<ApiResult<undefined>> {
-    return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<undefined>>>('/user/password', { oldPassword, newPassword })
-        .then(res => res.data)
-}
-
-const getUsers = async function (offset: number): Promise<PaginatedApiResult<User, number>> {
-    return await Request.getApiInstance()
-        .get<PaginatedApiResult<User, number>>(`/user/all?offset=${offset}`)
-        .then(res => res.data)
-}
-
-
-const searchUsers = async function (searchTerm: string, offset: number): Promise<PaginatedApiResult<User, number>> {
-    return await Request.getApiInstance()
-        .get<PaginatedApiResult<User, number>>(`/user/all?offset=${offset}&search=${searchTerm}`)
-        .then(res => res.data)
-}
-
-const addUser = async function (email: string, password: string): Promise<ApiResult<undefined>> {
-    return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<undefined>>>(`/user/add`, { email, password })
         .then(res => res.data)
 }
 
@@ -74,27 +25,6 @@ const getProjects = async function (): Promise<ApiResult<Array<Project>>> {
     return await Request.getApiInstance()
         .get<ApiResult<Array<Project>>>('/project/all')
         .then(res => res.data)
-}
-
-const addNewProjectMember = async function (projectId: string, payload: AddProjectMemberPayload): Promise<ApiResult<ProjectMember>> {
-    return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<ProjectMember>>>(`/project/${projectId}/members/create`, payload)
-        .then(res => res.data)
-
-}
-
-const deleteProjectMember = async function (projectId: string, userId: string): Promise<ApiResult<undefined>> {
-    return await Request.getApiInstance()
-        .delete<ApiResult<undefined>>(`/project/${projectId}/members/${userId}`)
-        .then(res => res.data)
-
-}
-
-const getProjectMembers = async function (projectId: string): Promise<ApiResult<Array<ProjectMember>>> {
-    return await Request.getApiInstance()
-        .get<ApiResult<Array<ProjectMember>>>(`/project/${projectId}/members`)
-        .then(res => res.data)
-
 }
 
 const addNewDBConn = async function (dbConnPayload: AddDBConnPayload): Promise<ApiResult<DBConnection>> {
@@ -246,44 +176,12 @@ const updateSingleSetting = async function (name: string, value: string): Promis
         .then(res => res.data)
 }
 
-const getRoles = async function (): Promise<ApiResult<Role[]>> {
-    return await Request.getApiInstance()
-        .get<any, AxiosResponse<ApiResult<Role[]>>>(`/role/all`)
-        .then(res => res.data)
-}
-
-const addRole = async function (name: string): Promise<ApiResult<Role>> {
-    return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<Role>>>(`/role/add`, { name })
-        .then(res => res.data)
-}
-
-const deleteRole = async function (roleId: string): Promise<ApiResult<Role>> {
-    return await Request.getApiInstance()
-        .delete<any, AxiosResponse<ApiResult<Role>>>(`/role/${roleId}`)
-        .then(res => res.data)
-}
-
-const updateRolePermission = async function (roleId: string, name: string, value: boolean): Promise<ApiResult<RolePermission>> {
-    return await Request.getApiInstance()
-        .post<any, AxiosResponse<ApiResult<RolePermission>>>(`/role/${roleId}/permission`, { roleId, name, value })
-        .then(res => res.data)
-}
 
 export default {
     getHealthCheck,
-    loginUser,
-    isUserAuthenticated,
-    logoutUser,
-    editUser,
-    changeUserPassword,
-    getUsers,
-    searchUsers,
-    addUser,
     getProjects,
     createNewProject,
     deleteProject,
-    getProjectMembers,
     getAllDBConnections,
     getSingleDBConnection,
     deleteDBConnection,
@@ -296,8 +194,6 @@ export default {
     deleteDBSingleDataModelIndex,
     getDBDataInDataModel,
     addNewDBConn,
-    addNewProjectMember,
-    deleteProjectMember,
     updateDBSingleData,
     addDBData,
     deleteDBData,
@@ -309,8 +205,4 @@ export default {
     runQuery,
     getSingleSetting,
     updateSingleSetting,
-    getRoles,
-    addRole,
-    deleteRole,
-    updateRolePermission
 }
