@@ -52,7 +52,7 @@ Run the following commands on terminal to start the app inside docker container:
 
 ### Binary
 
-Run the following commands on terminal to prepare & start the app:
+Run the following commands on terminal to download & start the app:
 
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `./slashbase` to start the app.
