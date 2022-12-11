@@ -5,7 +5,7 @@ const (
 
 	PAGINATION_COUNT = 20
 
-	APP_DATABASE_FILE = "data/app.db"
+	APP_DATABASE_FILE = "app.db"
 
 	ENV_PRODUCTION  = "production"
 	ENV_DEVELOPMENT = "development"

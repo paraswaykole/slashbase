@@ -25,7 +25,7 @@ development.env
 production.env
 
 # Database
-data/*.db
+app.db
 
 # Build
 backend
