@@ -20,7 +20,7 @@ FROM base as backendbuilder
 
 WORKDIR /slashbase
 COPY . .
-RUN env GOOS=linux go build --o backend -trimpath
+RUN env GOOS=linux go build --o backend -trimpath -ldflags="-X 'main.Build=production'"
 
 # Install dependencies only when needed
 FROM node:alpine AS deps
@@ -47,5 +47,4 @@ COPY --from=backendbuilder /slashbase/backend /slashbase
 COPY --from=frontendbuilder /app/out /slashbase/html
 
 ENTRYPOINT ["/slashbase/backend"]
-CMD ["-e", "production"]
 EXPOSE 3000

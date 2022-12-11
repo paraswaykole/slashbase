@@ -1,10 +1,6 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-	"os"
-
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/db"
 	"slashbase.com/backend/internal/server"
@@ -13,14 +9,10 @@ import (
 	"slashbase.com/backend/pkg/queryengines"
 )
 
+var Build = config.ENV_DEVELOPMENT
+
 func main() {
-	environment := flag.String("e", config.ENV_DEVELOPMENT, "")
-	flag.Usage = func() {
-		fmt.Println("Usage: server -e {mode}")
-		os.Exit(1)
-	}
-	flag.Parse()
-	config.Init(*environment)
+	config.Init(Build)
 	db.InitGormDB()
 	setup.SetupApp()
 	queryengines.Init()
