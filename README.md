@@ -50,13 +50,16 @@ Run the following commands on terminal to start the app inside docker container:
 1. `docker pull slashbaseide/slashbase`
 2. `docker run -p 3000:3000 slashbaseide/slashbase`
 
+The app is running at port 3000. Visit http://localhost:3000 from the browser.
+
 ### Binary
 
 Run the following commands on terminal to download & start the app:
 
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `./slashbase` to start the app.
-3. The app is running at port 3000. Visit http://localhost:3000 from the browser.
+
+The app is running at port 3000. Visit http://localhost:3000 from the browser.
 
 # Documentation
 
