@@ -3,12 +3,14 @@ package server
 import (
 	"fmt"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/knadh/stuffbin"
 	"slashbase.com/backend/internal/config"
+	"slashbase.com/backend/internal/utils"
 )
 
 // Init server
@@ -28,7 +30,8 @@ func serveStaticFiles(router *gin.Engine) {
 		fs := initFS()
 		router.NoRoute(func(c *gin.Context) {
 			if file, err := fs.Read("web/" + c.Request.URL.Path); err == nil {
-				c.Data(http.StatusOK, "", file)
+				contentType := mime.TypeByExtension("." + utils.FileExtensionFromPath(c.Request.URL.Path))
+				c.Data(http.StatusOK, contentType, file)
 				return
 			}
 			indexFileData, _ := fs.Read("web/index.html")

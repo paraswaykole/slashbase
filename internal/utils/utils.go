@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/hex"
 	"math/rand"
-	"net/http"
 	"strings"
 	"time"
 	"unsafe"
@@ -67,16 +66,12 @@ func RandString(n int) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-func GetRequestScheme(r *http.Request) string {
-	if r.TLS != nil {
-		return "https"
+func FileExtensionFromPath(path string) string {
+	if strs := strings.Split(path, "."); true {
+		slen := len(strs)
+		if slen > 1 {
+			return strs[slen-1]
+		}
 	}
-	return "http"
-}
-
-func GetRequestCookieHost(r *http.Request) string {
-	if strings.HasPrefix(r.Host, "localhost:") {
-		return "localhost"
-	}
-	return GetRequestScheme(r) + "://" + r.Host
+	return ""
 }

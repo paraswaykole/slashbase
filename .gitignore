@@ -30,7 +30,7 @@ app.db
 # Build
 backend
 build/
-web
+web/
 slashbase
 
 # Air Build
