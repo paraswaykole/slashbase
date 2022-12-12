@@ -73,22 +73,6 @@ func NewRouter() *gin.Engine {
 			settingGroup.POST("/single", settingHandlers.UpdateSingleSetting)
 		}
 	}
-
-	// Serving the Frontend files in Production
-	if config.IsLive() {
-		router.LoadHTMLGlob("html/*.html")
-		router.Static("_next", "html/_next")
-		router.Static("static", "html/static")
-		router.StaticFile("favicon.ico", "html/favicon.ico")
-		router.StaticFile("logo-icon.svg", "html/logo-icon.svg")
-		router.NoRoute(func(c *gin.Context) {
-			if c.Request.URL.Path == "/" {
-				c.HTML(http.StatusOK, "index.html", nil)
-				return
-			}
-			c.Redirect(http.StatusTemporaryRedirect, "/")
-		})
-	}
 	return router
 
 }

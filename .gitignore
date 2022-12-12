@@ -30,6 +30,8 @@ app.db
 # Build
 backend
 build/
+web
+slashbase
 
 # Air Build
 /tmp
