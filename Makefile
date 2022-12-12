@@ -11,7 +11,7 @@ build: $(BIN)
 $(STUFFBIN):
 	go install github.com/knadh/stuffbin/...
 
-$(BIN): $(shell find . -type f -name "*.go")
+$(BIN):
 	go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
 
 .PHONY: dist
