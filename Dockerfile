@@ -45,7 +45,7 @@ FROM alpine:3.14
 WORKDIR /slashbase
 RUN mkdir -p /slashbase/data
 COPY --from=backendbuilder /slashbase/backend /slashbase
-COPY --from=frontendbuilder /app/out /slashbase/html
+COPY --from=frontendbuilder /app/out /slashbase/web
 
 ENTRYPOINT ["/slashbase/backend"]
 EXPOSE 3000
