@@ -12,7 +12,6 @@ import (
 // NewRouter return a gin router for server
 func NewRouter() *gin.Engine {
 	router := gin.New()
-	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "Authorization")

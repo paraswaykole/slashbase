@@ -15,13 +15,13 @@ import (
 
 // Init server
 func Init() {
-	fmt.Println("Starting slashbase server...")
+	fmt.Println("Running slashbase server at http://localhost:" + config.GetServerPort())
 	if config.IsLive() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := NewRouter()
 	serveStaticFiles(router)
-	router.Run(":" + config.GetServerPort())
+	go router.Run(":" + config.GetServerPort())
 }
 
 func serveStaticFiles(router *gin.Engine) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"slashbase.com/backend/cmd"
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/db"
 	"slashbase.com/backend/internal/server"
@@ -18,4 +19,5 @@ func main() {
 	queryengines.Init()
 	tasks.InitCron()
 	server.Init()
+	cmd.Execute()
 }
