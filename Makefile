@@ -15,7 +15,7 @@ $(BIN):
 	go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
 
 .PHONY: dist
-dist: $(STUFFBIN) build-web build pack-bin
+dist: $(STUFFBIN) build pack-bin
 
 
 .PHONY: build-web
