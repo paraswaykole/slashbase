@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"mime"
 	"net/http"
@@ -15,13 +14,12 @@ import (
 
 // Init server
 func Init() {
-	fmt.Println("Starting slashbase server...")
 	if config.IsLive() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := NewRouter()
 	serveStaticFiles(router)
-	router.Run(":" + config.GetServerPort())
+	go router.Run(":" + config.GetServerPort())
 }
 
 func serveStaticFiles(router *gin.Engine) {
