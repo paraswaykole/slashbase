@@ -62,6 +62,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			return nil, result.Err()
 		}
 		keys, data := mongoutils.MongoSingleResultToJson(result)
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"keys": keys,
 			"data": data,
@@ -91,6 +94,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			InsertOne(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
 			"keys": []string{"insertedId"},
