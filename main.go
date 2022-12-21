@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"slashbase.com/backend/cmd"
 	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/db"
@@ -18,6 +20,8 @@ func main() {
 	setup.SetupApp()
 	queryengines.Init()
 	tasks.InitCron()
+	fmt.Println("Running slashbase server at http://localhost:" + config.GetServerPort())
+	fmt.Println("Type 'help' for more info on cli.")
 	server.Init()
 	cmd.Execute()
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
+	"slashbase.com/backend/internal/config"
 	"slashbase.com/backend/internal/dao"
 	"slashbase.com/backend/internal/models"
 	"slashbase.com/backend/pkg/queryengines"
@@ -29,12 +30,24 @@ func handleCmd(cmdText string) {
 		return
 	}
 
+	if cmdText == "help" {
+		printHelp()
+		return
+	}
+
 	if strings.HasPrefix(cmdText, "\\switch") {
 		switchDB(cmdText)
 	} else {
 		runQuery(cmdText)
 	}
 
+}
+
+func printHelp() {
+	fmt.Println("To add a new database use the IDE interface running at https://localhost:" + config.GetServerPort())
+	fmt.Println("To connect to existing db type '\\switch db-nick-name'.")
+	fmt.Println("Once connected to db, type your query and press enter to get query results.")
+	fmt.Println("To end the program, type 'exit'.")
 }
 
 func switchDB(cmdText string) {
@@ -57,7 +70,7 @@ func switchDB(cmdText string) {
 
 func runQuery(queryCmd string) {
 	if cliApp.CurrentDB == nil {
-		fmt.Printf("no db connected. to connect to existing db run '\\switch db-nick-name'\n")
+		fmt.Printf("not connected to any database\n")
 		return
 	}
 	result, err := queryengines.RunQuery(cliApp.CurrentDB, queryCmd, getQueryConfigs(cliApp.CurrentDB))

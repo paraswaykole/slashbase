@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"mime"
 	"net/http"
@@ -15,7 +14,6 @@ import (
 
 // Init server
 func Init() {
-	fmt.Println("Running slashbase server at http://localhost:" + config.GetServerPort())
 	if config.IsLive() {
 		gin.SetMode(gin.ReleaseMode)
 	}
