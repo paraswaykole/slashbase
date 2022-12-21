@@ -112,6 +112,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"keys": []string{"insertedIDs"},
 			"data": []map[string]interface{}{
@@ -125,6 +128,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			DeleteOne(context.Background(), queryType.Args[0])
 		if err != nil {
 			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
 			"keys": []string{"deletedCount"},
@@ -140,6 +146,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"keys": []string{"deletedCount"},
 			"data": []map[string]interface{}{
@@ -153,6 +162,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			UpdateOne(context.Background(), queryType.Args[0], queryType.Args[1])
 		if err != nil {
 			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
 			"keys": []string{"updatedCount", "upsertedCount"},
@@ -168,6 +180,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			UpdateMany(context.Background(), queryType.Args[0], queryType.Args[1])
 		if err != nil {
 			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
 			"keys": []string{"updatedCount", "upsertedCount"},
