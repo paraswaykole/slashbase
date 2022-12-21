@@ -12,7 +12,7 @@ import (
 
 type DBConnection struct {
 	ID          string            `gorm:"type:uuid;primaryKey"`
-	Name        string            `gorm:"not null"`
+	Name        string            `gorm:"not null;uniqueIndex"`
 	ProjectID   string            `gorm:"not null"`
 	Type        string            `gorm:"not null"`
 	DBScheme    sbsql.CryptedData `gorm:"type:text"`

@@ -62,6 +62,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			return nil, result.Err()
 		}
 		keys, data := mongoutils.MongoSingleResultToJson(result)
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"keys": keys,
 			"data": data,
@@ -92,6 +95,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"keys": []string{"insertedId"},
 			"data": []map[string]interface{}{
@@ -105,6 +111,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			InsertMany(context.Background(), queryType.Args[0].(bson.A))
 		if err != nil {
 			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
 			"keys": []string{"insertedIDs"},
@@ -120,6 +129,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"keys": []string{"deletedCount"},
 			"data": []map[string]interface{}{
@@ -133,6 +145,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			DeleteMany(context.Background(), queryType.Args[0].(bson.D))
 		if err != nil {
 			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
 			"keys": []string{"deletedCount"},
@@ -148,6 +163,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return map[string]interface{}{
 			"keys": []string{"updatedCount", "upsertedCount"},
 			"data": []map[string]interface{}{
@@ -162,6 +180,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			UpdateMany(context.Background(), queryType.Args[0], queryType.Args[1])
 		if err != nil {
 			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
 			"keys": []string{"updatedCount", "upsertedCount"},
