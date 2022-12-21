@@ -20,7 +20,7 @@ func main() {
 	setup.SetupApp()
 	queryengines.Init()
 	tasks.InitCron()
-	fmt.Println("Running slashbase IDE at http://localhost:" + config.GetServerPort())
+	fmt.Println("Running Slashbase IDE at http://localhost:" + config.GetServerPort())
 	fmt.Println("Type 'help' for more info on cli.")
 	server.Init()
 	cmd.Execute()
