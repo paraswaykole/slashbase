@@ -68,7 +68,9 @@ const EditableCell = ({
       <span>false</span> :
       initialValue === true ?
         <span>true</span> :
-        initialValue
+        Array.isArray(initialValue) ?
+          `{${initialValue.join(",")}}`
+          : initialValue
   )
 }
 
