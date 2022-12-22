@@ -6,6 +6,7 @@ import { DBConnection, DBQueryData } from '../../../data/models'
 import EditableCell from './editablecell'
 import apiService from '../../../network/apiService'
 import AddModal from './addmodal';
+import ConfirmModal from '../../widgets/confirmModal';
 
 
 type TablePropType = {
@@ -27,6 +28,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
 
     const [editCell, setEditCell] = useState<(string | number)[]>([])
     const [isAdding, setIsAdding] = useState<boolean>(false)
+    const [isDeleting, setIsDeleting] = useState<boolean>(false)
 
     const filter0Ref = useRef<HTMLSelectElement>(null);
     const filter1Ref = useRef<HTMLSelectElement>(null);
@@ -106,7 +108,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     const selectedRows: number[] = Object.keys(selectedRowIds).map(x => parseInt(x))
     const selectedCTIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
 
-    const onDeleteBtnPressed = async () => {
+    const deleteRows = async () => {
         if (selectedCTIDs.length > 0) {
             const result = await apiService.deleteDBData(dbConnection.id, mSchema, mName, selectedCTIDs)
             if (result.success) {
@@ -116,6 +118,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                 toast.error(result.error!);
             }
         }
+        setIsDeleting(false)
     }
 
     const startEditing = (cell: Cell<any, any>) => {
@@ -198,7 +201,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button" disabled={selectedCTIDs.length === 0} onClick={onDeleteBtnPressed}>
+                            <button className="button" disabled={selectedCTIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-trash" />
                                 </span>
@@ -222,6 +225,10 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                     onClose={() => { setIsAdding(false) }}
                     onAddData={onAddData} />
             }
+            {isDeleting && <ConfirmModal
+                message={`Are you sure you want to delete selected rows?`}
+                onConfirm={deleteRows}
+                onClose={() => { setIsDeleting(false) }} />}
             <div className="table-container">
                 <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                     <thead>

@@ -9,6 +9,10 @@ const EditableCell = ({
   resetEditCell,
   onSaveCell
 }: any) => {
+
+  initialValue = Array.isArray(initialValue) ?
+    `{${initialValue.join(",")}}` : initialValue
+
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue)
 

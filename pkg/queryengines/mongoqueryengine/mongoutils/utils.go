@@ -82,9 +82,9 @@ const (
 	QUERY_INSERTONE       = iota
 	QUERY_DELETEONE       = iota
 	QUERY_DELETEMANY      = iota
-	QUERY_UPDATE          = iota
 	QUERY_UPDATEONE       = iota
 	QUERY_UPDATEMANY      = iota
+	QUERY_REPLACEONE      = iota
 	QUERY_COUNT           = iota
 	QUERY_AGGREGATE       = iota
 	QUERY_GETINDEXES      = iota
@@ -188,12 +188,12 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_DELETEONE
 		} else if funcName == "deleteMany" {
 			result.QueryType = QUERY_DELETEMANY
-		} else if funcName == "update" {
-			result.QueryType = QUERY_UPDATE
 		} else if funcName == "updateOne" {
 			result.QueryType = QUERY_UPDATEONE
 		} else if funcName == "updateMany" {
 			result.QueryType = QUERY_UPDATEMANY
+		} else if funcName == "replaceOne" {
+			result.QueryType = QUERY_REPLACEONE
 		} else if funcName == "count" {
 			result.QueryType = QUERY_COUNT
 		} else if funcName == "aggregate" {

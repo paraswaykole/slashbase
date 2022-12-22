@@ -167,9 +167,10 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
-			"keys": []string{"updatedCount", "upsertedCount"},
+			"keys": []string{"matchedCount", "updatedCount", "upsertedCount"},
 			"data": []map[string]interface{}{
 				{
+					"matchedCount":  result.MatchedCount,
 					"updatedCount":  result.ModifiedCount,
 					"upsertedCount": result.UpsertedCount,
 				},
@@ -185,9 +186,29 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			config.CreateLogFn(query)
 		}
 		return map[string]interface{}{
-			"keys": []string{"updatedCount", "upsertedCount"},
+			"keys": []string{"matchedCount", "updatedCount", "upsertedCount"},
 			"data": []map[string]interface{}{
 				{
+					"matchedCount":  result.MatchedCount,
+					"updatedCount":  result.ModifiedCount,
+					"upsertedCount": result.UpsertedCount,
+				},
+			},
+		}, nil
+	} else if queryType.QueryType == mongoutils.QUERY_REPLACEONE {
+		result, err := db.Collection(queryType.CollectionName).
+			ReplaceOne(context.Background(), queryType.Args[0], queryType.Args[1])
+		if err != nil {
+			return nil, err
+		}
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+		return map[string]interface{}{
+			"keys": []string{"matchedCount", "updatedCount", "upsertedCount"},
+			"data": []map[string]interface{}{
+				{
+					"matchedCount":  result.MatchedCount,
 					"updatedCount":  result.ModifiedCount,
 					"upsertedCount": result.UpsertedCount,
 				},
@@ -417,7 +438,7 @@ func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, l
 }
 
 func (mqe *MongoQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, underscoreID string, documentData string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
-	query := fmt.Sprintf(`db.%s.updateOne({_id: ObjectId("%s")}, {$set: %s } )`, name, underscoreID, documentData)
+	query := fmt.Sprintf(`db.%s.replaceOne({_id: ObjectId("%s")}, %s )`, name, underscoreID, documentData)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
