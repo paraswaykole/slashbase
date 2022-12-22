@@ -32,7 +32,7 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 ## Features
 
-- **Browser based**: Runs in your favourite browser.
+- **Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
 - **Easy to use**: with minimal interface it is simple to use. 
 - **Database Support**: PostgreSQL and MongoDB.
 - **Save Queries**: Write and Save queries to re-run in future.
@@ -43,7 +43,7 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 The app should be installed on your desktop/laptop and should used as a part of your local development enviroment.
 
-### Docker (Recommended)
+### Docker
 
 Run the following commands on terminal to start the app inside docker container:
 
