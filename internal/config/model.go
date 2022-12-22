@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"slashbase.com/backend/internal/utils"
+	"github.com/slashbaseide/slashbase/internal/utils"
 )
 
 type AppConfig struct {

@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 
-	"slashbase.com/backend/cmd"
-	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/server"
-	"slashbase.com/backend/internal/setup"
-	"slashbase.com/backend/internal/tasks"
-	"slashbase.com/backend/pkg/queryengines"
+	"github.com/slashbaseide/slashbase/cmd"
+	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/db"
+	"github.com/slashbaseide/slashbase/internal/server"
+	"github.com/slashbaseide/slashbase/internal/setup"
+	"github.com/slashbaseide/slashbase/internal/tasks"
+	"github.com/slashbaseide/slashbase/pkg/queryengines"
 )
 
 var Build = config.ENV_DEVELOPMENT

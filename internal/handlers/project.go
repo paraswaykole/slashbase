@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"slashbase.com/backend/internal/controllers"
-	"slashbase.com/backend/internal/views"
+	"github.com/slashbaseide/slashbase/internal/controllers"
+	"github.com/slashbaseide/slashbase/internal/views"
 )
 
 type ProjectHandlers struct{}

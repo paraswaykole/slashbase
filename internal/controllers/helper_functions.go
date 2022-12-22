@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines/queryconfig"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
 )
 
 func getQueryConfigsForProjectMember(dbConn *models.DBConnection) *queryconfig.QueryConfig {

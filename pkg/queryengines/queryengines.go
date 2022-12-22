@@ -3,10 +3,10 @@ package queryengines
 import (
 	"errors"
 
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines/mongoqueryengine"
-	"slashbase.com/backend/pkg/queryengines/pgqueryengine"
-	"slashbase.com/backend/pkg/queryengines/queryconfig"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/mongoqueryengine"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/pgqueryengine"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
 )
 
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine

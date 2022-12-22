@@ -2,10 +2,10 @@ package setup
 
 import (
 	"github.com/google/uuid"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/db"
+	"github.com/slashbaseide/slashbase/internal/models"
 	"gorm.io/gorm"
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/models"
 )
 
 func SetupApp() {

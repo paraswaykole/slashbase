@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/utils"
-	"slashbase.com/backend/pkg/sbsql"
+	"github.com/slashbaseide/slashbase/internal/db"
+	"github.com/slashbaseide/slashbase/internal/utils"
+	"github.com/slashbaseide/slashbase/pkg/sbsql"
 )
 
 type DBConnection struct {

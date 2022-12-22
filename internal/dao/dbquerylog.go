@@ -3,9 +3,9 @@ package dao
 import (
 	"time"
 
-	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/models"
+	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/db"
+	"github.com/slashbaseide/slashbase/internal/models"
 )
 
 type dbQueryLogDao struct{}

@@ -3,7 +3,7 @@ package views
 import (
 	"time"
 
-	"slashbase.com/backend/internal/models"
+	"github.com/slashbaseide/slashbase/internal/models"
 )
 
 type DBQueryView struct {

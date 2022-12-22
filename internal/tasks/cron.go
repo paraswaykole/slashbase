@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
-	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines"
-	"slashbase.com/backend/pkg/sshtunnel"
+	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines"
+	"github.com/slashbaseide/slashbase/pkg/sshtunnel"
 )
 
 func InitCron() {

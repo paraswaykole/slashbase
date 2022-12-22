@@ -8,14 +8,14 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/mongoqueryengine/mongoutils"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
+	"github.com/slashbaseide/slashbase/pkg/sbsql"
+	"github.com/slashbaseide/slashbase/pkg/sshtunnel"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines/mongoqueryengine/mongoutils"
-	"slashbase.com/backend/pkg/queryengines/queryconfig"
-	"slashbase.com/backend/pkg/sbsql"
-	"slashbase.com/backend/pkg/sshtunnel"
 )
 
 type MongoQueryEngine struct {

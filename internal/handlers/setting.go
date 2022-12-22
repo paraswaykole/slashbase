@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"slashbase.com/backend/internal/controllers"
+	"github.com/slashbaseide/slashbase/internal/controllers"
 )
 
 type SettingHandlers struct{}

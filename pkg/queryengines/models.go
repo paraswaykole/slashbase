@@ -1,7 +1,7 @@
 package queryengines
 
 import (
-	"slashbase.com/backend/internal/models"
+	"github.com/slashbaseide/slashbase/internal/models"
 )
 
 type DBDataModel struct {

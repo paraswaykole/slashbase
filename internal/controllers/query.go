@@ -4,10 +4,10 @@ import (
 	"errors"
 	"time"
 
-	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines"
+	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines"
 )
 
 type QueryController struct{}

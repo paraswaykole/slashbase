@@ -8,8 +8,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/knadh/stuffbin"
-	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/utils"
+	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/utils"
 )
 
 // Init server

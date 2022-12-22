@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/slashbaseide/slashbase/internal/utils"
 	"github.com/tdewolff/parse/v2"
 	"github.com/tdewolff/parse/v2/js"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/yaml.v2"
-	"slashbase.com/backend/internal/utils"
 )
 
 func MongoCursorToJson(cur *mongo.Cursor) ([]string, []map[string]interface{}) {

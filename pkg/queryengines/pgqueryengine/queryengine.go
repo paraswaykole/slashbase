@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines/pgqueryengine/pgxutils"
-	"slashbase.com/backend/pkg/queryengines/queryconfig"
-	"slashbase.com/backend/pkg/sbsql"
-	"slashbase.com/backend/pkg/sshtunnel"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/pgqueryengine/pgxutils"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
+	"github.com/slashbaseide/slashbase/pkg/sbsql"
+	"github.com/slashbaseide/slashbase/pkg/sshtunnel"
 )
 
 type PostgresQueryEngine struct {

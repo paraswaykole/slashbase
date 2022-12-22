@@ -1,8 +1,8 @@
 package queryengines
 
 import (
+	"github.com/slashbaseide/slashbase/internal/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"slashbase.com/backend/internal/models"
 )
 
 type AddDataResponse struct {

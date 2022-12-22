@@ -1,9 +1,9 @@
 package dao
 
 import (
+	"github.com/slashbaseide/slashbase/internal/db"
+	"github.com/slashbaseide/slashbase/internal/models"
 	"gorm.io/gorm/clause"
-	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/models"
 )
 
 type settingDao struct{}

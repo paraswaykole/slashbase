@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strconv"
 
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/internal/utils"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/internal/utils"
 )
 
 type SettingController struct{}

@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"slashbase.com/backend/internal/db"
-	"slashbase.com/backend/internal/models"
+	"github.com/slashbaseide/slashbase/internal/db"
+	"github.com/slashbaseide/slashbase/internal/models"
 )
 
 type dbQueryDao struct{}

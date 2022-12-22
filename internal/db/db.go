@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/slashbaseide/slashbase/internal/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"slashbase.com/backend/internal/config"
 )
 
 var db *gorm.DB

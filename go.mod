@@ -1,4 +1,4 @@
-module slashbase.com/backend
+module github.com/slashbaseide/slashbase
 
 go 1.18
 

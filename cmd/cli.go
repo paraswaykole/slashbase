@@ -9,11 +9,11 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
-	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines"
-	"slashbase.com/backend/pkg/queryengines/queryconfig"
+	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
 )
 
 var cliApp struct {

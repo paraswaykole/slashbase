@@ -3,10 +3,10 @@ package controllers
 import (
 	"errors"
 
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/models"
-	"slashbase.com/backend/pkg/queryengines"
-	"slashbase.com/backend/pkg/queryengines/queryconfig"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
 )
 
 type DBConnectionController struct{}

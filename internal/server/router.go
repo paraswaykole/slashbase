@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"slashbase.com/backend/internal/config"
-	"slashbase.com/backend/internal/handlers"
+	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/handlers"
 )
 
 // NewRouter return a gin router for server

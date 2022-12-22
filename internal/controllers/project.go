@@ -3,8 +3,8 @@ package controllers
 import (
 	"errors"
 
-	"slashbase.com/backend/internal/dao"
-	"slashbase.com/backend/internal/models"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
 )
 
 type ProjectController struct{}
