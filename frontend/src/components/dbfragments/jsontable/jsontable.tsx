@@ -6,6 +6,7 @@ import JsonCell from './jsoncell'
 import AddModal from './addmodel'
 import apiService from '../../../network/apiService'
 import toast from 'react-hot-toast'
+import ConfirmModal from '../../widgets/confirmModal'
 
 type JsonTablePropType = {
     queryData: DBQueryData,
@@ -23,6 +24,7 @@ type JsonTablePropType = {
 const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onAddData, onDeleteRows, updateCellData, onFilterChanged, onSortChanged }: JsonTablePropType) => {
 
     const [isAdding, setIsAdding] = useState<boolean>(false)
+    const [isDeleting, setIsDeleting] = useState<boolean>(false)
     const [editingCellIndex, setEditingCellIndex] = useState<(number | null)>(null)
 
     const filterRef = useRef<HTMLInputElement>(null);
@@ -116,7 +118,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
     const selectedRows: number[] = Object.keys(newState.selectedRowIds).map(x => parseInt(x))
     const selectedUnderscoreIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['_id']).filter(x => x)
 
-    const onDeleteBtnPressed = async () => {
+    const deleteRows = async () => {
         if (selectedUnderscoreIDs.length > 0) {
             const result = await apiService.deleteDBData(dbConnection.id, "", mName, selectedUnderscoreIDs)
             if (result.success) {
@@ -126,6 +128,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
                 toast.error(result.error!);
             }
         }
+        setIsDeleting(false)
     }
 
     return (
@@ -154,7 +157,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button" disabled={selectedUnderscoreIDs.length === 0} onClick={onDeleteBtnPressed}>
+                            <button className="button" disabled={selectedUnderscoreIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-trash" />
                                 </span>
@@ -176,6 +179,10 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onA
                     onClose={() => { setIsAdding(false) }}
                     onAddData={onAddData} />
             }
+            {isDeleting && <ConfirmModal
+                message={`Are you sure you want to delete selected documents?`}
+                onConfirm={deleteRows}
+                onClose={() => { setIsDeleting(false) }} />}
             <div className="table-container">
                 <table {...getTableProps()} className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                     <thead>
