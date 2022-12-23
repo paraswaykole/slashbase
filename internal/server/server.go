@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"mime"
 	"net/http"
@@ -14,12 +15,17 @@ import (
 
 // Init server
 func Init() {
+	fmt.Println("Running Slashbase IDE at http://localhost:" + config.GetServerPort())
 	if config.IsLive() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := NewRouter()
 	serveStaticFiles(router)
-	go router.Run(":" + config.GetServerPort())
+	if config.GetConfig().EnvName == config.ENV_DOCKER_PROD {
+		router.Run(":" + config.GetServerPort())
+	} else {
+		go router.Run(":" + config.GetServerPort())
+	}
 }
 
 func serveStaticFiles(router *gin.Engine) {
@@ -53,8 +59,8 @@ func initFS() stuffbin.FileSystem {
 
 	// Running in local mode. Load the required static assets into
 	// the in-memory stuffbin.FileSystem.
-	log.Printf("unable to initialize embedded filesystem: %v", err)
-	log.Printf("using local filesystem for static assets")
+	// unable to initialize embedded filesystem
+	// using local filesystem for static assets
 
 	files := []string{
 		"web",

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -33,6 +34,10 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	if config.GetConfig().EnvName == config.ENV_DOCKER_PROD {
+		return
+	}
+	fmt.Println("Type 'help' for more info on cli.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

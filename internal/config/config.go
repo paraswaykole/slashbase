@@ -19,7 +19,7 @@ func Init(env string) {
 }
 
 func IsLive() bool {
-	return config.EnvName == ENV_PRODUCTION
+	return config.EnvName == ENV_PRODUCTION || config.EnvName == ENV_DOCKER_PROD
 }
 
 func GetConfig() *AppConfig {

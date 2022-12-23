@@ -21,7 +21,7 @@ FROM base as backendbuilder
 WORKDIR /slashbase
 COPY . .
 ENV GOOS="linux"
-RUN go build --o backend -trimpath -ldflags="-X 'main.Build=production'"
+RUN go build --o backend -trimpath -ldflags="-X 'main.Build=docker'"
 
 # Install dependencies only when needed
 FROM node:alpine AS deps
