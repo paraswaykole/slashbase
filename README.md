@@ -47,8 +47,10 @@ The app should be installed on your desktop/laptop and should used as a part of 
 
 Run the following commands on terminal to start the app inside docker container:
 
-1. `docker pull slashbaseide/slashbase`
-2. `docker run -p 3000:3000 slashbaseide/slashbase`
+```shell
+docker pull slashbaseide/slashbase
+docker run -p 3000:3000 slashbaseide/slashbase
+```
 
 The app is running at port 3000. Visit http://localhost:3000 from the browser.
 
