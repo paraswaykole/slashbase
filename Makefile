@@ -12,7 +12,7 @@ $(STUFFBIN):
 	go install github.com/knadh/stuffbin/...
 
 $(BIN):
-	go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
+	env CGO_ENABLED=1 go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
 
 .PHONY: dist
 dist: $(STUFFBIN) build pack-bin
