@@ -5,6 +5,15 @@
   <p align="center">The open-source in-browser database IDE for your dev/data workflows.</p>
 </p>
 <p align="center">
+  <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
+  <br/><br/>
+  <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
+  ·
+  <a href="https://slashbase.bip.wiki">Explore the docs</a>
+  ·
+  <a href="https://slashbase.com/updates">Read Updates</a>
+</p>
+<p align="center">
   <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
   <a href="https://github.com/slashbaseide/slashbase/releases">
     <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
@@ -18,15 +27,6 @@
   <a href="https://discord.gg/U6fXgm3FAX">
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
   </a>
-</p>
-<p align="center">
-  <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
-  <br/><br/>
-  <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
-  ·
-  <a href="https://slashbase.bip.wiki">Explore the docs</a>
-  ·
-  <a href="https://slashbase.com/updates">Read Updates</a>
 </p>
 
 ___
