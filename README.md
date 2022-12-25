@@ -14,6 +14,7 @@
   <a href="https://slashbase.com/updates">Read Updates</a>
 </p>
 <p align="center">
+  <img alt="GitHub" src="https://img.shields.io/github/license/slashbaseide/slashbase">
   <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
   <a href="https://github.com/slashbaseide/slashbase/releases">
     <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
