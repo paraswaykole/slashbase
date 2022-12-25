@@ -6,10 +6,18 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
-  <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
-  <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pull">
-  <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total?label=binary%20downloads" alt="Binary downloads" >
-  <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
+  <a href="https://github.com/slashbaseide/slashbase/releases">
+    <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
+  </a>
+  <a href="https://github.com/slashbaseide/slashbase/releases">
+    <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total?color=blue&label=binary%20downloads" alt="Binary downloads" >
+  </a>
+  <a href="https://hub.docker.com/r/slashbaseide/slashbase">
+    <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pulls">
+  </a>
+  <a href="https://discord.gg/U6fXgm3FAX">
+    <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
+  </a>
 </p>
 <p align="center">
   <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
