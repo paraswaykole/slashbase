@@ -22,10 +22,10 @@
 
 ___
 
-## Slashbase CLI
+### Slashbase CLI
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.png" alt="Slashbase CLI" width="100%">
 
-## Slashbase IDE
+### Slashbase IDE
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
 
 # About
