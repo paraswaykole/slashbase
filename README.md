@@ -5,13 +5,7 @@
   <p align="center">The open-source in-browser database IDE for your dev/data workflows.</p>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/github/license/slashbaseide/slashbase" alt="License">
-  <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
-  <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
-  <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pull">
-</p>
-<p align="center">
-  <a href="#installation" rel="dofollow"><strong>Get Started »</strong></a>
+  <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
   <br/><br/>
   <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
   ·
@@ -19,10 +13,30 @@
   ·
   <a href="https://slashbase.com/updates">Read Updates</a>
 </p>
+<p align="center">
+  <img alt="GitHub" src="https://img.shields.io/github/license/slashbaseide/slashbase">
+  <img src="https://img.shields.io/github/go-mod/go-version/slashbaseide/slashbase.svg" alt="Go verison">
+  <a href="https://github.com/slashbaseide/slashbase/releases">
+    <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
+  </a>
+  <a href="https://github.com/slashbaseide/slashbase/releases">
+    <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total?color=blue&label=binary%20downloads" alt="Binary downloads" >
+  </a>
+  <a href="https://hub.docker.com/r/slashbaseide/slashbase">
+    <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pulls">
+  </a>
+  <a href="https://discord.gg/U6fXgm3FAX">
+    <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
+  </a>
+</p>
 
 ___
 
-<img src="https://slashbase.com/screenshot.png" alt="Slashbase" width="100%">
+### Slashbase CLI - in terminal
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.png" alt="Slashbase CLI" width="100%">
+
+### Slashbase IDE - in browser
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
 
 # About
 
@@ -47,8 +61,10 @@ The app should be installed on your desktop/laptop and should used as a part of 
 
 Run the following commands on terminal to start the app inside docker container:
 
-1. `docker pull slashbaseide/slashbase`
-2. `docker run -p 3000:3000 slashbaseide/slashbase`
+```shell
+docker pull slashbaseide/slashbase
+docker run -p 3000:3000 slashbaseide/slashbase
+```
 
 The app is running at port 3000. Visit http://localhost:3000 from the browser.
 
