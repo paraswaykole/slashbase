@@ -57,7 +57,7 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 The app should be installed on your desktop/laptop and should used as a part of your local development enviroment.
 
-### Docker
+## Docker
 
 Run the following commands on terminal to start the app inside docker container:
 
@@ -68,12 +68,19 @@ docker run -p 3000:3000 slashbaseide/slashbase
 
 The app is running at port 3000. Visit http://localhost:3000 from the browser.
 
-### Binary
+## Binary
 
-Run the following commands on terminal to download & start the app:
+Follow the steps below to download & start the app:
 
+### Mac OS and Linux
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
-2. Run `./slashbase` to start the app.
+2. Run `./slashbase` on terminal to start the app.
+
+The app is running at port 3000. Visit http://localhost:3000 from the browser.
+
+### Windows
+1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
+2. Run `slashbase` on cmd terminal to start the app.
 
 The app is running at port 3000. Visit http://localhost:3000 from the browser.
 
