@@ -34,7 +34,7 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	if config.GetConfig().EnvName == config.ENV_DOCKER_PROD {
+	if config.GetConfig().BuildName == config.BUILD_DOCKER_PROD {
 		return
 	}
 	fmt.Println("Type 'help' for more info on cli.")

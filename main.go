@@ -10,7 +10,7 @@ import (
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
 )
 
-var Build = config.ENV_DEVELOPMENT
+var Build = config.BUILD_DEVELOPMENT
 
 func main() {
 	config.Init(Build)

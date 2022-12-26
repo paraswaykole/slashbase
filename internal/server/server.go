@@ -21,7 +21,7 @@ func Init() {
 	}
 	router := NewRouter()
 	serveStaticFiles(router)
-	if config.GetConfig().EnvName == config.ENV_DOCKER_PROD {
+	if config.GetConfig().BuildName == config.BUILD_DOCKER_PROD {
 		router.Run(":" + config.GetServerPort())
 	} else {
 		go router.Run(":" + config.GetServerPort())
