@@ -14,6 +14,15 @@ $(STUFFBIN):
 $(BIN):
 	env CGO_ENABLED=1 go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
 
+.PHONY: build-win
+build: $(BIN)
+
+$(STUFFBIN):
+	go install github.com/knadh/stuffbin/...
+
+$(BIN):
+	env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc" go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
+
 .PHONY: dist
 dist: $(STUFFBIN) build pack-bin
 
