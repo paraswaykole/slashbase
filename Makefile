@@ -15,7 +15,7 @@ $(BIN):
 	env CGO_ENABLED=1 go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
 
 .PHONY: build-win
-build: $(BIN)
+build-win: $(BIN)
 
 $(STUFFBIN):
 	go install github.com/knadh/stuffbin/...
