@@ -5,7 +5,6 @@ const getApiInstance = () => {
     const apiInstance: AxiosInstance = axios.create({
         baseURL: GetAPIConfig().API_URL,
         headers: { 'content-type': 'text/json' },
-        withCredentials: true,
     })
 
     apiInstance.interceptors.response.use(
