@@ -35,7 +35,7 @@ func handleCmd(cmdText string) {
 		return
 	}
 
-	if strings.HasPrefix(cmdText, "\\switch") {
+	if strings.HasPrefix(cmdText, "\\base") {
 		switchDB(cmdText)
 	} else {
 		runQuery(cmdText)
@@ -51,7 +51,7 @@ func printHelp() {
 }
 
 func switchDB(cmdText string) {
-	dbname := strings.Replace(cmdText, "\\switch ", "", 1)
+	dbname := strings.Replace(cmdText, "\\base ", "", 1)
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByName(dbname)
 	if err != nil {
