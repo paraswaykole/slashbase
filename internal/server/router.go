@@ -13,13 +13,7 @@ import (
 func NewRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Recovery())
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "Authorization")
-	corsConfig.AllowCredentials = true
-	corsConfig.AllowOriginFunc = func(origin string) bool {
-		return true
-	}
-	router.Use(cors.New(corsConfig))
+	router.Use(cors.Default())
 	api := router.Group("/api/v1")
 	{
 		api.GET("health", healthCheck)

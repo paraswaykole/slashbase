@@ -48,4 +48,4 @@ COPY --from=backendbuilder /slashbase/backend /slashbase
 COPY --from=frontendbuilder /app/out /slashbase/web
 
 ENTRYPOINT ["/slashbase/backend"]
-EXPOSE 3000
+EXPOSE 22022

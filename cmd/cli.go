@@ -35,7 +35,7 @@ func handleCmd(cmdText string) {
 		return
 	}
 
-	if strings.HasPrefix(cmdText, "\\switch") {
+	if strings.HasPrefix(cmdText, "\\base") {
 		switchDB(cmdText)
 	} else {
 		runQuery(cmdText)
@@ -45,13 +45,13 @@ func handleCmd(cmdText string) {
 
 func printHelp() {
 	fmt.Println("To add a new database use the IDE interface running at https://localhost:" + config.GetServerPort())
-	fmt.Println("To connect to existing db type '\\switch db-nick-name'.")
+	fmt.Println("To connect to existing db type '\\base db-nick-name'.")
 	fmt.Println("Once connected to db, type your query and press enter to get query results.")
 	fmt.Println("To end the program, type 'exit'.")
 }
 
 func switchDB(cmdText string) {
-	dbname := strings.Replace(cmdText, "\\switch ", "", 1)
+	dbname := strings.Replace(cmdText, "\\base ", "", 1)
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByName(dbname)
 	if err != nil {

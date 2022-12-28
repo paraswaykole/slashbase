@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/icza/gox/osx"
 	"github.com/knadh/stuffbin"
 	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/utils"
@@ -21,9 +22,10 @@ func Init() {
 	}
 	router := NewRouter()
 	serveStaticFiles(router)
-	if config.GetConfig().EnvName == config.ENV_DOCKER_PROD {
+	if config.GetConfig().BuildName == config.BUILD_DOCKER_PROD {
 		router.Run(":" + config.GetServerPort())
 	} else {
+		osx.OpenDefault("https://app.slashbase.com")
 		go router.Run(":" + config.GetServerPort())
 	}
 }

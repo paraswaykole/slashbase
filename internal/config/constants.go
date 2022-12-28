@@ -7,9 +7,9 @@ const (
 
 	APP_DATABASE_FILE = "app.db"
 
-	ENV_PRODUCTION  = "production"
-	ENV_DOCKER_PROD = "docker"
-	ENV_DEVELOPMENT = "development"
+	BUILD_PRODUCTION  = "production"
+	BUILD_DOCKER_PROD = "docker"
+	BUILD_DEVELOPMENT = "development"
 
-	DEFAULT_SERVER_PORT = "3000"
+	DEFAULT_SERVER_PORT = "22022"
 )
