@@ -14,16 +14,17 @@ import (
 )
 
 func display(input string) string {
-	buf := bytes.NewBuffer([]byte{})
 	if cliApp.CurrentDB == nil {
 		return input
 	} else if cliApp.CurrentDB.Type == models.DBTYPE_POSTGRES {
+		buf := bytes.NewBuffer([]byte{})
 		err := quick.Highlight(buf, input, "postgres", "terminal16m", "monokai")
 		if err != nil {
 			return input
 		}
 		return buf.String()
 	} else if cliApp.CurrentDB.Type == models.DBTYPE_MONGO {
+		buf := bytes.NewBuffer([]byte{})
 		err := quick.Highlight(buf, input, "javascript", "terminal16m", "monokai")
 		if err != nil {
 			return input
