@@ -1,7 +1,7 @@
 package config
 
 const (
-	VERSION = "v0.2.1-beta"
+	VERSION = "v0.2.2-beta"
 
 	PAGINATION_COUNT = 20
 
