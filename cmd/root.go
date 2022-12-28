@@ -1,34 +1,61 @@
 package cmd
 
 import (
-	"bufio"
+	"bytes"
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/alecthomas/chroma/quick"
+	"github.com/gohxs/readline"
 	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/models"
 	"github.com/spf13/cobra"
 )
+
+func display(input string) string {
+	buf := bytes.NewBuffer([]byte{})
+	if cliApp.CurrentDB == nil {
+		return input
+	} else if cliApp.CurrentDB.Type == models.DBTYPE_POSTGRES {
+		err := quick.Highlight(buf, input, "postgres", "terminal16m", "monokai")
+		if err != nil {
+			return input
+		}
+		return buf.String()
+	} else if cliApp.CurrentDB.Type == models.DBTYPE_MONGO {
+		err := quick.Highlight(buf, input, "javascript", "terminal16m", "monokai")
+		if err != nil {
+			return input
+		}
+		return buf.String()
+	}
+	return input
+}
 
 var rootCmd = &cobra.Command{
 	Use:   "slashbase",
 	Short: "slashbase is a cli & an api server for quering databases",
 	Long:  `slashbase is a cli & an api server for quering databases`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Print("slashbase > ")
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			text := scanner.Text()
-			handleCmd(text)
-			if cliApp.CurrentDB == nil {
-				fmt.Print("slashbase > ")
-			} else {
-				fmt.Printf("%s > ", cliApp.CurrentDB.Name)
-			}
+		term, err := readline.NewEx(&readline.Config{
+			Prompt: "slashbase > ",
+			Output: display,
+		})
+		if err != nil {
+			log.Fatal(err)
 		}
-
-		if scanner.Err() != nil {
-			fmt.Println("unexpected error occurred")
-			os.Exit(1)
+		for {
+			line, err := term.Readline()
+			if err != nil {
+				log.Fatal(err)
+			}
+			handleCmd(line)
+			if cliApp.CurrentDB == nil {
+				term.SetPrompt("slashbase > ")
+			} else {
+				term.SetPrompt(fmt.Sprintf("%s > ", cliApp.CurrentDB.Name))
+			}
 		}
 	},
 }
