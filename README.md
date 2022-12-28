@@ -66,7 +66,7 @@ docker pull slashbaseide/slashbase
 docker run -p 22022:22022 slashbaseide/slashbase
 ```
 
-The app is running at port 22022. Visit http://localhost:22022 from the browser.
+The app is running at port 22022. Visit https://app.slashbase.com from the browser.
 
 ## Binary
 
@@ -76,13 +76,13 @@ Follow the steps below to download & start the app:
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `./slashbase` on terminal to start the app.
 
-The app is running at port 22022. Visit http://localhost:22022 from the browser.
+The app is running at port 22022. Visit https://app.slashbase.com from the browser.
 
 ### Windows
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `slashbase` on cmd terminal to start the app.
 
-The app is running at port 22022. Visit http://localhost:22022 from the browser.
+The app is running at port 22022. Visit https://app.slashbase.com from the browser.
 
 # Documentation
 
