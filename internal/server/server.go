@@ -25,7 +25,9 @@ func Init() {
 	if config.GetConfig().BuildName == config.BUILD_DOCKER_PROD {
 		router.Run(":" + config.GetServerPort())
 	} else {
-		osx.OpenDefault("https://app.slashbase.com")
+		if config.IsLive() {
+			osx.OpenDefault("https://app.slashbase.com")
+		}
 		go router.Run(":" + config.GetServerPort())
 	}
 }
