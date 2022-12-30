@@ -32,11 +32,13 @@
 
 ___
 
-### Slashbase CLI - in terminal
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.png" alt="Slashbase CLI" width="100%">
-
 ### Slashbase IDE - in browser
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
+
+### Slashbase CLI - in terminal
+<p align="center">
+  <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
+</p>
 
 # About
 
