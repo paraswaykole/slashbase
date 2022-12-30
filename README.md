@@ -2,7 +2,7 @@
   <a href="https://slashbase.com" alt="Slashbase">
     <img src="https://slashbase.com/github-logo.png" alt="Slashbase" width="220">
   </a>
-  <p align="center">The open-source in-browser database IDE for your dev/data workflows.</p>
+  <p align="center">A modern in-browser database IDE & CLI for your dev & data workflows.</p>
 </p>
 <p align="center">
   <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
