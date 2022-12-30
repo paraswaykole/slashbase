@@ -44,14 +44,15 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
   <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
 </p>
 
-## Features
+# Features
 
-- **Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
-- **Easy to use**: with minimal interface it is simple to use. 
-- **Database Support**: PostgreSQL and MongoDB.
-- **Save Queries**: Write and Save queries to re-run in future.
-- **Create Charts**: Create charts from your query results.
-
+- **🧑‍💻 Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
+- **🪄 Modern Interface**: With a modern interface, it is easy to use.
+- **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
+- **💾 Save Queries**: Write and Save queries to re-run in future.
+- **📊 Create Charts**: Create charts from your query results.
+- **🗂 Projects**: Organise all database connections into various projects
+- **✅ Database Support**: PostgreSQL and MongoDB.
 
 # Installation
 
