@@ -2,7 +2,7 @@
   <a href="https://slashbase.com" alt="Slashbase">
     <img src="https://slashbase.com/github-logo.png" alt="Slashbase" width="220">
   </a>
-  <p align="center">The open-source in-browser database IDE for your dev/data workflows.</p>
+  <p align="center">A modern in-browser database IDE & CLI for your dev & data workflows.</p>
 </p>
 <p align="center">
   <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
@@ -30,28 +30,29 @@
   </a>
 </p>
 
-___
-
-### Slashbase CLI - in terminal
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.png" alt="Slashbase CLI" width="100%">
-
-### Slashbase IDE - in browser
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
-
 # About
 
-Slashbase is an open-source in-browser database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports PostgreSQL and MongoDB.
+Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports PostgreSQL and MongoDB.
 
 It's written in Golang and Nextjs React Framework and runs as a single binary.
 
-## Features
+## Features:
 
-- **Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
-- **Easy to use**: with minimal interface it is simple to use. 
-- **Database Support**: PostgreSQL and MongoDB.
-- **Save Queries**: Write and Save queries to re-run in future.
-- **Create Charts**: Create charts from your query results.
+- **🧑‍💻 Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
+- **🪄 Modern Interface**: With a modern interface, it is easy to use.
+- **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
+- **💾 Save Queries**: Write and Save queries to re-run in future.
+- **📊 Create Charts**: Create charts from your query results.
+- **🗂 Projects**: Organise all database connections into various projects
+- **✅ Database Support**: PostgreSQL and MongoDB.
 
+### In browser
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
+
+### In terminal
+<p align="center">
+  <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
+</p>
 
 # Installation
 
