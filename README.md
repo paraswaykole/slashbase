@@ -32,19 +32,11 @@
 
 # About
 
-Slashbase is an open-source in-browser database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports PostgreSQL and MongoDB.
+Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports PostgreSQL and MongoDB.
 
 It's written in Golang and Nextjs React Framework and runs as a single binary.
 
-### In browser
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
-
-### In terminal
-<p align="center">
-  <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
-</p>
-
-# Features
+## Features:
 
 - **🧑‍💻 Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
 - **🪄 Modern Interface**: With a modern interface, it is easy to use.
@@ -53,6 +45,14 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 - **📊 Create Charts**: Create charts from your query results.
 - **🗂 Projects**: Organise all database connections into various projects
 - **✅ Database Support**: PostgreSQL and MongoDB.
+
+### In browser
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
+
+### In terminal
+<p align="center">
+  <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
+</p>
 
 # Installation
 
