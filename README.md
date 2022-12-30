@@ -30,21 +30,19 @@
   </a>
 </p>
 
-___
-
-### Slashbase IDE - in browser
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
-
-### Slashbase CLI - in terminal
-<p align="center">
-  <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
-</p>
-
 # About
 
 Slashbase is an open-source in-browser database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports PostgreSQL and MongoDB.
 
 It's written in Golang and Nextjs React Framework and runs as a single binary.
+
+### In browser
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
+
+### In terminal
+<p align="center">
+  <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
+</p>
 
 ## Features
 
