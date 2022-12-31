@@ -43,7 +43,8 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 - **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
 - **💾 Save Queries**: Write and Save queries to re-run in future.
 - **📊 Create Charts**: Create charts from your query results.
-- **🗂 Projects**: Organise all database connections into various projects
+- **🗂 Projects**: Organise all database connections into various projects.
+- **📕 Query Cheatsheets**: Search for query commands right inside IDE, no need to search online when you forget query syntax.
 - **✅ Database Support**: PostgreSQL and MongoDB.
 
 ### In browser
