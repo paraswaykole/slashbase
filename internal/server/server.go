@@ -16,7 +16,7 @@ import (
 
 // Init server
 func Init() {
-	fmt.Println("Running Slashbase IDE at http://localhost:" + config.GetServerPort())
+	fmt.Println("Connect to Slashbase IDE at https://app.slashbase.com")
 	if config.IsLive() {
 		gin.SetMode(gin.ReleaseMode)
 	}
