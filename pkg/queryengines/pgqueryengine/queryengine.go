@@ -214,14 +214,17 @@ func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema str
 	}
 	keysStr := strings.Join(keys, ", ")
 	valuesStr := strings.Join(values, "','")
-	query := fmt.Sprintf(`INSERT INTO "%s"."%s"(%s) VALUES('%s') RETURNING ctid;`, schema, name, keysStr, valuesStr)
+	query := fmt.Sprintf(`INSERT INTO "%s"."%s"(%s) VALUES('%s') RETURNING ctid, *;`, schema, name, keysStr, valuesStr)
 	rData, err := pgqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
 	}
 	ctID := rData["rows"].([]map[string]interface{})[0]["0"]
+	ndata := rData["rows"].([]map[string]interface{})[0]
+	delete(ndata, "0")
 	rData = map[string]interface{}{
 		"ctid": ctID,
+		"data": ndata,
 	}
 	return rData, err
 }
