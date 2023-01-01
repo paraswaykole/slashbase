@@ -8,14 +8,14 @@ import (
 
 var config AppConfig
 
-func Init(buildName string) {
+func Init(buildName, version string) {
 	if buildName == BUILD_DEVELOPMENT {
 		err := godotenv.Load("development.env")
 		if err != nil {
 			log.Fatal("Error loading development.env file")
 		}
 	}
-	config = newConfig(buildName)
+	config = newConfig(buildName, version)
 }
 
 func IsLive() bool {

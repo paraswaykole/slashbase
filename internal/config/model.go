@@ -8,12 +8,13 @@ import (
 )
 
 type AppConfig struct {
+	Version           string
 	BuildName         string
 	Port              string
 	CryptedDataSecret string
 }
 
-func newConfig(buildName string) AppConfig {
+func newConfig(buildName, version string) AppConfig {
 	cryptedDataSecret := os.Getenv("CRYPTED_DATA_SECRET")
 	if cryptedDataSecret == "" {
 		hex, err := utils.RandomHex(32)
@@ -23,6 +24,7 @@ func newConfig(buildName string) AppConfig {
 		cryptedDataSecret = hex
 	}
 	return AppConfig{
+		Version:           version,
 		BuildName:         buildName,
 		Port:              os.Getenv("PORT"),
 		CryptedDataSecret: cryptedDataSecret,

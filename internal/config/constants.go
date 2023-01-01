@@ -1,8 +1,6 @@
 package config
 
 const (
-	VERSION = "v0.2.2-beta"
-
 	PAGINATION_COUNT = 20
 
 	APP_DATABASE_FILE = "app.db"

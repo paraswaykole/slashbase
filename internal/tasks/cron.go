@@ -64,7 +64,7 @@ func telemetryPings(s *gocron.Scheduler) {
 			"event":   "Telemetry Ping",
 			"properties": map[string]string{
 				"distinct_id": setting.UUID().String(),
-				"version":     config.VERSION,
+				"version":     config.GetConfig().Version,
 			},
 		}
 		json_data, _ := json.Marshal(values)

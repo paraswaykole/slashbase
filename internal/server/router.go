@@ -78,6 +78,6 @@ func NewRouter() *gin.Engine {
 func healthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"success": true,
-		"version": config.VERSION,
+		"version": config.GetConfig().Version,
 	})
 }
