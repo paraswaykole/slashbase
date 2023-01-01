@@ -34,7 +34,7 @@ func TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) boo
 	return false
 }
 
-func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*DBDataModel, error) {
+func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*models.DBDataModel, error) {
 	var err error
 	var data []map[string]interface{}
 	if dbConn.Type == models.DBTYPE_POSTGRES {
@@ -45,9 +45,9 @@ func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*
 	if err != nil {
 		return nil, err
 	}
-	dataModels := []*DBDataModel{}
+	dataModels := []*models.DBDataModel{}
 	for _, table := range data {
-		view := BuildDBDataModel(dbConn, table)
+		view := models.BuildDBDataModel(dbConn, table)
 		if view != nil {
 			dataModels = append(dataModels, view)
 		}
@@ -55,8 +55,8 @@ func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*
 	return dataModels, nil
 }
 
-func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name string, config *models.QueryConfig) (*DBDataModel, error) {
-	var dataModel DBDataModel
+func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name string, config *models.QueryConfig) (*models.DBDataModel, error) {
+	var dataModel models.DBDataModel
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		fieldsData, err := postgresQueryEngine.GetSingleDataModelFields(dbConn, schemaName, name, config)
 		if err != nil {
@@ -66,21 +66,21 @@ func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name str
 		if err != nil {
 			return nil, err
 		}
-		allFields := []DBDataModelField{}
+		allFields := []models.DBDataModelField{}
 		for _, field := range fieldsData {
-			fieldView := BuildDBDataModelField(dbConn, field)
+			fieldView := models.BuildDBDataModelField(dbConn, field)
 			if fieldView != nil {
 				allFields = append(allFields, *fieldView)
 			}
 		}
-		allIndexes := []DBDataModelIndex{}
+		allIndexes := []models.DBDataModelIndex{}
 		for _, index := range indexesData {
-			indexView := BuildDBDataModelIndex(dbConn, index)
+			indexView := models.BuildDBDataModelIndex(dbConn, index)
 			if indexView != nil {
 				allIndexes = append(allIndexes, *indexView)
 			}
 		}
-		dataModel = DBDataModel{
+		dataModel = models.DBDataModel{
 			SchemaName: schemaName,
 			Name:       name,
 			Fields:     allFields,
@@ -95,21 +95,21 @@ func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name str
 		if err != nil {
 			return nil, err
 		}
-		allFields := []DBDataModelField{}
+		allFields := []models.DBDataModelField{}
 		for _, field := range fieldsData {
-			fieldView := BuildDBDataModelField(dbConn, field)
+			fieldView := models.BuildDBDataModelField(dbConn, field)
 			if fieldView != nil {
 				allFields = append(allFields, *fieldView)
 			}
 		}
-		allIndexes := []DBDataModelIndex{}
+		allIndexes := []models.DBDataModelIndex{}
 		for _, index := range indexesData {
-			indexView := BuildDBDataModelIndex(dbConn, index)
+			indexView := models.BuildDBDataModelIndex(dbConn, index)
 			if indexView != nil {
 				allIndexes = append(allIndexes, *indexView)
 			}
 		}
-		dataModel = DBDataModel{
+		dataModel = models.DBDataModel{
 			Name:    name,
 			Fields:  allFields,
 			Indexes: allIndexes,
@@ -156,7 +156,7 @@ func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name strin
 	return nil, errors.New("invalid db type")
 }
 
-func AddData(dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}, config *models.QueryConfig) (*AddDataResponse, error) {
+func AddData(dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}, config *models.QueryConfig) (*models.AddDataResponse, error) {
 	var result map[string]interface{}
 	var err error
 	if dbConn.Type == models.DBTYPE_POSTGRES {
@@ -172,7 +172,7 @@ func AddData(dbConn *models.DBConnection, schemaName string, name string, data m
 	} else {
 		return nil, errors.New("invalid db type")
 	}
-	return BuildAddDataResponse(dbConn, result), nil
+	return models.BuildAddDataResponse(dbConn, result), nil
 }
 
 // DeleteData function to delete multiple rows in the database

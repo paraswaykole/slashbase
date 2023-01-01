@@ -2,6 +2,7 @@ package models
 
 type DBConnection struct {
 	ID          string
+	Name        string
 	Type        string
 	DBScheme    string
 	DBHost      string

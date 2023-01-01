@@ -1,8 +1,4 @@
-package queryengines
-
-import (
-	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
-)
+package models
 
 type DBDataModel struct {
 	Name       string             `json:"name"`
@@ -24,14 +20,14 @@ type DBDataModelIndex struct {
 	IndexDef string `json:"indexDef"`
 }
 
-func BuildDBDataModel(dbConn *models.DBConnection, tableData map[string]interface{}) *DBDataModel {
-	if dbConn.Type == models.DBTYPE_POSTGRES {
+func BuildDBDataModel(dbConn *DBConnection, tableData map[string]interface{}) *DBDataModel {
+	if dbConn.Type == DBTYPE_POSTGRES {
 		view := DBDataModel{
 			Name:       tableData["0"].(string),
 			SchemaName: tableData["1"].(string),
 		}
 		return &view
-	} else if dbConn.Type == models.DBTYPE_MONGO {
+	} else if dbConn.Type == DBTYPE_MONGO {
 		view := DBDataModel{
 			Name: tableData["collectionName"].(string),
 		}
@@ -40,8 +36,8 @@ func BuildDBDataModel(dbConn *models.DBConnection, tableData map[string]interfac
 	return nil
 }
 
-func BuildDBDataModelField(dbConn *models.DBConnection, fieldData map[string]interface{}) *DBDataModelField {
-	if dbConn.Type == models.DBTYPE_POSTGRES {
+func BuildDBDataModelField(dbConn *DBConnection, fieldData map[string]interface{}) *DBDataModelField {
+	if dbConn.Type == DBTYPE_POSTGRES {
 		view := DBDataModelField{
 			Name:       fieldData["name"].(string),
 			Type:       fieldData["type"].(string),
@@ -50,7 +46,7 @@ func BuildDBDataModelField(dbConn *models.DBConnection, fieldData map[string]int
 			Tags:       fieldData["tags"].([]string),
 		}
 		return &view
-	} else if dbConn.Type == models.DBTYPE_MONGO {
+	} else if dbConn.Type == DBTYPE_MONGO {
 		view := DBDataModelField{
 			Name:       fieldData["name"].(string),
 			Type:       fieldData["types"].(string),
@@ -62,14 +58,14 @@ func BuildDBDataModelField(dbConn *models.DBConnection, fieldData map[string]int
 	return nil
 }
 
-func BuildDBDataModelIndex(dbConn *models.DBConnection, fieldData map[string]interface{}) *DBDataModelIndex {
-	if dbConn.Type == models.DBTYPE_POSTGRES {
+func BuildDBDataModelIndex(dbConn *DBConnection, fieldData map[string]interface{}) *DBDataModelIndex {
+	if dbConn.Type == DBTYPE_POSTGRES {
 		view := DBDataModelIndex{
 			Name:     fieldData["0"].(string),
 			IndexDef: fieldData["1"].(string),
 		}
 		return &view
-	} else if dbConn.Type == models.DBTYPE_MONGO {
+	} else if dbConn.Type == DBTYPE_MONGO {
 		view := DBDataModelIndex{
 			Name:     fieldData["name"].(string),
 			IndexDef: fieldData["key"].(string),

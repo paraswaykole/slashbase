@@ -81,6 +81,7 @@ func (dbConn DBConnection) Save() error {
 func (dbConn *DBConnection) ToQEConnection() *qemodels.DBConnection {
 	return &qemodels.DBConnection{
 		ID:          dbConn.ID,
+		Name:        dbConn.Name,
 		Type:        dbConn.Type,
 		DBScheme:    string(dbConn.DBScheme),
 		DBHost:      string(dbConn.DBHost),

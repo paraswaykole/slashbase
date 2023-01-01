@@ -1,7 +1,6 @@
-package queryengines
+package models
 
 import (
-	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -10,8 +9,8 @@ type AddDataResponse struct {
 	Data  map[string]interface{} `json:"data"`
 }
 
-func BuildAddDataResponse(dbConn *models.DBConnection, queryData map[string]interface{}) *AddDataResponse {
-	if dbConn.Type == models.DBTYPE_POSTGRES {
+func BuildAddDataResponse(dbConn *DBConnection, queryData map[string]interface{}) *AddDataResponse {
+	if dbConn.Type == DBTYPE_POSTGRES {
 		ctid := queryData["ctid"].(string)
 		delete(queryData, "ctid")
 		view := AddDataResponse{
@@ -19,7 +18,7 @@ func BuildAddDataResponse(dbConn *models.DBConnection, queryData map[string]inte
 			Data:  queryData["data"].(map[string]interface{}),
 		}
 		return &view
-	} else if dbConn.Type == models.DBTYPE_MONGO {
+	} else if dbConn.Type == DBTYPE_MONGO {
 		view := AddDataResponse{
 			NewID: queryData["insertedId"].(primitive.ObjectID).Hex(),
 		}

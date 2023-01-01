@@ -8,6 +8,7 @@ import (
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 )
 
 type QueryController struct{}
@@ -41,7 +42,7 @@ func (QueryController) GetData(dbConnId, schema, name string, fetchCount bool, l
 	return data, nil
 }
 
-func (QueryController) GetDataModels(dbConnId string) ([]*queryengines.DBDataModel, error) {
+func (QueryController) GetDataModels(dbConnId string) ([]*qemodels.DBDataModel, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
@@ -55,7 +56,7 @@ func (QueryController) GetDataModels(dbConnId string) ([]*queryengines.DBDataMod
 	return dataModels, nil
 }
 
-func (QueryController) GetSingleDataModel(dbConnId string, schema, name string) (*queryengines.DBDataModel, error) {
+func (QueryController) GetSingleDataModel(dbConnId string, schema, name string) (*qemodels.DBDataModel, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
@@ -99,7 +100,7 @@ func (QueryController) DeleteSingleDataModelField(dbConnId string,
 }
 
 func (QueryController) AddData(dbConnId string,
-	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
+	schema, name string, data map[string]interface{}) (*qemodels.AddDataResponse, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
