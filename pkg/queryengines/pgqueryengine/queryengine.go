@@ -7,10 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/pgqueryengine/pgxutils"
-	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
-	"github.com/slashbaseide/slashbase/pkg/sbsql"
 	"github.com/slashbaseide/slashbase/pkg/sshtunnel"
 )
 
@@ -24,7 +22,7 @@ func InitPostgresQueryEngine() *PostgresQueryEngine {
 	}
 }
 
-func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query string, config *models.QueryConfig) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
 		remoteHost := string(dbConn.DBHost)
@@ -35,8 +33,8 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 			string(dbConn.SSHHost), remoteHost, port, string(dbConn.SSHUser),
 			string(dbConn.SSHPassword), string(dbConn.SSHKeyFile),
 		)
-		dbConn.DBHost = sbsql.CryptedData("localhost")
-		dbConn.DBPort = sbsql.CryptedData(fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port))
+		dbConn.DBHost = "localhost"
+		dbConn.DBPort = fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port)
 	}
 	port, _ = strconv.Atoi(string(dbConn.DBPort))
 	conn, err := pgqe.getConnection(dbConn.ID, string(dbConn.DBHost), uint16(port), string(dbConn.DBName), string(dbConn.DBUser), string(dbConn.DBPassword))
@@ -77,7 +75,7 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 	}, nil
 }
 
-func (pgqe *PostgresQueryEngine) TestConnection(dbConn *models.DBConnection, config *queryconfig.QueryConfig) bool {
+func (pgqe *PostgresQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) bool {
 	query := "SELECT 1 AS test;"
 	data, err := pgqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -87,7 +85,7 @@ func (pgqe *PostgresQueryEngine) TestConnection(dbConn *models.DBConnection, con
 	return test == 1
 }
 
-func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]map[string]interface{}, error) {
 	data, err := pgqe.RunQuery(dbConn, "SELECT tablename, schemaname FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' ORDER BY tablename;", config)
 	if err != nil {
 		return nil, err
@@ -96,7 +94,7 @@ func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection, conf
 	return rdata, nil
 }
 
-func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnection, schema string, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnection, schema string, name string, config *models.QueryConfig) ([]map[string]interface{}, error) {
 	// get fields
 	query := fmt.Sprintf(`
 		SELECT ordinal_position, column_name, data_type, is_nullable, column_default, character_maximum_length
@@ -120,7 +118,7 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelFields(dbConn *models.DBConne
 	return pgxutils.QueryToDataModel(fieldsData, constraintsData), err
 }
 
-func (pgqe *PostgresQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConnection, schema string, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConnection, schema string, name string, config *models.QueryConfig) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`SELECT indexname, indexdef FROM pg_indexes
 	WHERE schemaname = '%s' AND tablename = '%s';`, schema, name)
 	data, err := pgqe.RunQuery(dbConn, query, config)
@@ -131,7 +129,7 @@ func (pgqe *PostgresQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConn
 	return returnedData, err
 }
 
-func (pgqe *PostgresQueryEngine) AddSingleDataModelColumn(dbConn *models.DBConnection, schema, name, columnName, dataType string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) AddSingleDataModelColumn(dbConn *models.DBConnection, schema, name, columnName, dataType string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`ALTER TABLE %s.%s ADD COLUMN %s %s;`, schema, name, columnName, dataType)
 	data, err := pgqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -140,7 +138,7 @@ func (pgqe *PostgresQueryEngine) AddSingleDataModelColumn(dbConn *models.DBConne
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) DeleteSingleDataModelColumn(dbConn *models.DBConnection, schema, name, columnName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) DeleteSingleDataModelColumn(dbConn *models.DBConnection, schema, name, columnName string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`ALTER TABLE %s.%s DROP COLUMN %s;`, schema, name, columnName)
 	data, err := pgqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -149,7 +147,7 @@ func (pgqe *PostgresQueryEngine) DeleteSingleDataModelColumn(dbConn *models.DBCo
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	sortQuery := ""
 	if len(sort) == 2 {
 		sortQuery = fmt.Sprintf(` ORDER BY %s %s`, sort[0], sort[1])
@@ -191,7 +189,7 @@ func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema str
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) UpdateSingleData(dbConn *models.DBConnection, schema string, name string, ctid string, columnName string, value string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) UpdateSingleData(dbConn *models.DBConnection, schema string, name string, ctid string, columnName string, value string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`UPDATE "%s"."%s" SET "%s" = '%s' WHERE ctid = '%s' RETURNING ctid;`, schema, name, columnName, value, ctid)
 	data, err := pgqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -204,7 +202,7 @@ func (pgqe *PostgresQueryEngine) UpdateSingleData(dbConn *models.DBConnection, s
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema string, name string, data map[string]interface{}, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema string, name string, data map[string]interface{}, config *models.QueryConfig) (map[string]interface{}, error) {
 	keys := []string{}
 	values := []string{}
 	for key, value := range data {
@@ -229,13 +227,13 @@ func (pgqe *PostgresQueryEngine) AddData(dbConn *models.DBConnection, schema str
 	return rData, err
 }
 
-func (pgqe *PostgresQueryEngine) DeleteData(dbConn *models.DBConnection, schema string, name string, ctids []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) DeleteData(dbConn *models.DBConnection, schema string, name string, ctids []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	ctidsStr := strings.Join(ctids, "', '")
 	query := fmt.Sprintf(`DELETE FROM "%s"."%s" WHERE ctid IN ('%s');`, schema, name, ctidsStr)
 	return pgqe.RunQuery(dbConn, query, config)
 }
 
-func (pgqe *PostgresQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, schema, name, indexName string, colNames []string, isUnique bool, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, schema, name, indexName string, colNames []string, isUnique bool, config *models.QueryConfig) (map[string]interface{}, error) {
 	isUniqueStr := ""
 	if isUnique {
 		isUniqueStr = "UNIQUE "
@@ -248,7 +246,7 @@ func (pgqe *PostgresQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnec
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, indexName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, indexName string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`DROP INDEX %s;`, indexName)
 	data, err := pgqe.RunQuery(dbConn, query, config)
 	if err != nil {

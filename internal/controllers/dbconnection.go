@@ -6,7 +6,7 @@ import (
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
-	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 )
 
 type DBConnectionController struct{}
@@ -34,7 +34,7 @@ func (DBConnectionController) CreateDBConnection(
 	}
 
 	dbConnCopy := *dbConn
-	success := queryengines.TestConnection(&dbConnCopy, queryconfig.NewQueryConfig(false, nil))
+	success := queryengines.TestConnection(dbConnCopy.ToQEConnection(), qemodels.NewQueryConfig(false, nil))
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}

@@ -3,10 +3,9 @@ package queryengines
 import (
 	"errors"
 
-	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/mongoqueryengine"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/pgqueryengine"
-	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
 )
 
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine
@@ -17,7 +16,7 @@ func Init() {
 	mongoQueryEngine = mongoqueryengine.InitMongoQueryEngine()
 }
 
-func RunQuery(dbConn *models.DBConnection, query string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func RunQuery(dbConn *models.DBConnection, query string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.RunQuery(dbConn, query, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -26,7 +25,7 @@ func RunQuery(dbConn *models.DBConnection, query string, config *queryconfig.Que
 	return nil, errors.New("invalid db type")
 }
 
-func TestConnection(dbConn *models.DBConnection, config *queryconfig.QueryConfig) bool {
+func TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) bool {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.TestConnection(dbConn, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -35,7 +34,7 @@ func TestConnection(dbConn *models.DBConnection, config *queryconfig.QueryConfig
 	return false
 }
 
-func GetDataModels(dbConn *models.DBConnection, config *queryconfig.QueryConfig) ([]*DBDataModel, error) {
+func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*DBDataModel, error) {
 	var err error
 	var data []map[string]interface{}
 	if dbConn.Type == models.DBTYPE_POSTGRES {
@@ -56,7 +55,7 @@ func GetDataModels(dbConn *models.DBConnection, config *queryconfig.QueryConfig)
 	return dataModels, nil
 }
 
-func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name string, config *queryconfig.QueryConfig) (*DBDataModel, error) {
+func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name string, config *models.QueryConfig) (*DBDataModel, error) {
 	var dataModel DBDataModel
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		fieldsData, err := postgresQueryEngine.GetSingleDataModelFields(dbConn, schemaName, name, config)
@@ -119,7 +118,7 @@ func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name str
 	return &dataModel, nil
 }
 
-func AddSingleDataModelField(dbConn *models.DBConnection, schemaName string, name string, fieldName, datatype string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func AddSingleDataModelField(dbConn *models.DBConnection, schemaName string, name string, fieldName, datatype string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.AddSingleDataModelColumn(dbConn, schemaName, name, fieldName, datatype, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -128,7 +127,7 @@ func AddSingleDataModelField(dbConn *models.DBConnection, schemaName string, nam
 	return nil, errors.New("invalid db type")
 }
 
-func DeleteSingleDataModelField(dbConn *models.DBConnection, schemaName string, name string, fieldName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func DeleteSingleDataModelField(dbConn *models.DBConnection, schemaName string, name string, fieldName string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.DeleteSingleDataModelColumn(dbConn, schemaName, name, fieldName, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -137,7 +136,7 @@ func DeleteSingleDataModelField(dbConn *models.DBConnection, schemaName string, 
 	return nil, errors.New("invalid db type")
 }
 
-func GetData(dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func GetData(dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.GetData(dbConn, schemaName, name, limit, offset, fetchCount, filter, sort, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -148,7 +147,7 @@ func GetData(dbConn *models.DBConnection, schemaName string, name string, limit 
 
 // UpdateSingleData function to update single data row in the database
 // id is a unique row ids: ctid for postgres, _id for mongo
-func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name string, id string, columnName, value string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name string, id string, columnName, value string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.UpdateSingleData(dbConn, schemaName, name, id, columnName, value, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -157,7 +156,7 @@ func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name strin
 	return nil, errors.New("invalid db type")
 }
 
-func AddData(dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}, config *queryconfig.QueryConfig) (*AddDataResponse, error) {
+func AddData(dbConn *models.DBConnection, schemaName string, name string, data map[string]interface{}, config *models.QueryConfig) (*AddDataResponse, error) {
 	var result map[string]interface{}
 	var err error
 	if dbConn.Type == models.DBTYPE_POSTGRES {
@@ -178,7 +177,7 @@ func AddData(dbConn *models.DBConnection, schemaName string, name string, data m
 
 // DeleteData function to delete multiple rows in the database
 // ids is a list of unique row ids: ctid for postgres, _id for mongo
-func DeleteData(dbConn *models.DBConnection, schemaName string, name string, ids []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func DeleteData(dbConn *models.DBConnection, schemaName string, name string, ids []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.DeleteData(dbConn, schemaName, name, ids, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -188,7 +187,7 @@ func DeleteData(dbConn *models.DBConnection, schemaName string, name string, ids
 	}
 }
 
-func AddSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, indexName string, fieldNames []string, isUnique bool, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func AddSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, indexName string, fieldNames []string, isUnique bool, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.AddSingleDataModelIndex(dbConn, schemaName, name, indexName, fieldNames, isUnique, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -198,7 +197,7 @@ func AddSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, inde
 	}
 }
 
-func DeleteSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, indexName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func DeleteSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, indexName string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.DeleteSingleDataModelIndex(dbConn, indexName, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
