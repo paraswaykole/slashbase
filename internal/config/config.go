@@ -19,7 +19,7 @@ func Init(buildName string) {
 }
 
 func IsLive() bool {
-	return config.BuildName == BUILD_PRODUCTION || config.BuildName == BUILD_DOCKER_PROD
+	return config.BuildName == BUILD_PRODUCTION
 }
 
 func GetConfig() *AppConfig {

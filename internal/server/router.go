@@ -66,6 +66,11 @@ func NewRouter() *gin.Engine {
 			settingGroup.POST("/single", settingHandlers.UpdateSingleSetting)
 		}
 	}
+	if config.IsLive() {
+		router.NoRoute(func(c *gin.Context) {
+			c.Redirect(http.StatusTemporaryRedirect, "https://app.slashbase.com")
+		})
+	}
 	return router
 
 }
