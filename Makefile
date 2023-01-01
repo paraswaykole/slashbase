@@ -13,7 +13,8 @@ build:
 
 # THIS IS FOR BUILDING BIN FOR WINDOWS FROM MAC
 
-# build-win: $(BINWIN)
 
-# $(BINWIN):
-# 	env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc" go build --o $(BINWIN) -trimpath -ldflags="-s -w -X 'main.build=production' -X 'main.version=$(VERSION)'"
+.PHONY: build-win
+
+build-win:
+	env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc" go build --o $(BINWIN) -trimpath -ldflags="-s -w -X 'main.build=production' -X 'main.version=$(VERSION)'"
