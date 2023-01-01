@@ -53,9 +53,7 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 
 # Installation
 
-The app should be installed on your desktop/laptop and should used as a part of your local development enviroment.
-
-Follow the steps below to download & start the app:
+The app should be installed on your desktop/laptop and should used as a part of your local development enviroment. Follow the steps below to download & start the app:
 
 ### Mac OS and Linux
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
