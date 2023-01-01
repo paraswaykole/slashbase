@@ -1,4 +1,3 @@
-# Try to get the semver from 1) git 2) the VERSION file 3) fallback.
 VERSION := $(or $(shell git describe --tags --abbrev=0 2> /dev/null),"v0.0.0")
 
 GOPATH ?= $(HOME)/go
