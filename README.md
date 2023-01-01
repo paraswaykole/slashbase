@@ -22,9 +22,6 @@
   <a href="https://github.com/slashbaseide/slashbase/releases">
     <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total?color=blue&label=binary%20downloads" alt="Binary downloads" >
   </a>
-  <a href="https://hub.docker.com/r/slashbaseide/slashbase">
-    <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker pulls">
-  </a>
   <a href="https://discord.gg/U6fXgm3FAX">
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
   </a>
@@ -57,19 +54,6 @@ It's written in Golang and Nextjs React Framework and runs as a single binary.
 # Installation
 
 The app should be installed on your desktop/laptop and should used as a part of your local development enviroment.
-
-## Docker
-
-Run the following commands on terminal to start the app inside docker container:
-
-```shell
-docker pull slashbaseide/slashbase
-docker run -p 22022:22022 slashbaseide/slashbase
-```
-
-The app is running at port 22022. Visit https://app.slashbase.com from the browser.
-
-## Binary
 
 Follow the steps below to download & start the app:
 
