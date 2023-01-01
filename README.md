@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
   </a>
   <a href="https://github.com/slashbaseide/slashbase/releases">
-    <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total?color=blue&label=binary%20downloads" alt="Downloads" >
+    <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total?color=blue&label=Downloads" alt="Downloads" >
   </a>
   <a href="https://discord.gg/U6fXgm3FAX">
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
