@@ -8,7 +8,6 @@ import (
 
 	"github.com/alecthomas/chroma/quick"
 	"github.com/gohxs/readline"
-	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/models"
 	"github.com/spf13/cobra"
 )
@@ -62,9 +61,6 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	if config.GetConfig().BuildName == config.BUILD_DOCKER_PROD {
-		return
-	}
 	fmt.Println("Type 'help' for more info on cli.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
