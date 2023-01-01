@@ -13,11 +13,11 @@ import (
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
-	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 )
 
 var cliApp struct {
-	CurrentDB *models.DBConnection
+	CurrentDB *qemodels.DBConnection
 }
 
 func handleCmd(cmdText string) {
@@ -58,13 +58,14 @@ func switchDB(cmdText string) {
 		fmt.Printf("no db found by name: '%s'\n", dbname)
 		return
 	}
-	success := queryengines.TestConnection(dbConn, getQueryConfigs(dbConn))
+	qeDBConn := dbConn.ToQEConnection()
+	success := queryengines.TestConnection(qeDBConn, getQueryConfigs(qeDBConn))
 	if !success {
 		fmt.Printf("cannot connect to db: '%s'\n", dbname)
 		return
 	}
 
-	cliApp.CurrentDB = dbConn
+	cliApp.CurrentDB = qeDBConn
 	fmt.Printf("connected to: '%s'\n", dbname)
 }
 
@@ -78,20 +79,20 @@ func runQuery(queryCmd string) {
 		fmt.Printf("error: '%s'\n", err.Error())
 		return
 	}
-	if cliApp.CurrentDB.Type == models.DBTYPE_POSTGRES {
+	if cliApp.CurrentDB.Type == qemodels.DBTYPE_POSTGRES {
 		postgresResult(result)
 	} else {
 		mongoResult(result)
 	}
 }
 
-func getQueryConfigs(dbConn *models.DBConnection) *queryconfig.QueryConfig {
+func getQueryConfigs(dbConn *qemodels.DBConnection) *qemodels.QueryConfig {
 	createLog := func(query string) {
 		queryLog := models.NewQueryLog(dbConn.ID, query)
 		go dao.DBQueryLog.CreateDBQueryLog(queryLog)
 	}
 	readOnly := false
-	return queryconfig.NewQueryConfig(readOnly, createLog)
+	return qemodels.NewQueryConfig(readOnly, createLog)
 }
 
 func postgresResult(data map[string]interface{}) {

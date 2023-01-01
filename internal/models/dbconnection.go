@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/slashbaseide/slashbase/internal/db"
 	"github.com/slashbaseide/slashbase/internal/utils"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/sbsql"
 )
 
@@ -33,28 +34,15 @@ type DBConnection struct {
 	Project Project `gorm:"foreignkey:ProjectID"`
 }
 
-const (
-	DBTYPE_POSTGRES = "POSTGRES"
-	DBTYPE_MONGO    = "MONGO"
-
-	DBUSESSH_NONE        = "NONE"
-	DBUSESSH_PASSWORD    = "PASSWORD"
-	DBUSESSH_KEYFILE     = "KEYFILE"
-	DBUSESSH_PASSKEYFILE = "PASSKEYFILE"
-
-	DBLOGINTYPE_ROOT = "USE_ROOT"
-	// DBLOGINTYPE_ROLE_ACCOUNTS = "ROLE_ACCOUNTS"
-)
-
 func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
 
-	if !utils.ContainsString([]string{DBUSESSH_NONE, DBUSESSH_PASSWORD, DBUSESSH_KEYFILE, DBUSESSH_PASSKEYFILE}, useSSH) {
+	if !utils.ContainsString([]string{qemodels.DBUSESSH_NONE, qemodels.DBUSESSH_PASSWORD, qemodels.DBUSESSH_KEYFILE, qemodels.DBUSESSH_PASSKEYFILE}, useSSH) {
 		return nil, errors.New("useSSH is not correct")
 	}
 
-	if dbtype == DBTYPE_POSTGRES {
+	if dbtype == qemodels.DBTYPE_POSTGRES {
 		dbscheme = "postgres"
-	} else if dbtype == DBTYPE_MONGO {
+	} else if dbtype == qemodels.DBTYPE_MONGO {
 		if !utils.ContainsString([]string{"mongodb", "mongodb+srv"}, dbscheme) {
 			return nil, errors.New("invalid dbscheme")
 		}
@@ -77,7 +65,7 @@ func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbh
 		DBName:      sbsql.CryptedData(databaseName),
 		DBUser:      sbsql.CryptedData(dbuser),
 		DBPassword:  sbsql.CryptedData(dbpassword),
-		LoginType:   DBLOGINTYPE_ROOT,
+		LoginType:   qemodels.DBLOGINTYPE_ROOT,
 		UseSSH:      useSSH,
 		SSHHost:     sbsql.CryptedData(sshHost),
 		SSHUser:     sbsql.CryptedData(sshUser),
@@ -88,4 +76,24 @@ func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbh
 
 func (dbConn DBConnection) Save() error {
 	return db.GetDB().Save(&dbConn).Error
+}
+
+func (dbConn *DBConnection) ToQEConnection() *qemodels.DBConnection {
+	return &qemodels.DBConnection{
+		ID:          dbConn.ID,
+		Name:        dbConn.Name,
+		Type:        dbConn.Type,
+		DBScheme:    string(dbConn.DBScheme),
+		DBHost:      string(dbConn.DBHost),
+		DBPort:      string(dbConn.DBPort),
+		DBName:      string(dbConn.DBName),
+		DBUser:      string(dbConn.DBUser),
+		DBPassword:  string(dbConn.DBPassword),
+		LoginType:   string(dbConn.LoginType),
+		UseSSH:      string(dbConn.UseSSH),
+		SSHHost:     string(dbConn.SSHHost),
+		SSHUser:     string(dbConn.SSHUser),
+		SSHPassword: string(dbConn.SSHPassword),
+		SSHKeyFile:  string(dbConn.SSHKeyFile),
+	}
 }

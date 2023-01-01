@@ -8,21 +8,21 @@ import (
 
 	"github.com/alecthomas/chroma/quick"
 	"github.com/gohxs/readline"
-	"github.com/slashbaseide/slashbase/internal/models"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/spf13/cobra"
 )
 
 func display(input string) string {
 	if cliApp.CurrentDB == nil {
 		return input
-	} else if cliApp.CurrentDB.Type == models.DBTYPE_POSTGRES {
+	} else if cliApp.CurrentDB.Type == qemodels.DBTYPE_POSTGRES {
 		buf := bytes.NewBuffer([]byte{})
 		err := quick.Highlight(buf, input, "postgres", "terminal16", "monokai")
 		if err != nil {
 			return input
 		}
 		return buf.String()
-	} else if cliApp.CurrentDB.Type == models.DBTYPE_MONGO {
+	} else if cliApp.CurrentDB.Type == qemodels.DBTYPE_MONGO {
 		buf := bytes.NewBuffer([]byte{})
 		err := quick.Highlight(buf, input, "javascript", "terminal16", "monokai")
 		if err != nil {
