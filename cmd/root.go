@@ -8,24 +8,23 @@ import (
 
 	"github.com/alecthomas/chroma/quick"
 	"github.com/gohxs/readline"
-	"github.com/slashbaseide/slashbase/internal/config"
-	"github.com/slashbaseide/slashbase/internal/models"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/spf13/cobra"
 )
 
 func display(input string) string {
 	if cliApp.CurrentDB == nil {
 		return input
-	} else if cliApp.CurrentDB.Type == models.DBTYPE_POSTGRES {
+	} else if cliApp.CurrentDB.Type == qemodels.DBTYPE_POSTGRES {
 		buf := bytes.NewBuffer([]byte{})
-		err := quick.Highlight(buf, input, "postgres", "terminal16m", "monokai")
+		err := quick.Highlight(buf, input, "postgres", "terminal16", "monokai")
 		if err != nil {
 			return input
 		}
 		return buf.String()
-	} else if cliApp.CurrentDB.Type == models.DBTYPE_MONGO {
+	} else if cliApp.CurrentDB.Type == qemodels.DBTYPE_MONGO {
 		buf := bytes.NewBuffer([]byte{})
-		err := quick.Highlight(buf, input, "javascript", "terminal16m", "monokai")
+		err := quick.Highlight(buf, input, "javascript", "terminal16", "monokai")
 		if err != nil {
 			return input
 		}
@@ -62,9 +61,6 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	if config.GetConfig().BuildName == config.BUILD_DOCKER_PROD {
-		return
-	}
 	fmt.Println("Type 'help' for more info on cli.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

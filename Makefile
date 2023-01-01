@@ -1,37 +1,19 @@
-YARN ?= yarn
+VERSION := $(or $(shell git describe --tags --abbrev=0 2> /dev/null),"v0.0.0")
+
 GOPATH ?= $(HOME)/go
-STUFFBIN ?= $(GOPATH)/bin/stuffbin
 
 BIN := slashbase
+BINWIN := slashbase.exe
 STATIC := web
 
 .PHONY: build
-build: $(BIN)
 
-$(STUFFBIN):
-	go install github.com/knadh/stuffbin/...
+build:
+	env CGO_ENABLED=1 go build --o $(BIN) -trimpath -ldflags="-s -w -X 'main.build=production' -X 'main.version=$(VERSION)'"
 
-$(BIN):
-	env CGO_ENABLED=1 go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
+# THIS IS FOR BUILDING BIN FOR WINDOWS FROM MAC
 
-.PHONY: build-win
-build-win: $(BIN)
+# build-win: $(BINWIN)
 
-$(STUFFBIN):
-	go install github.com/knadh/stuffbin/...
-
-$(BIN):
-	env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc" go build --o ${BIN} -trimpath -ldflags="-X 'main.Build=production'"
-
-.PHONY: dist
-dist: $(STUFFBIN) build pack-bin
-
-
-.PHONY: build-web
-build-web: 
-	cd frontend; yarn build; mv out ../web 
-
-
-.PHONY: pack-bin
-pack-bin: $(BIN) $(STUFFBIN)
-	$(STUFFBIN) -a stuff -in ${BIN} -out ${BIN} ${STATIC}
+# $(BINWIN):
+# 	env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc" go build --o $(BINWIN) -trimpath -ldflags="-s -w -X 'main.build=production' -X 'main.version=$(VERSION)'"

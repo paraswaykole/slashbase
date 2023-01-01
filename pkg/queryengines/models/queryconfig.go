@@ -1,4 +1,4 @@
-package queryconfig
+package models
 
 type QueryConfig struct {
 	ReadOnly    bool

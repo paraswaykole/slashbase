@@ -8,10 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/slashbaseide/slashbase/internal/models"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/mongoqueryengine/mongoutils"
-	"github.com/slashbaseide/slashbase/pkg/queryengines/queryconfig"
-	"github.com/slashbaseide/slashbase/pkg/sbsql"
 	"github.com/slashbaseide/slashbase/pkg/sshtunnel"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,7 +26,7 @@ func InitMongoQueryEngine() *MongoQueryEngine {
 	}
 }
 
-func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string, config *models.QueryConfig) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
 		remoteHost := string(dbConn.DBHost)
@@ -39,8 +37,8 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			string(dbConn.SSHHost), remoteHost, port, string(dbConn.SSHUser),
 			string(dbConn.SSHPassword), string(dbConn.SSHKeyFile),
 		)
-		dbConn.DBHost = sbsql.CryptedData("localhost")
-		dbConn.DBPort = sbsql.CryptedData(fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port))
+		dbConn.DBHost = "localhost"
+		dbConn.DBPort = fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port)
 	}
 	port, _ = strconv.Atoi(string(dbConn.DBPort))
 	conn, err := mqe.getConnection(dbConn.ID, string(dbConn.DBScheme), string(dbConn.DBHost), uint16(port), string(dbConn.DBUser), string(dbConn.DBPassword))
@@ -359,7 +357,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 	return nil, errors.New("unknown query")
 }
 
-func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config *queryconfig.QueryConfig) bool {
+func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) bool {
 	query := "db.runCommand({ping: 1})"
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -369,7 +367,7 @@ func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config 
 	return test == 1
 }
 
-func (mqe *MongoQueryEngine) GetDataModels(dbConn *models.DBConnection, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]map[string]interface{}, error) {
 	query := "db.getCollectionNames()"
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -379,7 +377,7 @@ func (mqe *MongoQueryEngine) GetDataModels(dbConn *models.DBConnection, config *
 	return rdata, nil
 }
 
-func (mqe *MongoQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnection, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnection, name string, config *models.QueryConfig) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.aggregate([{$sample: {size: 1000}}])`, name)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -390,7 +388,7 @@ func (mqe *MongoQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnectio
 	return mongoutils.AnalyseFieldsSchema(returnedKeys, returnedData), err
 }
 
-func (mqe *MongoQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConnection, name string, config *queryconfig.QueryConfig) ([]map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConnection, name string, config *models.QueryConfig) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.getIndexes()`, name)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -404,7 +402,7 @@ func (mqe *MongoQueryEngine) AddSingleDataModelKey(dbConn *models.DBConnection, 
 	return nil, errors.New("not supported yet")
 }
 
-func (mqe *MongoQueryEngine) DeleteSingleDataModelKey(dbConn *models.DBConnection, schema, name, columnName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) DeleteSingleDataModelKey(dbConn *models.DBConnection, schema, name, columnName string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.updateMany({}, {$unset: {%s: ""}})`, name, columnName)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -413,7 +411,7 @@ func (mqe *MongoQueryEngine) DeleteSingleDataModelKey(dbConn *models.DBConnectio
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.find().limit(%d).skip(%d)`, name, limit, offset)
 	countQuery := fmt.Sprintf(`db.%s.count()`, name)
 	if len(filter) == 1 && strings.HasPrefix(filter[0], "{") && strings.HasSuffix(filter[0], "}") {
@@ -437,7 +435,7 @@ func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, l
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, underscoreID string, documentData string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, underscoreID string, documentData string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.replaceOne({_id: ObjectId("%s")}, %s )`, name, underscoreID, documentData)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
@@ -450,7 +448,7 @@ func (mqe *MongoQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name 
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) AddData(dbConn *models.DBConnection, schema string, name string, data map[string]interface{}, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) AddData(dbConn *models.DBConnection, schema string, name string, data map[string]interface{}, config *models.QueryConfig) (map[string]interface{}, error) {
 	dataStr, err := json.Marshal(data)
 	if err != nil {
 		return nil, err
@@ -467,7 +465,7 @@ func (mqe *MongoQueryEngine) AddData(dbConn *models.DBConnection, schema string,
 	return rData, err
 }
 
-func (mqe *MongoQueryEngine) DeleteData(dbConn *models.DBConnection, name string, underscoreIds []string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) DeleteData(dbConn *models.DBConnection, name string, underscoreIds []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	for i, id := range underscoreIds {
 		underscoreIds[i] = fmt.Sprintf(`ObjectId("%s")`, id)
 	}
@@ -477,7 +475,7 @@ func (mqe *MongoQueryEngine) DeleteData(dbConn *models.DBConnection, name string
 	return mqe.RunQuery(dbConn, query, config)
 }
 
-func (mqe *MongoQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, keyNames []string, isUnique bool, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, keyNames []string, isUnique bool, config *models.QueryConfig) (map[string]interface{}, error) {
 	for i := range keyNames {
 		keyNames[i] = keyNames[i] + ": 1"
 	}
@@ -489,7 +487,7 @@ func (mqe *MongoQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, config *queryconfig.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.dropIndex("%s")`, name, indexName)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {

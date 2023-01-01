@@ -10,10 +10,11 @@ import (
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
 )
 
-var Build = config.BUILD_DEVELOPMENT
+var build = config.BUILD_DEVELOPMENT
+var version = config.BUILD_DEVELOPMENT
 
 func main() {
-	config.Init(Build)
+	config.Init(build, version)
 	db.InitGormDB()
 	setup.SetupApp()
 	queryengines.Init()

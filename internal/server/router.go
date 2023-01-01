@@ -66,6 +66,11 @@ func NewRouter() *gin.Engine {
 			settingGroup.POST("/single", settingHandlers.UpdateSingleSetting)
 		}
 	}
+	if config.IsLive() {
+		router.NoRoute(func(c *gin.Context) {
+			c.Redirect(http.StatusTemporaryRedirect, "https://app.slashbase.com")
+		})
+	}
 	return router
 
 }
@@ -73,6 +78,6 @@ func NewRouter() *gin.Engine {
 func healthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"success": true,
-		"version": config.VERSION,
+		"version": config.GetConfig().Version,
 	})
 }

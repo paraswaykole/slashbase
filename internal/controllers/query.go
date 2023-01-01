@@ -8,6 +8,7 @@ import (
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 )
 
 type QueryController struct{}
@@ -19,7 +20,7 @@ func (QueryController) RunQuery(dbConnectionId, query string) (map[string]interf
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.RunQuery(dbConn, query, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.RunQuery(dbConn.ToQEConnection(), query, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -34,35 +35,35 @@ func (QueryController) GetData(dbConnId, schema, name string, fetchCount bool, l
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.GetData(dbConn, schema, name, limit, offset, fetchCount, filter, sort, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.GetData(dbConn.ToQEConnection(), schema, name, limit, offset, fetchCount, filter, sort, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
 	return data, nil
 }
 
-func (QueryController) GetDataModels(dbConnId string) ([]*queryengines.DBDataModel, error) {
+func (QueryController) GetDataModels(dbConnId string) ([]*qemodels.DBDataModel, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
 
-	dataModels, err := queryengines.GetDataModels(dbConn, getQueryConfigsForProjectMember(dbConn))
+	dataModels, err := queryengines.GetDataModels(dbConn.ToQEConnection(), getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
 	return dataModels, nil
 }
 
-func (QueryController) GetSingleDataModel(dbConnId string, schema, name string) (*queryengines.DBDataModel, error) {
+func (QueryController) GetSingleDataModel(dbConnId string, schema, name string) (*qemodels.DBDataModel, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.GetSingleDataModel(dbConn, schema, name, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.GetSingleDataModel(dbConn.ToQEConnection(), schema, name, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +77,7 @@ func (QueryController) AddSingleDataModelField(dbConnId string, schema, name str
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.AddSingleDataModelField(dbConn, schema, name, fieldName, dataType, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.AddSingleDataModelField(dbConn.ToQEConnection(), schema, name, fieldName, dataType, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +92,7 @@ func (QueryController) DeleteSingleDataModelField(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.DeleteSingleDataModelField(dbConn, schema, name, fieldName, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.DeleteSingleDataModelField(dbConn.ToQEConnection(), schema, name, fieldName, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -99,14 +100,14 @@ func (QueryController) DeleteSingleDataModelField(dbConnId string,
 }
 
 func (QueryController) AddData(dbConnId string,
-	schema, name string, data map[string]interface{}) (*queryengines.AddDataResponse, error) {
+	schema, name string, data map[string]interface{}) (*qemodels.AddDataResponse, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
 
-	resultData, err := queryengines.AddData(dbConn, schema, name, data, getQueryConfigsForProjectMember(dbConn))
+	resultData, err := queryengines.AddData(dbConn.ToQEConnection(), schema, name, data, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -121,7 +122,7 @@ func (QueryController) DeleteData(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.DeleteData(dbConn, schema, name, ids, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.DeleteData(dbConn.ToQEConnection(), schema, name, ids, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -136,7 +137,7 @@ func (QueryController) UpdateSingleData(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.UpdateSingleData(dbConn, schema, name, id, columnName, columnValue, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.UpdateSingleData(dbConn.ToQEConnection(), schema, name, id, columnName, columnValue, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -151,7 +152,7 @@ func (QueryController) AddSingleDataModelIndex(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.AddSingleDataModelIndex(dbConn, schema, name, indexName, fieldNames, isUnique, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.AddSingleDataModelIndex(dbConn.ToQEConnection(), schema, name, indexName, fieldNames, isUnique, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +167,7 @@ func (QueryController) DeleteSingleDataModelIndex(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.DeleteSingleDataModelIndex(dbConn, schema, name, indexName, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.DeleteSingleDataModelIndex(dbConn.ToQEConnection(), schema, name, indexName, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}
