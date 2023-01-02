@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/alecthomas/chroma/quick"
+	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/server"
 	"github.com/slashbaseide/slashbase/internal/setup"
 	"github.com/slashbaseide/slashbase/internal/tasks"
@@ -62,7 +63,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of Slashbase",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v1.0.0")
+		fmt.Println(config.GetConfig().Version)
 	},
 }
 
