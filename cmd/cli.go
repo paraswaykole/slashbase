@@ -3,10 +3,12 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 
+	"github.com/gohxs/readline"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/slashbaseide/slashbase/internal/config"
@@ -18,6 +20,28 @@ import (
 
 var cliApp struct {
 	CurrentDB *qemodels.DBConnection
+}
+
+func startCLI() {
+	term, err := readline.NewEx(&readline.Config{
+		Prompt: "slashbase > ",
+		Output: display,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	for {
+		line, err := term.Readline()
+		if err != nil {
+			log.Fatal(err)
+		}
+		handleCmd(line)
+		if cliApp.CurrentDB == nil {
+			term.SetPrompt("slashbase > ")
+		} else {
+			term.SetPrompt(fmt.Sprintf("%s > ", cliApp.CurrentDB.Name))
+		}
+	}
 }
 
 func handleCmd(cmdText string) {

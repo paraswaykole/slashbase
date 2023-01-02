@@ -3,14 +3,21 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/alecthomas/chroma/quick"
-	"github.com/gohxs/readline"
+	"github.com/slashbaseide/slashbase/internal/server"
+	"github.com/slashbaseide/slashbase/internal/setup"
+	"github.com/slashbaseide/slashbase/internal/tasks"
+	"github.com/slashbaseide/slashbase/pkg/queryengines"
 	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/spf13/cobra"
 )
+
+var longDescription = `Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. 
+Use Slashbase to connect to your database, browse data and schema, write, 
+run and save queries, create charts, right from your browser. 
+Connects to Slashbase IDE at https://app.slashbase.com`
 
 func display(input string) string {
 	if cliApp.CurrentDB == nil {
@@ -36,36 +43,31 @@ func display(input string) string {
 var rootCmd = &cobra.Command{
 	Use:   "slashbase",
 	Short: "Slashbase is a modern in-browser database IDE & CLI",
-	Long: `Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. 
-Use Slashbase to connect to your database, browse data and schema, write, 
-run and save queries, create charts, right from your browser. 
-Connects to Slashbase IDE at https://app.slashbase.com`,
+	Long:  longDescription,
+	CompletionOptions: cobra.CompletionOptions{
+		DisableDefaultCmd: true,
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Connect to Slashbase IDE at https://app.slashbase.com")
 		fmt.Println("Type 'help' for more info on cli.")
-		term, err := readline.NewEx(&readline.Config{
-			Prompt: "slashbase > ",
-			Output: display,
-		})
-		if err != nil {
-			log.Fatal(err)
-		}
-		for {
-			line, err := term.Readline()
-			if err != nil {
-				log.Fatal(err)
-			}
-			handleCmd(line)
-			if cliApp.CurrentDB == nil {
-				term.SetPrompt("slashbase > ")
-			} else {
-				term.SetPrompt(fmt.Sprintf("%s > ", cliApp.CurrentDB.Name))
-			}
-		}
+		setup.SetupApp()
+		queryengines.Init()
+		tasks.InitCron()
+		server.Init()
+		startCLI()
+	},
+}
+
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Print the version number of Slashbase",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("v1.0.0")
 	},
 }
 
 func Execute() {
+	rootCmd.AddCommand(versionCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
