@@ -35,8 +35,11 @@ func display(input string) string {
 
 var rootCmd = &cobra.Command{
 	Use:   "slashbase",
-	Short: "slashbase is a cli & an api server for quering databases",
-	Long:  `slashbase is a cli & an api server for quering databases`,
+	Short: "Slashbase is a CLI & an IDE server for quering databases",
+	Long: `Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. 
+Use Slashbase to connect to your database, browse data and schema, write, 
+run and save queries, create charts, right from your browser. 
+Connects to Slashbase IDE at https://app.slashbase.com`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Connect to Slashbase IDE at https://app.slashbase.com")
 		fmt.Println("Type 'help' for more info on cli.")
