@@ -64,14 +64,12 @@ brew install slashbaseide/brew/slashbase
 ### Download Binary
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `./slashbase` on terminal to start the app.
-3. The app is running at port 22022. Visit https://app.slashbase.com from the browser.
 
 ## Linux
 
 ### Download Binary
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `./slashbase` on terminal to start the app.
-3. The app is running at port 22022. Visit https://app.slashbase.com from the browser.
 
 ## Windows
 
@@ -85,7 +83,31 @@ scoop install slashbase # install slashbase
 ### Download Binary
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `slashbase` on cmd terminal to start the app.
-3. The app is running at port 22022. Visit https://app.slashbase.com from the browser.
+
+# Usage
+
+### Slashbase CLI
+
+Run slashbase:
+```
+slashbase
+```
+
+Check slashbase version:
+```
+slashbase version
+```
+
+View slashbase help:
+```
+slashbase help
+```
+
+### Slashbase IDE:
+To connect to Slashbase IDE:
+1. Make sure Slashbase is running
+2. Visit https://slashbase.com
+3. Click "Connect to local" button.
 
 # Documentation
 
