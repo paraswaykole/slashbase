@@ -54,17 +54,38 @@ Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows.
 
 The app should be installed on your desktop/laptop and should used as a part of your local development enviroment. Follow the steps below to download & start the app:
 
-### Mac OS and Linux
+## Mac OS
+
+### Using Homebrew
+```
+brew install slashbaseide/brew/slashbase
+```
+
+### Download Binary
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `./slashbase` on terminal to start the app.
+3. The app is running at port 22022. Visit https://app.slashbase.com from the browser.
 
-The app is running at port 22022. Visit https://app.slashbase.com from the browser.
+## Linux
 
-### Windows
+### Download Binary
+1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
+2. Run `./slashbase` on terminal to start the app.
+3. The app is running at port 22022. Visit https://app.slashbase.com from the browser.
+
+## Windows
+
+### Using Scoop
+```
+iwr -useb get.scoop.sh | iex # install scoop
+scoop bucket add kulfi-scoop https://github.com/Animesh-Ghosh/kulfi-scoop # repo
+scoop install slashbase # install slashbase
+```
+
+### Download Binary
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Run `slashbase` on cmd terminal to start the app.
-
-The app is running at port 22022. Visit https://app.slashbase.com from the browser.
+3. The app is running at port 22022. Visit https://app.slashbase.com from the browser.
 
 # Documentation
 
