@@ -86,7 +86,7 @@ scoop install slashbase # install slashbase
 
 # Usage
 
-### Slashbase CLI
+## Slashbase CLI
 
 Run slashbase:
 ```
@@ -103,7 +103,7 @@ View slashbase help:
 slashbase help
 ```
 
-### Slashbase IDE
+## Slashbase IDE
 To connect to Slashbase IDE:
 1. Make sure Slashbase is running
 2. Visit https://slashbase.com
