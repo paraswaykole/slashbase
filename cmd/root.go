@@ -35,7 +35,7 @@ func display(input string) string {
 
 var rootCmd = &cobra.Command{
 	Use:   "slashbase",
-	Short: "Slashbase is a CLI & an IDE server for quering databases",
+	Short: "Slashbase is a modern in-browser database IDE & CLI",
 	Long: `Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. 
 Use Slashbase to connect to your database, browse data and schema, write, 
 run and save queries, create charts, right from your browser. 
