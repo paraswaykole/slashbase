@@ -38,6 +38,7 @@ var rootCmd = &cobra.Command{
 	Short: "slashbase is a cli & an api server for quering databases",
 	Long:  `slashbase is a cli & an api server for quering databases`,
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("Type 'help' for more info on cli.")
 		term, err := readline.NewEx(&readline.Config{
 			Prompt: "slashbase > ",
 			Output: display,
@@ -61,7 +62,6 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	fmt.Println("Type 'help' for more info on cli.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
