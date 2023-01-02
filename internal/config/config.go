@@ -8,9 +8,9 @@ import (
 
 var config AppConfig
 
-func Init(buildName, version string) {
+func Init(exPath, buildName, version string) {
 	if buildName == BUILD_DEVELOPMENT {
-		err := godotenv.Load("development.env")
+		err := godotenv.Load(exPath + "/development.env")
 		if err != nil {
 			log.Fatal("Error loading development.env file")
 		}

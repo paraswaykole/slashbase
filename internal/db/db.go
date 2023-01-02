@@ -17,8 +17,8 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-func InitGormDB() {
-	db, err = gorm.Open(sqlite.Open(config.APP_DATABASE_FILE), &gorm.Config{
+func InitGormDB(executablePath string) {
+	db, err = gorm.Open(sqlite.Open(executablePath+"/"+config.APP_DATABASE_FILE), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
