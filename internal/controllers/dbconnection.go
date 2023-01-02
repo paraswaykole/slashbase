@@ -33,8 +33,7 @@ func (DBConnectionController) CreateDBConnection(
 		return nil, err
 	}
 
-	dbConnCopy := *dbConn
-	success := queryengines.TestConnection(dbConnCopy.ToQEConnection(), qemodels.NewQueryConfig(false, nil))
+	success := queryengines.TestConnection(dbConn.ToQEConnection(), qemodels.NewQueryConfig(false, nil))
 	if !success {
 		return nil, errors.New("failed to connect to database")
 	}
