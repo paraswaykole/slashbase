@@ -75,10 +75,15 @@ brew install slashbase
 ## Windows
 
 ### Using Scoop
+
 ```
-iwr -useb get.scoop.sh | iex # install scoop
-scoop bucket add kulfi-scoop https://github.com/Animesh-Ghosh/kulfi-scoop # repo
-scoop install slashbase # install slashbase
+scoop bucket add kulfi-scoop https://github.com/Animesh-Ghosh/kulfi-scoop
+scoop install slashbase
+```
+
+If you don't have scoop installed on windows:
+```
+iwr -useb get.scoop.sh | iex
 ```
 
 ### Download Binary
