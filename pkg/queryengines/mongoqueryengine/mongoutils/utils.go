@@ -157,7 +157,7 @@ func GetMongoQueryType(query string) *MongoQuery {
 		args := parseTokenArgs(argsStrList)
 		if funcName == "find" {
 			result.QueryType = QUERY_FIND
-			if len(funcName) > 3 {
+			if len(tokenNames) > 3 {
 				for i, fName := range tokenNames[3:] {
 					fArg := arguments[3+i]
 					if fName == "limit" {
@@ -196,6 +196,18 @@ func GetMongoQueryType(query string) *MongoQuery {
 			result.QueryType = QUERY_REPLACEONE
 		} else if funcName == "count" {
 			result.QueryType = QUERY_COUNT
+			if len(args) > 1 {
+				options := args[1].(bson.D)
+				for key, value := range options.Map() {
+					if key == "limit" {
+						val := int64(value.(int))
+						result.Limit = &val
+					} else if key == "skip" {
+						val := int64(value.(int))
+						result.Skip = &val
+					}
+				}
+			}
 		} else if funcName == "aggregate" {
 			result.QueryType = QUERY_AGGREGATE
 		} else if funcName == "getIndexes" {
