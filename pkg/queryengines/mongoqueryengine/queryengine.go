@@ -258,8 +258,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			"data": data,
 		}, nil
 	} else if queryType.QueryType == mongoutils.QUERY_COUNT {
+		opts := &options.CountOptions{Limit: queryType.Limit, Skip: queryType.Skip}
 		count, err := db.Collection(queryType.CollectionName).
-			CountDocuments(context.Background(), queryType.Args[0])
+			CountDocuments(context.Background(), queryType.Args[0], opts)
 		if err != nil {
 			return nil, err
 		}
