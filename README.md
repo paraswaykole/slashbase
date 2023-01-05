@@ -109,8 +109,7 @@ slashbase help
 ## Slashbase IDE
 To connect to Slashbase IDE:
 1. Make sure Slashbase is running
-2. Visit https://app.slashbase.com
-3. Click "Connect to local" button.
+2. Visit http://localhost:22022
 
 # Documentation
 
