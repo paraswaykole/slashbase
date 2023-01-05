@@ -1,12 +1,15 @@
 package server
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/handlers"
+	"github.com/slashbaseide/slashbase/internal/utils"
 )
 
 // NewRouter return a gin router for server
@@ -67,9 +70,7 @@ func NewRouter() *gin.Engine {
 		}
 	}
 	if config.IsLive() {
-		router.NoRoute(func(c *gin.Context) {
-			c.Redirect(http.StatusTemporaryRedirect, "https://app.slashbase.com")
-		})
+		router.NoRoute(serveApp)
 	}
 	return router
 
@@ -80,4 +81,25 @@ func healthCheck(c *gin.Context) {
 		"success": true,
 		"version": config.GetConfig().Version,
 	})
+}
+
+func serveApp(c *gin.Context) {
+	if c.Request.URL.Path == "/" {
+		c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("http://localhost:%s/local", config.GetServerPort()))
+		return
+	}
+	if c.Request.Method == "GET" && !utils.ContainsString([]string{"/login", "/verify"}, c.Request.URL.Path) {
+		if resp, err := http.Get("https://app.slashbase.com" + c.Request.URL.Path); err == nil {
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				c.String(http.StatusBadGateway, "bad gateway")
+				return
+			}
+			contentType := resp.Header.Get("Content-Type")
+			c.Data(http.StatusOK, contentType, body)
+			return
+		}
+		c.String(http.StatusNotFound, "please check your internet connection to load the web IDE.")
+		return
+	}
 }

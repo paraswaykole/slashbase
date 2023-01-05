@@ -12,7 +12,7 @@ func Init() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	if config.IsLive() {
-		osx.OpenDefault("https://app.slashbase.com/local")
+		osx.OpenDefault("http://localhost:" + config.GetServerPort())
 	}
 	router := NewRouter()
 	go router.Run(":" + config.GetServerPort())
