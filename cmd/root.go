@@ -49,7 +49,7 @@ var rootCmd = &cobra.Command{
 		DisableDefaultCmd: true,
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Access Slashbase IDE at http://localhost" + config.GetServerPort())
+		fmt.Println("Access Slashbase IDE at http://localhost:" + config.GetServerPort())
 		fmt.Println("Type 'help' for more info on cli.")
 		setup.SetupApp()
 		queryengines.Init()
