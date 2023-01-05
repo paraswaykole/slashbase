@@ -32,6 +32,7 @@ Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows.
 
 - **🧑‍💻 Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
 - **🪄 Modern Interface**: With a modern interface, it is easy to use.
+- **🪶 Lightweight**: Doesn't take much space on your system.
 - **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
 - **💾 Save Queries**: Write and Save queries to re-run in future.
 - **📊 Create Charts**: Create charts from your query results.
