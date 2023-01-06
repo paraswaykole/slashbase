@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -38,7 +39,7 @@ func GetAppDatabaseFilePath() string {
 	} else if runtime.GOOS == "linux" {
 		filePath = filepath.Join("/usr/local", app_name, app_db_file)
 	} else {
-		filePath = app_db_file
+		panic(errors.New("not implemented"))
 	}
 	err := os.MkdirAll(filepath.Dir(filePath), 0700)
 	if err != nil {
