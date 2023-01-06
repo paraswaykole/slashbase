@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -44,6 +45,18 @@ func GetAppDatabaseFilePath() string {
 	err := os.MkdirAll(filepath.Dir(filePath), 0700)
 	if err != nil {
 		panic(err)
+	}
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath, _ := filepath.EvalSymlinks(ex)
+	exPath = filepath.Dir(exPath)
+	exPath = exPath + "/" + app_db_file
+	if _, err := os.Stat(exPath); !os.IsNotExist(err) {
+		if err := os.Rename(exPath, filePath); err != nil {
+			fmt.Println(err)
+		}
 	}
 	return filePath
 }
