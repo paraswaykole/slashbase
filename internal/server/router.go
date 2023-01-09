@@ -67,9 +67,7 @@ func NewRouter() *gin.Engine {
 			settingGroup.POST("/single", settingHandlers.UpdateSingleSetting)
 		}
 	}
-	if config.IsLive() {
-		router.NoRoute(serveApp)
-	}
+	router.NoRoute(serveApp)
 	return router
 
 }
@@ -82,8 +80,12 @@ func healthCheck(c *gin.Context) {
 }
 
 func serveApp(c *gin.Context) {
+	appUrl := "http://localhost:3000"
+	if config.IsLive() {
+		appUrl = "https://local.slashbase.com"
+	}
 	if c.Request.Method == "GET" {
-		if resp, err := http.Get("https://local.slashbase.com" + c.Request.URL.Path); err == nil {
+		if resp, err := http.Get(appUrl + c.Request.URL.Path); err == nil {
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				c.String(http.StatusBadGateway, "bad gateway")
