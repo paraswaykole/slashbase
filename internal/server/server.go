@@ -1,6 +1,8 @@
 package server
 
 import (
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/icza/gox/osx"
 	"github.com/slashbaseide/slashbase/internal/config"
@@ -12,7 +14,10 @@ func Init() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	if config.IsLive() {
-		osx.OpenDefault("http://localhost:" + config.GetConfig().Port)
+		go func() {
+			time.Sleep(500 * time.Millisecond)
+			osx.OpenDefault("http://localhost:" + config.GetConfig().Port)
+		}()
 	}
 	router := NewRouter()
 	go router.Run(":" + config.GetConfig().Port)
