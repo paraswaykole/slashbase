@@ -44,7 +44,7 @@ export const getProjects = createAsyncThunk(
 export const createNewProject = createAsyncThunk(
   'projects/createNewProject',
   async (payload: { projectName: string }, { }: any) => {
-    if (payload.projectName.trim.length === 0) {
+    if (payload.projectName.trim().length === 0) {
       toast.error("Project Name cannot be empty!");
       return {
         success: false,
