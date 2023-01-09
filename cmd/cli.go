@@ -79,6 +79,7 @@ func switchDB(cmdText string) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByName(dbname)
 	if err != nil {
+		fmt.Println("err: ", err.Error())
 		fmt.Printf("no db found by name: '%s'\n", dbname)
 		return
 	}
