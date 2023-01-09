@@ -122,6 +122,21 @@ Detailed documentation is available on [slashbase guide](https://slashbase.bip.w
 
 Join our community on [discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
 
+# Roadmap
+
+### Database Support
+- ✅ PostgreSQL Query Engine
+- ✅ MongoDB Query Engine
+- ☑️ MySQL Query Engine
+- ☑️ SQLite Query Engine
+- ☑️ Redis Query Engine
+
+### Features
+- ✅ Query Cheatsheets
+- ☑️ Add/delete Data Models (Table/collections)
+- ☑️ Manage Views
+- ☑️ Export/import data
+
 
 # Contributing
 
