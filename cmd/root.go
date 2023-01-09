@@ -18,7 +18,7 @@ import (
 var longDescription = `Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. 
 Use Slashbase to connect to your database, browse data and schema, write, 
 run and save queries, create charts, right from your browser. 
-Connects to Slashbase IDE at https://app.slashbase.com`
+Connects to Slashbase IDE at https://local.slashbase.com`
 
 func display(input string) string {
 	if cliApp.CurrentDB == nil {
@@ -49,7 +49,7 @@ var rootCmd = &cobra.Command{
 		DisableDefaultCmd: true,
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Access Slashbase IDE at http://localhost:" + config.GetServerPort())
+		fmt.Println("Access Slashbase IDE at http://localhost:" + config.GetConfig().Port)
 		fmt.Println("Type 'help' for more info on cli.")
 		setup.SetupApp()
 		queryengines.Init()

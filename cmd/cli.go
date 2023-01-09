@@ -68,7 +68,7 @@ func handleCmd(cmdText string) {
 }
 
 func printHelp() {
-	fmt.Println("To add a new database use the IDE interface running at https://localhost:" + config.GetServerPort())
+	fmt.Println("To add a new database use the IDE interface running at https://localhost:" + config.GetConfig().Port)
 	fmt.Println("To connect to existing db type '\\base db-nick-name'.")
 	fmt.Println("Once connected to db, type your query and press enter to get query results.")
 	fmt.Println("To end the program, type 'exit'.")

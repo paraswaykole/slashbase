@@ -12,8 +12,8 @@ func Init() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	if config.IsLive() {
-		osx.OpenDefault("http://localhost:" + config.GetServerPort())
+		osx.OpenDefault("http://localhost:" + config.GetConfig().Port)
 	}
 	router := NewRouter()
-	go router.Run(":" + config.GetServerPort())
+	go router.Run(":" + config.GetConfig().Port)
 }
