@@ -1,8 +1,7 @@
 <p align="center">
   <a href="https://slashbase.com" alt="Slashbase">
-    <img src="https://slashbase.com/github-logo.png" alt="Slashbase" width="220">
+    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/banner.png" alt="Slashbase" width="100%">
   </a>
-  <p align="center">A modern in-browser database IDE & CLI for your dev & data workflows.</p>
 </p>
 <p align="center">
   <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
