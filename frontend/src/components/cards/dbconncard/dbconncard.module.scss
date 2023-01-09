@@ -1,0 +1,15 @@
+.cardContainer {
+  margin: 15px 0px;
+  max-width: 600px;
+}
+
+.cardContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardLink {
+  color: inherit;
+  text-decoration: none;
+}
