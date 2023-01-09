@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
@@ -10,11 +11,16 @@ import (
 type ProjectController struct{}
 
 func (ProjectController) CreateProject(projectName string) (*models.Project, error) {
+	var project *models.Project
 
-	project := models.NewProject(projectName)
-	err := dao.Project.CreateProject(project)
-	if err != nil {
-		return nil, errors.New("there was some problem")
+	if len(strings.TrimSpace(projectName)) > 0 {
+		project = models.NewProject(projectName)
+		err := dao.Project.CreateProject(project)
+		if err != nil {
+			return nil, errors.New("there was some problem")
+		}
+	} else {
+		return nil, errors.New("Project name cannot be empty.")
 	}
 
 	return project, nil
