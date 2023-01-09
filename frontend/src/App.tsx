@@ -39,11 +39,13 @@ function App() {
   }, [dispatch])
 
   useEffect(() => {
-    if (isConnected) {
-      dispatch(getProjects())
-      dispatch(getAllDBConnections({}))
-    }
-    dispatch(getConfig())
+    (async () => {
+      if (isConnected) {
+        await dispatch(getProjects())
+        await dispatch(getAllDBConnections({}))
+      }
+      dispatch(getConfig())
+    })()
   }, [dispatch, isConnected])
 
   useEffect(() => {
