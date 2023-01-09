@@ -11,8 +11,6 @@ STATIC := web
 build:
 	env go build --o $(BIN) -trimpath -ldflags="-s -w -X 'main.build=production' -X 'main.version=$(VERSION)'"
 
-# THIS IS FOR BUILDING BIN FOR WINDOWS FROM MAC
-
 .PHONY: build-win
 
 build-win:
