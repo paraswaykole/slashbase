@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -9,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/handlers"
-	"github.com/slashbaseide/slashbase/internal/utils"
 )
 
 // NewRouter return a gin router for server
@@ -84,12 +82,8 @@ func healthCheck(c *gin.Context) {
 }
 
 func serveApp(c *gin.Context) {
-	if c.Request.URL.Path == "/" {
-		c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("http://localhost:%s/local", config.GetServerPort()))
-		return
-	}
-	if c.Request.Method == "GET" && !utils.ContainsString([]string{"/login", "/verify"}, c.Request.URL.Path) {
-		if resp, err := http.Get("https://app.slashbase.com" + c.Request.URL.Path); err == nil {
+	if c.Request.Method == "GET" {
+		if resp, err := http.Get("https://local.slashbase.com" + c.Request.URL.Path); err == nil {
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				c.String(http.StatusBadGateway, "bad gateway")
