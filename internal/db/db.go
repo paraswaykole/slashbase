@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/glebarez/sqlite"
 	"github.com/slashbaseide/slashbase/internal/config"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )

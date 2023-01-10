@@ -1,17 +1,7 @@
 <p align="center">
   <a href="https://slashbase.com" alt="Slashbase">
-    <img src="https://slashbase.com/github-logo.png" alt="Slashbase" width="220">
+    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/banner.png" alt="Slashbase" width="100%">
   </a>
-  <p align="center">A modern in-browser database IDE & CLI for your dev & data workflows.</p>
-</p>
-<p align="center">
-  <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
-  <br/><br/>
-  <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
-  ·
-  <a href="https://slashbase.bip.wiki">Explore the docs</a>
-  ·
-  <a href="https://slashbase.com/updates">Read Updates</a>
 </p>
 <p align="center">
   <img alt="GitHub" src="https://img.shields.io/github/license/slashbaseide/slashbase">
@@ -23,6 +13,16 @@
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
   </a>
 </p>
+<p align="center">
+  <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
+  ·
+  <a href="https://slashbase.bip.wiki">Explore the docs</a>
+  ·
+  <a href="https://slashbase.com/updates">Read Updates</a>
+  <br/><br/>
+  <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
+</p>
+
 
 # About
 
@@ -121,6 +121,21 @@ Detailed documentation is available on [slashbase guide](https://slashbase.bip.w
 # Community
 
 Join our community on [discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
+
+# Roadmap
+
+### Database Support
+- ✅ PostgreSQL Query Engine
+- ✅ MongoDB Query Engine
+- ☑️ MySQL Query Engine
+- ☑️ SQLite Query Engine
+- ☑️ Redis Query Engine
+
+### Features
+- ✅ Query Cheatsheets
+- ☑️ Add/delete Data Models (Table/collections)
+- ☑️ Manage Views
+- ☑️ Export/import data
 
 
 # Contributing
