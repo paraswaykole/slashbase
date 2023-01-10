@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"reflect"
 	"strconv"
+
+	"github.com/xwb1989/sqlparser"
 )
 
 func MySqlRowsToJson(rows *sql.Rows) ([]string, []map[string]interface{}) {
@@ -95,6 +97,18 @@ const (
 )
 
 func GetMySQLQueryType(query string) (queryType int, isReturningRows bool) {
-	// TODO: to be implmented
-	return QUERY_READ, true
+	stmt, err := sqlparser.Parse(query)
+	if err != nil {
+		return QUERY_UNKOWN, false
+	}
+	switch stmt.(type) {
+	case *sqlparser.Select:
+		return QUERY_READ, true
+	case *sqlparser.Insert:
+	case *sqlparser.Update:
+		return QUERY_WRITE, false
+	case *sqlparser.DDL:
+		return QUERY_MODIFY_SCHEMA, false
+	}
+	return QUERY_UNKOWN, false
 }

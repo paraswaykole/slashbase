@@ -7,7 +7,6 @@ import (
 
 	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/mysqlqueryengine/mysqlutils"
-	"github.com/slashbaseide/slashbase/pkg/queryengines/pgqueryengine/pgxutils"
 	"github.com/slashbaseide/slashbase/pkg/sshtunnel"
 )
 
@@ -43,10 +42,11 @@ func (mqe *MysqlQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 
 	queryType, isReturningRows := mysqlutils.GetMySQLQueryType(query)
 
+	if queryType != mysqlutils.QUERY_READ && config.ReadOnly {
+		return nil, errors.New("not allowed run this query")
+	}
+
 	if isReturningRows {
-		if queryType != pgxutils.QUERY_READ && config.ReadOnly {
-			return nil, errors.New("not allowed run this query")
-		}
 		rows, err := conn.Query(query)
 		if err != nil {
 			return nil, err

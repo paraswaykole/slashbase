@@ -89,6 +89,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/tdewolff/parse/v2 v2.6.4
 	github.com/ugorji/go/codec v1.2.6 // indirect
+	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
