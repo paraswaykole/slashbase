@@ -112,3 +112,30 @@ func GetMySQLQueryType(query string) (queryType int, isReturningRows bool) {
 	}
 	return QUERY_UNKOWN, false
 }
+
+func QueryToDataModel(fieldQueryData []map[string]interface{}, constraintsQueryData []map[string]interface{}) []map[string]interface{} {
+	fields := []map[string]interface{}{}
+
+	for _, fieldData := range fieldQueryData {
+		field := map[string]interface{}{
+			"name":       fieldData["1"].(string),
+			"type":       fieldData["2"].(string),
+			"isNullable": fieldData["3"].(string) == "YES",
+			"isPrimary":  false,
+		}
+		tags := []string{}
+		// TODO: use constraintsQueryData
+		if fieldData["4"] != nil {
+			coldef := fieldData["4"].(string)
+			tags = append(tags, "Default: "+coldef)
+		}
+		if fieldData["5"] != nil {
+			maxLen := fieldData["5"].(int64)
+			tags = append(tags, "Max Length: "+strconv.Itoa(int(maxLen)))
+		}
+		field["tags"] = tags
+		fields = append(fields, field)
+	}
+
+	return fields
+}
