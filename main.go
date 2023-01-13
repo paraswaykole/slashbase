@@ -12,5 +12,8 @@ var version = config.BUILD_DEVELOPMENT
 func main() {
 	config.Init(build, version)
 	db.InitGormDB()
-	cmd.Execute()
+
+	if config.GetConfig().Cli {
+		cmd.Execute()
+	}
 }
