@@ -58,8 +58,7 @@ The app should be installed on your desktop/laptop and should used as a part of 
 
 ### Using Homebrew
 ```
-brew tap slashbaseide/brew
-brew install slashbase
+brew install slashbaseide/brew/slashbase
 ```
 
 ### Download Binary
