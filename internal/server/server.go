@@ -23,10 +23,8 @@ func Init() {
 		}()
 	}
 	router := NewRouter()
-	go func() {
-		err := router.Run(":" + config.GetConfig().Port)
-		if err != nil {
-			return
-		}
-	}()
+	err := router.Run(":" + config.GetConfig().Port)
+	if err != nil {
+		return
+	}
 }
