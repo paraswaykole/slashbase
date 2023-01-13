@@ -45,7 +45,7 @@ func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*
 	if err != nil {
 		return nil, err
 	}
-	dataModels := []*models.DBDataModel{}
+	var dataModels []*models.DBDataModel
 	for _, table := range data {
 		view := models.BuildDBDataModel(dbConn, table)
 		if view != nil {
@@ -66,14 +66,14 @@ func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name str
 		if err != nil {
 			return nil, err
 		}
-		allFields := []models.DBDataModelField{}
+		var allFields []models.DBDataModelField
 		for _, field := range fieldsData {
 			fieldView := models.BuildDBDataModelField(dbConn, field)
 			if fieldView != nil {
 				allFields = append(allFields, *fieldView)
 			}
 		}
-		allIndexes := []models.DBDataModelIndex{}
+		var allIndexes []models.DBDataModelIndex
 		for _, index := range indexesData {
 			indexView := models.BuildDBDataModelIndex(dbConn, index)
 			if indexView != nil {
@@ -95,14 +95,14 @@ func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name str
 		if err != nil {
 			return nil, err
 		}
-		allFields := []models.DBDataModelField{}
+		var allFields []models.DBDataModelField
 		for _, field := range fieldsData {
 			fieldView := models.BuildDBDataModelField(dbConn, field)
 			if fieldView != nil {
 				allFields = append(allFields, *fieldView)
 			}
 		}
-		allIndexes := []models.DBDataModelIndex{}
+		var allIndexes []models.DBDataModelIndex
 		for _, index := range indexesData {
 			indexView := models.BuildDBDataModelIndex(dbConn, index)
 			if indexView != nil {

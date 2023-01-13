@@ -28,7 +28,7 @@ func MongoCursorToJson(cur *mongo.Cursor) ([]string, []map[string]interface{}) {
 		rowDataMap := bsonDtoJsonMap(&rowData, &keysMap)
 		resultData = append(resultData, rowDataMap)
 	}
-	keysList := []string{}
+	var keysList []string
 	for key := range keysMap {
 		keysList = append(keysList, key)
 	}
@@ -43,7 +43,7 @@ func MongoSingleResultToJson(result *mongo.SingleResult) ([]string, []map[string
 		return nil, nil
 	}
 	rowDataMap := bsonDtoJsonMap(&rowData, &keysMap)
-	keysList := []string{}
+	var keysList []string
 	for key := range keysMap {
 		keysList = append(keysList, key)
 	}
@@ -127,7 +127,7 @@ func IsQueryTypeRead(query *MongoQuery) bool {
 }
 
 func GetMongoQueryType(query string) *MongoQuery {
-	var result MongoQuery = MongoQuery{
+	var result = MongoQuery{
 		QueryType: QUERY_UNKOWN,
 	}
 	tokenNames, arguments, _ := JsToTokensLexer(query)
@@ -231,7 +231,7 @@ func parseTokenArgs(argsData []string) []interface{} {
 	if len(argsData) == 1 && argsData[0] == "" {
 		return []interface{}{bson.D{}}
 	}
-	finalArgs := []interface{}{}
+	var finalArgs []interface{}
 	for _, nArg := range argsData {
 		arg := strings.TrimSpace(nArg)
 		if strings.HasPrefix(arg, "{") && strings.HasSuffix(arg, "}") {
@@ -270,9 +270,9 @@ func JsToTokensLexer(query string) (tokenNames []string, args [][]string, starts
 	l := js.NewLexer(parse.NewInput(myReader))
 	charLens := 0
 	argStr := ""
-	argsStr := []string{}
-	isParenOpen := []bool{}
-	isBracketBraceOpen := []bool{}
+	var argsStr []string
+	var isParenOpen []bool
+	var isBracketBraceOpen []bool
 	isLastDotToken := true
 	for {
 		tt, text := l.Next()
@@ -386,7 +386,7 @@ func stringToObjectID(str string) *primitive.ObjectID {
 }
 
 func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []map[string]interface{} {
-	fields := []map[string]interface{}{}
+	var fields []map[string]interface{}
 	fieldType := map[string]map[string]bool{}
 	for _, d := range sampleData {
 		for key, value := range d {
@@ -419,7 +419,7 @@ func AnalyseFieldsSchema(keys []string, sampleData []map[string]interface{}) []m
 		}
 	}
 	for _, key := range keys {
-		types := []string{}
+		var types []string
 		for key := range fieldType[key] {
 			types = append(types, key)
 		}
@@ -442,7 +442,7 @@ func GetCollectionIndexes(indexesData []map[string]interface{}) []map[string]int
 		}
 		return string(data)
 	}
-	indexes := []map[string]interface{}{}
+	var indexes []map[string]interface{}
 	for _, index := range indexesData {
 		indexes = append(indexes, map[string]interface{}{
 			"name": index["name"],

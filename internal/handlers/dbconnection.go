@@ -29,7 +29,10 @@ func (DBConnectionHandlers) CreateDBConnection(c *gin.Context) {
 		SSHPassword string `json:"sshPassword"`
 		SSHKeyFile  string `json:"sshKeyFile"`
 	}
-	c.BindJSON(&createBody)
+	err := c.BindJSON(&createBody)
+	if err != nil {
+		return
+	}
 
 	dbConn, err := dbConnController.CreateDBConnection(createBody.ProjectID, createBody.Name, createBody.Type, createBody.Scheme, createBody.Host, createBody.Port,
 		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
@@ -57,7 +60,7 @@ func (DBConnectionHandlers) GetDBConnections(c *gin.Context) {
 		})
 		return
 	}
-	dbConnViews := []views.DBConnectionView{}
+	var dbConnViews []views.DBConnectionView
 	for _, dbConn := range dbConns {
 		dbConnViews = append(dbConnViews, views.BuildDBConnection(dbConn))
 	}
@@ -110,7 +113,7 @@ func (DBConnectionHandlers) GetDBConnectionsByProject(c *gin.Context) {
 		})
 		return
 	}
-	dbConnViews := []views.DBConnectionView{}
+	var dbConnViews []views.DBConnectionView
 	for _, dbConn := range dbConns {
 		dbConnViews = append(dbConnViews, views.BuildDBConnection(dbConn))
 	}

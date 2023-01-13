@@ -57,7 +57,12 @@ func (mEngine *MongoQueryEngine) RemoveUnusedConnections() {
 		diff := now.Sub(instance.LastUsed)
 		if diff.Minutes() > 20 {
 			delete(mEngine.openClients, dbConnID)
-			go instance.mongoClientInstance.Disconnect(context.Background())
+			go func() {
+				err := instance.mongoClientInstance.Disconnect(context.Background())
+				if err != nil {
+					return
+				}
+			}()
 		}
 	}
 }

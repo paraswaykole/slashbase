@@ -31,7 +31,12 @@ func GetSSHTunnel(dbConnID string, sshAuthType, sshHost string, remoteHost strin
 	} else if sshAuthType == "PASSWORD" {
 		sshtun.SetPassword(sshPassword)
 	}
-	go sshtun.Start()
+	go func() {
+		err := sshtun.Start()
+		if err != nil {
+			return
+		}
+	}()
 	sshtunnels[dbConnID] = sshTunnelInstance{
 		sshTun:   sshtun,
 		LastUsed: time.Now(),

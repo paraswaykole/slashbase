@@ -23,14 +23,17 @@ func InitCron() {
 }
 
 func clearQueryEngineUnusedConnections(s *gocron.Scheduler) {
-	s.Every(5).Minutes().Do(func() {
+	_, err := s.Every(5).Minutes().Do(func() {
 		sshtunnel.RemoveUnusedTunnels()
 		queryengines.RemoveUnusedConnections()
 	})
+	if err != nil {
+		return
+	}
 }
 
 func clearOldLogs(s *gocron.Scheduler) {
-	s.Every(1).Day().Do(func() {
+	_, err := s.Every(1).Day().Do(func() {
 		setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_LOGS_EXPIRE)
 		if err != nil {
 			return
@@ -41,13 +44,16 @@ func clearOldLogs(s *gocron.Scheduler) {
 			return
 		}
 	})
+	if err != nil {
+		return
+	}
 }
 
 func telemetryPings(s *gocron.Scheduler) {
 	if !config.IsLive() {
 		return
 	}
-	s.Every(1).Day().Do(func() {
+	_, err := s.Every(1).Day().Do(func() {
 		setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_TELEMETRY_ENABLED)
 		if err != nil {
 			return
@@ -68,7 +74,13 @@ func telemetryPings(s *gocron.Scheduler) {
 			},
 		}
 		json_data, _ := json.Marshal(values)
-		http.Post("https://app.posthog.com/capture/", "application/json",
+		_, err = http.Post("https://app.posthog.com/capture/", "application/json",
 			bytes.NewBuffer(json_data))
+		if err != nil {
+			return
+		}
 	})
+	if err != nil {
+		return
+	}
 }

@@ -114,7 +114,12 @@ func runQuery(queryCmd string) {
 func getQueryConfigs(dbConn *qemodels.DBConnection) *qemodels.QueryConfig {
 	createLog := func(query string) {
 		queryLog := models.NewQueryLog(dbConn.ID, query)
-		go dao.DBQueryLog.CreateDBQueryLog(queryLog)
+		go func() {
+			err := dao.DBQueryLog.CreateDBQueryLog(queryLog)
+			if err != nil {
+				return
+			}
+		}()
 	}
 	readOnly := false
 	return qemodels.NewQueryConfig(readOnly, createLog)
@@ -134,7 +139,7 @@ func postgresResult(data map[string]interface{}) {
 		headers = append(headers, colName)
 	}
 
-	allRows := []table.Row{}
+	var allRows []table.Row
 	for _, rdata := range data["rows"].([]map[string]interface{}) {
 		row := make(table.Row, len(rdata))
 		for key, value := range rdata {
@@ -160,7 +165,7 @@ func mongoResult(data map[string]interface{}) {
 		return
 	}
 
-	allRows := []table.Row{}
+	var allRows []table.Row
 	for _, rdata := range data["data"].([]map[string]interface{}) {
 		row, _ := json.MarshalIndent(rdata, "", " ")
 		allRows = append(allRows, table.Row{string(row)})

@@ -16,9 +16,17 @@ func Init() {
 	if config.IsLive() {
 		go func() {
 			time.Sleep(1500 * time.Millisecond)
-			osx.OpenDefault("http://localhost:" + config.GetConfig().Port)
+			err := osx.OpenDefault("http://localhost:" + config.GetConfig().Port)
+			if err != nil {
+				return
+			}
 		}()
 	}
 	router := NewRouter()
-	go router.Run(":" + config.GetConfig().Port)
+	go func() {
+		err := router.Run(":" + config.GetConfig().Port)
+		if err != nil {
+			return
+		}
+	}()
 }

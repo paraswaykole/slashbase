@@ -12,8 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"io/ioutil"
-
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 )
@@ -282,7 +280,10 @@ func (tun *SSHTun) Start() error {
 	// Wait until someone cancels the context and stop accepting connections
 	go func() {
 		<-tun.ctx.Done()
-		localList.Close()
+		err := localList.Close()
+		if err != nil {
+			return
+		}
 	}()
 
 	// Now others can call Stop or fail
@@ -376,7 +377,7 @@ func (tun *SSHTun) getSSHAuthMethodForKeyFile(encrypted bool) (ssh.AuthMethod, e
 }
 
 func (tun *SSHTun) getSSHAuthMethodForKeyReader(encrypted bool) (ssh.AuthMethod, error) {
-	buf, err := ioutil.ReadAll(tun.authKeyReader)
+	buf, err := io.ReadAll(tun.authKeyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error reading from SSH key reader: %s", err.Error())
 	}
@@ -425,7 +426,12 @@ func (tun *SSHTun) getSSHAuthMethodForSSHAgent() (ssh.AuthMethod, error) {
 }
 
 func (tun *SSHTun) forward(localConn net.Conn, config *ssh.ClientConfig) {
-	defer localConn.Close()
+	defer func(localConn net.Conn) {
+		err := localConn.Close()
+		if err != nil {
+			return
+		}
+	}(localConn)
 
 	local := tun.local.connectionString()
 	server := tun.server.connectionString()
@@ -436,7 +442,12 @@ func (tun *SSHTun) forward(localConn net.Conn, config *ssh.ClientConfig) {
 		tun.errStarted(fmt.Errorf("SSH connection to %s failed: %s", server, err.Error()))
 		return
 	}
-	defer sshConn.Close()
+	defer func(sshConn *ssh.Client) {
+		err := sshConn.Close()
+		if err != nil {
+			return
+		}
+	}(sshConn)
 	if tun.debug {
 		log.Printf("SSH connection to %s done", server)
 	}
@@ -448,7 +459,12 @@ func (tun *SSHTun) forward(localConn net.Conn, config *ssh.ClientConfig) {
 		}
 		return
 	}
-	defer remoteConn.Close()
+	defer func(remoteConn net.Conn) {
+		err := remoteConn.Close()
+		if err != nil {
+			return
+		}
+	}(remoteConn)
 	if tun.debug {
 		log.Printf("Remote connection to %s done", remote)
 	}
