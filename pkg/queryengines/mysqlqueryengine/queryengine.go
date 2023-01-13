@@ -128,3 +128,61 @@ func (mqe *MysqlQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConnecti
 	returnedData := data["rows"].([]map[string]interface{})
 	return returnedData, err
 }
+
+func (mqe *MysqlQueryEngine) AddSingleDataModelColumn(dbConn *models.DBConnection, name, columnName, dataType string, config *models.QueryConfig) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`ALTER TABLE %s ADD COLUMN %s %s;`, name, columnName, dataType)
+	data, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
+func (mqe *MysqlQueryEngine) DeleteSingleDataModelColumn(dbConn *models.DBConnection, name, columnName string, config *models.QueryConfig) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`ALTER TABLE %s DROP COLUMN %s;`, name, columnName)
+	data, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
+func (mqe *MysqlQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
+	sortQuery := ""
+	if len(sort) == 2 {
+		sortQuery = fmt.Sprintf(` ORDER BY %s %s`, sort[0], sort[1])
+	}
+	query := fmt.Sprintf(`SELECT * FROM %s%s LIMIT %d OFFSET %d;`, name, sortQuery, limit, offset)
+	countQuery := fmt.Sprintf(`SELECT count(*) FROM %s;`, name)
+	if len(filter) > 1 {
+		filter2 := ""
+		if len(filter) == 3 {
+			filter2 = " '" + filter[2] + "'"
+		}
+		query = fmt.Sprintf(`SELECT * FROM %s WHERE %s %s%s%s LIMIT %d OFFSET %d;`,
+			name,
+			filter[0],
+			filter[1],
+			filter2,
+			sortQuery,
+			limit,
+			offset)
+		countQuery = fmt.Sprintf(`SELECT count(*) FROM %s WHERE %s %s%s;`,
+			name,
+			filter[0],
+			filter[1],
+			filter2)
+	}
+	data, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	if fetchCount {
+		countData, err := mqe.RunQuery(dbConn, countQuery, config)
+		if err != nil {
+			return nil, err
+		}
+		data["count"] = countData["rows"].([]map[string]interface{})[0]["0"]
+	}
+	return data, err
+}
