@@ -35,9 +35,12 @@ func (SettingHandlers) UpdateSingleSetting(c *gin.Context) {
 		Name  string `json:"name"`
 		Value string `json:"value"`
 	}
-	c.BindJSON(&reqBody)
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		return
+	}
 
-	err := settingController.UpdateSingleSetting(reqBody.Name, reqBody.Value)
+	err = settingController.UpdateSingleSetting(reqBody.Name, reqBody.Value)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

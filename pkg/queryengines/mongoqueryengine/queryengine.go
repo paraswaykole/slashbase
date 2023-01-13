@@ -78,7 +78,12 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
-		defer cursor.Close(context.Background())
+		defer func(cursor *mongo.Cursor, ctx context.Context) {
+			err := cursor.Close(ctx)
+			if err != nil {
+				return
+			}
+		}(cursor, context.Background())
 		keys, data := mongoutils.MongoCursorToJson(cursor)
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
@@ -232,7 +237,12 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
-		defer cursor.Close(context.Background())
+		defer func(cursor *mongo.Cursor, ctx context.Context) {
+			err := cursor.Close(ctx)
+			if err != nil {
+				return
+			}
+		}(cursor, context.Background())
 		keys, data := mongoutils.MongoCursorToJson(cursor)
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
@@ -281,7 +291,12 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		if err != nil {
 			return nil, err
 		}
-		defer cursor.Close(context.Background())
+		defer func(cursor *mongo.Cursor, ctx context.Context) {
+			err := cursor.Close(ctx)
+			if err != nil {
+				return
+			}
+		}(cursor, context.Background())
 		keys, data := mongoutils.MongoCursorToJson(cursor)
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)

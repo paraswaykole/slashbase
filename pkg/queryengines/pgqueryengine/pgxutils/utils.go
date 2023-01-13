@@ -3,6 +3,7 @@ package pgxutils
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"reflect"
 	"strconv"
 	"time"
@@ -31,7 +32,10 @@ func PgSqlRowsToJson(rows pgx.Rows) ([]string, []map[string]interface{}) {
 			itype := FieldType(fieldDescriptions[i])
 			valuePtrs[i] = reflect.New(itype).Interface() // allocate pointer to type
 		}
-		rows.Scan(valuePtrs...)
+		err := rows.Scan(valuePtrs...)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
 
 		entry := make(map[string]interface{})
 		for i := range columns {
@@ -281,7 +285,7 @@ func GetPSQLQueryType(query string) (queryType int, isReturningRows bool) {
 }
 
 func QueryToDataModel(fieldQueryData []map[string]interface{}, constraintsQueryData []map[string]interface{}) []map[string]interface{} {
-	fields := []map[string]interface{}{}
+	var fields []map[string]interface{}
 
 	constraintMap := map[int32]map[string]interface{}{}
 	for _, constraint := range constraintsQueryData {
@@ -300,7 +304,7 @@ func QueryToDataModel(fieldQueryData []map[string]interface{}, constraintsQueryD
 			"isNullable": fieldData["3"].(string) == "YES",
 			"isPrimary":  false,
 		}
-		tags := []string{}
+		var tags []string
 		if constraint["2"] != nil {
 			field["isPrimary"] = rune(constraint["2"].(int8)) == 'p'
 			if rune(constraint["2"].(int8)) == 'u' {

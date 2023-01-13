@@ -16,7 +16,10 @@ func (ProjectHandlers) CreateProject(c *gin.Context) {
 	var createBody struct {
 		Name string `json:"name"`
 	}
-	c.BindJSON(&createBody)
+	err := c.BindJSON(&createBody)
+	if err != nil {
+		return
+	}
 
 	project, err := projectController.CreateProject(createBody.Name)
 	if err != nil {
@@ -42,7 +45,7 @@ func (ProjectHandlers) GetProjects(c *gin.Context) {
 		})
 		return
 	}
-	projectViews := []views.ProjectView{}
+	var projectViews []views.ProjectView
 	for _, p := range *projects {
 		projectViews = append(projectViews, views.BuildProject(&p))
 	}

@@ -20,7 +20,10 @@ func (QueryHandlers) RunQuery(c *gin.Context) {
 		DBConnectionID string `json:"dbConnectionId"`
 		Query          string `json:"query"`
 	}
-	c.BindJSON(&runBody)
+	err := c.BindJSON(&runBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.RunQuery(runBody.DBConnectionID, runBody.Query)
 	if err != nil {
@@ -115,7 +118,10 @@ func (QueryHandlers) AddSingleDataModelField(c *gin.Context) {
 		FieldName      string `json:"fieldName"`
 		DataType       string `json:"dataType"`
 	}
-	c.BindJSON(&reqBody)
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.AddSingleDataModelField(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName, reqBody.DataType)
 	if err != nil {
@@ -138,7 +144,10 @@ func (QueryHandlers) DeleteSingleDataModelField(c *gin.Context) {
 		Name           string `json:"name"`
 		FieldName      string `json:"fieldName"`
 	}
-	c.BindJSON(&reqBody)
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.DeleteSingleDataModelField(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName)
 	if err != nil {
@@ -161,7 +170,10 @@ func (QueryHandlers) AddData(c *gin.Context) {
 		Name   string                 `json:"name"`
 		Data   map[string]interface{} `json:"data"`
 	}
-	c.BindJSON(&addBody)
+	err := c.BindJSON(&addBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.AddData(dbConnId, addBody.Schema, addBody.Name, addBody.Data)
 	if err != nil {
@@ -184,7 +196,10 @@ func (QueryHandlers) DeleteData(c *gin.Context) {
 		Name   string   `json:"name"`
 		IDs    []string `json:"ids"` // ctid for postgres, _id for mongo
 	}
-	c.BindJSON(&deleteBody)
+	err := c.BindJSON(&deleteBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.DeleteData(dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
 	if err != nil {
@@ -209,7 +224,10 @@ func (QueryHandlers) UpdateSingleData(c *gin.Context) {
 		ColumnName string `json:"columnName"`
 		Value      string `json:"value"`
 	}
-	c.BindJSON(&updateBody)
+	err := c.BindJSON(&updateBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.UpdateSingleData(dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
@@ -234,7 +252,10 @@ func (QueryHandlers) AddSingleDataModelIndex(c *gin.Context) {
 		FieldNames     []string `json:"fieldNames"`
 		IsUnique       bool     `json:"isUnique"`
 	}
-	c.BindJSON(&reqBody)
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.AddSingleDataModelIndex(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName, reqBody.FieldNames, reqBody.IsUnique)
 	if err != nil {
@@ -257,7 +278,10 @@ func (QueryHandlers) DeleteSingleDataModelIndex(c *gin.Context) {
 		Name           string `json:"name"`
 		IndexName      string `json:"indexName"`
 	}
-	c.BindJSON(&reqBody)
+	err := c.BindJSON(&reqBody)
+	if err != nil {
+		return
+	}
 
 	data, err := queryController.DeleteSingleDataModelIndex(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName)
 	if err != nil {
@@ -280,7 +304,10 @@ func (QueryHandlers) SaveDBQuery(c *gin.Context) {
 		Query   string `json:"query"`
 		QueryID string `json:"queryId"`
 	}
-	c.BindJSON(&createBody)
+	err := c.BindJSON(&createBody)
+	if err != nil {
+		return
+	}
 
 	queryObj, err := queryController.SaveDBQuery(dbConnId, createBody.Name, createBody.Query, createBody.QueryID)
 	if err != nil {
@@ -323,7 +350,7 @@ func (QueryHandlers) GetDBQueriesInDBConnection(c *gin.Context) {
 		})
 		return
 	}
-	dbQueryViews := []views.DBQueryView{}
+	var dbQueryViews []views.DBQueryView
 	for _, dbQuery := range dbQueries {
 		dbQueryViews = append(dbQueryViews, *views.BuildDBQueryView(dbQuery))
 	}
@@ -369,7 +396,7 @@ func (QueryHandlers) GetQueryHistoryInDBConnection(c *gin.Context) {
 		})
 		return
 	}
-	dbQueryLogViews := []views.DBQueryLogView{}
+	var dbQueryLogViews []views.DBQueryLogView
 	for _, dbQueryLog := range dbQueryLogs {
 		dbQueryLogViews = append(dbQueryLogViews, *views.BuildDBQueryLogView(dbQueryLog))
 	}

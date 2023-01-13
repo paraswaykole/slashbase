@@ -6,6 +6,9 @@
 .history/
 __debug_bin
 
+# Jet Brains Products
+.idea
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
