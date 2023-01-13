@@ -7,7 +7,6 @@ import (
 
 	"github.com/alecthomas/chroma/quick"
 	"github.com/slashbaseide/slashbase/internal/config"
-	"github.com/slashbaseide/slashbase/internal/server"
 	"github.com/slashbaseide/slashbase/internal/setup"
 	"github.com/slashbaseide/slashbase/internal/tasks"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
@@ -54,7 +53,6 @@ var rootCmd = &cobra.Command{
 		setup.SetupApp()
 		queryengines.Init()
 		tasks.InitCron()
-		server.Init()
 		startCLI()
 	},
 }
