@@ -9,13 +9,17 @@ import (
 
 var build = config.BUILD_DEVELOPMENT
 var version = config.BUILD_DEVELOPMENT
+var isCli bool
 
 func main() {
 	config.Init(build, version)
 	db.InitGormDB()
-	server.Init()
 
-	if config.GetConfig().Cli {
+	isCli = config.GetConfig().Cli
+
+	server.Init(isCli)
+
+	if isCli {
 		cmd.Execute()
 	}
 }

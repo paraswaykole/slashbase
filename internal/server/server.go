@@ -9,7 +9,7 @@ import (
 )
 
 // Init server
-func Init() {
+func Init(isCli bool) {
 	if config.IsLive() {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -23,8 +23,18 @@ func Init() {
 		}()
 	}
 	router := NewRouter()
-	err := router.Run(":" + config.GetConfig().Port)
-	if err != nil {
-		return
+
+	if isCli {
+		go func() {
+			err := router.Run(":" + config.GetConfig().Port)
+			if err != nil {
+				return
+			}
+		}()
+	} else {
+		err := router.Run(":" + config.GetConfig().Port)
+		if err != nil {
+			return
+		}
 	}
 }
