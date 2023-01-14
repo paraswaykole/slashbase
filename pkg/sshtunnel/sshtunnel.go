@@ -12,8 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"io/ioutil"
-
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 )
@@ -376,7 +374,7 @@ func (tun *SSHTun) getSSHAuthMethodForKeyFile(encrypted bool) (ssh.AuthMethod, e
 }
 
 func (tun *SSHTun) getSSHAuthMethodForKeyReader(encrypted bool) (ssh.AuthMethod, error) {
-	buf, err := ioutil.ReadAll(tun.authKeyReader)
+	buf, err := io.ReadAll(tun.authKeyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error reading from SSH key reader: %s", err.Error())
 	}
