@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/mysqlqueryengine/mysqlutils"
@@ -183,6 +184,54 @@ func (mqe *MysqlQueryEngine) GetData(dbConn *models.DBConnection, name string, l
 			return nil, err
 		}
 		data["count"] = countData["rows"].([]map[string]interface{})[0]["0"]
+	}
+	return data, err
+}
+
+func (mqe *MysqlQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, pkey string, columnName string, value string, config *models.QueryConfig) (map[string]interface{}, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (mqe *MysqlQueryEngine) AddData(dbConn *models.DBConnection, name string, data map[string]interface{}, config *models.QueryConfig) (map[string]interface{}, error) {
+	keys := []string{}
+	values := []string{}
+	for key, value := range data {
+		keys = append(keys, key)
+		val := value.(string)
+		values = append(values, val)
+	}
+	keysStr := strings.Join(keys, ", ")
+	valuesStr := strings.Join(values, "','")
+	query := fmt.Sprintf(`INSERT INTO %s(%s) VALUES('%s');`, name, keysStr, valuesStr)
+	resultData, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return resultData, err
+}
+
+func (mqe *MysqlQueryEngine) DeleteData(dbConn *models.DBConnection, name string, ctids []string, config *models.QueryConfig) (map[string]interface{}, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (mqe *MysqlQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, colNames []string, isUnique bool, config *models.QueryConfig) (map[string]interface{}, error) {
+	isUniqueStr := ""
+	if isUnique {
+		isUniqueStr = "UNIQUE "
+	}
+	query := fmt.Sprintf(`CREATE %sINDEX %s ON %s (%s);`, isUniqueStr, indexName, name, strings.Join(colNames, ", "))
+	data, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	return data, err
+}
+
+func (mqe *MysqlQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, config *models.QueryConfig) (map[string]interface{}, error) {
+	query := fmt.Sprintf(`DROP INDEX %s ON %s;`, indexName, name)
+	data, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
 	}
 	return data, err
 }
