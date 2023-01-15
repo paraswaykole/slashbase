@@ -1,7 +1,7 @@
 package server
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -86,7 +86,7 @@ func serveApp(c *gin.Context) {
 	}
 	if c.Request.Method == "GET" {
 		if resp, err := http.Get(appUrl + c.Request.URL.Path); err == nil {
-			body, err := ioutil.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
 			if err != nil {
 				c.String(http.StatusBadGateway, "bad gateway")
 				return

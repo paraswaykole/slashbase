@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"net/url"
 	"time"
 
 	"github.com/google/uuid"
@@ -47,6 +48,7 @@ func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbh
 		if !utils.ContainsString([]string{"mongodb", "mongodb+srv"}, dbscheme) {
 			return nil, errors.New("invalid dbscheme")
 		}
+		dbpassword = url.QueryEscape(dbpassword)
 	case qemodels.DBTYPE_MYSQL:
 		dbscheme = "mysql"
 	default:
@@ -92,8 +94,8 @@ func (dbConn *DBConnection) ToQEConnection() *qemodels.DBConnection {
 		DBName:      string(dbConn.DBName),
 		DBUser:      string(dbConn.DBUser),
 		DBPassword:  string(dbConn.DBPassword),
-		LoginType:   string(dbConn.LoginType),
-		UseSSH:      string(dbConn.UseSSH),
+		LoginType:   dbConn.LoginType,
+		UseSSH:      dbConn.UseSSH,
 		SSHHost:     string(dbConn.SSHHost),
 		SSHUser:     string(dbConn.SSHUser),
 		SSHPassword: string(dbConn.SSHPassword),

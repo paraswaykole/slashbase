@@ -28,7 +28,7 @@
 
 Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports PostgreSQL and MongoDB.
 
-It is in beta (v0.4), help us make it better by sending your feedback to reach stable (v1.0) version.
+It is in beta (v0.4), help us make it better by sending your feedback and reach a stable (v1.0) version.
 
 ## Features:
 
@@ -58,8 +58,7 @@ The app should be installed on your desktop/laptop and should used as a part of 
 
 ### Using Homebrew
 ```
-brew tap slashbaseide/brew
-brew install slashbase
+brew install slashbaseide/brew/slashbase
 ```
 
 ### Download Binary

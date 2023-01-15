@@ -3,7 +3,6 @@ package config
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -105,7 +104,7 @@ func createEnvFile(filePath string) error {
 		return err
 	}
 	envFileData := fmt.Sprintf(`CRYPTED_DATA_SECRET=%s`, hex)
-	err = ioutil.WriteFile(filePath, []byte(envFileData), 0700)
+	err = os.WriteFile(filePath, []byte(envFileData), 0700)
 	if err != nil {
 		return err
 	}
