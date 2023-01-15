@@ -231,7 +231,7 @@ func (mqe *MysqlQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection
 }
 
 func (mqe *MysqlQueryEngine) DeleteSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, config *models.QueryConfig) (map[string]interface{}, error) {
-	query := fmt.Sprintf(`DROP INDEX %s ON %s;`, indexName, name)
+	query := fmt.Sprintf("DROP INDEX `%s` ON `%s`;", indexName, name)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
