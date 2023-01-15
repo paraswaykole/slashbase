@@ -79,26 +79,26 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
 
     const formatQuery = () => {
         let formattedQuery: string = value
-        if (dbType == DBConnType.POSTGRES) {
+        if (dbType === DBConnType.POSTGRES || dbType === DBConnType.MYSQL) {
             formattedQuery = format(value, {
                 language: "postgresql",
                 keywordCase: 'upper',
                 linesBetweenQueries: 2,
             })
-        } else if (dbType == DBConnType.MONGO) {
+        } else if (dbType === DBConnType.MONGO) {
             formattedQuery = js_beautify(value)
         }
         setValue(formattedQuery)
     }
 
-    const placeholderText = (dbType == DBConnType.POSTGRES || dbType == DBConnType.MYSQL) ? "select * from <table name>;" : "db.<collection name>.find()"
+    const placeholderText = (dbType === DBConnType.POSTGRES || dbType === DBConnType.MYSQL) ? "select * from <table name>;" : "db.<collection name>.find()"
 
     return (
         <React.Fragment>
             <ReactCodeMirror
                 ref={editorRef}
                 value={value}
-                extensions={dbType == DBConnType.POSTGRES || dbType == DBConnType.MYSQL ? [sql()] : [javascript()]}
+                extensions={dbType === DBConnType.POSTGRES || dbType === DBConnType.MYSQL ? [sql()] : [javascript()]}
                 theme={duotoneLight}
                 height={"auto"}
                 minHeight="80px"

@@ -4,7 +4,6 @@ import { Cell, useRowSelect, useTable } from 'react-table'
 import toast from 'react-hot-toast';
 import { DBConnection, DBQueryData } from '../../../data/models'
 import EditableCell from './editablecell'
-import apiService from '../../../network/apiService'
 import AddModal from './addmodal';
 import ConfirmModal from '../../widgets/confirmModal';
 import { useAppDispatch } from '../../../redux/hooks';
@@ -42,7 +41,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     )
 
     const displayColumns = queryData.columns.filter(col => col !== 'ctid')
-    const ctidExists = queryData.columns.length != displayColumns.length
+    const ctidExists = queryData.columns.length !== displayColumns.length
 
     const columns = React.useMemo(
         () => displayColumns.map((col, i) => ({
@@ -69,7 +68,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         const columnName = queryData.columns[parseInt(columnIdx)]
         const result = await dispatch(updateDBSingleData({ dbConnectionId: dbConnection.id, schemaName: mSchema, name: mName, id: ctid, columnName, newValue, columnIdx })).unwrap()
         if (result.success) {
-            const rowIdx = queryData!.rows.findIndex(x => x["0"] == ctid)
+            const rowIdx = queryData!.rows.findIndex(x => x["0"] === ctid)
             if (rowIdx) {
                 const newQueryData: DBQueryData = { ...queryData!, rows: [...queryData!.rows] }
                 console.log(result, newQueryData)
