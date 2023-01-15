@@ -32,6 +32,11 @@ func BuildDBDataModel(dbConn *DBConnection, tableData map[string]interface{}) *D
 			Name: tableData["collectionName"].(string),
 		}
 		return &view
+	} else if dbConn.Type == DBTYPE_MYSQL {
+		view := DBDataModel{
+			Name: tableData["0"].(string),
+		}
+		return &view
 	}
 	return nil
 }
@@ -54,6 +59,15 @@ func BuildDBDataModelField(dbConn *DBConnection, fieldData map[string]interface{
 			IsPrimary:  fieldData["isPrimary"].(bool),
 		}
 		return &view
+	} else if dbConn.Type == DBTYPE_MYSQL {
+		view := DBDataModelField{
+			Name:       fieldData["name"].(string),
+			Type:       fieldData["type"].(string),
+			IsNullable: fieldData["isNullable"].(bool),
+			IsPrimary:  fieldData["isPrimary"].(bool),
+			Tags:       fieldData["tags"].([]string),
+		}
+		return &view
 	}
 	return nil
 }
@@ -69,6 +83,12 @@ func BuildDBDataModelIndex(dbConn *DBConnection, fieldData map[string]interface{
 		view := DBDataModelIndex{
 			Name:     fieldData["name"].(string),
 			IndexDef: fieldData["key"].(string),
+		}
+		return &view
+	} else if dbConn.Type == DBTYPE_MYSQL {
+		view := DBDataModelIndex{
+			Name:     fieldData["0"].(string),
+			IndexDef: fieldData["1"].(string),
 		}
 		return &view
 	}

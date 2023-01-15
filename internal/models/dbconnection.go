@@ -40,13 +40,16 @@ func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbh
 		return nil, errors.New("useSSH is not correct")
 	}
 
-	if dbtype == qemodels.DBTYPE_POSTGRES {
+	switch dbtype {
+	case qemodels.DBTYPE_POSTGRES:
 		dbscheme = "postgres"
-	} else if dbtype == qemodels.DBTYPE_MONGO {
+	case qemodels.DBTYPE_MONGO:
 		if !utils.ContainsString([]string{"mongodb", "mongodb+srv"}, dbscheme) {
 			return nil, errors.New("invalid dbscheme")
 		}
-	} else {
+	case qemodels.DBTYPE_MYSQL:
+		dbscheme = "mysql"
+	default:
 		return nil, errors.New("dbtype is not correct")
 	}
 

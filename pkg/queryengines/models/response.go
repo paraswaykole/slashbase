@@ -23,6 +23,11 @@ func BuildAddDataResponse(dbConn *DBConnection, queryData map[string]interface{}
 			NewID: queryData["insertedId"].(primitive.ObjectID).Hex(),
 		}
 		return &view
+	} else if dbConn.Type == DBTYPE_MYSQL {
+		view := AddDataResponse{
+			Data: queryData["data"].(map[string]interface{}),
+		}
+		return &view
 	}
 	return nil
 }
