@@ -257,7 +257,7 @@ func DeleteSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, i
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.DeleteSingleDataModelIndex(dbConn, name, indexName, config)
 	} else if dbConn.Type == models.DBTYPE_MYSQL {
-		return mongoQueryEngine.DeleteSingleDataModelIndex(dbConn, name, indexName, config)
+		return mysqlQueryEngine.DeleteSingleDataModelIndex(dbConn, name, indexName, config)
 	} else {
 		return nil, errors.New("invalid db type")
 	}

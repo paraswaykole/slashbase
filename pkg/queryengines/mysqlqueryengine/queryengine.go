@@ -121,7 +121,7 @@ func (mqe *MysqlQueryEngine) GetSingleDataModelFields(dbConn *models.DBConnectio
 }
 
 func (mqe *MysqlQueryEngine) GetSingleDataModelIndexes(dbConn *models.DBConnection, name string, config *models.QueryConfig) ([]map[string]interface{}, error) {
-	query := fmt.Sprintf(`SELECT DISTINCT table_name, index_name FROM information_schema.statistics WHERE table_schema = '%s' AND table_name = '%s';`, dbConn.DBName, name)
+	query := fmt.Sprintf(`SELECT statistics.index_name, GROUP_CONCAT(distinct column_name SEPARATOR ',') AS columns FROM information_schema.statistics WHERE table_schema = '%s' AND table_name = '%s' GROUP BY(statistics.index_name);`, dbConn.DBName, name)
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
 		return nil, err
