@@ -9,6 +9,7 @@ import AddModal from './addmodal';
 import ConfirmModal from '../../widgets/confirmModal';
 import { useAppDispatch } from '../../../redux/hooks';
 import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice';
+import { DBConnType } from '../../../data/defaults';
 
 
 type TablePropType = {
@@ -213,7 +214,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button" disabled={selectedCTIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
+                            <button className="button" disabled={dbConnection.type === DBConnType.MYSQL || selectedCTIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-trash" />
                                 </span>

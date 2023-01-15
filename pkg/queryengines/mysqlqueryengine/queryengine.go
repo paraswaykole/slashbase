@@ -207,7 +207,10 @@ func (mqe *MysqlQueryEngine) AddData(dbConn *models.DBConnection, name string, d
 	if err != nil {
 		return nil, err
 	}
-	return resultData, err
+	return map[string]interface{}{
+		"data":    data,
+		"message": resultData["message"].(string),
+	}, err
 }
 
 func (mqe *MysqlQueryEngine) DeleteData(dbConn *models.DBConnection, name string, ctids []string, config *models.QueryConfig) (map[string]interface{}, error) {

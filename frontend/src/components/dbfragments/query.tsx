@@ -93,7 +93,7 @@ const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved, onDelete }: DBQueryPr
                 </React.Fragment>
                 :
                 <React.Fragment>
-                    {dbConnection!.type === DBConnType.POSTGRES &&
+                    {(dbConnection!.type === DBConnType.POSTGRES || dbConnection!.type === DBConnType.MYSQL) &&
                         <Table
                             dbConnection={dbConnection!}
                             queryData={queryData}

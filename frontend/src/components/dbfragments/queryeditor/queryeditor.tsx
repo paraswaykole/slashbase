@@ -91,14 +91,14 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
         setValue(formattedQuery)
     }
 
-    const placeholderText = dbType == DBConnType.POSTGRES ? "select * from <table name>;" : "db.<collection name>.find()"
+    const placeholderText = (dbType == DBConnType.POSTGRES || dbType == DBConnType.MYSQL) ? "select * from <table name>;" : "db.<collection name>.find()"
 
     return (
         <React.Fragment>
             <ReactCodeMirror
                 ref={editorRef}
                 value={value}
-                extensions={dbType == DBConnType.POSTGRES ? [sql()] : [javascript()]}
+                extensions={dbType == DBConnType.POSTGRES || dbType == DBConnType.MYSQL ? [sql()] : [javascript()]}
                 theme={duotoneLight}
                 height={"auto"}
                 minHeight="80px"

@@ -111,6 +111,19 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     onSortChanged={onSortChanged}
                 />
             }
+            {project && dbConnection && queryData && dbConnection.type === DBConnType.MYSQL &&
+                <Table
+                    dbConnection={dbConnection}
+                    mSchema={String(mschema)}
+                    mName={String(mname)}
+                    queryData={queryData}
+                    querySort={querySort}
+                    isEditable={true}
+                    showHeader={true}
+                    onFilterChanged={onFilterChanged}
+                    onSortChanged={onSortChanged}
+                />
+            }
             {project && dbConnection && queryData && dbConnection.type === DBConnType.MONGO &&
                 <JsonTable
                     dbConnection={dbConnection}
