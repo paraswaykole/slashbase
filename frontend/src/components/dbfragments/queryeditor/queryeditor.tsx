@@ -1,4 +1,5 @@
 import styles from './queryeditor.module.scss'
+import 'react-tooltip/dist/react-tooltip.css'
 import React, { useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { deleteDBQuery, saveDBQuery, selectDBConnection } from '../../../redux/dbConnectionSlice'
@@ -12,6 +13,7 @@ import { duotoneLight } from '@uiw/codemirror-theme-duotone'
 import { javascript } from '@codemirror/lang-javascript'
 import { sql } from '@codemirror/lang-sql'
 import CheatSheetModal from '../cheatsheet/cheatsheet'
+import { Tooltip } from 'react-tooltip'
 
 type QueryEditorPropType = {
     initialValue: string,
@@ -40,6 +42,12 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
     const onChange = React.useCallback((value: any) => {
         setValue(value)
     }, []);
+
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if(event.ctrlKey && event.key.toLocaleLowerCase() === 'enter') {
+            startRunningQuery()
+        }
+    }
 
     const startSaving = async () => {
         if (queryName === '') {
@@ -108,6 +116,7 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
                     highlightActiveLine: false,
                 }}
                 onChange={onChange}
+                onKeyDown={handleKeyDown}
             />
             <div className={styles.editorBottomBar}>
                 <div className="columns">
@@ -121,33 +130,33 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
                         />
                     </div>
                     <div className={"column " + styles.buttons}>
-                        {!saving && <button className="button " onClick={startSaving}>
+                        {!saving && <button id="btnSaveQuery" data-tooltip-content="Save query" className="button " onClick={startSaving}>
                             <span className="icon is-small">
                                 <i className="fas fa-save" aria-hidden="true"></i>
                             </span>
                         </button>}
                         {saving && <button className="button is-loading">Saving</button>}
                         &nbsp;&nbsp;
-                        <button className="button" onClick={formatQuery}>
+                        <button className="button" id="btnFormatQuery" data-tooltip-content="Format query" onClick={formatQuery}>
                             <span className="icon is-small">
                                 <i className="fas fa-align-left" aria-hidden="true"></i>
                             </span>
                         </button>
                         &nbsp;&nbsp;
-                        <button className="button" onClick={() => { setShowCheatsheet(true) }}>
+                        <button className="button" id="btnShowCheatsheet" data-tooltip-content="Show Cheatsheet" onClick={() => { setShowCheatsheet(true) }}>
                             <span className="icon is-small">
                                 <i className="fas fa-book"></i>
                             </span>
                         </button>
                         &nbsp;&nbsp;
-                        {!deleting && <button className="button is-danger" onClick={startDeleting}>
+                        {!deleting && <button id="btnDelQuery" data-tooltip-content="Delete query" className="button is-danger" onClick={startDeleting}>
                             <span className="icon is-small">
                                 <i className="fas fa-trash" aria-hidden="true"></i>
                             </span>
                         </button>}
                         {deleting && <button className="button is-danger is-loading">Deleting</button>}
                         &nbsp;&nbsp;
-                        {!running && <button className="button is-primary" onClick={startRunningQuery}>
+                        {!running && <button id="btnRunQuery" data-tooltip-content="Ctrl+Enter to run query" className="button is-primary" onClick={startRunningQuery}>
                             <span className="icon is-small">
                                 <i className="fas fa-play-circle" aria-hidden="true"></i>
                             </span>&nbsp;&nbsp;
@@ -158,6 +167,11 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
                 </div>
             </div>
             {showCheatsheet && <CheatSheetModal dbType={dbConnection!.type} onClose={() => { setShowCheatsheet(false) }} />}
+            <Tooltip anchorId="btnRunQuery" />
+            <Tooltip anchorId="btnSaveQuery" />
+            <Tooltip anchorId="btnDelQuery" />
+            <Tooltip anchorId="btnFormatQuery" />
+            <Tooltip anchorId="btnShowCheatsheet"/>
         </React.Fragment>
     )
 }
