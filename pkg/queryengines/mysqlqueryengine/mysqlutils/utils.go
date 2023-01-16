@@ -125,7 +125,7 @@ func QueryToDataModel(fieldQueryData []map[string]interface{}, constraintsQueryD
 		}
 		tags := []string{}
 		// TODO: use constraintsQueryData
-		if fieldData["4"] != nil {
+		if fieldData["4"] != nil && fieldData["4"] != "" {
 			coldef := fieldData["4"].(string)
 			tags = append(tags, "Default: "+coldef)
 		}

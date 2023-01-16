@@ -73,14 +73,14 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                 <table className={"table is-bordered is-striped is-narrow is-hoverable"}>
                     <thead>
                         <tr>
-                            <th colSpan={dbConn.type === DBConnType.POSTGRES ? 4 : 5}>
+                            <th colSpan={(dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) ? 4 : 5}>
                                 {label}
                                 {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditingModel(!isEditingModel) }}>
                                     {isEditingModel && <i className={"fas fa-check"} />}
                                     {!isEditingModel && <i className={"fas fa-pen"} />}
                                 </button>}
                             </th>
-                            {dbConn.type === DBConnType.POSTGRES && isEditingModel && <th>
+                            {(dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) && isEditingModel && <th>
                                 <button className="button is-primary is-small" onClick={() => { setShowingAddFieldModal(true) }}>
                                     <i className={"fas fa-plus"} />
                                 </button>
@@ -100,7 +100,7 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                                     }</td>
                                     <td>{field.name}</td>
                                     <td colSpan={dbConn.type === DBConnType.MONGO ? 2 : 1}>{field.type}</td>
-                                    {dbConn.type === DBConnType.POSTGRES && <td>
+                                    {(dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) && <td>
                                         {field.tags.length > 0 && field.tags.map<React.ReactNode>(tag => (
                                             <span key={tag} className="tag is-info is-light">{tag}</span>
                                         )).reduce((prev, curr) => [prev, ' ', curr])}
@@ -149,7 +149,7 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                             }
                         </tbody>
                     </table>}
-                {dbConn.type === DBConnType.POSTGRES && showingAddFieldModal && <AddFieldModal
+                {(dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) && showingAddFieldModal && <AddFieldModal
                     dbConn={dbConn}
                     mSchema={dataModel.schemaName}
                     mName={dataModel.name}
