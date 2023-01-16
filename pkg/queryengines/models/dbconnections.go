@@ -21,6 +21,7 @@ type DBConnection struct {
 const (
 	DBTYPE_POSTGRES = "POSTGRES"
 	DBTYPE_MONGO    = "MONGO"
+	DBTYPE_MYSQL    = "MYSQL"
 
 	DBUSESSH_NONE        = "NONE"
 	DBUSESSH_PASSWORD    = "PASSWORD"
