@@ -6,6 +6,7 @@ import apiService from '../network/apiService'
 import { getAllDBConnections } from './allDBConnectionsSlice'
 import Constants from '../constants'
 import { APIState } from './apiSlice'
+import { toast } from 'react-hot-toast'
 
 export interface ProjectState {
   projects: Array<Project>
@@ -43,9 +44,17 @@ export const getProjects = createAsyncThunk(
 export const createNewProject = createAsyncThunk(
   'projects/createNewProject',
   async (payload: { projectName: string }, { }: any) => {
+    if (payload.projectName.trim().length === 0) {
+      toast.error("Project Name cannot be empty!");
+      return {
+        success: false,
+        project: null,
+      }
+    }
     const result = await apiService.createNewProject(payload.projectName)
     const project = result.success ? result.data : null
     return {
+      success: true,
       project: project,
     }
   }

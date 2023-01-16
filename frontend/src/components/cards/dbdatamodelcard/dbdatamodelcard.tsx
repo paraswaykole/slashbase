@@ -23,6 +23,8 @@ const DBDataModelCard = ({ dataModel, dbConnection }: DBDataModelPropType) => {
                         <b>{dataModel.schemaName}.{dataModel.name}</b>}
                     {dbConnection.type === DBConnType.MONGO &&
                         <b>{dataModel.name}</b>}
+                    {dbConnection.type === DBConnType.MYSQL &&
+                        <b>{dataModel.name}</b>}
                 </div>
             </Link>
         </div>

@@ -5,15 +5,18 @@ import (
 
 	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/mongoqueryengine"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/mysqlqueryengine"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/pgqueryengine"
 )
 
 var postgresQueryEngine *pgqueryengine.PostgresQueryEngine
 var mongoQueryEngine *mongoqueryengine.MongoQueryEngine
+var mysqlQueryEngine *mysqlqueryengine.MysqlQueryEngine
 
 func Init() {
 	postgresQueryEngine = pgqueryengine.InitPostgresQueryEngine()
 	mongoQueryEngine = mongoqueryengine.InitMongoQueryEngine()
+	mysqlQueryEngine = mysqlqueryengine.InitMysqlQueryEngine()
 }
 
 func RunQuery(dbConn *models.DBConnection, query string, config *models.QueryConfig) (map[string]interface{}, error) {
@@ -21,6 +24,8 @@ func RunQuery(dbConn *models.DBConnection, query string, config *models.QueryCon
 		return postgresQueryEngine.RunQuery(dbConn, query, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.RunQuery(dbConn, query, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.RunQuery(dbConn, query, config)
 	}
 	return nil, errors.New("invalid db type")
 }
@@ -30,6 +35,8 @@ func TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) boo
 		return postgresQueryEngine.TestConnection(dbConn, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.TestConnection(dbConn, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.TestConnection(dbConn, config)
 	}
 	return false
 }
@@ -41,6 +48,8 @@ func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*
 		data, err = postgresQueryEngine.GetDataModels(dbConn, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		data, err = mongoQueryEngine.GetDataModels(dbConn, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		data, err = mysqlQueryEngine.GetDataModels(dbConn, config)
 	}
 	if err != nil {
 		return nil, err
@@ -114,6 +123,34 @@ func GetSingleDataModel(dbConn *models.DBConnection, schemaName string, name str
 			Fields:  allFields,
 			Indexes: allIndexes,
 		}
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		fieldsData, err := mysqlQueryEngine.GetSingleDataModelFields(dbConn, name, config)
+		if err != nil {
+			return nil, err
+		}
+		indexesData, err := mysqlQueryEngine.GetSingleDataModelIndexes(dbConn, name, config)
+		if err != nil {
+			return nil, err
+		}
+		allFields := []models.DBDataModelField{}
+		for _, field := range fieldsData {
+			fieldView := models.BuildDBDataModelField(dbConn, field)
+			if fieldView != nil {
+				allFields = append(allFields, *fieldView)
+			}
+		}
+		allIndexes := []models.DBDataModelIndex{}
+		for _, index := range indexesData {
+			indexView := models.BuildDBDataModelIndex(dbConn, index)
+			if indexView != nil {
+				allIndexes = append(allIndexes, *indexView)
+			}
+		}
+		dataModel = models.DBDataModel{
+			Name:    name,
+			Fields:  allFields,
+			Indexes: allIndexes,
+		}
 	}
 	return &dataModel, nil
 }
@@ -123,6 +160,8 @@ func AddSingleDataModelField(dbConn *models.DBConnection, schemaName string, nam
 		return postgresQueryEngine.AddSingleDataModelColumn(dbConn, schemaName, name, fieldName, datatype, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.AddSingleDataModelKey(dbConn, schemaName, name, fieldName, datatype)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.AddSingleDataModelColumn(dbConn, name, fieldName, datatype, config)
 	}
 	return nil, errors.New("invalid db type")
 }
@@ -132,6 +171,8 @@ func DeleteSingleDataModelField(dbConn *models.DBConnection, schemaName string, 
 		return postgresQueryEngine.DeleteSingleDataModelColumn(dbConn, schemaName, name, fieldName, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.DeleteSingleDataModelKey(dbConn, schemaName, name, fieldName, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.DeleteSingleDataModelColumn(dbConn, name, fieldName, config)
 	}
 	return nil, errors.New("invalid db type")
 }
@@ -141,6 +182,8 @@ func GetData(dbConn *models.DBConnection, schemaName string, name string, limit 
 		return postgresQueryEngine.GetData(dbConn, schemaName, name, limit, offset, fetchCount, filter, sort, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.GetData(dbConn, name, limit, offset, fetchCount, filter, sort, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.GetData(dbConn, name, limit, offset, fetchCount, filter, sort, config)
 	}
 	return nil, errors.New("invalid db type")
 }
@@ -152,6 +195,8 @@ func UpdateSingleData(dbConn *models.DBConnection, schemaName string, name strin
 		return postgresQueryEngine.UpdateSingleData(dbConn, schemaName, name, id, columnName, value, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.UpdateSingleData(dbConn, name, id, value, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.UpdateSingleData(dbConn, name, id, columnName, value, config)
 	}
 	return nil, errors.New("invalid db type")
 }
@@ -169,6 +214,11 @@ func AddData(dbConn *models.DBConnection, schemaName string, name string, data m
 		if err != nil {
 			return nil, err
 		}
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		result, err = mysqlQueryEngine.AddData(dbConn, name, data, config)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		return nil, errors.New("invalid db type")
 	}
@@ -182,6 +232,8 @@ func DeleteData(dbConn *models.DBConnection, schemaName string, name string, ids
 		return postgresQueryEngine.DeleteData(dbConn, schemaName, name, ids, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.DeleteData(dbConn, name, ids, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.DeleteData(dbConn, name, ids, config)
 	} else {
 		return nil, errors.New("invalid db type")
 	}
@@ -192,6 +244,8 @@ func AddSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, inde
 		return postgresQueryEngine.AddSingleDataModelIndex(dbConn, schemaName, name, indexName, fieldNames, isUnique, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.AddSingleDataModelIndex(dbConn, name, indexName, fieldNames, isUnique, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.AddSingleDataModelIndex(dbConn, name, indexName, fieldNames, isUnique, config)
 	} else {
 		return nil, errors.New("invalid db type")
 	}
@@ -202,6 +256,8 @@ func DeleteSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, i
 		return postgresQueryEngine.DeleteSingleDataModelIndex(dbConn, indexName, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
 		return mongoQueryEngine.DeleteSingleDataModelIndex(dbConn, name, indexName, config)
+	} else if dbConn.Type == models.DBTYPE_MYSQL {
+		return mysqlQueryEngine.DeleteSingleDataModelIndex(dbConn, name, indexName, config)
 	} else {
 		return nil, errors.New("invalid db type")
 	}
@@ -210,4 +266,5 @@ func DeleteSingleDataModelIndex(dbConn *models.DBConnection, schemaName, name, i
 func RemoveUnusedConnections() {
 	postgresQueryEngine.RemoveUnusedConnections()
 	mongoQueryEngine.RemoveUnusedConnections()
+	mysqlQueryEngine.RemoveUnusedConnections()
 }

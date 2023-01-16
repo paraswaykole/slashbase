@@ -15,7 +15,7 @@ func Init() {
 	}
 	if config.IsLive() {
 		go func() {
-			time.Sleep(1500 * time.Millisecond)
+			time.Sleep(500 * time.Millisecond)
 			osx.OpenDefault("http://localhost:" + config.GetConfig().Port)
 		}()
 	}

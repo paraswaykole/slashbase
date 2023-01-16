@@ -30,6 +30,13 @@ func display(input string) string {
 			return input
 		}
 		return buf.String()
+	} else if cliApp.CurrentDB.Type == qemodels.DBTYPE_MYSQL {
+		buf := bytes.NewBuffer([]byte{})
+		err := quick.Highlight(buf, input, "mysql", "terminal16", "monokai")
+		if err != nil {
+			return input
+		}
+		return buf.String()
 	} else if cliApp.CurrentDB.Type == qemodels.DBTYPE_MONGO {
 		buf := bytes.NewBuffer([]byte{})
 		err := quick.Highlight(buf, input, "javascript", "terminal16", "monokai")

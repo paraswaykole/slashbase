@@ -90,6 +90,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                             <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setDBType(e.target.value); setDBScheme('') }}>
                                 <option value={DBConnType.POSTGRES}>PostgresSQL</option>
                                 <option value={DBConnType.MONGO}>MongoDB</option>
+                                <option value={DBConnType.MYSQL}>MySQL</option>
                             </select>
                         </div>
                     </div>

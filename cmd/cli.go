@@ -106,6 +106,8 @@ func runQuery(queryCmd string) {
 	}
 	if cliApp.CurrentDB.Type == qemodels.DBTYPE_POSTGRES {
 		postgresResult(result)
+	} else if cliApp.CurrentDB.Type == qemodels.DBTYPE_MYSQL {
+		mysqlResult(result)
 	} else {
 		mongoResult(result)
 	}
@@ -121,6 +123,39 @@ func getQueryConfigs(dbConn *qemodels.DBConnection) *qemodels.QueryConfig {
 }
 
 func postgresResult(data map[string]interface{}) {
+
+	if msg, ok := data["message"].(string); ok {
+		fmt.Printf("Result: '%s'\n", msg)
+		return
+	}
+
+	t := table.NewWriter()
+
+	headers := table.Row{}
+	for _, colName := range data["columns"].([]string) {
+		headers = append(headers, colName)
+	}
+
+	allRows := []table.Row{}
+	for _, rdata := range data["rows"].([]map[string]interface{}) {
+		row := make(table.Row, len(rdata))
+		for key, value := range rdata {
+			idx, _ := strconv.Atoi(key)
+			row[idx] = value
+		}
+		allRows = append(allRows, row)
+	}
+
+	t.SetOutputMirror(os.Stdout)
+	defStyle := table.StyleDefault
+	defStyle.Format.Header = text.FormatDefault
+	t.SetStyle(defStyle)
+	t.AppendHeader(headers)
+	t.AppendRows(allRows)
+	t.Render()
+}
+
+func mysqlResult(data map[string]interface{}) {
 
 	if msg, ok := data["message"].(string); ok {
 		fmt.Printf("Result: '%s'\n", msg)

@@ -1,6 +1,7 @@
 export enum DBConnType {
     POSTGRES = "POSTGRES",
-    MONGO = "MONGO"
+    MONGO = "MONGO",
+    MYSQL = "MYSQL"
 }
 
 export enum DBConnectionUseSSHType {

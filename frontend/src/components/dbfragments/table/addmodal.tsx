@@ -5,6 +5,7 @@ import apiService from '../../../network/apiService'
 import toast from 'react-hot-toast'
 import { useAppDispatch } from '../../../redux/hooks'
 import { addDBData, setQueryData } from '../../../redux/dataModelSlice'
+import { DBConnType } from '../../../data/defaults'
 
 type AddModal = {
     queryData: DBQueryData
@@ -31,7 +32,7 @@ const AddModal = ({ queryData, dbConnection, mSchema, mName, onClose }: AddModal
         if (result.success) {
             toast.success('data added')
             let mNewData: any
-            if (result.data.data) {
+            if (dbConnection.type === DBConnType.POSTGRES && result.data.data) {
                 mNewData = result.data.data
             } else {
                 mNewData = { ...newData, ctid: result.data.newId }
