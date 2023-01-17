@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -21,7 +22,14 @@ func createMongoConnectionURI(scheme string, host string, port uint16, user, pas
 		usernamePassword = user + ":" + password + "@"
 	}
 	if scheme == "mongodb" {
-		return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port))
+		// Adding support to connect to Azure CosmosDB using MongoDB API.
+		// According to official docs, the connection string should pass
+		// ssl=true param to connect.
+		if strings.Contains(host, ".mongo.cosmos.azure.com") {
+			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port)) + "/?ssl=true"
+		} else {
+			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port))
+		}
 	} else if scheme == "mongodb+srv" {
 		return "mongodb+srv://" + usernamePassword + host
 	}
