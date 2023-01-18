@@ -16,6 +16,7 @@ type DBConnection struct {
 	SSHUser     string
 	SSHPassword string
 	SSHKeyFile  string
+	UseSSL      bool
 }
 
 const (

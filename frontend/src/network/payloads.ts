@@ -15,4 +15,5 @@ export interface AddDBConnPayload {
     sshUser: string
     sshPassword: string
     sshKeyFile: string
+    useSSL: boolean
 }

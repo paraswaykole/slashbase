@@ -32,6 +32,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
     const [dbSSHKeyFile, setSSHKeyFile] = useState('')
     const [addingError, setAddingError] = useState(false)
     const [adding, setAdding] = useState(false)
+    const [dbUseSSL, setDBUseSSL] = useState(false)
 
     if (!project) {
         return <h1>Project not found</h1>
@@ -58,6 +59,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
             sshUser: dbSSHUser,
             sshPassword: dbSSHPassword,
             sshKeyFile: dbSSHKeyFile,
+            useSSL: dbUseSSL,
         }
         try {
             await dispatch(addNewDBConn(payload)).unwrap()
@@ -190,6 +192,17 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         </select>
                     </div>
                 </div>
+                {dbType === DBConnType.MONGO && <div className="field">
+                    <label className="checkbox">
+                        <input
+                            type="checkbox"
+                            defaultChecked={false}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setDBUseSSL(e.target.checked) }} />
+                        &nbsp;Enable SSL
+                        <span className="help">If you are connecting to database which enforce/require SSL connection. (Example: Azure CosmosDB)</span>
+                    </label>
+                </div>}
+
                 {dbUseSSH !== DBConnectionUseSSHType.NONE &&
                     <React.Fragment>
                         <div className="field">
