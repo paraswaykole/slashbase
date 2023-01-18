@@ -28,11 +28,12 @@ func (DBConnectionHandlers) CreateDBConnection(c *gin.Context) {
 		SSHUser     string `json:"sshUser"`
 		SSHPassword string `json:"sshPassword"`
 		SSHKeyFile  string `json:"sshKeyFile"`
+		UseSSL      bool   `json:"useSSL"`
 	}
 	c.BindJSON(&createBody)
 
 	dbConn, err := dbConnController.CreateDBConnection(createBody.ProjectID, createBody.Name, createBody.Type, createBody.Scheme, createBody.Host, createBody.Port,
-		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile)
+		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile, createBody.UseSSL)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

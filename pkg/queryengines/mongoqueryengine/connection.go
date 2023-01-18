@@ -15,20 +15,27 @@ type mongoClientInstance struct {
 	LastUsed            time.Time
 }
 
-func createMongoConnectionURI(scheme string, host string, port uint16, user, password string) string {
+func createMongoConnectionURI(scheme string, host string, port uint16, user, password string, useSSL bool) string {
 	usernamePassword := ""
 	if user != "" && password != "" {
 		usernamePassword = user + ":" + password + "@"
 	}
 	if scheme == "mongodb" {
-		return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port))
+		// Adding support to connect to Azure CosmosDB using MongoDB API.
+		// According to official docs, the connection string should pass
+		// ssl=true param to connect.
+		if useSSL == true {
+			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port)) + "/?ssl=true"
+		} else {
+			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port))
+		}
 	} else if scheme == "mongodb+srv" {
 		return "mongodb+srv://" + usernamePassword + host
 	}
 	return ""
 }
 
-func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host string, port uint16, user, password string) (c *mongo.Client, err error) {
+func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host string, port uint16, user, password string, useSSL bool) (c *mongo.Client, err error) {
 	if mClientInstance, exists := mEngine.openClients[dbConnectionId]; exists {
 		mEngine.openClients[dbConnectionId] = mongoClientInstance{
 			mongoClientInstance: mClientInstance.mongoClientInstance,
@@ -36,7 +43,7 @@ func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host stri
 		}
 		return mClientInstance.mongoClientInstance, nil
 	}
-	connectionURI := createMongoConnectionURI(scheme, host, port, user, password)
+	connectionURI := createMongoConnectionURI(scheme, host, port, user, password, useSSL)
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(connectionURI))
 	if err != nil {
 		err = fmt.Errorf("unable to connect to database: %v", err)

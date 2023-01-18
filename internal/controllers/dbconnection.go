@@ -25,10 +25,11 @@ func (DBConnectionController) CreateDBConnection(
 	sshHost string,
 	sshUser string,
 	sshPassword string,
-	sshKeyFile string) (*models.DBConnection, error) {
+	sshKeyFile string,
+	useSSL bool) (*models.DBConnection, error) {
 
 	dbConn, err := models.NewDBConnection(projectID, name, dbtype, scheme, host, port,
-		user, password, dbName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile)
+		user, password, dbName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile, useSSL)
 	if err != nil {
 		return nil, err
 	}
