@@ -29,6 +29,7 @@
 Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports MySQL, PostgreSQL and MongoDB.
 
 It is in beta (v0.5), help us make it better by sending your feedback and reach a stable (v1.0) version.
+> Star 🌟 & watch 👀 the repository to get updates.
 
 ## Features:
 
