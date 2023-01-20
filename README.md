@@ -26,9 +26,10 @@
 
 # About
 
-Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports PostgreSQL and MongoDB.
+Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports MySQL, PostgreSQL and MongoDB.
 
-It is in beta (v0.4), help us make it better by sending your feedback and reach a stable (v1.0) version.
+It is in beta (v0.5), help us make it better by sending your feedback and reach a stable (v1.0) version.
+> Star 🌟 & watch 👀 the repository to get updates.
 
 ## Features:
 
@@ -40,10 +41,11 @@ It is in beta (v0.4), help us make it better by sending your feedback and reach 
 - **📊 Create Charts**: Create charts from your query results.
 - **🗂 Projects**: Organise all database connections into various projects.
 - **📕 Query Cheatsheets**: Search for query commands right inside IDE, no need to search online when you forget query syntax.
-- **✅ Database Support**: PostgreSQL and MongoDB.
+- **✅ Database Support**: MySQL, PostgreSQL and MongoDB.
 
 ### In browser
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Slashbase IDE" width="100%">
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
 
 ### In terminal
 <p align="center">
@@ -126,7 +128,7 @@ Join our community on [discord](https://discord.gg/U6fXgm3FAX) and [bip](https:/
 ### Database Support
 - ✅ PostgreSQL Query Engine
 - ✅ MongoDB Query Engine
-- ☑️ MySQL Query Engine
+- ✅ MySQL Query Engine
 - ☑️ SQLite Query Engine
 - ☑️ Redis Query Engine
 
