@@ -15,7 +15,7 @@ type Project struct {
 
 func NewProject(name string) *Project {
 	return &Project{
-		ID:   uuid.NewString(),
+		ID:   uuid.New().String(),
 		Name: name,
 	}
 }

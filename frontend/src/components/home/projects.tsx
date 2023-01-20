@@ -4,6 +4,7 @@ import { useAppSelector } from '../../redux/hooks'
 import { selectProjects } from '../../redux/projectsSlice'
 import CreateNewProjectCard from '../cards/projectcard/createprojectcard'
 import ProjectCard from '../cards/projectcard/projectcard'
+import emptyStateProjectImg from '../../assets/images/empty-state-project.svg'
 
 
 const Projects: FunctionComponent<{}> = () => {
@@ -24,7 +25,7 @@ const Projects: FunctionComponent<{}> = () => {
         <React.Fragment>
             <h1>Projects</h1>
             {projects.length === 0 && <div className="empty-state">
-                <img className="empty-state-image" src="/static/images/empty-state-project.svg" />
+                <img className="empty-state-image" src={emptyStateProjectImg} />
                 <h2>No Projects</h2>
                 <p>Create a new project to get started</p>
                 <hr />

@@ -6,6 +6,7 @@ import Constants from '../../constants'
 import { DBConnection, Project } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { deleteDBConnectionInProject, getDBConnectionsInProjects, selectDBConnectionsInProject, selectProjects } from '../../redux/projectsSlice'
+import emptyStateDatabaseImg from '../../assets/images/empty-state-database.svg'
 
 const ProjectPage: FunctionComponent<{}> = () => {
 
@@ -33,7 +34,7 @@ const ProjectPage: FunctionComponent<{}> = () => {
         <React.Fragment>
             <h1>Showing Databases in {project?.name}</h1>
             {project && databases.length === 0 && <div className="empty-state">
-                <img className="empty-state-image" src="/static/images/empty-state-database.svg" />
+                <img className="empty-state-image" src={emptyStateDatabaseImg} />
                 <h2>No Database Connections</h2>
                 <p>Add a new database connection and connect to the database</p>
                 <hr />
