@@ -8,7 +8,9 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { selectProjects } from '../../redux/projectsSlice'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
+import utils from '../../lib/utils'
 
+declare var window: any;
 
 type HeaderPropType = {}
 
@@ -108,7 +110,7 @@ const Header = (_: HeaderPropType) => {
                     <OutsideClickHandler onOutsideClick={() => { setIsShowingDropDown(false) }}>
                         <div className="dropdown-menu" role="menu">
                             <div className="dropdown-content">
-                                <a href={Constants.EXTERNAL_PATHS.CHANGELOG} target="_blank" className="dropdown-item">
+                                <a onClick={() => { utils.openInBrowser(Constants.EXTERNAL_PATHS.CHANGELOG) }} className="dropdown-item">
                                     What&apos;s New?
                                 </a>
                                 <hr className="dropdown-divider" />
