@@ -12,6 +12,9 @@
   <a href="https://discord.gg/U6fXgm3FAX">
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
   </a>
+  <a href="https://www.codefactor.io/repository/github/slashbaseide/slashbase">
+    <img src="https://www.codefactor.io/repository/github/slashbaseide/slashbase/badge" alt="CodeFactor" />
+   </a>
 </p>
 <p align="center">
   <a href="https://discord.gg/U6fXgm3FAX">Join Discord</a>
