@@ -14,11 +14,11 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://discord.gg/U6fXgm3FAX">Join Discord Community</a>
+  <a href="https://discord.gg/U6fXgm3FAX">Join Discord</a>
   ·
-  <a href="https://slashbase.bip.wiki">Explore the docs</a>
+  <a href="https://slashbase.bip.wiki">Read docs</a>
   ·
-  <a href="https://slashbase.com/updates">Read Updates</a>
+  <a href="https://slashbase.com/updates">What's new</a>
   <br/><br/>
   <a href="#installation" rel="dofollow"><strong>Install Now »</strong></a>
 </p>
