@@ -1,8 +1,9 @@
-package main
+package app
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/slashbaseide/slashbase/internal/config"
 )
 
 // App struct
@@ -17,11 +18,11 @@ func NewApp() *App {
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
+func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s from Slashbase!", name)
+// Version returns a greeting for the given name
+func (a *App) Version() string {
+	return config.GetConfig().Version
 }

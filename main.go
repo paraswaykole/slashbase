@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 
+	"github.com/slashbaseide/slashbase/internal/app"
 	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/db"
 	"github.com/slashbaseide/slashbase/internal/server"
@@ -29,7 +30,7 @@ func main() {
 	server.Init()
 
 	// Create an instance of the app structure
-	app := NewApp()
+	app := app.NewApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -40,7 +41,7 @@ func main() {
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
+		OnStartup:        app.Startup,
 		Bind: []interface{}{
 			app,
 		},
