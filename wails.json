@@ -1,0 +1,19 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Slashbase",
+  "outputfilename": "Slashbase",
+  "frontend:install": "yarn install",
+  "frontend:build": "yarn build",
+  "frontend:dev:watcher": "yarn dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Slashbase",
+    "email": "slashbaseide@gmail.com"
+  },
+  "info": {
+    "productName": "Slashbase",
+    "productVersion": "v0.6.0",
+    "copyright": "Copyright © Slashbase.com",
+    "comments": "A modern lightweight database IDE"
+  }
+}

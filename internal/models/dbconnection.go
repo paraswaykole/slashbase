@@ -61,7 +61,7 @@ func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbh
 	}
 
 	return &DBConnection{
-		ID:          uuid.NewString(),
+		ID:          uuid.New().String(),
 		Name:        name,
 		ProjectID:   projectID,
 		Type:        dbtype,
