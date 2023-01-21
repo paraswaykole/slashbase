@@ -9,13 +9,13 @@ import { Provider } from 'react-redux'
 import store from './redux/store'
 import posthog from 'posthog-js'
 
-// posthog.init(
-//     String(process.env.REACT_APP_POSTHOG_KEY),
-//     {
-//         api_host: process.env.REACT_APP_POSTHOG_API_HOST,
-//         capture_pageview: false
-//     }
-// )
+posthog.init(
+    String(import.meta.env.VITE_POSTHOG_KEY),
+    {
+        api_host: import.meta.env.VITE_POSTHOG_API_HOST,
+        capture_pageview: false
+    }
+)
 
 const container = document.getElementById('root')
 
