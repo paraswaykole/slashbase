@@ -97,7 +97,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         </div>
                     </div>
                 </div>
-                {dbType == DBConnType.MONGO && <div className="field">
+                {dbType === DBConnType.MONGO && <div className="field">
                     <label className="label">Scheme:</label>
                     <div className="control">
                         <div className="select">
