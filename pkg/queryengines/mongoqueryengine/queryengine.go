@@ -41,7 +41,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		dbConn.DBPort = fmt.Sprintf("%d", sshTun.GetLocalEndpoint().Port)
 	}
 	port, _ = strconv.Atoi(string(dbConn.DBPort))
-	conn, err := mqe.getConnection(dbConn.ID, string(dbConn.DBScheme), string(dbConn.DBHost), uint16(port), string(dbConn.DBUser), string(dbConn.DBPassword))
+	conn, err := mqe.getConnection(dbConn.ID, string(dbConn.DBScheme), string(dbConn.DBHost), uint16(port), string(dbConn.DBUser), string(dbConn.DBPassword), dbConn.UseSSL)
 	if err != nil {
 		return nil, err
 	}

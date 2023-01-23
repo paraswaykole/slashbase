@@ -16,7 +16,7 @@ type DBQueryLog struct {
 
 func NewQueryLog(dbConnectionID string, query string) *DBQueryLog {
 	return &DBQueryLog{
-		ID:             uuid.NewString(),
+		ID:             uuid.New().String(),
 		Query:          query,
 		DBConnectionID: dbConnectionID,
 	}

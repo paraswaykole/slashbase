@@ -27,7 +27,7 @@ export const getAllDBConnections = createAsyncThunk(
   },
   {
     condition: (payload: { force?: boolean }, { getState }: any) => {
-      if (payload?.force == true) {
+      if (payload?.force === true) {
         return true
       }
       const { dbConnections, isFetching } = getState()['allDBConnections'] as AllDBConnectionsState

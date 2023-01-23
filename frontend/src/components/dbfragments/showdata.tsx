@@ -39,7 +39,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
 
 
     useEffect(() => {
-        const dModel = dbDataModels.find(x => x.schemaName == mschema && x.name == mname)
+        const dModel = dbDataModels.find(x => x.schemaName === mschema && x.name === mname)
         if (dModel) {
             setDataModel(dModel)
         }

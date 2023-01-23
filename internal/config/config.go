@@ -37,25 +37,26 @@ func GetConfig() *AppConfig {
 	return &config
 }
 
-func GetAppEnvFilePath() string {
+func getAppDataPath() string {
 	var filePath string
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
 	if runtime.GOOS == "windows" {
-		// Get the %LOCALAPPDATA% path
-		localAppData := os.Getenv("LOCALAPPDATA")
-		// Set the file name and path
-		filePath = filepath.Join(localAppData, app_name, app_env_file)
+		filePath = filepath.Join(homeDir, "AppData", "Local", app_name)
 	} else if runtime.GOOS == "darwin" {
-		// Get the user's home directory
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			panic(err)
-		}
-		filePath = filepath.Join(homeDir, "Library", "Application Support", app_name, app_env_file)
+		filePath = filepath.Join(homeDir, "Library", "Application Support", app_name)
 	} else if runtime.GOOS == "linux" {
-		filePath = filepath.Join("/usr/local", app_name, app_env_file)
+		filePath = filepath.Join(homeDir, "."+app_name)
 	} else {
 		panic(errors.New("not implemented"))
 	}
+	return filePath
+}
+
+func GetAppEnvFilePath() string {
+	filePath := filepath.Join(getAppDataPath(), app_env_file)
 	err := os.MkdirAll(filepath.Dir(filePath), 0700)
 	if err != nil {
 		panic(err)
@@ -73,24 +74,7 @@ func GetAppDatabaseFilePath() string {
 	if !IsLive() {
 		return app_db_file
 	}
-	var filePath string
-	if runtime.GOOS == "windows" {
-		// Get the %LOCALAPPDATA% path
-		localAppData := os.Getenv("LOCALAPPDATA")
-		// Set the file name and path
-		filePath = filepath.Join(localAppData, app_name, app_db_file)
-	} else if runtime.GOOS == "darwin" {
-		// Get the user's home directory
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			panic(err)
-		}
-		filePath = filepath.Join(homeDir, "Library", "Application Support", app_name, app_db_file)
-	} else if runtime.GOOS == "linux" {
-		filePath = filepath.Join("/usr/local", app_name, app_db_file)
-	} else {
-		panic(errors.New("not implemented"))
-	}
+	filePath := filepath.Join(getAppDataPath(), app_db_file)
 	err := os.MkdirAll(filepath.Dir(filePath), 0700)
 	if err != nil {
 		panic(err)

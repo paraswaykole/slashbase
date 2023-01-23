@@ -19,7 +19,7 @@ type DBQuery struct {
 
 func NewQuery(name string, query string, dbConnectionID string) *DBQuery {
 	return &DBQuery{
-		ID:             uuid.NewString(),
+		ID:             uuid.New().String(),
 		Name:           name,
 		Query:          query,
 		DBConnectionID: dbConnectionID,

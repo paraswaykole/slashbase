@@ -29,13 +29,14 @@ type DBConnection struct {
 	SSHUser     sbsql.CryptedData `gorm:"type:text"`
 	SSHPassword sbsql.CryptedData `gorm:"type:text"`
 	SSHKeyFile  sbsql.CryptedData `gorm:"type:text"`
+	UseSSL      bool              `gorm:"type:bool"`
 	CreatedAt   time.Time         `gorm:"autoCreateTime"`
 	UpdatedAt   time.Time         `gorm:"autoUpdateTime"`
 
 	Project Project `gorm:"foreignkey:ProjectID"`
 }
 
-func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string) (*DBConnection, error) {
+func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbhost, dbport, dbuser, dbpassword, databaseName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile string, useSSL bool) (*DBConnection, error) {
 
 	if !utils.ContainsString([]string{qemodels.DBUSESSH_NONE, qemodels.DBUSESSH_PASSWORD, qemodels.DBUSESSH_KEYFILE, qemodels.DBUSESSH_PASSKEYFILE}, useSSH) {
 		return nil, errors.New("useSSH is not correct")
@@ -60,7 +61,7 @@ func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbh
 	}
 
 	return &DBConnection{
-		ID:          uuid.NewString(),
+		ID:          uuid.New().String(),
 		Name:        name,
 		ProjectID:   projectID,
 		Type:        dbtype,
@@ -76,6 +77,7 @@ func NewDBConnection(projectID string, name string, dbtype string, dbscheme, dbh
 		SSHUser:     sbsql.CryptedData(sshUser),
 		SSHPassword: sbsql.CryptedData(sshPassword),
 		SSHKeyFile:  sbsql.CryptedData(sshKeyFile),
+		UseSSL:      useSSL,
 	}, nil
 }
 
@@ -100,5 +102,6 @@ func (dbConn *DBConnection) ToQEConnection() *qemodels.DBConnection {
 		SSHUser:     string(dbConn.SSHUser),
 		SSHPassword: string(dbConn.SSHPassword),
 		SSHKeyFile:  string(dbConn.SSHKeyFile),
+		UseSSL:      dbConn.UseSSL,
 	}
 }

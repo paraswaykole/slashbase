@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch } from '../../redux/hooks'
+import logo from '../../assets/images/logo-icon.svg'
 
 
 
@@ -11,7 +12,7 @@ const WelcomeCard: FunctionComponent<{}> = () => {
         <React.Fragment>
             <div className='card'>
                 <div className="card-content">
-                    <img src="/logo-icon.svg" width={45} alt="slashbase logo" />
+                    <img src={logo} width={45} alt="slashbase logo" />
                     <h1>Welcome to Slashbase!</h1>
                     <hr />
                     <div>

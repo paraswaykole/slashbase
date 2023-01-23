@@ -2,6 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
+  overflow: hidden !important;
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
@@ -61,7 +62,6 @@ code {
   width: 100%;
   min-height: 100vh;
   background: #fcfaf7;
-  position: absolute;
 }
 
 .appcontent {
