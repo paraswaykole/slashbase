@@ -50,11 +50,6 @@ It is in beta (v0.5), help us make it better by sending your feedback and reach 
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
 
-### In terminal
-<p align="center">
-  <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/slashbase-cli.gif" alt="Slashbase CLI" width="75%">
-</p>
-
 # Installation
 
 Follow the steps below to download & start the app:
