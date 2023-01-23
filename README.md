@@ -29,14 +29,14 @@
 
 # About
 
-Slashbase is a modern in-browser database IDE & CLI for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts, right from your browser. Supports MySQL, PostgreSQL and MongoDB.
+Slashbase is a modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts. Supports MySQL, PostgreSQL and MongoDB.
 
 It is in beta (v0.5), help us make it better by sending your feedback and reach a stable (v1.0) version.
 > Star 🌟 & watch 👀 the repository to get updates.
 
 ## Features:
 
-- **🧑‍💻 Browser & CLI based**: Use as IDE in your browser or as CLI in terminal.
+- **🧑‍💻 Desktop App**: Use as IDE as standalone desktop app.
 - **🪄 Modern Interface**: With a modern interface, it is easy to use.
 - **🪶 Lightweight**: Doesn't take much space on your system.
 - **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
@@ -57,66 +57,12 @@ It is in beta (v0.5), help us make it better by sending your feedback and reach 
 
 # Installation
 
-The app should be installed on your desktop/laptop and should used as a part of your local development enviroment. Follow the steps below to download & start the app:
+Follow the steps below to download & start the app:
 
-## Mac OS
-
-### Using Homebrew
-```
-brew install slashbaseide/brew/slashbase
-```
-
-### Download Binary
+### Download App
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
-2. Run `./slashbase` on terminal to start the app.
+2. Double click the Slashbase file to open the app on Window and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
-## Linux
-
-### Download Binary
-1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
-2. Run `./slashbase` on terminal to start the app.
-
-## Windows
-
-### Using Scoop
-
-```
-scoop bucket add kulfi-scoop https://github.com/Animesh-Ghosh/kulfi-scoop
-scoop install slashbase
-```
-
-If you don't have scoop installed on windows:
-```
-iwr -useb get.scoop.sh | iex
-```
-
-### Download Binary
-1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
-2. Run `slashbase` on cmd terminal to start the app.
-
-# Usage
-
-## Slashbase CLI
-
-Run slashbase:
-```
-slashbase
-```
-
-Check slashbase version:
-```
-slashbase version
-```
-
-View slashbase help:
-```
-slashbase help
-```
-
-## Slashbase IDE
-To connect to Slashbase IDE:
-1. Make sure Slashbase is running
-2. Visit http://localhost:22022
 
 # Documentation
 
