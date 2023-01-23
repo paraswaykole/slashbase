@@ -36,7 +36,7 @@ It is in beta (v0.5), help us make it better by sending your feedback and reach 
 
 ## Features:
 
-- **🧑‍💻 Desktop App**: Use as IDE as standalone desktop app.
+- **🧑‍💻 Desktop App**: Use the IDE as standalone desktop app.
 - **🪄 Modern Interface**: With a modern interface, it is easy to use.
 - **🪶 Lightweight**: Doesn't take much space on your system.
 - **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
