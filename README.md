@@ -59,7 +59,6 @@ It is in beta (v0.5), help us make it better by sending your feedback and reach 
 
 Follow the steps below to download & start the app:
 
-### Download App
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Double click the Slashbase file to open the app on Window and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
