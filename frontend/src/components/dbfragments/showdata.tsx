@@ -33,7 +33,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const queryData = useAppSelector(selectQueryData)
     const [queryOffset, setQueryOffset] = useState(0)
     const [queryCount, setQueryCount] = useState<number | undefined>(undefined)
-    const [queryLimit] = useState(dbConnection ? dbConnection.type === DBConnType.POSTGRES ? 200 : 50 : 100)
+    const [queryLimit] = useState(dbConnection ? (dbConnection.type === DBConnType.POSTGRES || dbConnection.type === DBConnType.MYSQL) ? 200 : 50 : 100)
     const [queryFilter, setQueryFilter] = useState<string[] | undefined>(undefined)
     const [querySort, setQuerySort] = useState<string[] | undefined>(undefined)
 
