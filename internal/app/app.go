@@ -22,7 +22,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Version returns a greeting for the given name
-func (a *App) Version() string {
-	return config.GetConfig().Version
+// SecurityKey return security key to use with app server.
+func (a *App) SecurityKey() string {
+	return config.GetConfig().SecurityKey
 }

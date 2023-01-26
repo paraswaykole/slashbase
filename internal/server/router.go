@@ -14,8 +14,12 @@ import (
 func NewRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Recovery())
-	router.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "X-Security-Key")
+	corsConfig.AllowAllOrigins = true
+	router.Use(cors.New(corsConfig))
 	api := router.Group("/api/v1")
+	api.Use(securityCheck())
 	{
 		api.GET("health", healthCheck)
 		projectGroup := api.Group("project")
@@ -97,5 +101,19 @@ func serveApp(c *gin.Context) {
 		}
 		c.String(http.StatusNotFound, "please check your internet connection to load the web IDE.")
 		return
+	}
+}
+
+func securityCheck() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.GetHeader("X-Security-Key") != config.GetConfig().SecurityKey {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"error":   "Unauthorized",
+			})
+			c.Abort()
+			return
+		}
+		c.Next()
 	}
 }

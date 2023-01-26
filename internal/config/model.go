@@ -2,6 +2,8 @@ package config
 
 import (
 	"os"
+
+	"github.com/slashbaseide/slashbase/internal/utils"
 )
 
 type AppConfig struct {
@@ -9,6 +11,7 @@ type AppConfig struct {
 	BuildName         string
 	Port              string
 	CryptedDataSecret string
+	SecurityKey       string
 }
 
 func newConfig(buildName, version string) AppConfig {
@@ -17,5 +20,6 @@ func newConfig(buildName, version string) AppConfig {
 		BuildName:         buildName,
 		Port:              DEFAULT_SERVER_PORT,
 		CryptedDataSecret: os.Getenv("CRYPTED_DATA_SECRET"),
+		SecurityKey:       utils.RandString(25),
 	}
 }
