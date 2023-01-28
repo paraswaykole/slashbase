@@ -20,11 +20,11 @@ To contribute code to the repository, you need to setup the development environm
 
 1. Clone or Fork-Clone the GitHub repo and open it in your preferred IDE (VS-Code recommended).
 2. Go to the project root directory and copy the file at development.env.sample and paste as development.env in the root directory of the project.
-3. Open terminal at the project root directory & do `cd frontend`, then do `yarn install`.
-4. Open terminal at the project root directory & run `go run main.go` to run go backend server & `cd frontend` & `yarn start` to run frontend react. 
-5. The IDE is running at http://localhost:22022.
+3. Install wails by following the steps on [wails.io website](https://wails.io/docs/gettingstarted/installation).
+4. Run `wails doctor` to check if you have everything needed.
+4. Open terminal at the project root directory & run `wails dev` to start dev app.
 6. Create a new branch and make changes to the code.
-7. Test and make sure the code runs
+7. Run `wails dev` to test changes and make sure the changed code runs.
 8. Push your code and send PR.
 
 ## Report a bug
