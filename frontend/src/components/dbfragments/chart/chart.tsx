@@ -59,14 +59,14 @@ const Chart = ({ dbConn, queryData }: ChartPropType) => {
     const selectXAxisRef = useRef<HTMLSelectElement>(null)
     const selectYAxisRef = useRef<HTMLSelectElement>(null)
 
-    const keys = dbConn.type === DBConnType.POSTGRES ? queryData.columns : queryData.keys
+    const keys = (dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) ? queryData.columns : queryData.keys
 
     const createChart = () => {
         const xaxis = selectXAxisRef.current!.value
         const yaxis = selectYAxisRef.current!.value
         let labels: string[]
         let data: number[]
-        if (dbConn.type === DBConnType.POSTGRES) {
+        if (dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) {
             const xColIdx = keys.findIndex(x => x === xaxis)
             const yColIdx = keys.findIndex(y => y === yaxis)
             labels = queryData.rows.map(row => row[xColIdx])

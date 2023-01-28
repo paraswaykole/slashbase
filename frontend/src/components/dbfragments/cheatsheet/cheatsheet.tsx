@@ -16,7 +16,7 @@ const CheatSheetModal = ({ dbType, onClose }: CheatSheetPropType) => {
 
     const searchInputRef = useRef<HTMLInputElement | null>(null)
 
-    const cmdList = dbType === DBConnType.POSTGRES ? pgcommandList : mongoCommandList
+    const cmdList = dbType === DBConnType.POSTGRES ? pgcommandList : dbType === DBConnType.MYSQL ? mysqlcommandList : mongoCommandList
 
     const searchIndex = lunr(function () {
         this.field('title', { boost: 10 })
@@ -34,7 +34,6 @@ const CheatSheetModal = ({ dbType, onClose }: CheatSheetPropType) => {
             return
         }
         setSearch(searchIndex.search(queryString))
-        console.log(searchIndex.search(queryString))
     }
 
     return (<React.Fragment>
@@ -82,6 +81,40 @@ const CheatSheetModal = ({ dbType, onClose }: CheatSheetPropType) => {
 
 export default CheatSheetModal
 
+
+const mysqlcommandList = [
+    {
+        "title": "Select all",
+        "description": "Gets all the columns and rows from the table.",
+        "command": "SELECT * FROM <table name>;"
+    },
+    {
+        "title": "Select only given column names",
+        "description": "Gets only the given columns and all rows from the table.",
+        "command": "SELECT <column name 1>, <column name 2>, <column name 3> FROM <table name>;"
+    },
+    {
+        "title": "Select with column alias",
+        "description": "Gets only the given columns and all rows from the table.",
+        "command": "SELECT <column name> AS <alias name> FROM <table name>;"
+    },
+    {
+        "title": "Select Distinct",
+        "description": "Gets all rows with unique values in given column from the table",
+        "command": "SELECT DISTINCT <column name> FROM <table name>;"
+    },
+    {
+        "title": "Select with limit",
+        "description": "Gets all the columns from the table with first n number of rows",
+        "command": "SELECT * FROM <table name> LIMIT <number>;"
+    },
+    {
+        "title": "Select with limit and offset",
+        "description": "Gets all the columns and n number of rows starting from offset from the table.",
+        "command": "SELECT * FROM <table name> LIMIT <limit number> OFFSET <offset number>;"
+    },
+    // TODO: to be updated
+]
 
 const pgcommandList = [
     {
