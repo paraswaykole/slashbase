@@ -50,6 +50,11 @@ It is in beta (v0.6), help us make it better by sending your feedback and reach 
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
 
+
+# Slashbase Cloud
+
+Use Slashbase as a cloud-hosted in-browser collaborative database IDE. Visit [slashbase.com](https://slashbase.com)
+
 # Installation
 
 ## Direct Download
