@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/dao"
+	"github.com/slashbaseide/slashbase/internal/models"
 )
 
 // App struct
@@ -25,4 +27,13 @@ func (a *App) Startup(ctx context.Context) {
 // SecurityKey return security key to use with app server.
 func (a *App) SecurityKey() string {
 	return config.GetConfig().SecurityKey
+}
+
+// AppID returns unqiue appid.
+func (a *App) AppID() string {
+	setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_APP_ID)
+	if err != nil {
+		return ""
+	}
+	return setting.Value
 }

@@ -7,15 +7,9 @@ import App from './App'
 import { BrowserRouter } from "react-router-dom"
 import { Provider } from 'react-redux'
 import store from './redux/store'
-import posthog from 'posthog-js'
+import product from './lib/product'
 
-posthog.init(
-    String(import.meta.env.VITE_POSTHOG_KEY),
-    {
-        api_host: import.meta.env.VITE_POSTHOG_API_HOST,
-        capture_pageview: false
-    }
-)
+product.posthogInit()
 
 const container = document.getElementById('root')
 
