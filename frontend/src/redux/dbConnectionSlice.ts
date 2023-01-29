@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { AppState } from './store'
 import { DBConnection, DBDataModel, DBQuery } from '../data/models'
 import apiService from '../network/apiService'
+import eventService from '../events/eventService'
 
 export interface DBConnectionState {
   dbConnection?: DBConnection
@@ -32,7 +33,7 @@ export const getDBConnection = createAsyncThunk(
         new: false
       }
     }
-    const result = await apiService.getSingleDBConnection(payload.dbConnId)
+    const result = await eventService.getSingleDBConnection(payload.dbConnId)
     if (result.success) {
       const dbConnection = result.data
       return {

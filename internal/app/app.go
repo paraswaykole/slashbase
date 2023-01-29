@@ -22,6 +22,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
+	setupEvents(ctx)
 }
 
 // SecurityKey return security key to use with app server.
