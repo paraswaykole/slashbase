@@ -1,7 +1,6 @@
 package server
 
 import (
-	"io"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -71,7 +70,6 @@ func NewRouter() *gin.Engine {
 			settingGroup.POST("/single", settingHandlers.UpdateSingleSetting)
 		}
 	}
-	router.NoRoute(serveApp)
 	return router
 
 }
@@ -81,27 +79,6 @@ func healthCheck(c *gin.Context) {
 		"success": true,
 		"version": config.GetConfig().Version,
 	})
-}
-
-func serveApp(c *gin.Context) {
-	appUrl := "http://localhost:3000"
-	if config.IsLive() {
-		appUrl = "https://local.slashbase.com"
-	}
-	if c.Request.Method == "GET" {
-		if resp, err := http.Get(appUrl + c.Request.URL.Path); err == nil {
-			body, err := io.ReadAll(resp.Body)
-			if err != nil {
-				c.String(http.StatusBadGateway, "bad gateway")
-				return
-			}
-			contentType := resp.Header.Get("Content-Type")
-			c.Data(http.StatusOK, contentType, body)
-			return
-		}
-		c.String(http.StatusNotFound, "please check your internet connection to load the web IDE.")
-		return
-	}
 }
 
 func securityCheck() gin.HandlerFunc {
