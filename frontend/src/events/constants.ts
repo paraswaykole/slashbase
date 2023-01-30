@@ -37,6 +37,14 @@ const Events: EventType = {
     GET_DBCONNECTIONS_BYPROJECT: {
         REQUEST: "event:get:dbconnections:byproject",
         RESPONSE: "response:get:dbconnections:byproject"
+    },
+    GETSINGLE_SETTING: {
+        REQUEST: "event:getsingle:setting",
+        RESPONSE: "response:getsingle:setting:[name]"
+    },
+    UPDATESINGLE_SETTING: {
+        REQUEST: "event:updatesingle:setting",
+        RESPONSE: "response:updatesingle:setting:[name]"
     }
 }
 

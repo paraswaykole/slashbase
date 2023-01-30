@@ -19,4 +19,8 @@ func setupEvents(ctx context.Context) {
 		dbConnectionEventListeners.GetSingleDBConnection(ctx)
 		dbConnectionEventListeners.GetDBConnectionsByProject(ctx)
 	}
+	if settingEventListeners := new(events.SettingEventListeners); true {
+		settingEventListeners.GetSingleSetting(ctx)
+		settingEventListeners.UpdateSingleSetting(ctx)
+	}
 }

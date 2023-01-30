@@ -53,6 +53,18 @@ const getDBConnectionsByProject = async function (projectId: string): Promise<Ap
     return response
 }
 
+const getSingleSetting = async function (name: string): Promise<ApiResult<any>> {
+    const response = responseEvent<ApiResult<any>>(Events.GETSINGLE_SETTING.RESPONSE.replaceAll("[name]", name))
+    EventsEmit(Events.GETSINGLE_SETTING.REQUEST, Events.GETSINGLE_SETTING.RESPONSE.replaceAll("[name]", name), name)
+    return response
+}
+
+const updateSingleSetting = async function (name: string, value: string): Promise<ApiResult<undefined>> {
+    const response = responseEvent<ApiResult<any>>(Events.UPDATESINGLE_SETTING.RESPONSE.replaceAll("[name]", name))
+    EventsEmit(Events.UPDATESINGLE_SETTING.REQUEST, Events.UPDATESINGLE_SETTING.RESPONSE.replaceAll("[name]", name), name, value)
+    return response
+}
+
 export default {
     getProjects,
     createNewProject,
@@ -62,4 +74,6 @@ export default {
     getSingleDBConnection,
     deleteDBConnection,
     getDBConnectionsByProject,
+    getSingleSetting,
+    updateSingleSetting,
 }
