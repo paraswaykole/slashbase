@@ -1,7 +1,6 @@
 import styles from './jsontable.module.scss'
 import React, { useRef, useState } from 'react'
 import { ApiResult, AddDataResponse, DBConnection, DBQueryData } from '../../../data/models'
-import apiService from '../../../network/apiService'
 import toast from 'react-hot-toast'
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'

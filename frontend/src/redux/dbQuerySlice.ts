@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { AppState } from './store'
 import { DBQuery } from '../data/models'
-import apiService from '../network/apiService'
+import eventService from '../events/eventService'
 
 
 export interface DBQueryState {
@@ -16,7 +16,7 @@ export const getDBQuery = createAsyncThunk(
   'dbQuery/getDBQuery',
   async (payload: any, { }: any) => {
     const { queryId } = payload
-    const result = await apiService.getSingleDBQuery(queryId)
+    const result = await eventService.getSingleDBQuery(queryId)
     return result
   }
 )
@@ -25,7 +25,7 @@ export const runQuery = createAsyncThunk(
   'dbQuery/runQuery',
   async (payload: any, { }: any) => {
     const { dbConnectionId, query } = payload
-    const result = await apiService.runQuery(dbConnectionId, query)
+    const result = await eventService.runQuery(dbConnectionId, query)
     return result
   }
 )

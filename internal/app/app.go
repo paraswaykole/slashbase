@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 
-	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
 )
@@ -22,11 +21,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
-}
-
-// SecurityKey return security key to use with app server.
-func (a *App) SecurityKey() string {
-	return config.GetConfig().SecurityKey
+	setupEvents(ctx)
 }
 
 // AppID returns unqiue appid.
