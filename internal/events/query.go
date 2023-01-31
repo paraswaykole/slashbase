@@ -180,7 +180,11 @@ func (QueryEventListeners) DeleteData(ctx context.Context) {
 	runtime.EventsOn(ctx, eventDeleteData, func(args ...interface{}) {
 		responseEventName := args[0].(string)
 		data := args[1].(map[string]interface{})
-		responseData, err := queryController.DeleteData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["ids"].([]string))
+		var ids []string
+		if data["ids"] != nil {
+			ids = utils.InterfaceArrayToStringArray(data["ids"].([]interface{}))
+		}
+		responseData, err := queryController.DeleteData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), ids)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,
@@ -218,7 +222,11 @@ func (QueryEventListeners) AddSingleDataModelIndex(ctx context.Context) {
 	runtime.EventsOn(ctx, eventAddSingleDataModelIndex, func(args ...interface{}) {
 		responseEventName := args[0].(string)
 		data := args[1].(map[string]interface{})
-		responseData, err := queryController.AddSingleDataModelIndex(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["indexName"].(string), data["fieldNames"].([]string), data["isUnique"].(bool))
+		var fieldNames []string
+		if data["fieldNames"] != nil {
+			fieldNames = utils.InterfaceArrayToStringArray(data["fieldNames"].([]interface{}))
+		}
+		responseData, err := queryController.AddSingleDataModelIndex(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["indexName"].(string), fieldNames, data["isUnique"].(bool))
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,
