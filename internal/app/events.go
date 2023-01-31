@@ -23,4 +23,22 @@ func setupEvents(ctx context.Context) {
 		settingEventListeners.GetSingleSetting(ctx)
 		settingEventListeners.UpdateSingleSetting(ctx)
 	}
+	if queryEventListeners := new(events.QueryEventListeners); true {
+		queryEventListeners.RunQuery(ctx)
+		queryEventListeners.SaveDBQuery(ctx)
+		queryEventListeners.GetDBQueriesInDBConnection(ctx)
+		queryEventListeners.GetSingleDBQuery(ctx)
+		queryEventListeners.DeleteDBQuery(ctx)
+		queryEventListeners.GetQueryHistoryInDBConnection(ctx)
+		queryEventListeners.GetData(ctx)
+		queryEventListeners.UpdateSingleData(ctx)
+		queryEventListeners.AddData(ctx)
+		queryEventListeners.DeleteData(ctx)
+		queryEventListeners.GetDataModels(ctx)
+		queryEventListeners.GetSingleDataModel(ctx)
+		queryEventListeners.AddSingleDataModelField(ctx)
+		queryEventListeners.DeleteSingleDataModelField(ctx)
+		queryEventListeners.AddSingleDataModelIndex(ctx)
+		queryEventListeners.DeleteSingleDataModelIndex(ctx)
+	}
 }

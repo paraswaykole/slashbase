@@ -45,6 +45,70 @@ const Events: EventType = {
     UPDATESINGLE_SETTING: {
         REQUEST: "event:updatesingle:setting",
         RESPONSE: "response:updatesingle:setting:[name]"
+    },
+    RUN_QUERY: {
+        REQUEST: "event:run:query",
+        RESPONSE: "response:run:query"
+    },
+    GET_DATA: {
+        REQUEST: "event:get:data",
+        RESPONSE: "response:get:data"
+    },
+    GET_DATAMODELS: {
+        REQUEST: "event:get:datamodels",
+        RESPONSE: "response:get:datamodels",
+    },
+    GETSINGLE_DATAMODEL: {
+        REQUEST: "event:getsingle:datamodel",
+        RESPONSE: "response:getsingle:datamodel"
+    },
+    ADDSINGLE_DATAMODELFIELD: {
+        REQUEST: "event:addsingle:datamodelfield",
+        RESPONSE: "response:addsingle:datamodelfield"
+    },
+    DELETESINGLE_DATAMODELFIELD: {
+        REQUEST: "event:deletesingle:datamodelfield",
+        RESPONSE: "response:deletesingle:datamodelfield"
+    },
+    ADD_DATA: {
+        REQUEST: "event:add:data",
+        RESPONSE: "response:add:data"
+    },
+    DELETE_DATA: {
+        REQUEST: "event:delete:data",
+        RESPONSE: "response:delete:data"
+    },
+    UPDATESINGLE_DATA: {
+        REQUEST: "event:updatesingle:data",
+        RESPONSE: "response:updatesingle:data"
+    },
+    ADDSINGLE_DATAMODELINDEX: {
+        REQUEST: "event:addsingle:datamodelindex",
+        RESPONSE: "response:addsingle:datamodelindex"
+    },
+    DELETESINGLE_DATAMODELINDEX: {
+        REQUEST: "event:deletesingle:datamodelindex",
+        RESPONSE: "response:deletesingle:datamodelindex"
+    },
+    SAVE_DBQUERY: {
+        REQUEST: "event:save:dbquery",
+        RESPONSE: "response:save:dbquery"
+    },
+    DELETE_DBQUERY: {
+        REQUEST: "event:delete:dbquery",
+        RESPONSE: "response:delete:dbquery"
+    },
+    GET_DBQUERIES_INDBCONNECTION: {
+        REQUEST: "event:get:dbqueries:indbconnection",
+        RESPONSE: "response:get:dbqueries:indbconnection"
+    },
+    GETSINGLE_DBQUERY: {
+        REQUEST: "event:getsingle:dbquery",
+        RESPONSE: "response:getsingle:dbquery"
+    },
+    GET_QUERYHISTORY_INDBCONNECTION: {
+        REQUEST: "event:get:queryhistory:indbconnection",
+        RESPONSE: "response:get:queryhistory:indbconnection"
     }
 }
 

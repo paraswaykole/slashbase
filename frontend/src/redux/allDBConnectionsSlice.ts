@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import type { AppState } from './store'
 import { DBConnection } from '../data/models'
-import { AddDBConnPayload } from '../network/payloads'
+import { AddDBConnPayload } from '../events/payloads'
 import eventService from '../events/eventService'
 
 export interface AllDBConnectionsState {

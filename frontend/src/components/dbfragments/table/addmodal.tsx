@@ -1,7 +1,6 @@
 import styles from './table.module.scss'
 import React, { useState } from 'react'
 import { ApiResult, AddDataResponse, DBConnection, DBQueryData } from '../../../data/models'
-import apiService from '../../../network/apiService'
 import toast from 'react-hot-toast'
 import { useAppDispatch } from '../../../redux/hooks'
 import { addDBData, setQueryData } from '../../../redux/dataModelSlice'

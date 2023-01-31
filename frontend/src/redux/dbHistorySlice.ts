@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { AppState } from './store'
 import { DBQueryLog } from '../data/models'
-import apiService from '../network/apiService'
+import eventService from '../events/eventService'
 
 
 export interface DBHistoryState {
@@ -19,7 +19,7 @@ export const getDBQueryLogs = createAsyncThunk(
   async (payload: any, { getState }: any) => {
     const { dbQueryLogsNext } = getState()['dbHistory'] as DBHistoryState
     const { dbConnId } = payload
-    const result = await apiService.getDBHistory(dbConnId, dbQueryLogsNext)
+    const result = await eventService.getDBHistory(dbConnId, dbQueryLogsNext)
     return result
   }
 )
