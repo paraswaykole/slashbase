@@ -2,7 +2,6 @@ package events
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/slashbaseide/slashbase/internal/controllers"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -22,7 +21,6 @@ func (SettingEventListeners) GetSingleSetting(ctx context.Context) {
 		responseEventName := args[0].(string)
 		name := args[1].(string)
 		value, err := settingController.GetSingleSetting(name)
-		fmt.Println("handling event", name, responseEventName)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,
@@ -43,7 +41,6 @@ func (SettingEventListeners) UpdateSingleSetting(ctx context.Context) {
 		name := args[1].(string)
 		value := args[2].(string)
 		err := settingController.UpdateSingleSetting(name, value)
-		fmt.Println("handling event", name, responseEventName)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,

@@ -3,10 +3,19 @@ package app
 import (
 	"context"
 
+	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/events"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func setupEvents(ctx context.Context) {
+	runtime.EventsOn(ctx, "event:check:health", func(args ...interface{}) {
+		responseEventName := args[0].(string)
+		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
+			"success": true,
+			"version": config.GetConfig().Version,
+		})
+	})
 	if projectEventListeners := new(events.ProjectEventListeners); true {
 		projectEventListeners.CreateProject(ctx)
 		projectEventListeners.GetProjects(ctx)

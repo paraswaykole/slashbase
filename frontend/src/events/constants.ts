@@ -6,6 +6,10 @@ interface EventType {
 }
 
 const Events: EventType = {
+    HEALTH_CHECK: {
+        REQUEST: "event:check:health",
+        RESPONSE: "response:check:health"
+    },
     CREATE_PROJECT: {
         REQUEST: "event:create:project",
         RESPONSE: "response:create:project"

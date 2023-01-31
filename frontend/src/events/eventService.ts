@@ -4,6 +4,12 @@ import Events from './constants'
 import { AddDBConnPayload } from './payloads'
 import responseEvent from './responseEvent'
 
+const getHealthCheck = async function (): Promise<any> {
+    const response = responseEvent<any>(Events.HEALTH_CHECK.RESPONSE)
+    EventsEmit(Events.HEALTH_CHECK.REQUEST, Events.HEALTH_CHECK.RESPONSE)
+    return response
+}
+
 const createNewProject = async function (projectName: string): Promise<ApiResult<Project>> {
     const response = responseEvent<ApiResult<Project>>(Events.CREATE_PROJECT.RESPONSE)
     EventsEmit(Events.CREATE_PROJECT.REQUEST, Events.CREATE_PROJECT.RESPONSE, projectName)
@@ -161,6 +167,7 @@ const updateSingleSetting = async function (name: string, value: string): Promis
 }
 
 export default {
+    getHealthCheck,
     getProjects,
     createNewProject,
     deleteProject,

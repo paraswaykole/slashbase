@@ -5,7 +5,3 @@
 export function AppID() {
   return window['go']['app']['App']['AppID']();
 }
-
-export function SecurityKey() {
-  return window['go']['app']['App']['SecurityKey']();
-}

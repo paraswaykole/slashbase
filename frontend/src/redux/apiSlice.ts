@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import eventService from '../events/eventService'
 
 import type { AppState } from './store'
 
@@ -17,10 +18,7 @@ const initialState: APIState = {
 export const connectLocal = createAsyncThunk(
   'api/connectLocal',
   async () => {
-    const response = {
-      success: true,
-      version: "todo",
-    }
+    const response = await eventService.getHealthCheck()
     return {
       isConnected: response.success,
       version: response.version,
