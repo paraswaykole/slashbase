@@ -7,9 +7,6 @@ import App from './App'
 import { BrowserRouter } from "react-router-dom"
 import { Provider } from 'react-redux'
 import store from './redux/store'
-import product from './lib/product'
-
-product.posthogInit()
 
 const container = document.getElementById('root')
 
