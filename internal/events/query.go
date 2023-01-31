@@ -59,10 +59,10 @@ func (QueryEventListeners) GetData(ctx context.Context) {
 		data := args[1].(map[string]interface{})
 		var filter, sort []string
 		if data["filter"] != nil {
-			filter = data["filter"].([]string)
+			filter = utils.InterfaceArrayToStringArray(data["filter"].([]interface{}))
 		}
 		if data["sort"] != nil {
-			sort = data["sort"].([]string)
+			sort = utils.InterfaceArrayToStringArray(data["sort"].([]interface{}))
 		}
 		responsedata, err := queryController.GetData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["fetchCount"].(bool), int(data["limit"].(float64)), int64(data["offset"].(float64)), filter, sort)
 		if err != nil {
