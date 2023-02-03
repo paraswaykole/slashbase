@@ -40,6 +40,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         [queryData]
     )
 
+    console.log("queryData", queryData)
     const displayColumns = queryData.columns.filter(col => col !== 'ctid')
     const ctidExists = queryData.columns.length !== displayColumns.length
 

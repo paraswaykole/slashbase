@@ -147,6 +147,12 @@ export const dataModelSlice = createSlice({
         state.isFetchingModel = false
         state.dataModel = action.payload.data
       })
+      .addCase(addDBDataModelField.fulfilled, (state) => {
+        state.queryData = undefined
+      })
+      .addCase(deleteDBDataModelField.fulfilled, (state) => {
+        state.queryData = undefined
+      })
   },
 })
 
