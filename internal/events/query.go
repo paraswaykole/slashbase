@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/slashbaseide/slashbase/internal/analytics"
 	"github.com/slashbaseide/slashbase/internal/controllers"
 	"github.com/slashbaseide/slashbase/internal/utils"
 	"github.com/slashbaseide/slashbase/internal/views"
@@ -38,6 +39,7 @@ func (QueryEventListeners) RunQuery(ctx context.Context) {
 		responseEventName := args[0].(string)
 		dbConnectionId := args[1].(string)
 		query := args[2].(string)
+		analytics.SendRunQueryEvent()
 		response, err := queryController.RunQuery(dbConnectionId, query)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
@@ -64,6 +66,7 @@ func (QueryEventListeners) GetData(ctx context.Context) {
 		if data["sort"] != nil {
 			sort = utils.InterfaceArrayToStringArray(data["sort"].([]interface{}))
 		}
+		analytics.SendLowCodeDataViewEvent()
 		responsedata, err := queryController.GetData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["fetchCount"].(bool), int(data["limit"].(float64)), int64(data["offset"].(float64)), filter, sort)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
@@ -104,6 +107,7 @@ func (QueryEventListeners) GetSingleDataModel(ctx context.Context) {
 		dbConnId := args[1].(string)
 		schema := args[2].(string)
 		name := args[3].(string)
+		analytics.SendLowCodeModelViewEvent()
 		data, err := queryController.GetSingleDataModel(dbConnId, schema, name)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
@@ -264,6 +268,7 @@ func (QueryEventListeners) SaveDBQuery(ctx context.Context) {
 	runtime.EventsOn(ctx, eventSaveDBQuery, func(args ...interface{}) {
 		responseEventName := args[0].(string)
 		data := args[1].(map[string]interface{})
+		analytics.SendSavedQueryEvent()
 		queryObj, err := queryController.SaveDBQuery(data["dbConnectionId"].(string), data["name"].(string), data["query"].(string), data["queryId"].(string))
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{

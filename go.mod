@@ -11,6 +11,7 @@ require (
 	github.com/jackc/pgtype v1.13.0
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/joho/godotenv v1.4.0
+	github.com/posthog/posthog-go v0.0.0-20221221115252-24dfed35d71a
 	github.com/tdewolff/parse/v2 v2.6.5
 	github.com/wailsapp/wails/v2 v2.3.1
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
@@ -74,6 +75,7 @@ require (
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/xdg-go/stringprep v1.0.3 // indirect
+	github.com/xtgo/uuid v0.0.0-20140804021211-a0b114877d4c // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/net v0.4.0 // indirect

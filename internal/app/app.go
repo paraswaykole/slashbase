@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 
+	"github.com/slashbaseide/slashbase/internal/analytics"
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
 )
@@ -22,6 +23,7 @@ func NewApp() *App {
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 	setupEvents(ctx)
+	analytics.SendTelemetryEvent()
 }
 
 // AppID returns unqiue appid.
