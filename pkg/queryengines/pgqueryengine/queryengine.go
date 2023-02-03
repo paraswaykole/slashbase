@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/pgqueryengine/pgxutils"
@@ -14,11 +15,13 @@ import (
 
 type PostgresQueryEngine struct {
 	openConnections map[string]pgxConnPoolInstance
+	mutex           *sync.Mutex
 }
 
 func InitPostgresQueryEngine() *PostgresQueryEngine {
 	return &PostgresQueryEngine{
 		openConnections: map[string]pgxConnPoolInstance{},
+		mutex:           &sync.Mutex{},
 	}
 }
 

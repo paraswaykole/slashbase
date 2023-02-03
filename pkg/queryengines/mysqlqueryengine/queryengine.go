@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/mysqlqueryengine/mysqlutils"
@@ -13,11 +14,13 @@ import (
 
 type MysqlQueryEngine struct {
 	openConnections map[string]mysqlInstance
+	mutex           *sync.Mutex
 }
 
 func InitMysqlQueryEngine() *MysqlQueryEngine {
 	return &MysqlQueryEngine{
 		openConnections: map[string]mysqlInstance{},
+		mutex:           &sync.Mutex{},
 	}
 }
 

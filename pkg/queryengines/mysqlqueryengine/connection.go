@@ -16,10 +16,12 @@ type mysqlInstance struct {
 
 func (myEngine *MysqlQueryEngine) getConnection(dbConnectionId, host string, port uint16, database, user, password string) (c *sql.DB, err error) {
 	if conn, exists := myEngine.openConnections[dbConnectionId]; exists {
+		myEngine.mutex.Lock()
 		myEngine.openConnections[dbConnectionId] = mysqlInstance{
 			mysqlInstance: conn.mysqlInstance,
 			LastUsed:      time.Now(),
 		}
+		myEngine.mutex.Unlock()
 		return conn.mysqlInstance, nil
 	}
 	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, strconv.Itoa(int(port)), database)
@@ -28,10 +30,12 @@ func (myEngine *MysqlQueryEngine) getConnection(dbConnectionId, host string, por
 		return nil, err
 	}
 	if dbConnectionId != "" {
+		myEngine.mutex.Lock()
 		myEngine.openConnections[dbConnectionId] = mysqlInstance{
 			mysqlInstance: db,
 			LastUsed:      time.Now(),
 		}
+		myEngine.mutex.Unlock()
 	}
 	return db, err
 }
@@ -41,7 +45,9 @@ func (myEngine *MysqlQueryEngine) RemoveUnusedConnections() {
 		now := time.Now()
 		diff := now.Sub(instance.LastUsed)
 		if diff.Minutes() > 20 {
+			myEngine.mutex.Lock()
 			delete(myEngine.openConnections, dbConnID)
+			myEngine.mutex.Unlock()
 			go instance.mysqlInstance.Close()
 		}
 	}

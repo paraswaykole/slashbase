@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/slashbaseide/slashbase/pkg/queryengines/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines/mongoqueryengine/mongoutils"
@@ -18,11 +19,13 @@ import (
 
 type MongoQueryEngine struct {
 	openClients map[string]mongoClientInstance
+	mutex       *sync.Mutex
 }
 
 func InitMongoQueryEngine() *MongoQueryEngine {
 	return &MongoQueryEngine{
 		openClients: map[string]mongoClientInstance{},
+		mutex:       &sync.Mutex{},
 	}
 }
 
