@@ -32,7 +32,7 @@ const AddModal = ({ queryData, dbConnection, mSchema, mName, onClose }: AddModal
             toast.success('data added')
             let mNewData: any
             if (dbConnection.type === DBConnType.POSTGRES && result.data.data) {
-                mNewData = result.data.data
+                mNewData = { ...result.data.data, 0: result.data.newId }
             } else {
                 mNewData = { ...newData, ctid: result.data.newId }
                 queryData.columns.forEach((col, i) => {
