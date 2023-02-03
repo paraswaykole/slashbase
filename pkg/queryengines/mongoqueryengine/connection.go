@@ -24,7 +24,7 @@ func createMongoConnectionURI(scheme string, host string, port uint16, user, pas
 		// Adding support to connect to Azure CosmosDB using MongoDB API.
 		// According to official docs, the connection string should pass
 		// ssl=true param to connect.
-		if useSSL == true {
+		if useSSL {
 			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port)) + "/?ssl=true"
 		} else {
 			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port))
