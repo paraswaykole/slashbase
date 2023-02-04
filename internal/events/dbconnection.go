@@ -23,6 +23,7 @@ const (
 func (DBConnectionEventListeners) CreateDBConnection(ctx context.Context) {
 	runtime.EventsOn(ctx, eventCreateDBConnection, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		dbConn, err := dbConnController.CreateDBConnection(data["projectId"].(string), data["name"].(string), data["type"].(string), data["scheme"].(string), data["host"].(string), data["port"].(string),
 			data["user"].(string), data["password"].(string), data["dbname"].(string), data["useSSH"].(string), data["sshHost"].(string), data["sshUser"].(string), data["sshPassword"].(string), data["sshKeyFile"].(string), data["useSSL"].(bool))
@@ -43,6 +44,7 @@ func (DBConnectionEventListeners) CreateDBConnection(ctx context.Context) {
 func (DBConnectionEventListeners) GetDBConnections(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetDBConnections, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConns, err := dbConnController.GetDBConnections()
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
@@ -65,6 +67,7 @@ func (DBConnectionEventListeners) GetDBConnections(ctx context.Context) {
 func (DBConnectionEventListeners) DeleteDBConnection(ctx context.Context) {
 	runtime.EventsOn(ctx, eventDeleteDBConnection, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConnID := args[1].(string)
 		err := dbConnController.DeleteDBConnection(dbConnID)
 		if err != nil {
@@ -84,6 +87,7 @@ func (DBConnectionEventListeners) DeleteDBConnection(ctx context.Context) {
 func (DBConnectionEventListeners) GetSingleDBConnection(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetSingleDBConnection, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConnID := args[1].(string)
 		dbConn, err := dbConnController.GetSingleDBConnection(dbConnID)
 		if err != nil {
@@ -103,6 +107,7 @@ func (DBConnectionEventListeners) GetSingleDBConnection(ctx context.Context) {
 func (DBConnectionEventListeners) GetDBConnectionsByProject(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetDBConnectionsByProject, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		projectID := args[1].(string)
 		dbConns, err := dbConnController.GetDBConnectionsByProject(projectID)
 		if err != nil {

@@ -37,6 +37,7 @@ const (
 func (QueryEventListeners) RunQuery(ctx context.Context) {
 	runtime.EventsOn(ctx, eventRunQuery, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConnectionId := args[1].(string)
 		query := args[2].(string)
 		analytics.SendRunQueryEvent()
@@ -58,6 +59,7 @@ func (QueryEventListeners) RunQuery(ctx context.Context) {
 func (QueryEventListeners) GetData(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetData, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		var filter, sort []string
 		if data["filter"] != nil {
@@ -85,6 +87,7 @@ func (QueryEventListeners) GetData(ctx context.Context) {
 func (QueryEventListeners) GetDataModels(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetDataModels, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConnId := args[1].(string)
 		dataModels, err := queryController.GetDataModels(dbConnId)
 		if err != nil {
@@ -104,6 +107,7 @@ func (QueryEventListeners) GetDataModels(ctx context.Context) {
 func (QueryEventListeners) GetSingleDataModel(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetSingleDataModel, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConnId := args[1].(string)
 		schema := args[2].(string)
 		name := args[3].(string)
@@ -126,6 +130,7 @@ func (QueryEventListeners) GetSingleDataModel(ctx context.Context) {
 func (QueryEventListeners) AddSingleDataModelField(ctx context.Context) {
 	runtime.EventsOn(ctx, eventAddSingleDataModelField, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		responseData, err := queryController.AddSingleDataModelField(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["fieldName"].(string), data["dataType"].(string))
 		if err != nil {
@@ -145,6 +150,7 @@ func (QueryEventListeners) AddSingleDataModelField(ctx context.Context) {
 func (QueryEventListeners) DeleteSingleDataModelField(ctx context.Context) {
 	runtime.EventsOn(ctx, eventDeleteSingleDataModelField, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		responseData, err := queryController.DeleteSingleDataModelField(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["fieldName"].(string))
 		if err != nil {
@@ -164,6 +170,7 @@ func (QueryEventListeners) DeleteSingleDataModelField(ctx context.Context) {
 func (QueryEventListeners) AddData(ctx context.Context) {
 	runtime.EventsOn(ctx, eventAddData, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		responseData, err := queryController.AddData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["data"].(map[string]interface{}))
 		if err != nil {
@@ -183,6 +190,7 @@ func (QueryEventListeners) AddData(ctx context.Context) {
 func (QueryEventListeners) DeleteData(ctx context.Context) {
 	runtime.EventsOn(ctx, eventDeleteData, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		var ids []string
 		if data["ids"] != nil {
@@ -206,6 +214,7 @@ func (QueryEventListeners) DeleteData(ctx context.Context) {
 func (QueryEventListeners) UpdateSingleData(ctx context.Context) {
 	runtime.EventsOn(ctx, eventUpdateSingleData, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		responseData, err := queryController.UpdateSingleData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["id"].(string), data["columnName"].(string), data["value"].(string))
 		if err != nil {
@@ -225,6 +234,7 @@ func (QueryEventListeners) UpdateSingleData(ctx context.Context) {
 func (QueryEventListeners) AddSingleDataModelIndex(ctx context.Context) {
 	runtime.EventsOn(ctx, eventAddSingleDataModelIndex, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		var fieldNames []string
 		if data["fieldNames"] != nil {
@@ -248,6 +258,7 @@ func (QueryEventListeners) AddSingleDataModelIndex(ctx context.Context) {
 func (QueryEventListeners) DeleteSingleDataModelIndex(ctx context.Context) {
 	runtime.EventsOn(ctx, eventDeleteSingleDataModelIndex, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		responseData, err := queryController.DeleteSingleDataModelIndex(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["indexName"].(string))
 		if err != nil {
@@ -267,6 +278,7 @@ func (QueryEventListeners) DeleteSingleDataModelIndex(ctx context.Context) {
 func (QueryEventListeners) SaveDBQuery(ctx context.Context) {
 	runtime.EventsOn(ctx, eventSaveDBQuery, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
 		analytics.SendSavedQueryEvent()
 		queryObj, err := queryController.SaveDBQuery(data["dbConnectionId"].(string), data["name"].(string), data["query"].(string), data["queryId"].(string))
@@ -287,6 +299,7 @@ func (QueryEventListeners) SaveDBQuery(ctx context.Context) {
 func (QueryEventListeners) DeleteDBQuery(ctx context.Context) {
 	runtime.EventsOn(ctx, eventDeleteDBQuery, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		queryId := args[1].(string)
 		err := queryController.DeleteDBQuery(queryId)
 		if err != nil {
@@ -305,6 +318,7 @@ func (QueryEventListeners) DeleteDBQuery(ctx context.Context) {
 func (QueryEventListeners) GetDBQueriesInDBConnection(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetDBQueriesInDBConnection, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConnID := args[1].(string)
 		dbQueries, err := queryController.GetDBQueriesInDBConnection(dbConnID)
 		if err != nil {
@@ -328,6 +342,7 @@ func (QueryEventListeners) GetDBQueriesInDBConnection(ctx context.Context) {
 func (QueryEventListeners) GetSingleDBQuery(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetSingleDBQuery, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		queryID := args[1].(string)
 		dbQuery, err := queryController.GetSingleDBQuery(queryID)
 		if err != nil {
@@ -347,6 +362,7 @@ func (QueryEventListeners) GetSingleDBQuery(ctx context.Context) {
 func (QueryEventListeners) GetQueryHistoryInDBConnection(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetQueryHistoryInDBConnection, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		dbConnID := args[1].(string)
 		beforeInt, isExist := args[2].(float64)
 		var before time.Time

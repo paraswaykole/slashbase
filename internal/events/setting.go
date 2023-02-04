@@ -19,6 +19,7 @@ const (
 func (SettingEventListeners) GetSingleSetting(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetSingleSetting, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		name := args[1].(string)
 		value, err := settingController.GetSingleSetting(name)
 		if err != nil {
@@ -38,6 +39,7 @@ func (SettingEventListeners) GetSingleSetting(ctx context.Context) {
 func (SettingEventListeners) UpdateSingleSetting(ctx context.Context) {
 	runtime.EventsOn(ctx, eventUpdateSingleSetting, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		name := args[1].(string)
 		value := args[2].(string)
 		err := settingController.UpdateSingleSetting(name, value)

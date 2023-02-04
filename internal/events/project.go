@@ -21,6 +21,7 @@ const (
 func (ProjectEventListeners) CreateProject(ctx context.Context) {
 	runtime.EventsOn(ctx, eventCreateProject, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		projectName := args[1].(string)
 		project, err := projectController.CreateProject(projectName)
 		if err != nil {
@@ -40,6 +41,7 @@ func (ProjectEventListeners) CreateProject(ctx context.Context) {
 func (ProjectEventListeners) GetProjects(ctx context.Context) {
 	runtime.EventsOn(ctx, eventGetProjects, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		projects, err := projectController.GetProjects()
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
@@ -62,6 +64,7 @@ func (ProjectEventListeners) GetProjects(ctx context.Context) {
 func (ProjectEventListeners) DeleteProject(ctx context.Context) {
 	runtime.EventsOn(ctx, eventDeleteProject, func(args ...interface{}) {
 		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
 		projectID := args[1].(string)
 		err := projectController.DeleteProject(projectID)
 		if err != nil {
