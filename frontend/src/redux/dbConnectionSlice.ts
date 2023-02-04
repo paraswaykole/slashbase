@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import type { AppState } from './store'
 import { DBConnection, DBDataModel, DBQuery } from '../data/models'
-import apiService from '../network/apiService'
+import eventService from '../events/eventService'
 
 export interface DBConnectionState {
   dbConnection?: DBConnection
@@ -32,7 +32,7 @@ export const getDBConnection = createAsyncThunk(
         new: false
       }
     }
-    const result = await apiService.getSingleDBConnection(payload.dbConnId)
+    const result = await eventService.getSingleDBConnection(payload.dbConnId)
     if (result.success) {
       const dbConnection = result.data
       return {
@@ -48,7 +48,7 @@ export const getDBConnection = createAsyncThunk(
 export const getDBDataModels = createAsyncThunk(
   'dbConnection/getDBDataModels',
   async (payload: { dbConnId: string }, { rejectWithValue, getState }: any) => {
-    const result = await apiService.getDBDataModelsByConnectionId(payload.dbConnId)
+    const result = await eventService.getDBDataModelsByConnectionId(payload.dbConnId)
     if (result.success) {
       const dataModels = result.data
       return {
@@ -69,7 +69,7 @@ export const getDBDataModels = createAsyncThunk(
 export const getDBQueries = createAsyncThunk(
   'dbConnection/getDBQueries',
   async (payload: { dbConnId: string }, { rejectWithValue, getState }: any) => {
-    const result = await apiService.getDBQueriesInDBConn(payload.dbConnId)
+    const result = await eventService.getDBQueriesInDBConn(payload.dbConnId)
     if (result.success) {
       const dbQueries = result.data
       return {
@@ -90,7 +90,7 @@ export const getDBQueries = createAsyncThunk(
 export const saveDBQuery = createAsyncThunk<{ dbQuery: DBQuery }, { dbConnId: string, queryId: string, name: string, query: string }>(
   'dbConnection/saveDBQuery',
   async (payload, { rejectWithValue }: any) => {
-    const result = await apiService.saveDBQuery(payload.dbConnId, payload.name, payload.query, payload.queryId)
+    const result = await eventService.saveDBQuery(payload.dbConnId, payload.name, payload.query, payload.queryId)
     if (result.success) {
       const dbQuery = result.data
       return {
@@ -105,7 +105,7 @@ export const saveDBQuery = createAsyncThunk<{ dbQuery: DBQuery }, { dbConnId: st
 export const deleteDBQuery = createAsyncThunk<{ queryId: string }, { queryId: string }>(
   'dbConnection/deleteDBQuery',
   async (payload, { rejectWithValue }: any) => {
-    const result = await apiService.deleteDBQuery(payload.queryId)
+    const result = await eventService.deleteDBQuery(payload.queryId)
     if (result.success) {
       return { queryId: payload.queryId }
     } else {

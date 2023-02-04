@@ -1,7 +1,6 @@
 import styles from './table.module.scss'
 import React, { useState } from 'react'
 import { ApiResult, AddDataResponse, DBConnection, DBQueryData } from '../../../data/models'
-import apiService from '../../../network/apiService'
 import toast from 'react-hot-toast'
 import { useAppDispatch } from '../../../redux/hooks'
 import { addDBData, setQueryData } from '../../../redux/dataModelSlice'
@@ -33,7 +32,7 @@ const AddModal = ({ queryData, dbConnection, mSchema, mName, onClose }: AddModal
             toast.success('data added')
             let mNewData: any
             if (dbConnection.type === DBConnType.POSTGRES && result.data.data) {
-                mNewData = result.data.data
+                mNewData = { ...result.data.data, 0: result.data.newId }
             } else {
                 mNewData = { ...newData, ctid: result.data.newId }
                 queryData.columns.forEach((col, i) => {

@@ -26,6 +26,15 @@ func (dbConnectionDao) GetAllDBConnections() ([]*models.DBConnection, error) {
 	return dbConns, err
 }
 
+func (dbConnectionDao) GetAllDBConnectionsCount() (int64, error) {
+	var count int64
+	err := db.GetDB().Model(models.DBConnection{}).Count(&count).Error
+	if err != nil {
+		return -1, err
+	}
+	return count, nil
+}
+
 func (dbConnectionDao) GetDBConnectionByID(id string) (*models.DBConnection, error) {
 	var dbConn *models.DBConnection
 	err := db.GetDB().Where(&models.DBConnection{ID: id}).Preload("Project").First(&dbConn).Error

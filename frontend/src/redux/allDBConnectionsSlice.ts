@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import type { AppState } from './store'
 import { DBConnection } from '../data/models'
-import apiService from '../network/apiService'
-import { AddDBConnPayload } from '../network/payloads'
+import { AddDBConnPayload } from '../events/payloads'
+import eventService from '../events/eventService'
 
 export interface AllDBConnectionsState {
   dbConnections: Array<DBConnection>
@@ -18,7 +18,7 @@ const initialState: AllDBConnectionsState = {
 export const getAllDBConnections = createAsyncThunk(
   'allDBConnections/getAllDBConnections',
   async (payload: { force?: boolean }) => {
-    const result = await apiService.getAllDBConnections()
+    const result = await eventService.getAllDBConnections()
     const dbConnections = result.success ? result.data : []
     return {
       force: payload?.force ?? false,
@@ -43,7 +43,7 @@ export const getAllDBConnections = createAsyncThunk(
 export const addNewDBConn = createAsyncThunk(
   'allDBConnections/addNewDBConn',
   async (payload: AddDBConnPayload, { rejectWithValue, getState }: any) => {
-    const response = await apiService.addNewDBConn(payload)
+    const response = await eventService.addNewDBConn(payload)
     if (response.success) {
       const dbConn = response.success ? response.data : null
       return {

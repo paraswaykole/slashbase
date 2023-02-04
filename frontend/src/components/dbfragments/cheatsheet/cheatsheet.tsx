@@ -113,7 +113,121 @@ const mysqlcommandList = [
         "description": "Gets all the columns and n number of rows starting from offset from the table.",
         "command": "SELECT * FROM <table name> LIMIT <limit number> OFFSET <offset number>;"
     },
-    // TODO: to be updated
+    {
+        "title": "Select with ordering",
+        "description": "Gets all columns and rows from the table in sorted order according to given sort expression. Sort name can be a column or an expression.",
+        "command": "SELECT * FROM <table name> ORDER BY <sort name> [ASC | DESC];"
+    },
+    {
+        "title": "Select using where clause with = operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value matches the given value.",
+        "command": "SELECT * FROM <table name> WHERE <column name> = <value>;"
+    },
+    {
+        "title": "Select using where clause with != operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value does not matche the given value.",
+        "command": "SELECT * FROM <table name> WHERE <column name> != <value>;"
+    },
+    {
+        "title": "Select using where clause with AND operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value matches the given value and the other column names match other given values.",
+        "command": "SELECT * FROM <table name> WHERE <column name 1> = <value 1> AND <column name 2> = <value 2>;"
+    },
+    {
+        "title": "Select using where clause with OR operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value matches the given value or the other column names match other given values.",
+        "command": "SELECT * FROM <table name> WHERE <column name 1> = <value 1> OR <column name 2> = <value 2>;"
+    },
+    {
+        "title": "Select using where clause with IN operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value matches any value in the given list",
+        "command": "SELECT * FROM <table name> WHERE <column name> IN (<value 1>, <value 2>, <value 3>);"
+    },
+    {
+        "title": "Select using where clause with LIKE operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value matches the specified pattern",
+        "command": "SELECT * FROM <table name> WHERE <column name> LIKE '<pattern with % for wildcard and _ for single char>';"
+    },
+    {
+        "title": "Select using where clause with NOT LIKE operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value does not match the specified pattern",
+        "command": "SELECT * FROM <table name> WHERE <column name> NOT LIKE '<pattern with % as wildcard and _ for single char>';"
+    },
+    {
+        "title": "Select using where clause with BETWEEN operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value is in the range of specified values",
+        "command": "SELECT * FROM <table name> WHERE <column name> BETWEEN <value 1> AND <value 2>;"
+    },
+    {
+        "title": "Select using where clause with IS NULL operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value is equal to null.",
+        "command": "SELECT * FROM <table name> WHERE <column name> IS NULL;"
+    },
+    {
+        "title": "Select using where clause with IS NOT NULL operator",
+        "description": "Gets all the columns from the table and all the rows where the given column name value is not equal to null.",
+        "command": "SELECT * FROM <table name> WHERE <column name> IS NOT NULL;"
+    },
+    {
+        "title": "Using Inner join",
+        "description": "Inner joins a table with other table on given condition. If the given condition is satified, the inner join creates a new row that contains columns from both tables and adds this new row to the result.",
+        "command": "SELECT <columns> FROM <table name 1> INNER JOIN <table name 2> ON <table 1 column name> = <table 2 column name>;"
+    },
+    {
+        "title": "Using Left join",
+        "description": "Left joins a table with other table on given condition. If the given condition is satified, the left join creates a new row that contains columns from both tables and adds this new row to the result. If condition is not matched, it adds a new row with values from left table.",
+        "command": "SELECT <columns> FROM <table name 1> LEFT JOIN <table name 2> ON <table 1 column name> = <table 2 column name>;"
+    },
+    {
+        "title": "Using Right join",
+        "description": "Right joins a table with other table on given condition. If the given condition is satified, the right join creates a new row that contains columns from both tables and adds this new row to the result. If condition is not matched, it adds a new row with values from right table.",
+        "command": "SELECT <columns> FROM <table name 1> RIGHT JOIN <table name 2> ON <table 1 column name> = <table 2 column name>;"
+    },
+    {
+        "title": "Using Cross join",
+        "description": "A cross join clause allows you to produce a Cartesian Product of rows in two or more tables.",
+        "command": "SELECT <columns> FROM <table name 1> CROSS JOIN <table name 2>;"
+    },
+    {
+        "title": "Using Group by and aggregate",
+        "description": "Divides the rows returned by select into groups and for each group applies the given aggregate function.",
+        "command": "SELECT <column name>, <aggregate function> FROM <table name> GROUP BY <column name>;"
+    },
+    {
+        "title": "Using having clause",
+        "description": "The HAVING clause specifies a search condition for a group or an aggregate. ",
+        "command": "SELECT <column name>, <aggregate function> FROM <table name> GROUP BY <column name> HAVING <condition>;"
+    },
+    {
+        "title": "Inserting row into table",
+        "description": "Inserts a rows with the given values for the given columns into the table.",
+        "command": "INSERT INTO <table name> (<column 1>, <column 2>,...) VALUES (<value 1>, <value 2>,...);"
+    },
+    {
+        "title": "Inserting multiple row into table",
+        "description": "Inserts multiple rows with the given values for the given columns into the table.",
+        "command": "INSERT INTO <table name> (<column 1>, <column 2>,...) VALUES (<value x1>, <value x2>,...), (<value y1>, <value y2>,...);"
+    },
+    {
+        "title": "Create new table",
+        "description": "Creates new table with the given table name and given columns and thier data types.",
+        "command": "CREATE TABLE [IF NOT EXISTS] <table name> (<column name 1> <data type> <contraint>, <column name 2> <data type> <contraint>,...);"
+    },
+    {
+        "title": "Rename a table",
+        "description": "Renames an existing table to the new given table name.",
+        "command": "ALTER TABLE [IF EXISTS] <table name> RENAME TO <new table name>;"
+    },
+    {
+        "title": "Add a new column to existing table",
+        "description": "Creates a new column with the given name and data type in a given existing table.",
+        "command": "ALTER TABLE <table name> ADD COLUMN <column name> <data type> <constraint>;"
+    },
+    {
+        "title": "Delete all data from given table",
+        "description": "Removes all the data from the given table.",
+        "command": "TRUNCATE TABLE <table name> [CASCADE];"
+    },
 ]
 
 const pgcommandList = [

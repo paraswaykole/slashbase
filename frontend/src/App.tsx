@@ -1,7 +1,6 @@
 import { useEffect } from "react"
-import { Routes, Route, Link, useLocation } from "react-router-dom"
+import { Routes, Route, Link } from "react-router-dom"
 import { Toaster } from 'react-hot-toast'
-import posthog from 'posthog-js'
 import Bowser from "bowser"
 import { useAppDispatch, useAppSelector } from "./redux/hooks"
 import { connectLocal, selectIsConnected } from "./redux/apiSlice"
@@ -24,8 +23,6 @@ import GeneralSettingsPage from "./pages/settings/general"
 
 function App() {
 
-  const location = useLocation()
-
   const isValidPlatform: boolean = Bowser.getParser(window.navigator.userAgent).getPlatformType(true) === "desktop"
 
   const dispatch = useAppDispatch()
@@ -47,10 +44,6 @@ function App() {
       dispatch(getConfig())
     })()
   }, [dispatch, isConnected])
-
-  useEffect(() => {
-    posthog.capture('$pageview')
-  }, [location])
 
   if (!isValidPlatform) {
     return <NotSupportedPlatform />

@@ -41,6 +41,14 @@ func RandomHex(n int) (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
+func InterfaceArrayToStringArray(arr []interface{}) []string {
+	result := []string{}
+	for _, str := range arr {
+		result = append(result, str.(string))
+	}
+	return result
+}
+
 // fast & unsafe pointer function
 func RandString(n int) string {
 	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

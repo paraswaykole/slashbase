@@ -3,10 +3,10 @@ package main
 import (
 	"embed"
 
+	"github.com/slashbaseide/slashbase/internal/analytics"
 	"github.com/slashbaseide/slashbase/internal/app"
 	"github.com/slashbaseide/slashbase/internal/config"
 	"github.com/slashbaseide/slashbase/internal/db"
-	"github.com/slashbaseide/slashbase/internal/server"
 	"github.com/slashbaseide/slashbase/internal/setup"
 	"github.com/slashbaseide/slashbase/internal/tasks"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
@@ -27,7 +27,7 @@ func main() {
 	setup.SetupApp()
 	queryengines.Init()
 	tasks.InitCron()
-	server.Init()
+	analytics.InitAnalytics()
 
 	// Create an instance of the app structure
 	app := app.NewApp()

@@ -2,11 +2,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import type { AppState } from './store'
 import { DBConnection, Project } from '../data/models'
-import apiService from '../network/apiService'
 import { getAllDBConnections } from './allDBConnectionsSlice'
-import Constants from '../constants'
-import { APIState } from './apiSlice'
 import { toast } from 'react-hot-toast'
+import eventService from '../events/eventService'
 
 export interface ProjectState {
   projects: Array<Project>
@@ -23,7 +21,7 @@ const initialState: ProjectState = {
 export const getProjects = createAsyncThunk(
   'projects/getProjects',
   async (_, { }: any) => {
-    const result = await apiService.getProjects()
+    const result = await eventService.getProjects()
     const projects = result.success ? result.data : []
     return {
       projects: projects,
@@ -51,7 +49,8 @@ export const createNewProject = createAsyncThunk(
         project: null,
       }
     }
-    const result = await apiService.createNewProject(payload.projectName)
+    const result = await eventService.createNewProject(payload.projectName)
+    console.log(result)
     const project = result.success ? result.data : null
     return {
       success: true,
@@ -63,7 +62,7 @@ export const createNewProject = createAsyncThunk(
 export const deleteProject = createAsyncThunk(
   'projects/deleteProject',
   async (payload: { projectId: string }, { dispatch }: any) => {
-    const result = await apiService.deleteProject(payload.projectId)
+    const result = await eventService.deleteProject(payload.projectId)
     if (result.success) {
       await dispatch(getAllDBConnections({ force: true }))
       return {
@@ -82,7 +81,7 @@ export const deleteProject = createAsyncThunk(
 export const getDBConnectionsInProjects = createAsyncThunk(
   'projects/getDBConnectionsInProjects',
   async (payload: { projectId: string }, { }: any) => {
-    const result = await apiService.getDBConnectionsByProject(payload.projectId)
+    const result = await eventService.getDBConnectionsByProject(payload.projectId)
     const dbConnections = result.success ? result.data : []
     return {
       dbConnectionsInProject: dbConnections,
@@ -93,7 +92,7 @@ export const getDBConnectionsInProjects = createAsyncThunk(
 export const deleteDBConnectionInProject = createAsyncThunk(
   'projects/deleteDBConnectionInProject',
   async (payload: { dbConnId: string }, { dispatch }: any) => {
-    const result = await apiService.deleteDBConnection(payload.dbConnId)
+    const result = await eventService.deleteDBConnection(payload.dbConnId)
     if (result.success) {
       await dispatch(getAllDBConnections({ force: true }))
       return {

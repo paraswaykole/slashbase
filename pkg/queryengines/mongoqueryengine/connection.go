@@ -24,7 +24,7 @@ func createMongoConnectionURI(scheme string, host string, port uint16, user, pas
 		// Adding support to connect to Azure CosmosDB using MongoDB API.
 		// According to official docs, the connection string should pass
 		// ssl=true param to connect.
-		if useSSL == true {
+		if useSSL {
 			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port)) + "/?ssl=true"
 		} else {
 			return "mongodb://" + usernamePassword + host + ":" + strconv.Itoa(int(port))
@@ -37,10 +37,12 @@ func createMongoConnectionURI(scheme string, host string, port uint16, user, pas
 
 func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host string, port uint16, user, password string, useSSL bool) (c *mongo.Client, err error) {
 	if mClientInstance, exists := mEngine.openClients[dbConnectionId]; exists {
+		mEngine.mutex.Lock()
 		mEngine.openClients[dbConnectionId] = mongoClientInstance{
 			mongoClientInstance: mClientInstance.mongoClientInstance,
 			LastUsed:            time.Now(),
 		}
+		mEngine.mutex.Unlock()
 		return mClientInstance.mongoClientInstance, nil
 	}
 	connectionURI := createMongoConnectionURI(scheme, host, port, user, password, useSSL)
@@ -50,10 +52,12 @@ func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host stri
 		return
 	}
 	if dbConnectionId != "" {
+		mEngine.mutex.Lock()
 		mEngine.openClients[dbConnectionId] = mongoClientInstance{
 			mongoClientInstance: client,
 			LastUsed:            time.Now(),
 		}
+		mEngine.mutex.Unlock()
 	}
 	return client, err
 }
@@ -63,7 +67,9 @@ func (mEngine *MongoQueryEngine) RemoveUnusedConnections() {
 		now := time.Now()
 		diff := now.Sub(instance.LastUsed)
 		if diff.Minutes() > 20 {
+			mEngine.mutex.Lock()
 			delete(mEngine.openClients, dbConnID)
+			mEngine.mutex.Unlock()
 			go instance.mongoClientInstance.Disconnect(context.Background())
 		}
 	}

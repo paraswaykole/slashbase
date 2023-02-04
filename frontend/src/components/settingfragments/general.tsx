@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import Constants from '../../constants'
-import apiService from '../../network/apiService'
+import eventService from '../../events/eventService'
 
 const GeneralSettings: FunctionComponent<{}> = () => {
 
@@ -10,9 +10,10 @@ const GeneralSettings: FunctionComponent<{}> = () => {
 
     useEffect(() => {
         (async () => {
-            let result = await apiService.getSingleSetting(Constants.SETTING_KEYS.TELEMETRY_ENABLED)
+            let result = await eventService.getSingleSetting(Constants.SETTING_KEYS.TELEMETRY_ENABLED)
             setTelemetryEnabled(result.data)
-            result = await apiService.getSingleSetting(Constants.SETTING_KEYS.LOGS_EXPIRE)
+            result = await eventService.getSingleSetting(Constants.SETTING_KEYS.LOGS_EXPIRE)
+            console.log(result.data)
             setLogsExpire(result.data === undefined ? 0 : result.data)
         })()
     }, [])
@@ -21,13 +22,13 @@ const GeneralSettings: FunctionComponent<{}> = () => {
         if (telemetryEnabled === undefined) {
             return
         }
-        const result = await apiService.updateSingleSetting(Constants.SETTING_KEYS.TELEMETRY_ENABLED, (!telemetryEnabled).toString())
+        const result = await eventService.updateSingleSetting(Constants.SETTING_KEYS.TELEMETRY_ENABLED, (!telemetryEnabled).toString())
         if (result.success)
             setTelemetryEnabled(!telemetryEnabled)
     }
 
     const updateLogsExpire = async (days: number) => {
-        const result = await apiService.updateSingleSetting(Constants.SETTING_KEYS.LOGS_EXPIRE, days.toString())
+        const result = await eventService.updateSingleSetting(Constants.SETTING_KEYS.LOGS_EXPIRE, days.toString())
         if (result.success)
             setLogsExpire(days)
     }
