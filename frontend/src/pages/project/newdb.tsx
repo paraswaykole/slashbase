@@ -25,6 +25,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
     const [dbDatabase, setDBDatabase] = useState('')
     const [dbUsername, setDBUsername] = useState('')
     const [dbPassword, setDBPassword] = useState('')
+    const [dbShowPassword, setDBShowPassword] = useState<boolean>(false)
     const [dbUseSSH, setUseSSH] = useState<string>(DBConnectionUseSSHType.NONE)
     const [dbSSHHost, setSSHHost] = useState('')
     const [dbSSHUser, setSSHUser] = useState('')
@@ -155,13 +156,22 @@ const NewDBPage: FunctionComponent<{}> = () => {
                 </div>
                 <div className="field">
                     <label className="label">Database Password:</label>
-                    <div className="control">
+                    <div className="control has-icons-right">
                         <input
                             className="input"
-                            type="password"
+                            type={dbShowPassword ? "text" : "password"}
                             value={dbPassword}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setDBPassword(e.target.value) }}
-                            placeholder="Enter database password" />
+                            placeholder="Enter database password"
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                setDBPassword(e.target.value);
+                            }}
+                        />
+                        <span
+                            className="control icon is-clickable is-small is-right"
+                            onClick={() => setDBShowPassword((prev) => !prev)}
+                        >
+                            <i className={dbShowPassword ? "fas fa-eye" : "fas fa-eye-slash"} />
+                        </span>
                     </div>
                 </div>
                 <div className="field">
