@@ -7,6 +7,8 @@ import { DBConnectionUseSSHType, DBConnType } from '../../data/defaults'
 import { addNewDBConn } from '../../redux/allDBConnectionsSlice'
 import Constants from '../../constants'
 import { useNavigate, useParams } from 'react-router-dom'
+import InputTextField from '../../components/ui/Input/InputField'
+import PasswordInputField from '../../components/ui/Input/PasswordInputField'
 
 const NewDBPage: FunctionComponent<{}> = () => {
 
@@ -17,10 +19,8 @@ const NewDBPage: FunctionComponent<{}> = () => {
     const projects: Project[] = useAppSelector(selectProjects)
     const project = projects.find(x => x.id === id)
 
-    const [dbShowPassword, setDBShowPassword] = useState<boolean>(false)
     const [addingError, setAddingError] = useState(false)
     const [adding, setAdding] = useState(false)
-
 
     const [data, setData] = useState({
         dbName: "",
@@ -53,8 +53,6 @@ const NewDBPage: FunctionComponent<{}> = () => {
             [name]: value
         }))
     }
-
-
 
     if (!project) {
         return <h1>Project not found</h1>
@@ -97,18 +95,13 @@ const NewDBPage: FunctionComponent<{}> = () => {
         <>
             <h1>Add new database connection</h1>
             <div className="form-container">
-                <div className="field">
-                    <label className="label">Display Name:</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            name='dbName'
-                            value={data.dbName}
-                            onChange={e => handleChange(e)}
-                            placeholder="Enter a display name for database" />
-                    </div>
-                </div>
+                <InputTextField
+                    label='Display Name: '
+                    name='dbName' 
+                    value={data.dbName} 
+                    onChange={e => handleChange(e)}
+                    placeholder="Enter a display name for database" 
+                />
                 <div className="field">
                     <label className="label">Database Type:</label>
                     <div className="control">
@@ -133,73 +126,41 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         </div>
                     </div>
                 </div>}
-                <div className="field">
-                    <label className="label">Host:</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            name="dbHost"
-                            value={data.dbHost}
-                            onChange={e => handleChange(e)}
-                            placeholder="Enter host" />
-                    </div>
-                </div>
-                <div className="field">
-                    <label className="label">Port:</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            name='dbPort'
-                            value={data.dbPort}
-                            onChange={e => handleChange(e)}
-                            placeholder="Enter port" />
-                    </div>
-                </div>
-                <div className="field">
-                    <label className="label">Database Name:</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            name='dbDatabase'
-                            value={data.dbDatabase}
-                            onChange={e => handleChange(e)}
-                            placeholder="Enter database" />
-                    </div>
-                </div>
-                <div className="field">
-                    <label className="label">Database User:</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            name='dbUsername'
-                            value={data.dbUsername}
-                            onChange={e => handleChange(e)}
-                            placeholder="Enter database username" />
-                    </div>
-                </div>
-                <div className="field">
-                    <label className="label">Database Password:</label>
-                    <div className="control has-icons-right">
-                        <input
-                            className="input"
-                            type={dbShowPassword ? "text" : "password"}
-                            name='dbPassword'
-                            value={data.dbPassword}
-                            placeholder="Enter database password"
-                            onChange={e => handleChange(e)}
-                        />
-                        <span
-                            className="control icon is-clickable is-small is-right"
-                            onClick={() => setDBShowPassword((prev) => !prev)}
-                        >
-                            <i className={dbShowPassword ? "fas fa-eye" : "fas fa-eye-slash"} />
-                        </span>
-                    </div>
-                </div>
+                <InputTextField
+                    label='Host:'
+                    name="dbHost"
+                    value={data.dbHost}
+                    onChange={e => handleChange(e)}
+                    placeholder="Enter host"
+                />
+                <InputTextField
+                    label='Port:'
+                    name="dbPort"
+                    value={data.dbPort}
+                    onChange={e => handleChange(e)}
+                    placeholder="Enter Port"
+                />
+                <InputTextField
+                    label='Database Name:'
+                    name="dbDatabase"
+                    value={data.dbDatabase}
+                    onChange={e => handleChange(e)}
+                    placeholder="Enter Database"
+                />
+                <InputTextField
+                    label='Database User:'
+                    name="dbUsername"
+                    value={data.dbUsername}
+                    onChange={e => handleChange(e)}
+                    placeholder="Enter Database username"
+                />
+                <PasswordInputField 
+                    label='Database Password:'
+                    name='dbPassword'
+                    value={data.dbPassword}
+                    onChange={e=>handleChange(e)}
+                    placeholder="Enter database password"
+                />
                 <div className="field">
                     <label className="label">Use SSH:</label>
                     <div className="select">
@@ -241,43 +202,28 @@ const NewDBPage: FunctionComponent<{}> = () => {
 
                 {data.dbUseSSH !== DBConnectionUseSSHType.NONE &&
                     <>
-                        <div className="field">
-                            <label className="label">SSH Host:</label>
-                            <div className="control">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    name='dbSSHHost'
-                                    value={data.dbSSHHost}
-                                    onChange={e => handleChange(e)}
-                                    placeholder="Enter SSH Host" />
-                            </div>
-                        </div>
-                        <div className="field">
-                            <label className="label">SSH User:</label>
-                            <div className="control">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    name='dbSSHUser'
-                                    value={data.dbSSHUser}
-                                    onChange={e => handleChange(e)}
-                                    placeholder="Enter SSH User" />
-                            </div>
-                        </div>
+                        <InputTextField
+                            label='SSH Host:'
+                            name="dbSSHHost"
+                            value={data.dbSSHHost}
+                            onChange={e => handleChange(e)}
+                            placeholder="Enter SSH Host"
+                        />
+                        <InputTextField
+                            label='SSH User:'
+                            name="dbSSHUser"
+                            value={data.dbSSHUser}
+                            onChange={e => handleChange(e)}
+                            placeholder="Enter SSH User"
+                        />
                         {(data.dbUseSSH === DBConnectionUseSSHType.PASSWORD || data.dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE) &&
-                            < div className="field">
-                                <label className="label">SSH Password:</label>
-                                <div className="control">
-                                    <input
-                                        className="input"
-                                        type="password"
-                                        name='dbSSHPassword'
-                                        value={data.dbSSHPassword}
-                                        onChange={e => handleChange(e)}
-                                        placeholder="Enter SSH Password" />
-                                </div>
-                            </div>
+                            <PasswordInputField 
+                                label='SSH Password:'
+                                name='dbSSHPassword'
+                                value={data.dbSSHPassword}
+                                onChange={e=>handleChange(e)}
+                                placeholder="Enter SSH Password"
+                            />
                         }
                         {(data.dbUseSSH === DBConnectionUseSSHType.KEYFILE || data.dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE) &&
                             <div className="field">
