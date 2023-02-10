@@ -2,7 +2,6 @@ import React, { FunctionComponent } from 'react'
 import { Project } from '../../data/models'
 import { useAppSelector } from '../../redux/hooks'
 import { selectProjects } from '../../redux/projectsSlice'
-import CreateNewProjectCard from '../cards/projectcard/createprojectcard'
 import ProjectCard from '../cards/projectcard/projectcard'
 import emptyStateProjectImg from '../../assets/images/empty-state-project.svg'
 
@@ -43,7 +42,6 @@ const Projects: FunctionComponent<{}> = () => {
                     ))}
                 </div>
             ))}
-            <CreateNewProjectCard />
         </React.Fragment >
     )
 }
