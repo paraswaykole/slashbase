@@ -21,6 +21,7 @@ const CreateNewProjectModal = ({ onClose }: CreateNewProjectModalPropType) => {
         await dispatch(createNewProject({ projectName }))
         setLoading(false)
         setProjectName('')
+        onClose()
     }
 
     return (
