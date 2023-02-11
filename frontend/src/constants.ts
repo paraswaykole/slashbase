@@ -79,6 +79,7 @@ const Constants: ConstantsType = {
         DISCORD_COMMUNITY: "https://discord.gg/U6fXgm3FAX",
         REPORT_BUGS: "https://github.com/slashbaseide/slashbase/issues",
         CHANGELOG: "https://slashbase.com/updates",
+        SUPPORT_MAIL: "mailto:slashbaseide@gmail.com",
     },
     SETTING_KEYS: {
         APP_ID: "APP_ID",

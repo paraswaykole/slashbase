@@ -5,12 +5,12 @@ import Constants from '../../constants'
 import { DBConnection, DBDataModel, DBQuery } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
-import { selectAllDBConnections } from '../../redux/allDBConnectionsSlice'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { DBConnType } from '../../data/defaults'
+import HomeSidebar from './sidebars/homesidebar'
 
 enum SidebarViewType {
-    GENERIC = "GENERIC", // default
+    HOME = "HOME", // home sidebar
     DATABASE = "DATABASE", // Used to show elements of single database
     SETTINGS = "SETTINGS" // Used to show elements of settings screen
 }
@@ -27,10 +27,9 @@ const Sidebar = (_: SidebarPropType) => {
 
     let sidebarView: SidebarViewType =
         (location.pathname.startsWith("/db")) ?
-            SidebarViewType.DATABASE : (location.pathname.startsWith("/settings")) ? SidebarViewType.SETTINGS : SidebarViewType.GENERIC
+            SidebarViewType.DATABASE : (location.pathname.startsWith("/settings")) ? SidebarViewType.SETTINGS : SidebarViewType.HOME
 
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
-    const allDBConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const dbQueries: DBQuery[] = useAppSelector(selectDBDQueries)
@@ -44,23 +43,8 @@ const Sidebar = (_: SidebarPropType) => {
     return (
         <aside className={"menu " + styles.sidebar}>
             <div className={styles.spacebox}>
-                {sidebarView === SidebarViewType.GENERIC &&
-                    <React.Fragment>
-                        <p className="menu-label">
-                            All Databases
-                        </p>
-                        <ul className={"menu-list " + styles.menuList}>
-                            {allDBConnections.map((dbConn: DBConnection) => {
-                                return (
-                                    <li key={dbConn.id}>
-                                        <Link to={Constants.APP_PATHS.DB.path.replace('[id]', dbConn.id)}>
-                                            {dbConn.name}
-                                        </Link>
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </React.Fragment>
+                {sidebarView === SidebarViewType.HOME &&
+                    <HomeSidebar />
                 }
                 {sidebarView === SidebarViewType.DATABASE && dbConnection &&
                     <React.Fragment>
