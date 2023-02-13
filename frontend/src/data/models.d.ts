@@ -16,6 +16,14 @@ export interface DBConnection {
     updatedAt: string
 }
 
+export interface Tab {
+    id: string
+    type: DBConnType
+    dbConnectionId: string
+    createdAt: string
+    updatedAt: string
+}
+
 export interface DBDataModel {
     name: string
     schemaName: string | null

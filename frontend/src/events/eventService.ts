@@ -1,5 +1,5 @@
 import { EventsEmit } from '../../wailsjs/runtime/runtime'
-import { ApiResult, CTIDResponse, DBConnection, DBDataModel, DBQuery, DBQueryData, DBQueryLog, DBQueryResult, PaginatedApiResult, Project } from '../data/models'
+import { ApiResult, CTIDResponse, DBConnection, DBDataModel, DBQuery, DBQueryData, DBQueryLog, DBQueryResult, PaginatedApiResult, Project, Tab } from '../data/models'
 import Events from './constants'
 import { AddDBConnPayload } from './payloads'
 import responseEvent from './responseEvent'
@@ -166,6 +166,18 @@ const updateSingleSetting = async function (name: string, value: string): Promis
     return response
 }
 
+const createTab = async function (dbConnectionId: string): Promise<ApiResult<Tab>> {
+    const response = responseEvent<ApiResult<any>>(Events.CREATE_TAB.RESPONSE)
+    EventsEmit(Events.CREATE_TAB.REQUEST, Events.CREATE_TAB.RESPONSE, dbConnectionId)
+    return response
+}
+
+const getTabsByDBConnection = async function (dbConnectionId: string): Promise<ApiResult<Array<Tab>>> {
+    const response = responseEvent<ApiResult<Array<Tab>>>(Events.GET_TABS_BYDBCONNECTION.RESPONSE)
+    EventsEmit(Events.GET_TABS_BYDBCONNECTION.REQUEST, Events.GET_TABS_BYDBCONNECTION.RESPONSE, dbConnectionId)
+    return response
+}
+
 export default {
     getHealthCheck,
     getProjects,
@@ -194,4 +206,6 @@ export default {
     runQuery,
     getSingleSetting,
     updateSingleSetting,
+    createTab,
+    getTabsByDBConnection,
 }

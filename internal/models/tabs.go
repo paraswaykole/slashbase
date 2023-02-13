@@ -3,9 +3,12 @@ package models
 import (
 	"encoding/json"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Tab struct {
+	ID             string `gorm:"type:uuid;primaryKey"`
 	Type           string `gorm:"not null"`
 	DBConnectionID string `gorm:"type:uuid;not null"`
 	MetaData       string
@@ -24,6 +27,7 @@ const (
 
 func newTab(ttype, dbConnID, metaData string) *Tab {
 	return &Tab{
+		ID:             uuid.New().String(),
 		Type:           ttype,
 		DBConnectionID: dbConnID,
 		MetaData:       metaData,

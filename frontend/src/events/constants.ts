@@ -113,6 +113,14 @@ const Events: EventType = {
     GET_QUERYHISTORY_INDBCONNECTION: {
         REQUEST: "event:get:queryhistory:indbconnection",
         RESPONSE: "response:get:queryhistory:indbconnection"
+    },
+    CREATE_TAB: {
+        REQUEST: "event:create:tab",
+        RESPONSE: "response:create:tab"
+    },
+    GET_TABS_BYDBCONNECTION: {
+        REQUEST: "event:get:tabs:bydbconnection",
+        RESPONSE: "response:get:tabs:bydbconnection"
     }
 }
 

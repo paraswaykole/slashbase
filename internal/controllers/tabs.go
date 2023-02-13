@@ -21,11 +21,20 @@ func (TabsController) CreateTab(dbConnectionId string) (*models.Tab, error) {
 	return tab, nil
 }
 
-func (TabsController) GetTabsByDBConnection(dbConnectionId string) (*[]models.Tab, error) {
+func (tc TabsController) GetTabsByDBConnection(dbConnectionId string) (*[]models.Tab, error) {
 
 	tabs, err := dao.Tab.GetTabsByDBConnectionID(dbConnectionId)
 	if err != nil {
 		return nil, errors.New("there was some problem")
+	}
+
+	if len(*tabs) == 0 {
+		tab, err := tc.CreateTab(dbConnectionId)
+		if err != nil {
+			return nil, err
+		}
+		tabs := []models.Tab{*tab}
+		return &tabs, nil
 	}
 
 	return tabs, nil

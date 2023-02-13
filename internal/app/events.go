@@ -32,6 +32,10 @@ func setupEvents(ctx context.Context) {
 		settingEventListeners.GetSingleSetting(ctx)
 		settingEventListeners.UpdateSingleSetting(ctx)
 	}
+	if tabEventListeners := new(events.TabsEventListeners); true {
+		tabEventListeners.CreateNewTab(ctx)
+		tabEventListeners.GetTabsByDBConnection(ctx)
+	}
 	if queryEventListeners := new(events.QueryEventListeners); true {
 		queryEventListeners.RunQuery(ctx)
 		queryEventListeners.SaveDBQuery(ctx)
