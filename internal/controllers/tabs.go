@@ -9,9 +9,9 @@ import (
 
 type TabsController struct{}
 
-func (TabsController) CreateTab(dbConnectionId string) (*models.Tab, error) {
+func (TabsController) CreateTab(dbConnID string) (*models.Tab, error) {
 
-	tab := models.NewBlankTab(dbConnectionId)
+	tab := models.NewBlankTab(dbConnID)
 
 	err := dao.Tab.CreateTab(tab)
 	if err != nil {
@@ -21,15 +21,15 @@ func (TabsController) CreateTab(dbConnectionId string) (*models.Tab, error) {
 	return tab, nil
 }
 
-func (tc TabsController) GetTabsByDBConnection(dbConnectionId string) (*[]models.Tab, error) {
+func (tc TabsController) GetTabsByDBConnection(dbConnID string) (*[]models.Tab, error) {
 
-	tabs, err := dao.Tab.GetTabsByDBConnectionID(dbConnectionId)
+	tabs, err := dao.Tab.GetTabsByDBConnectionID(dbConnID)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
 
 	if len(*tabs) == 0 {
-		tab, err := tc.CreateTab(dbConnectionId)
+		tab, err := tc.CreateTab(dbConnID)
 		if err != nil {
 			return nil, err
 		}
@@ -38,4 +38,14 @@ func (tc TabsController) GetTabsByDBConnection(dbConnectionId string) (*[]models
 	}
 
 	return tabs, nil
+}
+
+func (TabsController) CloseTab(dbConnID, tabID string) error {
+
+	err := dao.Tab.DeleteTab(dbConnID, tabID)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	return nil
 }

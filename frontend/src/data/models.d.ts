@@ -1,4 +1,4 @@
-import { DBConnType } from "./defaults"
+import { DBConnType, TabType } from "./defaults"
 
 export interface Project {
     id: string
@@ -18,8 +18,9 @@ export interface DBConnection {
 
 export interface Tab {
     id: string
-    type: DBConnType
+    type: TabType
     dbConnectionId: string
+    isActive: bool
     createdAt: string
     updatedAt: string
 }

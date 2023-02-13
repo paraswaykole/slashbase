@@ -1,11 +1,11 @@
-import { FunctionComponent, useEffect, useState } from 'react'
-
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { getDBConnection, getDBDataModels, getDBQueries, selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import DBHomeFragment from '../../components/dbfragments/home'
 import { DBConnection, Tab } from '../../data/models'
-import { useParams } from 'react-router-dom'
-import { getTabs, selectTabs } from '../../redux/tabsSlice'
+import { createTab, closeTab, getTabs, selectTabs } from '../../redux/tabsSlice'
+import { TabType } from '../../data/defaults'
 
 const DBPage: FunctionComponent<{}> = () => {
 
@@ -36,11 +36,35 @@ const DBPage: FunctionComponent<{}> = () => {
         return (<h1>DB not found</h1>)
     }
 
+    const createNewTab = async () => {
+        await dispatch(createTab({ dbConnId: String(id), tabType: TabType.BLANK }))
+    }
+
+    const handleCloseTab = async (tabId: string) => {
+        await dispatch(closeTab({ dbConnId: String(id), tabId }))
+    }
+
     return (
-        <>
-            <p>Tabs: {tabs.map(t => t.type)}</p>
+        <React.Fragment>
+            <div className="tabs is-boxed">
+                <ul>
+                    {tabs.map(t => <li key={t.id} className={t.isActive ? "is-active" : ""}>
+                        <a>
+                            <span>
+                                {t.type === TabType.BLANK && "New Tab"}
+                            </span>
+                            <span className="icon" onClick={() => { handleCloseTab(t.id) }}><i className="fas fa-times" aria-hidden="true"></i></span>
+                        </a>
+                    </li>)}
+                    <li>
+                        <a onClick={createNewTab}>
+                            <span className="icon"><i className="fas fa-plus" aria-hidden="true"></i></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
             <DBHomeFragment />
-        </>
+        </React.Fragment>
     )
 }
 

@@ -178,6 +178,12 @@ const getTabsByDBConnection = async function (dbConnectionId: string): Promise<A
     return response
 }
 
+const closeTab = async function (dbConnectionId: string, tabId: string): Promise<ApiResult<undefined>> {
+    const response = responseEvent<ApiResult<undefined>>(Events.CLOSE_TAB.RESPONSE)
+    EventsEmit(Events.CLOSE_TAB.REQUEST, Events.CLOSE_TAB.RESPONSE, dbConnectionId, tabId)
+    return response
+}
+
 export default {
     getHealthCheck,
     getProjects,
@@ -208,4 +214,5 @@ export default {
     updateSingleSetting,
     createTab,
     getTabsByDBConnection,
+    closeTab
 }

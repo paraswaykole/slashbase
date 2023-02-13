@@ -19,3 +19,8 @@ func (tabsDao) GetTabsByDBConnectionID(dbConnID string) (*[]models.Tab, error) {
 	err := db.GetDB().Where(&models.Tab{DBConnectionID: dbConnID}).Find(&tabs).Error
 	return &tabs, err
 }
+
+func (tabsDao) DeleteTab(dbConnID, tabID string) error {
+	err := db.GetDB().Where(models.Tab{ID: tabID, DBConnectionID: dbConnID}).Delete(models.Tab{}).Error
+	return err
+}

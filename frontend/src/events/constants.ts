@@ -121,7 +121,11 @@ const Events: EventType = {
     GET_TABS_BYDBCONNECTION: {
         REQUEST: "event:get:tabs:bydbconnection",
         RESPONSE: "response:get:tabs:bydbconnection"
-    }
+    },
+    CLOSE_TAB: {
+        REQUEST: "event:close:tab",
+        RESPONSE: "response:close:tab"
+    },
 }
 
 export default Events

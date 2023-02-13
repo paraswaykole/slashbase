@@ -11,6 +11,13 @@ export enum DBConnectionUseSSHType {
     PASSKEYFILE = "PASSKEYFILE",
 }
 
+export enum TabType {
+    BLANK = "BLANK",
+    DATAMODEL = "DATAMODEL",
+    QUERY = "QUERY",
+    HISTORY = "HISTORY"
+}
+
 export enum DBConnectionLoginType {
     USE_ROOT = "USE_ROOT",
     // ROLE_ACCOUNTS = "ROLE_ACCOUNTS",
