@@ -55,7 +55,7 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                                 <b>You have seen it all!</b>
                             </p>
                         }
-                        scrollableTarget="mainContainer"
+                        scrollableTarget="maincontent"
                     >
                         <table className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                             <tbody>

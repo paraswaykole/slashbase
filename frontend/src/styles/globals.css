@@ -72,9 +72,14 @@ code {
 }
 
 .maincontainer {
-  padding: 10px;
   height: calc(100% - 20px);
   width: 100%;
+}
+
+.maincontent {
+  padding: 10px;
+  width: 100%;
+  height: inherit;
   overflow-x: hidden;
   overflow-y: scroll;
 }
