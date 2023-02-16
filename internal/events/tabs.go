@@ -15,6 +15,7 @@ var tabController controllers.TabsController
 const (
 	eventCreateTab             = "event:create:tab"
 	eventGetTabsByDBConnection = "event:get:tabs:bydbconnection"
+	eventUpdateTab             = "event:update:tab"
 	eventCloseTab              = "event:close:tab"
 )
 
@@ -59,6 +60,28 @@ func (TabsEventListeners) GetTabsByDBConnection(ctx context.Context) {
 		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 			"success": true,
 			"data":    tabViews,
+		})
+	})
+}
+
+func (TabsEventListeners) UpdateTab(ctx context.Context) {
+	runtime.EventsOn(ctx, eventUpdateTab, func(args ...interface{}) {
+		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
+		dbConnectionId := args[1].(string)
+		tabID := args[2].(string)
+		tabType := args[3].(string)
+		tab, err := tabController.UpdateTab(dbConnectionId, tabID, tabType)
+		if err != nil {
+			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
+				"success": false,
+				"error":   err.Error(),
+			})
+			return
+		}
+		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
+			"success": true,
+			"data":    views.BuildTabView(tab),
 		})
 	})
 }

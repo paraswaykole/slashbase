@@ -3,7 +3,7 @@ import type { AppState } from './store'
 import { Tab } from '../data/models'
 import eventService from '../events/eventService'
 import { TabType } from '../data/defaults'
-import { actions } from 'react-table'
+import { DBConnectionState } from './dbConnectionSlice'
 
 export interface TabState {
     tabs: Array<Tab>
@@ -20,6 +20,29 @@ export const createTab = createAsyncThunk(
     async (payload: { dbConnId: string, tabType: TabType }, { rejectWithValue }: any) => {
         const dbConnectionId = payload.dbConnId
         const result = await eventService.createTab(dbConnectionId)
+        if (result.success) {
+            return {
+                tab: result.data,
+            }
+        } else {
+            return rejectWithValue(result.error)
+        }
+    }
+)
+
+export const updateActiveTab = createAsyncThunk(
+    'tabs/updateActiveTab',
+    async (payload: { tabType: TabType }, { getState, rejectWithValue }: any) => {
+        const { activeTabId } = getState()['tabs'] as TabState
+        const { dbConnection } = getState()['dbConnection'] as DBConnectionState
+        if (!activeTabId) {
+            return rejectWithValue('no active tab')
+        }
+        if (!dbConnection) {
+            return rejectWithValue('no db connection active')
+        }
+        const tabType = payload.tabType
+        const result = await eventService.updateTab(dbConnection.id, String(activeTabId), tabType)
         if (result.success) {
             return {
                 tab: result.data,
@@ -70,6 +93,9 @@ export const tabsSlice = createSlice({
     initialState,
     reducers: {
         reset: () => initialState,
+        setActiveTab: (state, { payload }: { payload: string }) => {
+            state.activeTabId = payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -80,6 +106,10 @@ export const tabsSlice = createSlice({
             .addCase(createTab.fulfilled, (state, action) => {
                 state.tabs.push(action.payload.tab)
             })
+            .addCase(updateActiveTab.fulfilled, (state, action) => {
+                const idx = state.tabs.findIndex(t => t.id === action.payload.tab.id)
+                state.tabs[idx] = action.payload.tab
+            })
             .addCase(closeTab.fulfilled, (state, action) => {
                 state.tabs = state.tabs.filter(t => t.id !== action.payload.tabId)
             })
@@ -87,8 +117,10 @@ export const tabsSlice = createSlice({
 })
 
 
-export const { reset } = tabsSlice.actions
+export const { reset, setActiveTab } = tabsSlice.actions
 
 export const selectTabs = (state: AppState) => state.tabs.tabs.map(t => ({ ...t, isActive: t.id === state.tabs.activeTabId }))
+
+export const selectActiveTab = (state: AppState) => state.tabs.tabs.find(t => t.id === state.tabs.activeTabId)!
 
 export default tabsSlice.reducer

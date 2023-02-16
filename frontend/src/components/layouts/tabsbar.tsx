@@ -1,6 +1,6 @@
 import styles from './tabsbar.module.scss'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { createTab, closeTab, selectTabs } from '../../redux/tabsSlice'
+import { createTab, closeTab, selectTabs, setActiveTab } from '../../redux/tabsSlice'
 import { TabType } from '../../data/defaults'
 import { Tab } from '../../data/models'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
@@ -18,6 +18,10 @@ const TabsBar = (_: TabsBarPropType) => {
         await dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.BLANK }))
     }
 
+    const switchToTab = async (tabId: string) => {
+        dispatch(setActiveTab(tabId))
+    }
+
     const handleCloseTab = async (tabId: string) => {
         await dispatch(closeTab({ dbConnId: dbConnection!.id, tabId }))
     }
@@ -29,10 +33,11 @@ const TabsBar = (_: TabsBarPropType) => {
     return (
         <div className={"tabs is-boxed " + styles.tabs}>
             <ul>
-                {tabs.map(t => <li key={t.id} className={t.isActive ? "is-active" : ""}>
+                {tabs.map(t => <li key={t.id} className={t.isActive ? "is-active" : ""} onClick={() => { switchToTab(t.id) }}>
                     <a>
                         <span>
                             {t.type === TabType.BLANK && "New Tab"}
+                            {t.type === TabType.HISTORY && "History"}
                         </span>
                         <span className="icon" onClick={() => { handleCloseTab(t.id) }}><i className="fas fa-times" aria-hidden="true"></i></span>
                     </a>

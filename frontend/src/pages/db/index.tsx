@@ -1,15 +1,19 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getDBConnection, getDBDataModels, getDBQueries } from '../../redux/dbConnectionSlice'
-import { useAppDispatch } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import DBHomeFragment from '../../components/dbfragments/home'
-import { getTabs } from '../../redux/tabsSlice'
+import { getTabs, selectActiveTab } from '../../redux/tabsSlice'
+import { TabType } from '../../data/defaults'
+import DBHistoryFragment from '../../components/dbfragments/history'
 
 const DBPage: FunctionComponent<{}> = () => {
 
     const { id } = useParams()
     const [error404, setError404] = useState(false)
     const dispatch = useAppDispatch()
+
+    const activeTab = useAppSelector(selectActiveTab)
 
     useEffect(() => {
         (async () => {
@@ -33,7 +37,12 @@ const DBPage: FunctionComponent<{}> = () => {
 
     return (
         <React.Fragment>
-            <DBHomeFragment />
+            {activeTab &&
+                <React.Fragment>
+                    {activeTab.type === TabType.BLANK && <DBHomeFragment />}
+                    {activeTab.type === TabType.HISTORY && <DBHistoryFragment />}
+                </React.Fragment>
+            }
         </React.Fragment>
     )
 }

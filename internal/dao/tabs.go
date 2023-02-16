@@ -20,6 +20,17 @@ func (tabsDao) GetTabsByDBConnectionID(dbConnID string) (*[]models.Tab, error) {
 	return &tabs, err
 }
 
+func (tabsDao) GetTabByID(dbConnID, tabID string) (*models.Tab, error) {
+	var tab models.Tab
+	err := db.GetDB().Where(&models.Tab{ID: tabID, DBConnectionID: dbConnID}).First(&tab).Error
+	return &tab, err
+}
+
+func (tabsDao) UpdateTab(dbConnID, tabID, tabType string) error {
+	err := db.GetDB().Model(&models.Tab{}).Where(&models.Tab{ID: tabID, DBConnectionID: dbConnID}).Update("type", tabType).Error
+	return err
+}
+
 func (tabsDao) DeleteTab(dbConnID, tabID string) error {
 	err := db.GetDB().Where(models.Tab{ID: tabID, DBConnectionID: dbConnID}).Delete(models.Tab{}).Error
 	return err

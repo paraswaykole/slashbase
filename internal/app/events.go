@@ -35,6 +35,7 @@ func setupEvents(ctx context.Context) {
 	if tabEventListeners := new(events.TabsEventListeners); true {
 		tabEventListeners.CreateNewTab(ctx)
 		tabEventListeners.GetTabsByDBConnection(ctx)
+		tabEventListeners.UpdateTab(ctx)
 		tabEventListeners.CloseTab(ctx)
 	}
 	if queryEventListeners := new(events.QueryEventListeners); true {

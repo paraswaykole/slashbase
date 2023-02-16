@@ -122,6 +122,10 @@ const Events: EventType = {
         REQUEST: "event:get:tabs:bydbconnection",
         RESPONSE: "response:get:tabs:bydbconnection"
     },
+    UPDATE_TAB: {
+        REQUEST: "event:update:tab",
+        RESPONSE: "response:update:tab"
+    },
     CLOSE_TAB: {
         REQUEST: "event:close:tab",
         RESPONSE: "response:close:tab"

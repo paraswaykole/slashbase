@@ -1,4 +1,5 @@
 import { EventsEmit } from '../../wailsjs/runtime/runtime'
+import { TabType } from '../data/defaults'
 import { ApiResult, CTIDResponse, DBConnection, DBDataModel, DBQuery, DBQueryData, DBQueryLog, DBQueryResult, PaginatedApiResult, Project, Tab } from '../data/models'
 import Events from './constants'
 import { AddDBConnPayload } from './payloads'
@@ -167,7 +168,7 @@ const updateSingleSetting = async function (name: string, value: string): Promis
 }
 
 const createTab = async function (dbConnectionId: string): Promise<ApiResult<Tab>> {
-    const response = responseEvent<ApiResult<any>>(Events.CREATE_TAB.RESPONSE)
+    const response = responseEvent<ApiResult<Tab>>(Events.CREATE_TAB.RESPONSE)
     EventsEmit(Events.CREATE_TAB.REQUEST, Events.CREATE_TAB.RESPONSE, dbConnectionId)
     return response
 }
@@ -175,6 +176,12 @@ const createTab = async function (dbConnectionId: string): Promise<ApiResult<Tab
 const getTabsByDBConnection = async function (dbConnectionId: string): Promise<ApiResult<Array<Tab>>> {
     const response = responseEvent<ApiResult<Array<Tab>>>(Events.GET_TABS_BYDBCONNECTION.RESPONSE)
     EventsEmit(Events.GET_TABS_BYDBCONNECTION.REQUEST, Events.GET_TABS_BYDBCONNECTION.RESPONSE, dbConnectionId)
+    return response
+}
+
+const updateTab = async function (dbConnectionId: string, tabId: string, tabType: TabType): Promise<ApiResult<Tab>> {
+    const response = responseEvent<ApiResult<Tab>>(Events.UPDATE_TAB.RESPONSE)
+    EventsEmit(Events.UPDATE_TAB.REQUEST, Events.UPDATE_TAB.RESPONSE, dbConnectionId, tabId, tabType)
     return response
 }
 
@@ -214,5 +221,6 @@ export default {
     updateSingleSetting,
     createTab,
     getTabsByDBConnection,
+    updateTab,
     closeTab
 }
