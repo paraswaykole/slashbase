@@ -22,6 +22,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
     const [dbScheme, setDBScheme] = useState('')
     const [dbType, setDBType] = useState<string>(DBConnType.POSTGRES)
     const [dbPort, setDBPort] = useState('')
+    const [dbURI, setDBURI] = useState('')
     const [dbDatabase, setDBDatabase] = useState('')
     const [dbUsername, setDBUsername] = useState('')
     const [dbPassword, setDBPassword] = useState('')
@@ -41,7 +42,34 @@ const NewDBPage: FunctionComponent<{}> = () => {
     // if (project.currentMember?.role.name !== Constants.ROLES.ADMIN) {
     // 	return <DefaultErrorPage statusCode={401} title="Unauthorized" />
     // }
+    const extractFromURI = async ()=>{
+        
+        const uri_string = dbURI;
+        const split_lev1 = uri_string.split("//");
+        const split_lev2 = split_lev1[1].split(":")
+        const split_lev3 = split_lev2[1].split("@")
+        const split_lev4 = split_lev3[1].split("/");
+        
+        
+        const user_from_uri = split_lev2[0];
+        const password_from_uri = split_lev3[0];
+        const host_from_uri = split_lev4[0];
+        const database_from_uri = split_lev4[1];
 
+        const does_port_exist = host_from_uri.split(":");
+        setDBPort("5432")
+        
+        if(does_port_exist.length===2){
+            setDBPort(does_port_exist[1])
+        }
+        
+        
+        setDBDatabase(database_from_uri)
+        setDBHost(host_from_uri)
+        setDBPassword(password_from_uri)
+        setDBUsername(user_from_uri)
+
+    }
     const startAddingDB = async () => {
         setAdding(true)
         const payload: AddDBConnPayload = {
@@ -109,6 +137,22 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         </div>
                     </div>
                 </div>}
+
+
+                <div className="field">
+                    <label className="label">URI:</label>
+                    <div className="control">
+                        <input
+                            className="input"
+                            type="text"
+                            value={dbURI}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setDBURI(e.target.value) }}
+                            placeholder="Enter URI" />
+                    </div>
+                </div>
+                <div className="control">
+                    <button className="button is-primary mb-2" onClick={extractFromURI}>Validate</button>
+                </div>
                 <div className="field">
                     <label className="label">Host:</label>
                     <div className="control">
