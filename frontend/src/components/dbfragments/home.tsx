@@ -20,14 +20,14 @@ const DBHomeFragment = ({ }: DBHomePropType) => {
     const isFetching: boolean = useAppSelector(selectIsFetchingDBDataModels)
 
     const updateActiveTabToHistory = () => {
-        dispatch(updateActiveTab({ tabType: TabType.HISTORY }))
+        dispatch(updateActiveTab({ tabType: TabType.HISTORY, metadata: {} }))
     }
 
     return (
         <React.Fragment>
             {dbConnection &&
                 <React.Fragment>
-                    <h1>Showing Data Models in {dbConnection.name}</h1>
+                    <h2>Data Models</h2>
                     {isFetching && <div className={styles.connectingMsg}>
                         <i className="fas fa-asterisk fa-spin"></i> Connecting to DB...
                     </div>

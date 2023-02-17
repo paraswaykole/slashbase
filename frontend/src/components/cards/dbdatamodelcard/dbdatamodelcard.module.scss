@@ -3,7 +3,7 @@
   max-width: 600px;
 }
 
-.cardLink {
-  color: inherit;
-  text-decoration: none;
+.cardContent {
+  display: flex;
+  justify-content: space-between;
 }

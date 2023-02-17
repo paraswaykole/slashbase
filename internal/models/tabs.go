@@ -19,10 +19,11 @@ type Tab struct {
 }
 
 const (
-	TAB_TYPE_BLANK     = "BLANK"
-	TAB_TYPE_DATAMODEL = "DATAMODEL"
-	TAB_TYPE_QUERY     = "QUERY"
-	TAB_TYPE_HISTORY   = "HISTORY"
+	TAB_TYPE_BLANK   = "BLANK"
+	TAB_TYPE_DATA    = "DATA"
+	TAB_TYPE_MODEL   = "MODEL"
+	TAB_TYPE_QUERY   = "QUERY"
+	TAB_TYPE_HISTORY = "HISTORY"
 )
 
 func newTab(ttype, dbConnID, metaData string) *Tab {
@@ -38,13 +39,22 @@ func NewBlankTab(dbConnID string) *Tab {
 	return newTab(TAB_TYPE_BLANK, dbConnID, "")
 }
 
-func NewDataModelTab(dbConnID, schema, name string) *Tab {
+func NewDataTab(dbConnID, schema, name string) *Tab {
 	data := map[string]interface{}{
 		"schema": schema,
 		"name":   name,
 	}
 	dataStr, _ := json.Marshal(data)
-	return newTab(TAB_TYPE_DATAMODEL, dbConnID, string(dataStr))
+	return newTab(TAB_TYPE_DATA, dbConnID, string(dataStr))
+}
+
+func NewModelTab(dbConnID, schema, name string) *Tab {
+	data := map[string]interface{}{
+		"schema": schema,
+		"name":   name,
+	}
+	dataStr, _ := json.Marshal(data)
+	return newTab(TAB_TYPE_MODEL, dbConnID, string(dataStr))
 }
 
 func NewQueryTab(dbConnID, queryID, query string) *Tab {

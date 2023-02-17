@@ -38,6 +38,8 @@ const TabsBar = (_: TabsBarPropType) => {
                         <span>
                             {t.type === TabType.BLANK && "New Tab"}
                             {t.type === TabType.HISTORY && "History"}
+                            {t.type === TabType.DATA && `${t.metadata.schema === '' ? t.metadata.name : `${t.metadata.schema}.${t.metadata.name}`}`}
+                            {t.type === TabType.MODEL && `${t.metadata.schema === '' ? t.metadata.name : `${t.metadata.schema}.${t.metadata.name}`}`}
                         </span>
                         <span className="icon" onClick={() => { handleCloseTab(t.id) }}><i className="fas fa-times" aria-hidden="true"></i></span>
                     </a>

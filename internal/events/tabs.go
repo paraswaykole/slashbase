@@ -71,7 +71,8 @@ func (TabsEventListeners) UpdateTab(ctx context.Context) {
 		dbConnectionId := args[1].(string)
 		tabID := args[2].(string)
 		tabType := args[3].(string)
-		tab, err := tabController.UpdateTab(dbConnectionId, tabID, tabType)
+		metadata := args[4].(map[string]interface{})
+		tab, err := tabController.UpdateTab(dbConnectionId, tabID, tabType, metadata)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,

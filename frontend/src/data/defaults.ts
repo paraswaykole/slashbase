@@ -13,7 +13,8 @@ export enum DBConnectionUseSSHType {
 
 export enum TabType {
     BLANK = "BLANK",
-    DATAMODEL = "DATAMODEL",
+    DATA = "DATA",
+    MODEL = "MODEL",
     QUERY = "QUERY",
     HISTORY = "HISTORY"
 }

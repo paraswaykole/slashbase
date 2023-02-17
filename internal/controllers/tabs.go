@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/slashbaseide/slashbase/internal/dao"
@@ -41,10 +42,15 @@ func (tc TabsController) GetTabsByDBConnection(dbConnID string) (*[]models.Tab, 
 	return tabs, nil
 }
 
-func (TabsController) UpdateTab(dbConnID, tabID, tabType string) (*models.Tab, error) {
+func (TabsController) UpdateTab(dbConnID, tabID, tabType string, metadata map[string]interface{}) (*models.Tab, error) {
 
-	if !utils.ContainsString([]string{models.TAB_TYPE_BLANK, models.TAB_TYPE_DATAMODEL, models.TAB_TYPE_HISTORY, models.TAB_TYPE_QUERY}, tabType) {
+	if !utils.ContainsString([]string{models.TAB_TYPE_BLANK, models.TAB_TYPE_DATA, models.TAB_TYPE_MODEL, models.TAB_TYPE_HISTORY, models.TAB_TYPE_QUERY}, tabType) {
 		return nil, errors.New("invalid tab type")
+	}
+
+	metadataStr, err := json.Marshal(metadata)
+	if err != nil {
+		return nil, errors.New("invalid metadata")
 	}
 
 	tab, err := dao.Tab.GetTabByID(dbConnID, tabID)
@@ -52,8 +58,9 @@ func (TabsController) UpdateTab(dbConnID, tabID, tabType string) (*models.Tab, e
 		return nil, errors.New("tab not found")
 	}
 	tab.Type = tabType
+	tab.MetaData = string(metadataStr)
 
-	err = dao.Tab.UpdateTab(dbConnID, tabID, tabType)
+	err = dao.Tab.UpdateTab(dbConnID, tabID, tabType, tab.MetaData)
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}

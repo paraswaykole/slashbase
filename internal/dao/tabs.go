@@ -26,8 +26,9 @@ func (tabsDao) GetTabByID(dbConnID, tabID string) (*models.Tab, error) {
 	return &tab, err
 }
 
-func (tabsDao) UpdateTab(dbConnID, tabID, tabType string) error {
-	err := db.GetDB().Model(&models.Tab{}).Where(&models.Tab{ID: tabID, DBConnectionID: dbConnID}).Update("type", tabType).Error
+func (tabsDao) UpdateTab(dbConnID, tabID, tabType, metadata string) error {
+	err := db.GetDB().Model(&models.Tab{}).Where(&models.Tab{ID: tabID, DBConnectionID: dbConnID}).
+		UpdateColumns(map[string]interface{}{"type": tabType, "meta_data": metadata}).Error
 	return err
 }
 

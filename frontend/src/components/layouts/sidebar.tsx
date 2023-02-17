@@ -40,6 +40,10 @@ const Sidebar = (_: SidebarPropType) => {
         dispatch(setIsShowingSidebar(!isShowingSidebar))
     }
 
+    const openNewDataTab = () => {
+
+    }
+
     return (
         <aside className={"menu " + styles.sidebar}>
             <div className={styles.spacebox}>
@@ -59,11 +63,9 @@ const Sidebar = (_: SidebarPropType) => {
                                 const label = dbConnection.type === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
                                 return (
                                     <li key={dataModel.schemaName + dataModel.name}>
-                                        <Link
-                                            to={Constants.APP_PATHS.DB_PATH.path.replace('[id]', dbConnection!.id).replace('[path]', 'data') + "?mschema=" + dataModel.schemaName + "&mname=" + dataModel.name}
-                                            className={dataModel.schemaName === mschema && dataModel.name === mname ? 'is-active' : ''}>
+                                        <a onClick={() => openNewDataTab()}>
                                             {label}
-                                        </Link>
+                                        </a>
                                     </li>
                                 )
                             })}

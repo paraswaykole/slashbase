@@ -1,15 +1,15 @@
 import styles from './showdata.module.scss'
 import React, { useEffect, useState } from 'react'
-import { DBConnection, DBDataModel, DBQueryData, Project } from '../../data/models'
+import { DBConnection, DBDataModel, Project, Tab } from '../../data/models'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
-import { ProjectPermissions, selectCurrentProject } from '../../redux/projectsSlice'
+import { selectCurrentProject } from '../../redux/projectsSlice'
 import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
-import { useSearchParams } from 'react-router-dom'
-import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData, setQueryData } from '../../redux/dataModelSlice'
+import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData } from '../../redux/dataModelSlice'
+import { selectActiveTab } from '../../redux/tabsSlice'
 
 type DBShowDataPropType = {
 
@@ -17,16 +17,13 @@ type DBShowDataPropType = {
 
 const DBShowDataFragment = (_: DBShowDataPropType) => {
 
-    const [searchParams] = useSearchParams()
-    const mschema = searchParams.get("mschema")
-    const mname = searchParams.get("mname")
-
     const dispatch = useAppDispatch()
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
+    const activeTab: Tab = useAppSelector(selectActiveTab)
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
     const dataLoading = useAppSelector(selectIsFetchingQueryData)
@@ -37,13 +34,14 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const [queryFilter, setQueryFilter] = useState<string[] | undefined>(undefined)
     const [querySort, setQuerySort] = useState<string[] | undefined>(undefined)
 
+    const mschema = activeTab.metadata.schema
+    const mname = activeTab.metadata.name
 
     useEffect(() => {
         const dModel = dbDataModels.find(x => x.schemaName === mschema && x.name === mname)
         if (dModel) {
             setDataModel(dModel)
         }
-        // else redirect to home fragment             
     }, [dbDataModels])
 
     useEffect(() => {

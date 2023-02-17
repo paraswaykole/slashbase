@@ -32,7 +32,7 @@ export const createTab = createAsyncThunk(
 
 export const updateActiveTab = createAsyncThunk(
     'tabs/updateActiveTab',
-    async (payload: { tabType: TabType }, { getState, rejectWithValue }: any) => {
+    async (payload: { tabType: TabType, metadata: Object }, { getState, rejectWithValue }: any) => {
         const { activeTabId } = getState()['tabs'] as TabState
         const { dbConnection } = getState()['dbConnection'] as DBConnectionState
         if (!activeTabId) {
@@ -42,7 +42,8 @@ export const updateActiveTab = createAsyncThunk(
             return rejectWithValue('no db connection active')
         }
         const tabType = payload.tabType
-        const result = await eventService.updateTab(dbConnection.id, String(activeTabId), tabType)
+        const metadata = payload.metadata
+        const result = await eventService.updateTab(dbConnection.id, String(activeTabId), tabType, metadata)
         if (result.success) {
             return {
                 tab: result.data,

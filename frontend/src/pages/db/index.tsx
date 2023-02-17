@@ -6,6 +6,8 @@ import DBHomeFragment from '../../components/dbfragments/home'
 import { getTabs, selectActiveTab } from '../../redux/tabsSlice'
 import { TabType } from '../../data/defaults'
 import DBHistoryFragment from '../../components/dbfragments/history'
+import DBShowDataFragment from '../../components/dbfragments/showdata'
+import DBShowModelFragment from '../../components/dbfragments/showmodel'
 
 const DBPage: FunctionComponent<{}> = () => {
 
@@ -41,6 +43,8 @@ const DBPage: FunctionComponent<{}> = () => {
                 <React.Fragment>
                     {activeTab.type === TabType.BLANK && <DBHomeFragment />}
                     {activeTab.type === TabType.HISTORY && <DBHistoryFragment />}
+                    {activeTab.type === TabType.DATA && <DBShowDataFragment />}
+                    {activeTab.type === TabType.MODEL && <DBShowModelFragment />}
                 </React.Fragment>
             }
         </React.Fragment>

@@ -19,6 +19,10 @@ export interface DBConnection {
 export interface Tab {
     id: string
     type: TabType
+    metadata: {
+        schema: string,
+        name: string,
+    }
     dbConnectionId: string
     isActive: bool
     createdAt: string

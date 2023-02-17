@@ -179,9 +179,9 @@ const getTabsByDBConnection = async function (dbConnectionId: string): Promise<A
     return response
 }
 
-const updateTab = async function (dbConnectionId: string, tabId: string, tabType: TabType): Promise<ApiResult<Tab>> {
+const updateTab = async function (dbConnectionId: string, tabId: string, tabType: TabType, metadata: Object): Promise<ApiResult<Tab>> {
     const response = responseEvent<ApiResult<Tab>>(Events.UPDATE_TAB.RESPONSE)
-    EventsEmit(Events.UPDATE_TAB.REQUEST, Events.UPDATE_TAB.RESPONSE, dbConnectionId, tabId, tabType)
+    EventsEmit(Events.UPDATE_TAB.REQUEST, Events.UPDATE_TAB.RESPONSE, dbConnectionId, tabId, tabType, metadata)
     return response
 }
 
