@@ -40,8 +40,12 @@ const Sidebar = (_: SidebarPropType) => {
         dispatch(setIsShowingSidebar(!isShowingSidebar))
     }
 
-    const openNewDataTab = () => {
+    const openDataTab = () => {
+        // TODO: not implemented
+    }
 
+    const openQueryTab = () => {
+        // TODO: not implemented
     }
 
     return (
@@ -63,7 +67,7 @@ const Sidebar = (_: SidebarPropType) => {
                                 const label = dbConnection.type === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
                                 return (
                                     <li key={dataModel.schemaName + dataModel.name}>
-                                        <a onClick={() => openNewDataTab()}>
+                                        <a onClick={() => openDataTab()}>
                                             {label}
                                         </a>
                                     </li>
@@ -77,23 +81,19 @@ const Sidebar = (_: SidebarPropType) => {
                             {dbQueries.map((dbQuery: DBQuery) => {
                                 return (
                                     <li key={dbQuery.id}>
-                                        <Link
-                                            to={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection!.id).replace('[queryId]', dbQuery.id)}
-                                            className={queryId === dbQuery.id ? 'is-active' : ''}>
+                                        <a onClick={() => openQueryTab()}>
                                             {dbQuery.name}
-                                        </Link>
+                                        </a>
                                     </li>
                                 )
                             })}
                             <li>
-                                <Link
-                                    to={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection!.id).replace('[queryId]', 'new')}
-                                    className={queryId === 'new' ? 'is-active' : ''}>
+                                <a onClick={() => openQueryTab()}>
                                     <span className="icon">
                                         <i className="fas fa-plus-circle"></i>
                                     </span>
                                     &nbsp;New Query
-                                </Link>
+                                </a>
                             </li>
                         </ul>
                     </React.Fragment>

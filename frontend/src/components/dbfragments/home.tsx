@@ -19,6 +19,10 @@ const DBHomeFragment = ({ }: DBHomePropType) => {
 
     const isFetching: boolean = useAppSelector(selectIsFetchingDBDataModels)
 
+    const updateActiveTabToQuery = () => {
+        dispatch(updateActiveTab({ tabType: TabType.QUERY, metadata: { queryId: 'new', query: "" } }))
+    }
+
     const updateActiveTabToHistory = () => {
         dispatch(updateActiveTab({ tabType: TabType.HISTORY, metadata: {} }))
     }
@@ -35,11 +39,16 @@ const DBHomeFragment = ({ }: DBHomePropType) => {
                     {dbDataModels.map(x => (
                         <DBDataModelCard key={x.schemaName + x.name} dataModel={x} dbConnection={dbConnection} />
                     ))}
-                    <button className="button" onClick={updateActiveTabToHistory}>
-                        <i className={"fas fa-history"} />
-                        &nbsp;&nbsp;
-                        View History
-                    </button>
+                    <div className="buttons">
+                        <button className="button" onClick={updateActiveTabToQuery}>
+                            <span className="icon is-small"><i className="fas fa-circle-plus" /></span>
+                            <span>New Query</span>
+                        </button>
+                        <button className="button" onClick={updateActiveTabToHistory}>
+                            <span className="icon is-small"><i className="fas fa-history" /></span>
+                            <span>View History</span>
+                        </button>
+                    </div>
                 </React.Fragment>
             }
         </React.Fragment>

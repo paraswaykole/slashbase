@@ -34,11 +34,11 @@ const DBDataModelCard = ({ dataModel, dbConnection }: DBDataModelPropType) => {
                 </div>
                 <div className="buttons">
                     <button className="button is-small is-white" onClick={updateActiveTabToData}>
-                        <span className="icon is-small"><i className="fas fa-table" aria-hidden="true" /></span>
+                        <span className="icon is-small"><i className="fas fa-table" /></span>
                         <span>View Data</span>
                     </button>
                     <button className="button is-small is-white" onClick={updateActiveTabToModel}>
-                        <span className="icon is-small"><i className="fas fa-list-alt" aria-hidden="true" /></span>
+                        <span className="icon is-small"><i className="fas fa-list-alt" /></span>
                         <span>View Model</span>
                     </button>
                 </div>

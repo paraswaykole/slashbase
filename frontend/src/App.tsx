@@ -12,7 +12,6 @@ import HomePage from "./pages/home"
 import ProjectPage from "./pages/project"
 import NewDBPage from "./pages/project/newdb"
 import DBPage from "./pages/db"
-import DBQueryPage from "./pages/db/query"
 import AdvancedSettingsPage from "./pages/settings/advanced"
 import AboutPage from "./pages/settings/about"
 import SupportPage from "./pages/settings/support"
@@ -55,7 +54,6 @@ function App() {
           <Route path="project/:id" element={<ProjectPage />} />
           <Route path="project/:id/newdb" element={<NewDBPage />} />
           <Route path="db/:id" element={<DBPage />} />
-          <Route path="db/:id/query/:queryId" element={<DBQueryPage />} />
           <Route path="settings/general" element={<GeneralSettingsPage />} />
           <Route path="settings/advanced" element={<AdvancedSettingsPage />} />
           <Route path="settings/about" element={<AboutPage />} />

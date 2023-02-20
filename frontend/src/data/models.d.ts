@@ -22,6 +22,8 @@ export interface Tab {
     metadata: {
         schema: string,
         name: string,
+        queryId: string,
+        query: string
     }
     dbConnectionId: string
     isActive: bool

@@ -1,7 +1,7 @@
 import styles from './query.module.scss'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { DBConnection, DBQuery, DBQueryData, DBQueryResult } from '../../data/models'
+import { DBConnection, DBQuery, DBQueryData, DBQueryResult, Tab } from '../../data/models'
 import QueryEditor from './queryeditor/queryeditor'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
@@ -9,25 +9,38 @@ import { DBConnType } from '../../data/defaults'
 import JsonTable from './jsontable/jsontable'
 import Table from './table/table'
 import Chart from './chart/chart'
-import { runQuery } from '../../redux/dbQuerySlice'
+import { getDBQuery, runQuery, selectDBQuery, setDBQuery } from '../../redux/dbQuerySlice'
+import { selectActiveTab } from '../../redux/tabsSlice'
 
 
 type DBQueryPropType = {
-    queryId: string
-    dbQuery?: DBQuery
-    onQuerySaved: (newQueryId: string) => void,
-    onDelete: () => void,
 }
 
-const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved, onDelete }: DBQueryPropType) => {
+const DBQueryFragment = (_: DBQueryPropType) => {
 
     const dispatch = useAppDispatch()
+
+    const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
+    const dbQuery = useAppSelector(selectDBQuery)
+    const activeTab: Tab = useAppSelector(selectActiveTab)
 
     const [queryData, setQueryData] = useState<DBQueryData>()
     const [queryResult, setQueryResult] = useState<DBQueryResult>()
     const [isChartEnabled, setIsChartEnabled] = useState<boolean>(false)
 
-    const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
+    const queryId = activeTab.metadata.queryId
+
+    useEffect(() => {
+        (async () => {
+            if (queryId && queryId !== 'new') {
+                dispatch(getDBQuery({ queryId: String(queryId) }))
+            }
+            if (queryId === 'new') {
+                dispatch(setDBQuery(undefined))
+            }
+        })()
+    }, [dispatch, queryId])
+
 
     useEffect(() => {
         setQueryData(undefined)
@@ -54,6 +67,14 @@ const DBQueryFragment = ({ queryId, dbQuery, onQuerySaved, onDelete }: DBQueryPr
 
     const toggleIsChartEnabled = () => {
         setIsChartEnabled(!isChartEnabled)
+    }
+
+    const onQuerySaved = () => {
+        //TODO: not implemented
+    }
+
+    const onDelete = () => {
+        // TODO: not implemented
     }
 
     return (
