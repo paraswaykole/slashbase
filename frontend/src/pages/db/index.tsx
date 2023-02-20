@@ -49,6 +49,9 @@ const DBPage: FunctionComponent<{}> = () => {
                     {activeTab.type === TabType.QUERY && <DBQueryFragment />}
                 </React.Fragment>
             }
+            {!activeTab && <React.Fragment>
+                <h2>No Active Tab!</h2>
+            </React.Fragment>}
         </React.Fragment>
     )
 }
