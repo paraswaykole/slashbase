@@ -33,6 +33,7 @@ export const createTab = createAsyncThunk(
         if (result.success) {
             return {
                 tab: result.data,
+                activeTabId: result.data.id
             }
         } else {
             return rejectWithValue(result.error)
@@ -116,6 +117,7 @@ export const tabsSlice = createSlice({
             })
             .addCase(createTab.fulfilled, (state, action) => {
                 state.tabs.push(action.payload.tab)
+                state.activeTabId = action.payload.activeTabId
             })
             .addCase(updateActiveTab.fulfilled, (state, action) => {
                 const idx = state.tabs.findIndex(t => t.id === action.payload.tab.id)
