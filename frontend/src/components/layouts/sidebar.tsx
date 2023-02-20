@@ -6,8 +6,9 @@ import { DBConnection, DBDataModel, DBQuery } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
-import { DBConnType } from '../../data/defaults'
+import { DBConnType, TabType } from '../../data/defaults'
 import HomeSidebar from './sidebars/homesidebar'
+import { createTab } from '../../redux/tabsSlice'
 
 enum SidebarViewType {
     HOME = "HOME", // home sidebar
@@ -40,12 +41,12 @@ const Sidebar = (_: SidebarPropType) => {
         dispatch(setIsShowingSidebar(!isShowingSidebar))
     }
 
-    const openDataTab = () => {
-        // TODO: not implemented
+    const openDataTab = (schema: string, name: string) => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.DATA, metadata: { schema, name } }))
     }
 
-    const openQueryTab = () => {
-        // TODO: not implemented
+    const openQueryTab = (queryId: string) => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.QUERY, metadata: { queryId } }))
     }
 
     return (
@@ -67,7 +68,7 @@ const Sidebar = (_: SidebarPropType) => {
                                 const label = dbConnection.type === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
                                 return (
                                     <li key={dataModel.schemaName + dataModel.name}>
-                                        <a onClick={() => openDataTab()}>
+                                        <a onClick={() => openDataTab(dataModel.schemaName ?? "", dataModel.name)}>
                                             {label}
                                         </a>
                                     </li>
@@ -81,14 +82,14 @@ const Sidebar = (_: SidebarPropType) => {
                             {dbQueries.map((dbQuery: DBQuery) => {
                                 return (
                                     <li key={dbQuery.id}>
-                                        <a onClick={() => openQueryTab()}>
+                                        <a onClick={() => openQueryTab(dbQuery.id)}>
                                             {dbQuery.name}
                                         </a>
                                     </li>
                                 )
                             })}
                             <li>
-                                <a onClick={() => openQueryTab()}>
+                                <a onClick={() => openQueryTab("new")}>
                                     <span className="icon">
                                         <i className="fas fa-plus-circle"></i>
                                     </span>

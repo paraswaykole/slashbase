@@ -17,9 +17,19 @@ const initialState: TabState = {
 
 export const createTab = createAsyncThunk(
     'tabs/createTab',
-    async (payload: { dbConnId: string, tabType: TabType }, { rejectWithValue }: any) => {
+    async (payload: { dbConnId: string, tabType: TabType, metadata?: any | undefined }, { rejectWithValue }: any) => {
         const dbConnectionId = payload.dbConnId
-        const result = await eventService.createTab(dbConnectionId)
+        const tabType = payload.tabType
+        let mSchema = ""
+        let mName = ""
+        let queryId = ""
+        if (tabType === TabType.DATA || tabType === TabType.MODEL) {
+            mSchema = payload.metadata.schema
+            mName = payload.metadata.name
+        } else if (tabType === TabType.QUERY) {
+            queryId = payload.metadata.queryId
+        }
+        const result = await eventService.createTab(dbConnectionId, tabType, mSchema, mName, queryId)
         if (result.success) {
             return {
                 tab: result.data,

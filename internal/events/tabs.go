@@ -24,8 +24,11 @@ func (TabsEventListeners) CreateNewTab(ctx context.Context) {
 		responseEventName := args[0].(string)
 		defer recovery(ctx, responseEventName)
 		dbConnectionId := args[1].(string)
-		// TODO: handle more args...
-		tab, err := tabController.CreateTab(dbConnectionId)
+		tabType := args[2].(string)
+		modelschema := args[3].(string)
+		modelname := args[4].(string)
+		queryID := args[5].(string)
+		tab, err := tabController.CreateTab(dbConnectionId, tabType, modelschema, modelname, queryID)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,
