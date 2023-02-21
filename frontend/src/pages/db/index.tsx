@@ -44,7 +44,7 @@ const DBPage: FunctionComponent<{}> = () => {
     return (
         <React.Fragment>
             {tabs.map(tab => (
-                <React.Fragment>
+                <React.Fragment key={tab.id}>
                     <TabContext.Provider value={tab}>
                         {tab.type === TabType.BLANK && <DBHomeFragment />}
                         {tab.type === TabType.HISTORY && <DBHistoryFragment />}
