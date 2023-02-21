@@ -17,17 +17,37 @@ const initialState: TabState = {
 
 export const createTab = createAsyncThunk(
     'tabs/createTab',
-    async (payload: { dbConnId: string, tabType: TabType, metadata?: any | undefined }, { rejectWithValue }: any) => {
+    async (payload: { dbConnId: string, tabType: TabType, metadata?: any | undefined }, { rejectWithValue, getState }: any) => {
         const dbConnectionId = payload.dbConnId
         const tabType = payload.tabType
+        const currentTabs = (getState()["tabs"] as TabState).tabs.filter(t => t.type === tabType)
         let mSchema = ""
         let mName = ""
         let queryId = ""
         if (tabType === TabType.DATA || tabType === TabType.MODEL) {
             mSchema = payload.metadata.schema
             mName = payload.metadata.name
+            const tab = currentTabs.find(t => t.metadata.schema === mSchema && t.metadata.name === mName)
+            if (tab) {
+                return {
+                    activeTabId: tab!.id
+                }
+            }
         } else if (tabType === TabType.QUERY) {
             queryId = payload.metadata.queryId
+            const tab = currentTabs.find(t => t.metadata.queryId === queryId)
+            if (tab) {
+                return {
+                    activeTabId: tab!.id
+                }
+            }
+        } else {
+            const tab = currentTabs.find(t => t.type === TabType.HISTORY)
+            if (tab) {
+                return {
+                    activeTabId: tab!.id
+                }
+            }
         }
         const result = await eventService.createTab(dbConnectionId, tabType, mSchema, mName, queryId)
         if (result.success) {
@@ -70,7 +90,6 @@ export const getTabs = createAsyncThunk(
     async (payload: { dbConnId: string }, { rejectWithValue }: any) => {
         const dbConnectionId = payload.dbConnId
         const result = await eventService.getTabsByDBConnection(dbConnectionId)
-        console.log(result.data[0].id)
         if (result.success) {
             return {
                 tabs: result.data,
@@ -116,7 +135,8 @@ export const tabsSlice = createSlice({
                 state.activeTabId = action.payload.activeTabId
             })
             .addCase(createTab.fulfilled, (state, action) => {
-                state.tabs.push(action.payload.tab)
+                if (action.payload.tab)
+                    state.tabs.push(action.payload.tab)
                 state.activeTabId = action.payload.activeTabId
             })
             .addCase(updateActiveTab.fulfilled, (state, action) => {
@@ -124,6 +144,10 @@ export const tabsSlice = createSlice({
                 state.tabs[idx] = action.payload.tab
             })
             .addCase(closeTab.fulfilled, (state, action) => {
+                if (state.activeTabId === action.payload.tabId && state.tabs.length > 1) {
+                    const idx = state.tabs.findIndex(t => t.id === action.payload.tabId)
+                    state.activeTabId = state.tabs[idx === 0 ? 1 : idx - 1].id
+                }
                 state.tabs = state.tabs.filter(t => t.id !== action.payload.tabId)
             })
     },
