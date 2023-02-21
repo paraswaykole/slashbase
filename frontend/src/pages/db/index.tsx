@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom'
 import { getDBConnection, getDBDataModels, getDBQueries } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import DBHomeFragment from '../../components/dbfragments/home'
-import { getTabs, selectActiveTab } from '../../redux/tabsSlice'
+import { getTabs, selectActiveTab, selectTabs } from '../../redux/tabsSlice'
 import { TabType } from '../../data/defaults'
 import DBHistoryFragment from '../../components/dbfragments/history'
 import DBShowDataFragment from '../../components/dbfragments/showdata'
 import DBShowModelFragment from '../../components/dbfragments/showmodel'
 import DBQueryFragment from '../../components/dbfragments/query'
+import TabContext from '../../components/layouts/tabcontext'
+import { Tab } from '../../data/models'
 
 const DBPage: FunctionComponent<{}> = () => {
 
@@ -16,6 +18,7 @@ const DBPage: FunctionComponent<{}> = () => {
     const [error404, setError404] = useState(false)
     const dispatch = useAppDispatch()
 
+    const tabs: Tab[] = useAppSelector(selectTabs)
     const activeTab = useAppSelector(selectActiveTab)
 
     useEffect(() => {
@@ -40,15 +43,17 @@ const DBPage: FunctionComponent<{}> = () => {
 
     return (
         <React.Fragment>
-            {activeTab &&
+            {tabs.map(tab => (
                 <React.Fragment>
-                    {activeTab.type === TabType.BLANK && <DBHomeFragment />}
-                    {activeTab.type === TabType.HISTORY && <DBHistoryFragment />}
-                    {activeTab.type === TabType.DATA && <DBShowDataFragment />}
-                    {activeTab.type === TabType.MODEL && <DBShowModelFragment />}
-                    {activeTab.type === TabType.QUERY && <DBQueryFragment />}
-                </React.Fragment>
-            }
+                    <TabContext.Provider value={tab}>
+                        {tab.type === TabType.BLANK && <DBHomeFragment />}
+                        {tab.type === TabType.HISTORY && <DBHistoryFragment />}
+                        {tab.type === TabType.DATA && <DBShowDataFragment />}
+                        {tab.type === TabType.MODEL && <DBShowModelFragment />}
+                        {tab.type === TabType.QUERY && <DBQueryFragment />}
+                    </TabContext.Provider>
+                </React.Fragment>)
+            )}
             {!activeTab && <React.Fragment>
                 <h2>No Active Tab!</h2>
             </React.Fragment>}

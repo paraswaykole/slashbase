@@ -1,5 +1,5 @@
 import styles from './showdata.module.scss'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DBConnection, DBDataModel, Project, Tab } from '../../data/models'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
@@ -9,7 +9,7 @@ import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
 import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData } from '../../redux/dataModelSlice'
-import { selectActiveTab } from '../../redux/tabsSlice'
+import TabContext from '../layouts/tabcontext'
 
 type DBShowDataPropType = {
 
@@ -23,7 +23,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
-    const activeTab: Tab = useAppSelector(selectActiveTab)
+    const currentTab: Tab = useContext(TabContext)!
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
     const dataLoading = useAppSelector(selectIsFetchingQueryData)
@@ -34,8 +34,8 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const [queryFilter, setQueryFilter] = useState<string[] | undefined>(undefined)
     const [querySort, setQuerySort] = useState<string[] | undefined>(undefined)
 
-    const mschema = activeTab.metadata.schema
-    const mname = activeTab.metadata.name
+    const mschema = currentTab.metadata.schema
+    const mname = currentTab.metadata.name
 
     useEffect(() => {
         const dModel = dbDataModels.find(x => x.schemaName === mschema && x.name === mname)
@@ -61,9 +61,13 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
 
     const fetchData = async (fetchCount: boolean) => {
         if (!dataModel) return
-        const result = await dispatch(getDBDataInDataModel({ dbConnectionId: dbConnection!.id, schemaName: dataModel!.schemaName ?? '', name: dataModel!.name, queryLimit, queryOffset, fetchCount, queryFilter, querySort })).unwrap()
-        if (fetchCount) {
-            setQueryCount(result.data.count)
+        try {
+            const result = await dispatch(getDBDataInDataModel({ tabId: currentTab.id, dbConnectionId: dbConnection!.id, schemaName: dataModel!.schemaName ?? '', name: dataModel!.name, queryLimit, queryOffset, fetchCount, queryFilter, querySort })).unwrap()
+            if (fetchCount) {
+                setQueryCount(result.data.count)
+            }
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -95,7 +99,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
         queryOffset + queryLimit : queryOffset + (rowsLength ?? 0)
 
     return (
-        <React.Fragment>
+        <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {project && dbConnection && queryData && dbConnection.type === DBConnType.POSTGRES &&
                 <Table
                     dbConnection={dbConnection}
@@ -147,7 +151,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     </nav>
                 }
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 

@@ -1,13 +1,14 @@
 import styles from './jsontable.module.scss'
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { useRowSelect, useTable } from 'react-table'
-import { DBConnection, DBQueryData } from '../../../data/models'
+import { DBConnection, DBQueryData, Tab } from '../../../data/models'
 import JsonCell from './jsoncell'
 import AddModal from './addmodel'
 import toast from 'react-hot-toast'
 import ConfirmModal from '../../widgets/confirmModal'
 import { useAppDispatch } from '../../../redux/hooks'
 import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice'
+import TabContext from '../../layouts/tabcontext'
 
 type JsonTablePropType = {
     queryData: DBQueryData,
@@ -22,6 +23,8 @@ type JsonTablePropType = {
 const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onFilterChanged, onSortChanged }: JsonTablePropType) => {
 
     const dispatch = useAppDispatch()
+
+    const activeTab: Tab = useContext(TabContext)!
 
     const [isAdding, setIsAdding] = useState<boolean>(false)
     const [isDeleting, setIsDeleting] = useState<boolean>(false)
@@ -85,7 +88,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
             if (rowIdx) {
                 const newQueryData: DBQueryData = { ...queryData!, data: [...queryData!.data] }
                 newQueryData!.data[rowIdx] = { _id: underscoreId, ...JSON.parse(newData) }
-                dispatch(setQueryData(newQueryData))
+                dispatch(setQueryData({ data: newQueryData, tabId: activeTab.id }))
             } else {
                 // fetchData(false)
             }
@@ -132,7 +135,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
                 toast.success('rows deleted');
                 const filteredRows = queryData!.data.filter((_, i) => !selectedRows.includes(i))
                 const newQueryData: DBQueryData = { ...queryData!, data: filteredRows }
-                dispatch(setQueryData(newQueryData))
+                dispatch(setQueryData({ data: newQueryData, tabId: activeTab.id }))
             } else {
                 toast.error(result.error!);
             }

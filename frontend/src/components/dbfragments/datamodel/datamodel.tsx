@@ -1,6 +1,6 @@
 import styles from './datamodel.module.scss'
-import React, { useEffect, useState } from 'react'
-import { DBConnection } from '../../../data/models'
+import React, { useContext, useEffect, useState } from 'react'
+import { DBConnection, Tab } from '../../../data/models'
 import { Tooltip } from 'react-tooltip'
 import { DBConnType } from '../../../data/defaults'
 import AddFieldModal from './addfieldmodal'
@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import AddIndexModal from './addindexmodal'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { deleteDBDataModelField, deleteDBDataModelIndex, getSingleDataModel, selectSingleDataModel } from '../../../redux/dataModelSlice'
+import TabContext from '../../layouts/tabcontext'
 
 type DataModelPropType = {
     dbConn: DBConnection
@@ -21,6 +22,7 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
 
     const dispatch = useAppDispatch()
 
+    const activeTab: Tab = useContext(TabContext)!
     const dataModel = useAppSelector(selectSingleDataModel)
 
     const [isEditingModel, setIsEditingModel] = useState<boolean>(false)
@@ -46,7 +48,7 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
     const label = dbConn.type === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
 
     const deleteField = async () => {
-        const result = await dispatch(deleteDBDataModelField({ dbConnectionId: dbConn.id, schemaName: dataModel.schemaName!, name: dataModel.name, fieldName: deletingField })).unwrap()
+        const result = await dispatch(deleteDBDataModelField({ tabId: activeTab.id, dbConnectionId: dbConn.id, schemaName: dataModel.schemaName!, name: dataModel.name, fieldName: deletingField })).unwrap()
         if (result.success) {
             toast.success(`deleted field ${deletingField}`)
             refreshModel()

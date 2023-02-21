@@ -1,10 +1,11 @@
 import styles from './table.module.scss'
-import React, { useState } from 'react'
-import { ApiResult, AddDataResponse, DBConnection, DBQueryData } from '../../../data/models'
+import React, { useContext, useState } from 'react'
+import { ApiResult, AddDataResponse, DBConnection, DBQueryData, Tab } from '../../../data/models'
 import toast from 'react-hot-toast'
-import { useAppDispatch } from '../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { addDBData, setQueryData } from '../../../redux/dataModelSlice'
 import { DBConnType } from '../../../data/defaults'
+import TabContext from '../../layouts/tabcontext'
 
 type AddModal = {
     queryData: DBQueryData
@@ -17,6 +18,8 @@ type AddModal = {
 const AddModal = ({ queryData, dbConnection, mSchema, mName, onClose }: AddModal) => {
 
     const dispatch = useAppDispatch()
+
+    const activeTab: Tab = useContext(TabContext)!
 
     const [newData, setNewData] = useState<any>({})
 
@@ -47,7 +50,7 @@ const AddModal = ({ queryData, dbConnection, mSchema, mName, onClose }: AddModal
             }
             const updatedRows = [mNewData, ...queryData!.rows]
             const updateQueryData: DBQueryData = { ...queryData!, rows: updatedRows }
-            dispatch(setQueryData(updateQueryData))
+            dispatch(setQueryData({ data: updateQueryData, tabId: activeTab.id }))
             onClose()
         } else {
             toast.error(result.error!)

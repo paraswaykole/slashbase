@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { DBConnection, Project, Tab } from '../../data/models'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppSelector } from '../../redux/hooks'
 import { selectCurrentProject } from '../../redux/projectsSlice'
-import { selectActiveTab } from '../../redux/tabsSlice'
+import TabContext from '../layouts/tabcontext'
 import DataModel from './datamodel/datamodel'
 
 type DBShowModelPropType = {
@@ -14,13 +14,13 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
-    const activeTab: Tab = useAppSelector(selectActiveTab)
+    const currentTab: Tab = useContext(TabContext)!
 
-    const mschema = activeTab.metadata.schema
-    const mname = activeTab.metadata.name
+    const mschema = currentTab.metadata.schema
+    const mname = currentTab.metadata.name
 
     return (
-        <React.Fragment>
+        <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {mname && project &&
                 <DataModel
                     dbConn={dbConnection!}
@@ -28,7 +28,7 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
                     mname={mname}
                     isEditable={true} />
             }
-        </React.Fragment>
+        </div>
     )
 }
 

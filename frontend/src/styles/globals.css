@@ -163,3 +163,11 @@ code {
 ::-ms-reveal {
   display: none;
 }
+
+.db-tab {
+  display: none;
+}
+
+.db-tab-active {
+  display: inherit !important;
+}

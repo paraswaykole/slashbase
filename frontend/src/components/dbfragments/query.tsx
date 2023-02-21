@@ -1,5 +1,5 @@
 import styles from './query.module.scss'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { DBConnection, DBQuery, DBQueryData, DBQueryResult, Tab } from '../../data/models'
 import QueryEditor from './queryeditor/queryeditor'
@@ -10,7 +10,7 @@ import JsonTable from './jsontable/jsontable'
 import Table from './table/table'
 import Chart from './chart/chart'
 import { getDBQuery, runQuery, selectDBQuery, setDBQuery } from '../../redux/dbQuerySlice'
-import { selectActiveTab } from '../../redux/tabsSlice'
+import TabContext from '../layouts/tabcontext'
 
 
 type DBQueryPropType = {
@@ -22,13 +22,14 @@ const DBQueryFragment = (_: DBQueryPropType) => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbQuery = useAppSelector(selectDBQuery)
-    const activeTab: Tab = useAppSelector(selectActiveTab)
+
+    const currentTab: Tab = useContext(TabContext)!
 
     const [queryData, setQueryData] = useState<DBQueryData>()
     const [queryResult, setQueryResult] = useState<DBQueryResult>()
     const [isChartEnabled, setIsChartEnabled] = useState<boolean>(false)
 
-    const queryId = activeTab.metadata.queryId
+    const queryId = currentTab.metadata.queryId
 
     useEffect(() => {
         (async () => {
@@ -78,7 +79,7 @@ const DBQueryFragment = (_: DBQueryPropType) => {
     }
 
     return (
-        <React.Fragment>
+        <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {(dbConnection && ((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId))) &&
                 <QueryEditor
                     initialValue={dbQuery?.query ?? ''}
@@ -136,7 +137,7 @@ const DBQueryFragment = (_: DBQueryPropType) => {
                 : null
             }
             {queryResult && <span><b>Result of Query: </b>{queryResult.message}</span>}
-        </React.Fragment>
+        </div>
     )
 }
 

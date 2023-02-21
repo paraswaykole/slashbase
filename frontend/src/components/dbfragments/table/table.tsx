@@ -1,14 +1,15 @@
 import styles from './table.module.scss'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import { Cell, useRowSelect, useTable } from 'react-table'
-import toast from 'react-hot-toast';
-import { DBConnection, DBQueryData } from '../../../data/models'
+import toast from 'react-hot-toast'
+import { DBConnection, DBQueryData, Tab } from '../../../data/models'
 import EditableCell from './editablecell'
-import AddModal from './addmodal';
-import ConfirmModal from '../../widgets/confirmModal';
-import { useAppDispatch } from '../../../redux/hooks';
-import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice';
-import { DBConnType } from '../../../data/defaults';
+import AddModal from './addmodal'
+import ConfirmModal from '../../widgets/confirmModal'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice'
+import { DBConnType } from '../../../data/defaults'
+import TabContext from '../../layouts/tabcontext'
 
 
 type TablePropType = {
@@ -26,6 +27,8 @@ type TablePropType = {
 const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader, querySort, onFilterChanged, onSortChanged }: TablePropType) => {
 
     const dispatch = useAppDispatch()
+
+    const activeTab: Tab = useContext(TabContext)!
 
     const [editCell, setEditCell] = useState<(string | number)[]>([])
     const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -74,7 +77,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                 console.log(result, newQueryData)
                 newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx], ctid: result.data.ctid }
                 newQueryData!.rows[rowIdx][columnIdx] = newValue
-                dispatch(setQueryData(newQueryData))
+                dispatch(setQueryData({ data: newQueryData, tabId: activeTab.id }))
             } else {
                 // fetchData(false)
             }
@@ -125,7 +128,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                 toast.success('rows deleted')
                 const filteredRows = queryData!.rows.filter((_, i) => !selectedRows.includes(i))
                 const newQueryData: DBQueryData = { ...queryData!, rows: filteredRows }
-                dispatch(setQueryData(newQueryData))
+                dispatch(setQueryData({ data: newQueryData, tabId: activeTab.id }))
             } else {
                 toast.error(result.error!)
             }

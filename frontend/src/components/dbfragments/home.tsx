@@ -1,11 +1,12 @@
 import styles from './home.module.scss'
-import React from 'react'
-import { DBConnection, DBDataModel } from '../../data/models'
+import React, { useContext } from 'react'
+import { DBConnection, DBDataModel, Tab } from '../../data/models'
 import { selectDBConnection, selectDBDataModels, selectIsFetchingDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import DBDataModelCard from '../cards/dbdatamodelcard/dbdatamodelcard'
 import { TabType } from '../../data/defaults'
 import { updateActiveTab } from '../../redux/tabsSlice'
+import TabContext from '../layouts/tabcontext'
 
 type DBHomePropType = {
 }
@@ -13,6 +14,8 @@ type DBHomePropType = {
 const DBHomeFragment = ({ }: DBHomePropType) => {
 
     const dispatch = useAppDispatch()
+
+    const currentTab: Tab = useContext(TabContext)!
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
@@ -28,7 +31,7 @@ const DBHomeFragment = ({ }: DBHomePropType) => {
     }
 
     return (
-        <React.Fragment>
+        <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {dbConnection &&
                 <React.Fragment>
                     <h2>Data Models</h2>
@@ -51,7 +54,7 @@ const DBHomeFragment = ({ }: DBHomePropType) => {
                     </div>
                 </React.Fragment>
             }
-        </React.Fragment>
+        </div>
     )
 }
 
