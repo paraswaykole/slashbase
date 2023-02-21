@@ -59,7 +59,7 @@ func NewModelTab(dbConnID, schema, name string) *Tab {
 
 func NewQueryTab(dbConnID, queryID, query string) *Tab {
 	data := map[string]interface{}{
-		"queryid": queryID,
+		"queryId": queryID,
 		"query":   query,
 	}
 	dataStr, _ := json.Marshal(data)

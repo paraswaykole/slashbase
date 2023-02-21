@@ -2,6 +2,7 @@ package views
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/slashbaseide/slashbase/internal/models"
@@ -22,6 +23,7 @@ func BuildTabView(tab *models.Tab) *TabView {
 	if err != nil {
 		metadata = map[string]interface{}{}
 	}
+	fmt.Println(metadata)
 	return &TabView{
 		ID:             tab.ID,
 		Type:           tab.Type,
