@@ -42,7 +42,7 @@ const TabsBar = (_: TabsBarPropType) => {
                             {t.type === TabType.MODEL && `${t.metadata.schema === '' ? t.metadata.name : `${t.metadata.schema}.${t.metadata.name}`}`}
                             {t.type === TabType.QUERY && "Query"}
                         </span>
-                        <span className="icon" onClick={() => { handleCloseTab(t.id) }}><i className="fas fa-times" aria-hidden="true"></i></span>
+                        <span className={"icon " + (t.isActive ? styles.tabsCloseBtn : styles.tabsCloseBtnInActive)} onClick={() => { handleCloseTab(t.id) }}><i className="fas fa-times" aria-hidden="true"></i></span>
                     </a>
                 </li>)}
                 <li>
