@@ -22,7 +22,7 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
 
     const dispatch = useAppDispatch()
 
-    const activeTab: Tab = useContext(TabContext)!
+    const currentTab: Tab = useContext(TabContext)!
     const dataModel = useAppSelector(selectSingleDataModel)
 
     const [isEditingModel, setIsEditingModel] = useState<boolean>(false)
@@ -35,7 +35,7 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
 
     useEffect(() => {
         if (!dbConn) return
-        dispatch(getSingleDataModel({ dbConnectionId: dbConn!.id, schemaName: String(mschema), name: String(mname) }))
+        dispatch(getSingleDataModel({ tabId: currentTab.id, dbConnectionId: dbConn!.id, schemaName: String(mschema), name: String(mname) }))
     }, [dispatch, dbConn, mschema, mname, refresh])
 
     const refreshModel = () => {
@@ -48,7 +48,7 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
     const label = dbConn.type === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
 
     const deleteField = async () => {
-        const result = await dispatch(deleteDBDataModelField({ tabId: activeTab.id, dbConnectionId: dbConn.id, schemaName: dataModel.schemaName!, name: dataModel.name, fieldName: deletingField })).unwrap()
+        const result = await dispatch(deleteDBDataModelField({ tabId: currentTab.id, dbConnectionId: dbConn.id, schemaName: dataModel.schemaName!, name: dataModel.name, fieldName: deletingField })).unwrap()
         if (result.success) {
             toast.success(`deleted field ${deletingField}`)
             refreshModel()
