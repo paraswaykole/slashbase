@@ -17,7 +17,7 @@ export interface QueryDataModelState {
 
 const initialState: QueryDataModelState = {}
 
-const createEmptyTabState = (state: QueryDataModelState, tabId: string) => {
+const createInitialTabState = (state: QueryDataModelState, tabId: string) => {
   if (state[tabId] === undefined) {
     state[tabId] = {
       queryData: undefined,
@@ -146,29 +146,29 @@ export const dataModelSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getDBDataInDataModel.pending, (state, action: any) => {
-        createEmptyTabState(state, action.meta.arg.tabId)
+        createInitialTabState(state, action.meta.arg.tabId)
         state[action.meta.arg.tabId].isFetching.data = true
       })
       .addCase(getDBDataInDataModel.fulfilled, (state, action: any) => {
-        createEmptyTabState(state, action.meta.arg.tabId)
+        createInitialTabState(state, action.meta.arg.tabId)
         state[action.meta.arg.tabId].isFetching.data = false
         state[action.meta.arg.tabId].queryData = action.payload.data
       })
       .addCase(getSingleDataModel.pending, (state, action: any) => {
-        createEmptyTabState(state, action.meta.arg.tabId)
+        createInitialTabState(state, action.meta.arg.tabId)
         state[action.meta.arg.tabId].isFetching.model = true
       })
       .addCase(getSingleDataModel.fulfilled, (state, action: any) => {
-        createEmptyTabState(state, action.meta.arg.tabId)
+        createInitialTabState(state, action.meta.arg.tabId)
         state[action.meta.arg.tabId].isFetching.model = false
         state[action.meta.arg.tabId].dataModel = action.payload.data
       })
       .addCase(addDBDataModelField.fulfilled, (state, action: any) => {
-        createEmptyTabState(state, action.meta.arg.tabId)
+        createInitialTabState(state, action.meta.arg.tabId)
         state[action.meta.arg.tabId].queryData = undefined
       })
       .addCase(deleteDBDataModelField.fulfilled, (state, action: any) => {
-        createEmptyTabState(state, action.meta.arg.tabId)
+        createInitialTabState(state, action.meta.arg.tabId)
         state[action.meta.arg.tabId].queryData = undefined
       })
   },

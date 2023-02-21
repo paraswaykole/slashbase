@@ -34,10 +34,10 @@ const DBQueryFragment = (_: DBQueryPropType) => {
     useEffect(() => {
         (async () => {
             if (queryId && queryId !== 'new') {
-                dispatch(getDBQuery({ queryId: String(queryId) }))
+                dispatch(getDBQuery({ queryId: String(queryId), tabId: currentTab.id }))
             }
             if (queryId === 'new') {
-                dispatch(setDBQuery(undefined))
+                dispatch(setDBQuery({ data: undefined, tabId: currentTab.id }))
             }
         })()
     }, [dispatch, queryId])
