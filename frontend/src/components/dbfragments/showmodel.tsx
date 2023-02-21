@@ -17,8 +17,6 @@ const DBShowModelFragment = (_: DBShowModelPropType) => {
     const mschema = currentTab.metadata.schema
     const mname = currentTab.metadata.name
 
-    console.log(mname, dbConnection)
-
     return (
         <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {mname && dbConnection &&
