@@ -36,7 +36,7 @@ export const createTab = createAsyncThunk(
         } else if (tabType === TabType.QUERY) {
             queryId = payload.metadata.queryId
             const tab = currentTabs.find(t => t.metadata.queryId === queryId)
-            if (tab) {
+            if (queryId !== "new" && tab) {
                 return {
                     activeTabId: tab!.id
                 }
