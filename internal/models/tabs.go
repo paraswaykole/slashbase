@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/slashbaseide/slashbase/internal/db"
 )
 
 type Tab struct {
@@ -68,4 +69,21 @@ func NewQueryTab(dbConnID, queryID, query string) *Tab {
 
 func NewHistoryTab(dbConnID string) *Tab {
 	return newTab(TAB_TYPE_HISTORY, dbConnID, "")
+}
+
+func (t *Tab) FetchMetadata() map[string]interface{} {
+	var metadata map[string]interface{}
+	err := json.Unmarshal([]byte(t.MetaData), &metadata)
+	if err != nil {
+		metadata = map[string]interface{}{}
+	}
+	if t.Type == TAB_TYPE_QUERY {
+		queryID := metadata["queryId"].(string)
+		var dbQuery DBQuery
+		err := db.GetDB().Where(DBQuery{ID: queryID}).First(&dbQuery).Error
+		if err == nil {
+			metadata["queryName"] = dbQuery.Name
+		}
+	}
+	return metadata
 }

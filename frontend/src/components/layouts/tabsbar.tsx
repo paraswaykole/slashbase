@@ -41,7 +41,7 @@ const TabsBar = (_: TabsBarPropType) => {
                             {t.type === TabType.HISTORY && "History"}
                             {t.type === TabType.DATA && `${t.metadata.schema === '' ? t.metadata.name : `${t.metadata.schema}.${t.metadata.name}`}`}
                             {t.type === TabType.MODEL && `${t.metadata.schema === '' ? t.metadata.name : `${t.metadata.schema}.${t.metadata.name}`}`}
-                            {t.type === TabType.QUERY && "Query"}
+                            {t.type === TabType.QUERY && `${t.metadata.queryName ? t.metadata.queryName : 'New Query'}`}
                         </span>
                         <span className={"icon " + (t.isActive ? styles.tabsCloseBtn : styles.tabsCloseBtnInActive)} onClick={(e) => { handleCloseTab(e, t.id) }}><i className="fas fa-times" aria-hidden="true"></i></span>
                     </a>

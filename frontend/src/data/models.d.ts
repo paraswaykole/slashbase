@@ -23,7 +23,8 @@ export interface Tab {
         schema: string,
         name: string,
         queryId: string,
-        query: string
+        query: string,
+        queryName: string,
     }
     dbConnectionId: string
     isActive: bool
