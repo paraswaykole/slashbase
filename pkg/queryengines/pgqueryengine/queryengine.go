@@ -78,14 +78,17 @@ func (pgqe *PostgresQueryEngine) RunQuery(dbConn *models.DBConnection, query str
 	}, nil
 }
 
-func (pgqe *PostgresQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) bool {
+func (pgqe *PostgresQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) error {
 	query := "SELECT 1 AS test;"
 	data, err := pgqe.RunQuery(dbConn, query, config)
 	if err != nil {
-		return false
+		return err
 	}
 	test := data["rows"].([]map[string]interface{})[0]["0"].(int32)
-	return test == 1
+	if test == 1 {
+		return nil
+	}
+	return errors.New("connection test failed")
 }
 
 func (pgqe *PostgresQueryEngine) GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]map[string]interface{}, error) {

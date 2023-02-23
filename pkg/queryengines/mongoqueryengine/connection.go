@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/slashbaseide/slashbase/pkg/queryengines/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -44,6 +45,10 @@ func (mEngine *MongoQueryEngine) getConnection(dbConnectionId, scheme, host stri
 		}
 		mEngine.mutex.Unlock()
 		return mClientInstance.mongoClientInstance, nil
+	}
+	err = utils.CheckTcpConnection(host, strconv.Itoa(int(port)))
+	if err != nil {
+		return
 	}
 	connectionURI := createMongoConnectionURI(scheme, host, port, user, password, useSSL)
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(connectionURI))
