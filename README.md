@@ -64,10 +64,6 @@ Follow the steps below to download & start the app:
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Double click the Slashbase file to open the app on Window and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
-On Mac if you see the error message popup:
-
-- Open terminal and run `xattr -cr /path/to/Slashbase.app` and then run the app.
-
 ## Build from source
 
 Follow the steps build & start the app:
