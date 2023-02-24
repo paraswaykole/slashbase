@@ -80,14 +80,17 @@ func (mqe *MysqlQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 
 }
 
-func (mqe *MysqlQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) bool {
+func (mqe *MysqlQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) error {
 	query := "SELECT 1 AS test;"
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
-		return false
+		return err
 	}
 	test := data["rows"].([]map[string]interface{})[0]["0"].(int64)
-	return test == 1
+	if test == 1 {
+		return nil
+	}
+	return errors.New("connection test failed")
 }
 
 func (mqe *MysqlQueryEngine) GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]map[string]interface{}, error) {

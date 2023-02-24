@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/utils"
 )
 
 type pgxConnPoolInstance struct {
@@ -24,10 +25,13 @@ func (pxEngine *PostgresQueryEngine) getConnection(dbConnectionId, host string, 
 		pxEngine.mutex.Unlock()
 		return conn.pgxConnPoolInstance, nil
 	}
+	err = utils.CheckTcpConnection(host, strconv.Itoa(int(port)))
+	if err != nil {
+		return
+	}
 	connString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s", host, strconv.Itoa(int(port)), database, user, password)
 	pool, err := pgxpool.Connect(context.Background(), connString)
 	if err != nil {
-		err = fmt.Errorf("unable to connect to database: %v", err)
 		return
 	}
 	if dbConnectionId != "" {
@@ -38,7 +42,7 @@ func (pxEngine *PostgresQueryEngine) getConnection(dbConnectionId, host string, 
 		}
 		pxEngine.mutex.Unlock()
 	}
-	return pool, err
+	return pool, nil
 }
 
 func (pxEngine *PostgresQueryEngine) RemoveUnusedConnections() {
