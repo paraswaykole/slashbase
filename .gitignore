@@ -31,3 +31,4 @@ app.db
 build/bin
 node_modules
 frontend/dist
+build/darwin/gon-notarize.json

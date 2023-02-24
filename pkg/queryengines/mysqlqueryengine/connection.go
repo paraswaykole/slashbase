@@ -7,6 +7,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/slashbaseide/slashbase/pkg/queryengines/utils"
 )
 
 type mysqlInstance struct {
@@ -23,6 +24,10 @@ func (myEngine *MysqlQueryEngine) getConnection(dbConnectionId, host string, por
 		}
 		myEngine.mutex.Unlock()
 		return conn.mysqlInstance, nil
+	}
+	err = utils.CheckTcpConnection(host, strconv.Itoa(int(port)))
+	if err != nil {
+		return
 	}
 	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, strconv.Itoa(int(port)), database)
 	db, err := sql.Open("mysql", connString)

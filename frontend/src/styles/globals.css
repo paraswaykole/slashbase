@@ -154,3 +154,7 @@ code {
 .modal-card-foot {
   background-color: hsl(0, 0%, 96%) !important;
 }
+
+::-ms-reveal {
+  display: none;
+}

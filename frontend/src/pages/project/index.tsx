@@ -1,18 +1,22 @@
-import React, { FunctionComponent, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import DBConnCard from '../../components/cards/dbconncard/dbconncard'
 import NewDBConnButton from '../../components/cards/dbconncard/newdbconnectionbutton'
-import Constants from '../../constants'
 import { DBConnection, Project } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { deleteDBConnectionInProject, getDBConnectionsInProjects, selectDBConnectionsInProject, selectProjects } from '../../redux/projectsSlice'
+import { deleteDBConnectionInProject, deleteProject, getDBConnectionsInProjects, selectDBConnectionsInProject, selectProjects } from '../../redux/projectsSlice'
 import emptyStateDatabaseImg from '../../assets/images/empty-state-database.svg'
+import ConfirmModal from '../../components/widgets/confirmModal'
+import Constants from '../../constants'
 
 const ProjectPage: FunctionComponent<{}> = () => {
 
     const { id } = useParams()
 
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const databases = useAppSelector(selectDBConnectionsInProject)
     const projects: Project[] = useAppSelector(selectProjects)
@@ -28,6 +32,12 @@ const ProjectPage: FunctionComponent<{}> = () => {
 
     const onDeleteDB = async (dbConnId: string) => {
         dispatch(deleteDBConnectionInProject({ dbConnId }))
+        setIsDeleting(false)
+    }
+
+    const onDeleteProject = async () => {
+        await dispatch(deleteProject({ projectId: project.id }))
+        navigate(Constants.APP_PATHS.HOME.path)
     }
 
     return (
@@ -43,6 +53,17 @@ const ProjectPage: FunctionComponent<{}> = () => {
                 <DBConnCard key={db.id} dbConn={db} onDeleteDB={onDeleteDB} />
             ))}
             {project && <NewDBConnButton project={project} />}
+            &nbsp;&nbsp;
+            <button className="button is-danger" onClick={() => { setIsDeleting(true) }}>
+                <span className="icon is-small">
+                    <i className="fas fa-trash"></i>
+                </span>
+                <span>Delete Project</span>
+            </button>
+            {isDeleting && <ConfirmModal
+                message={`Are you sure you want to delete  ${project.name}?`}
+                onConfirm={onDeleteProject}
+                onClose={() => { setIsDeleting(false) }} />}
         </React.Fragment>
     )
 }
