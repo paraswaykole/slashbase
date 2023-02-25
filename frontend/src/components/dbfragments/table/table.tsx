@@ -34,9 +34,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     const [isAdding, setIsAdding] = useState<boolean>(false)
     const [isDeleting, setIsDeleting] = useState<boolean>(false)
 
-    const filter0Ref = useRef<HTMLSelectElement>(null)
-    const filter1Ref = useRef<HTMLSelectElement>(null)
-    const filter2Ref = useRef<HTMLInputElement>(null)
+    const [filterValue, setFilterValue] = useState<string[]>(['default', 'default', ''])
 
     const data = React.useMemo(
         () => queryData.rows,
@@ -141,14 +139,14 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
             setEditCell([cell.row.index, cell.column.id])
     }
 
-    const changeFilter = () => {
+    const onFilter = () => {
         let filter: string[] | undefined = undefined
-        if (filter0Ref.current!.value !== 'default' && filter1Ref.current!.value !== 'default') {
-            let operator = filter1Ref.current!.value
+        if (filterValue[0] !== 'default' && filterValue[1] !== 'default') {
+            let operator = filterValue[1]
             if (operator === 'IS NULL' || operator === 'IS NOT NULL') {
-                filter = [filter0Ref.current!.value, operator]
+                filter = [filterValue[0], operator]
             } else {
-                filter = [filter0Ref.current!.value, operator, filter2Ref.current!.value]
+                filter = [filterValue[0], operator, filterValue[2]]
             }
         }
         onFilterChanged(filter)
@@ -173,6 +171,13 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         }
     }
 
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number) => {
+        const value = e.target.value
+        const newFilterValue = [...filterValue]
+        newFilterValue[index] = value
+        setFilterValue(newFilterValue)
+    }
+
     return (
         <React.Fragment>
             {(showHeader || isEditable) && <div className={styles.tableHeader}>
@@ -181,7 +186,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                         <div className="field has-addons">
                             <p className="control">
                                 <span className="select">
-                                    <select ref={filter0Ref}>
+                                    <select value={filterValue[0]} onChange={e => handleFilterChange(e, 0)}>
                                         <option value="default">Select column</option>
                                         {displayColumns.map(x =>
                                             (<option key={x}>{x}</option>)
@@ -191,7 +196,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                             </p>
                             <p className="control">
                                 <span className="select">
-                                    <select ref={filter1Ref}>
+                                    <select value={filterValue[1]} onChange={e => handleFilterChange(e, 1)}>
                                         <option value="default">Select operator</option>
                                         <option value="=">=</option>
                                         <option value="!=">≠</option>
@@ -207,10 +212,10 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                                 </span>
                             </p>
                             <p className="control">
-                                <input ref={filter2Ref} className="input" type="text" placeholder="Value" />
+                                <input className="input" type="text" placeholder="Value" value={filterValue[2]} onChange={e => handleFilterChange(e, 2)} />
                             </p>
                             <p className="control">
-                                <button className="button" onClick={changeFilter}>Filter</button>
+                                <button className="button" onClick={onFilter}>Filter</button>
                             </p>
                         </div>
                     </div>
