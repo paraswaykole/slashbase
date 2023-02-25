@@ -40,18 +40,6 @@ const Constants: ConstantsType = {
             path: '/db/[id]',
             isAuth: true
         },
-        DB_PATH: {
-            path: '/db/[id]/[path]',
-            isAuth: true
-        },
-        DB_QUERY: {
-            path: '/db/[id]/query/[queryId]',
-            isAuth: true
-        },
-        DB_HISTORY: {
-            path: '/db/[id]/history',
-            isAuth: true
-        },
         // SETTINGS
         SETTINGS: {
             path: '/settings',

@@ -1,15 +1,15 @@
 import styles from './showdata.module.scss'
-import React, { useEffect, useState } from 'react'
-import { DBConnection, DBDataModel, DBQueryData, Project } from '../../data/models'
+import React, { useContext, useEffect, useState } from 'react'
+import { DBConnection, DBDataModel, Project, Tab } from '../../data/models'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
-import { ProjectPermissions, selectCurrentProject } from '../../redux/projectsSlice'
+import { selectCurrentProject } from '../../redux/projectsSlice'
 import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
-import { useSearchParams } from 'react-router-dom'
-import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData, setQueryData } from '../../redux/dataModelSlice'
+import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData } from '../../redux/dataModelSlice'
+import TabContext from '../layouts/tabcontext'
 
 type DBShowDataPropType = {
 
@@ -17,16 +17,13 @@ type DBShowDataPropType = {
 
 const DBShowDataFragment = (_: DBShowDataPropType) => {
 
-    const [searchParams] = useSearchParams()
-    const mschema = searchParams.get("mschema")
-    const mname = searchParams.get("mname")
-
     const dispatch = useAppDispatch()
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
+    const currentTab: Tab = useContext(TabContext)!
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
     const dataLoading = useAppSelector(selectIsFetchingQueryData)
@@ -37,13 +34,14 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     const [queryFilter, setQueryFilter] = useState<string[] | undefined>(undefined)
     const [querySort, setQuerySort] = useState<string[] | undefined>(undefined)
 
+    const mschema = currentTab.metadata.schema
+    const mname = currentTab.metadata.name
 
     useEffect(() => {
         const dModel = dbDataModels.find(x => x.schemaName === mschema && x.name === mname)
         if (dModel) {
             setDataModel(dModel)
         }
-        // else redirect to home fragment             
     }, [dbDataModels])
 
     useEffect(() => {
@@ -63,9 +61,13 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
 
     const fetchData = async (fetchCount: boolean) => {
         if (!dataModel) return
-        const result = await dispatch(getDBDataInDataModel({ dbConnectionId: dbConnection!.id, schemaName: dataModel!.schemaName ?? '', name: dataModel!.name, queryLimit, queryOffset, fetchCount, queryFilter, querySort })).unwrap()
-        if (fetchCount) {
-            setQueryCount(result.data.count)
+        try {
+            const result = await dispatch(getDBDataInDataModel({ tabId: currentTab.id, dbConnectionId: dbConnection!.id, schemaName: dataModel!.schemaName ?? '', name: dataModel!.name, queryLimit, queryOffset, fetchCount, queryFilter, querySort })).unwrap()
+            if (fetchCount) {
+                setQueryCount(result.data.count)
+            }
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -97,7 +99,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
         queryOffset + queryLimit : queryOffset + (rowsLength ?? 0)
 
     return (
-        <React.Fragment>
+        <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {project && dbConnection && queryData && dbConnection.type === DBConnType.POSTGRES &&
                 <Table
                     dbConnection={dbConnection}
@@ -149,7 +151,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     </nav>
                 }
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 

@@ -1,8 +1,9 @@
-import { useRef } from 'react'
-import { DBConnection } from '../../../data/models'
+import { useContext, useRef } from 'react'
+import { DBConnection, Tab } from '../../../data/models'
 import toast from 'react-hot-toast'
 import { addDBDataModelIndex } from '../../../redux/dataModelSlice'
-import { useAppDispatch } from '../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import TabContext from '../../layouts/tabcontext'
 
 type AddIndexModal = {
     dbConn: DBConnection
@@ -16,12 +17,14 @@ const AddIndexModal = ({ dbConn, mSchema, mName, onAddIndex, onClose }: AddIndex
 
     const dispatch = useAppDispatch()
 
+    const activeTab: Tab = useContext(TabContext)!
+
     const indexNameRef = useRef<HTMLInputElement>(null);
     const fieldNamesRef = useRef<HTMLInputElement>(null);
     const isUnqiueRef = useRef<HTMLInputElement>(null);
 
     const startAdding = async () => {
-        const result = await dispatch(addDBDataModelIndex({ dbConnectionId: dbConn.id, schemaName: mSchema!, name: mName, indexName: indexNameRef.current!.value, fieldNames: fieldNamesRef.current!.value.split(","), isUnique: isUnqiueRef.current!.checked })).unwrap()
+        const result = await dispatch(addDBDataModelIndex({ tabId: activeTab.id, dbConnectionId: dbConn.id, schemaName: mSchema!, name: mName, indexName: indexNameRef.current!.value, fieldNames: fieldNamesRef.current!.value.split(","), isUnique: isUnqiueRef.current!.checked })).unwrap()
         if (result.success) {
             toast.success('new index added')
             onAddIndex()

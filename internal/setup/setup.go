@@ -17,6 +17,7 @@ func autoMigrate() {
 	db.GetDB().AutoMigrate(
 		&models.Project{},
 		&models.DBConnection{},
+		&models.Tab{},
 		&models.DBQuery{},
 		&models.DBQueryLog{},
 		&models.Setting{},

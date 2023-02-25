@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
-import { DBConnection } from '../../data/models'
+import React, { useContext, useEffect } from 'react'
+import { DBConnection, Tab } from '../../data/models'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import toast from 'react-hot-toast'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import dateformat from 'dateformat'
 import { getDBQueryLogs, reset, selectDBQueryLogs, selectDBQueryLogsNext } from '../../redux/dbHistorySlice'
+import TabContext from '../layouts/tabcontext'
 
 
 type DBHistoryPropType = {
@@ -14,6 +15,8 @@ type DBHistoryPropType = {
 const DBHistoryFragment = ({ }: DBHistoryPropType) => {
 
     const dispatch = useAppDispatch()
+
+    const currentTab: Tab = useContext(TabContext)!
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbQueryLogs = useAppSelector(selectDBQueryLogs)
@@ -36,7 +39,7 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
     }
 
     return (
-        <React.Fragment>
+        <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {dbConnection &&
                 <React.Fragment>
                     <h1>Showing History in {dbConnection.name}</h1>
@@ -55,7 +58,7 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                                 <b>You have seen it all!</b>
                             </p>
                         }
-                        scrollableTarget="mainContainer"
+                        scrollableTarget="maincontent"
                     >
                         <table className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                             <tbody>
@@ -76,7 +79,7 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                     </InfiniteScroll>
                 </React.Fragment>
             }
-        </React.Fragment>
+        </div>
     )
 }
 

@@ -1,8 +1,9 @@
-import { useRef } from 'react'
-import { DBConnection } from '../../../data/models'
+import { useContext, useRef } from 'react'
+import { DBConnection, Tab } from '../../../data/models'
 import toast from 'react-hot-toast'
-import { useAppDispatch } from '../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { addDBDataModelField } from '../../../redux/dataModelSlice'
+import TabContext from '../../layouts/tabcontext'
 
 type AddModal = {
     dbConn: DBConnection
@@ -16,11 +17,13 @@ const AddFieldModal = ({ dbConn, mSchema, mName, onAddField, onClose }: AddModal
 
     const dispatch = useAppDispatch()
 
+    const activeTab: Tab = useContext(TabContext)!
+
     const fieldNameRef = useRef<HTMLInputElement>(null);
     const dataTypeRef = useRef<HTMLInputElement>(null);
 
     const startAdding = async () => {
-        const result = await dispatch(addDBDataModelField({ dbConnectionId: dbConn.id, schemaName: mSchema!, name: mName, fieldName: fieldNameRef.current!.value, dataType: dataTypeRef.current!.value })).unwrap()
+        const result = await dispatch(addDBDataModelField({ tabId: activeTab.id, dbConnectionId: dbConn.id, schemaName: mSchema!, name: mName, fieldName: fieldNameRef.current!.value, dataType: dataTypeRef.current!.value })).unwrap()
         if (result.success) {
             toast.success('new field added')
             onAddField()

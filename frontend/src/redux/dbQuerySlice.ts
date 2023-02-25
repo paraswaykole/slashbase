@@ -5,11 +5,19 @@ import eventService from '../events/eventService'
 
 
 export interface DBQueryState {
-  dbQuery: DBQuery | undefined
+  [tabId: string]: {
+    dbQuery: DBQuery | undefined
+  }
 }
 
-const initialState: DBQueryState = {
-  dbQuery: undefined,
+const initialState: DBQueryState = {}
+
+const createInitialDBQueryState = (state: DBQueryState, tabId: string) => {
+  if (state[tabId] === undefined) {
+    state[tabId] = {
+      dbQuery: undefined,
+    }
+  }
 }
 
 export const getDBQuery = createAsyncThunk(
@@ -35,15 +43,17 @@ export const dbQuerySlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    setDBQuery: (state, { payload }: { payload: DBQuery | undefined }) => {
-      state.dbQuery = payload
+    setDBQuery: (state, { payload }: { payload: { data: DBQuery | undefined, tabId: string } }) => {
+      createInitialDBQueryState(state, payload.tabId)
+      state[payload.tabId].dbQuery = payload.data
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(getDBQuery.fulfilled, (state, action: any) => {
+        createInitialDBQueryState(state, action.meta.arg.tabId)
         if (action.payload.success) {
-          state.dbQuery = action.payload.data
+          state[action.meta.arg.tabId].dbQuery = action.payload.data
         }
       })
   },
@@ -51,7 +61,7 @@ export const dbQuerySlice = createSlice({
 
 export const { reset, setDBQuery } = dbQuerySlice.actions
 
-export const selectDBQuery = (state: AppState) => state.dbQuery.dbQuery
+export const selectDBQuery = (state: AppState) => state.tabs.activeTabId ? state.dbQuery[String(state.tabs.activeTabId)]?.dbQuery : undefined
 
 
 export default dbQuerySlice.reducer
