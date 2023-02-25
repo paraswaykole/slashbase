@@ -1,0 +1,12 @@
+.console {
+    font-family: monospace;
+
+    .block {
+        white-space: pre;
+    }
+
+    .cmd::before {
+        content: "$ ";
+    }
+
+}
