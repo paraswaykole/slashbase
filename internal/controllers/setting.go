@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/slashbaseide/slashbase/internal/analytics"
 	"github.com/slashbaseide/slashbase/internal/dao"
 	"github.com/slashbaseide/slashbase/internal/models"
 	"github.com/slashbaseide/slashbase/internal/utils"
@@ -35,6 +36,7 @@ func (SettingController) UpdateSingleSetting(name string, value string) error {
 		if !utils.ContainsString([]string{"true", "false"}, value) {
 			return errors.New("cannot update the setting: " + name)
 		}
+		analytics.SendUpdatedTelemetryEvent(value == "true")
 	case models.SETTING_NAME_LOGS_EXPIRE:
 		if _, err := strconv.Atoi(value); err != nil {
 			return errors.New("cannot update the setting: " + name)

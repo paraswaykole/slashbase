@@ -30,7 +30,7 @@ func RunQuery(dbConn *models.DBConnection, query string, config *models.QueryCon
 	return nil, errors.New("invalid db type")
 }
 
-func TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) bool {
+func TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) error {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
 		return postgresQueryEngine.TestConnection(dbConn, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
@@ -38,7 +38,7 @@ func TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) boo
 	} else if dbConn.Type == models.DBTYPE_MYSQL {
 		return mysqlQueryEngine.TestConnection(dbConn, config)
 	}
-	return false
+	return errors.New("invalid db type")
 }
 
 func GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]*models.DBDataModel, error) {

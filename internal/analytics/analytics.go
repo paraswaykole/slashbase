@@ -72,3 +72,7 @@ func SendLowCodeDataViewEvent() {
 func SendLowCodeModelViewEvent() {
 	sendEvent("Low Code Model View", map[string]interface{}{})
 }
+
+func SendUpdatedTelemetryEvent(value bool) {
+	sendEvent("Updated Telemetry Settings", map[string]interface{}{"value": value})
+}

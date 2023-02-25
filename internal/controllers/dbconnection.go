@@ -34,9 +34,9 @@ func (DBConnectionController) CreateDBConnection(
 		return nil, err
 	}
 
-	success := queryengines.TestConnection(dbConn.ToQEConnection(), qemodels.NewQueryConfig(false, nil))
-	if !success {
-		return nil, errors.New("failed to connect to database")
+	err = queryengines.TestConnection(dbConn.ToQEConnection(), qemodels.NewQueryConfig(false, nil))
+	if err != nil {
+		return nil, err
 	}
 
 	err = dao.DBConnection.CreateDBConnection(dbConn)

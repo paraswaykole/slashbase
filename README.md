@@ -31,7 +31,7 @@
 
 Slashbase is a modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts. Supports MySQL, PostgreSQL and MongoDB.
 
-It is in beta (v0.6), help us make it better by sending your feedback and reach a stable (v1.0) version.
+It is in beta (v0.7), help us make it better by sending your feedback and reach a stable (v1.0) version.
 > Star 🌟 & watch 👀 the repository to get updates.
 
 ## Features:
@@ -63,10 +63,6 @@ Follow the steps below to download & start the app:
 
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
 2. Double click the Slashbase file to open the app on Window and MacOS. For linux, run `./Slashbase` on terminal to start the app.
-
-On Mac if you see the error message popup:
-
-- Open terminal and run `xattr -cr /path/to/Slashbase.app` and then run the app.
 
 ## Build from source
 

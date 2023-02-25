@@ -361,14 +361,17 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 	return nil, errors.New("unknown query")
 }
 
-func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) bool {
+func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) error {
 	query := "db.runCommand({ping: 1})"
 	data, err := mqe.RunQuery(dbConn, query, config)
 	if err != nil {
-		return false
+		return err
 	}
 	test := data["data"].([]map[string]interface{})[0]["ok"].(float64)
-	return test == 1
+	if test == 1 {
+		return nil
+	}
+	return errors.New("connection test failed")
 }
 
 func (mqe *MongoQueryEngine) GetDataModels(dbConn *models.DBConnection, config *models.QueryConfig) ([]map[string]interface{}, error) {
