@@ -49,6 +49,10 @@ const Sidebar = (_: SidebarPropType) => {
         dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.QUERY, metadata: { queryId } }))
     }
 
+    const openConsoleTab = () => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.CONSOLE, metadata: {} }))
+    }
+
     return (
         <aside className={"menu " + styles.sidebar}>
             <div className={styles.spacebox}>
@@ -57,6 +61,11 @@ const Sidebar = (_: SidebarPropType) => {
                 }
                 {sidebarView === SidebarViewType.DATABASE && dbConnection &&
                     <React.Fragment>
+                        <button className={"button is-small " + styles.console} onClick={() => openConsoleTab()}>
+                            <span className="icon is-small">
+                                <i className="fas fa-terminal"></i>
+                            </span>
+                        </button>
                         <Link to={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection?.id)} className="nolink">
                             <i className="fas fa-database" /> {dbConnection?.name}
                         </Link>

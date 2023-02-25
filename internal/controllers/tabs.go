@@ -24,6 +24,8 @@ func (TabsController) CreateTab(dbConnID, tabType, modelschema, modelname, query
 		tab = models.NewQueryTab(dbConnID, queryID, "")
 	} else if tabType == models.TAB_TYPE_HISTORY {
 		tab = models.NewHistoryTab(dbConnID)
+	} else if tabType == models.TAB_TYPE_CONSOLE {
+		tab = models.NewConsoleTab(dbConnID)
 	}
 
 	err := dao.Tab.CreateTab(tab)
@@ -55,7 +57,7 @@ func (tc TabsController) GetTabsByDBConnection(dbConnID string) (*[]models.Tab, 
 
 func (TabsController) UpdateTab(dbConnID, tabID, tabType string, metadata map[string]interface{}) (*models.Tab, error) {
 
-	if !utils.ContainsString([]string{models.TAB_TYPE_BLANK, models.TAB_TYPE_DATA, models.TAB_TYPE_MODEL, models.TAB_TYPE_HISTORY, models.TAB_TYPE_QUERY}, tabType) {
+	if !utils.ContainsString([]string{models.TAB_TYPE_BLANK, models.TAB_TYPE_DATA, models.TAB_TYPE_MODEL, models.TAB_TYPE_HISTORY, models.TAB_TYPE_CONSOLE, models.TAB_TYPE_QUERY}, tabType) {
 		return nil, errors.New("invalid tab type")
 	}
 

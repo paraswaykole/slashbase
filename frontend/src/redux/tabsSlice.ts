@@ -42,7 +42,7 @@ export const createTab = createAsyncThunk(
                 }
             }
         } else {
-            const tab = currentTabs.find(t => t.type === TabType.HISTORY)
+            const tab = currentTabs.find(t => t.type === tabType)
             if (tab) {
                 return {
                     activeTabId: tab!.id
