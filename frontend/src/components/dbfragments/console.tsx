@@ -1,4 +1,7 @@
 import React, { useRef, useState } from "react"
+import { runConsoleCmd, selectBlocks } from "../../redux/consoleSlice"
+import { selectDBConnection } from "../../redux/dbConnectionSlice"
+import { useAppDispatch, useAppSelector } from "../../redux/hooks"
 import styles from './console.module.scss'
 
 type DBConsolePropType = {
@@ -6,26 +9,14 @@ type DBConsolePropType = {
 
 const DBConsoleFragment = ({ }: DBConsolePropType) => {
 
-    const [input, setInput] = useState("")
-    const [output, setOutput] = useState([
-        {
-            'text': 'input cmd here',
-            'cmd': true
-        },
-        {
-            'text': `output here`,
-            'cmd': false
-        },
-    ])
+    const dispatch = useAppDispatch()
 
+    const dbConnection = useAppSelector(selectDBConnection)
+    const output = useAppSelector(selectBlocks)
+    const [input, setInput] = useState("")
 
     const confirmInput = () => {
-        const newOutput = [...output]
-        newOutput.push({
-            text: input,
-            cmd: true
-        })
-        setOutput(newOutput)
+        dispatch(runConsoleCmd({ dbConnId: dbConnection!.id, cmdString: input }))
         setInput('')
     }
 

@@ -130,6 +130,10 @@ const Events: EventType = {
         REQUEST: "event:close:tab",
         RESPONSE: "response:close:tab"
     },
+    CONSOLE_RUN_COMMAND: {
+        REQUEST: "event:run:cmd",
+        RESPONSE: "response:run:cmd"
+    },
 }
 
 export default Events

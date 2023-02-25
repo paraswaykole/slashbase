@@ -8,6 +8,7 @@ import dbQueryReducer from './dbQuerySlice'
 import dbHistoryReducer from './dbHistorySlice'
 import configReducer from './configSlice'
 import tabsReducer from './tabsSlice'
+import consoleReducer from './consoleSlice'
 
 export function makeStore() {
   return configureStore({
@@ -21,6 +22,7 @@ export function makeStore() {
       dbQuery: dbQueryReducer,
       dbHistory: dbHistoryReducer,
       config: configReducer,
+      console: consoleReducer,
     },
   })
 }

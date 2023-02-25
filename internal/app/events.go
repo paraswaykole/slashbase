@@ -56,4 +56,7 @@ func setupEvents(ctx context.Context) {
 		queryEventListeners.AddSingleDataModelIndex(ctx)
 		queryEventListeners.DeleteSingleDataModelIndex(ctx)
 	}
+	if consoleEventListeners := new(events.ConsoleEventListeners); true {
+		consoleEventListeners.RunCommandEvent(ctx)
+	}
 }
