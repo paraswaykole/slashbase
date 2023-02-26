@@ -15,6 +15,10 @@ import (
 
 func HandleCommand(dbConnection *models.DBConnection, cmdString string, queryConfigs *qemodels.QueryConfig) string {
 
+	if cmdString == "help" {
+		return helpText(dbConnection)
+	}
+
 	if cmdString == "ping" {
 		err := queryengines.TestConnection(dbConnection.ToQEConnection(), queryConfigs)
 		if err == nil {
@@ -36,6 +40,23 @@ func HandleCommand(dbConnection *models.DBConnection, cmdString string, queryCon
 	}
 
 	return "unknown command"
+}
+
+func helpText(dbConnection *models.DBConnection) string {
+	response := "Type 'ping' to test connection. If it returns pong, connection is successful."
+
+	if dbConnection.Type == qemodels.DBTYPE_POSTGRES {
+		response += "\nOr type postgresql command and press enter to run it."
+		response += "\nFor example: 'SELECT * FROM <table name>;'"
+	} else if dbConnection.Type == qemodels.DBTYPE_MYSQL {
+		response += "\nOr type mysql command and press enter to run it."
+		response += "\nFor example: 'SELECT * FROM <table name>;'"
+	} else if dbConnection.Type == qemodels.DBTYPE_MONGO {
+		response += "\nOr type mongo command and press enter to run it."
+		response += "\nFor example: 'db.<collection name>.find({});'"
+	}
+
+	return response
 }
 
 func postgresResult(data map[string]interface{}) string {

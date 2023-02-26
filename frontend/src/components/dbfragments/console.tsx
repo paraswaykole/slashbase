@@ -42,6 +42,10 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
     }
 
     return <div className={styles.console + " " + (currentTab.isActive ? "db-tab-active" : "db-tab")} id="console" onClick={focus}>
+        <OutputBlock block={{
+            text: "Start typing command and press enter to run it.\nType 'help' for more info on console.",
+            cmd: false
+        }} />
         {output.map(block => {
             return <OutputBlock block={block} />
         })}
@@ -90,6 +94,7 @@ const PromptInputWithRef = (props: any) => {
         contentEditable={true}
         onInput={handleInput}
         onKeyUp={handleKeyUp}
+        spellCheck="false"
         dangerouslySetInnerHTML={{ __html: defaultValue.current }}
     />
 
