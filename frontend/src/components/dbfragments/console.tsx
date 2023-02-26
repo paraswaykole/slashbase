@@ -15,6 +15,8 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
 
     const currentTab: Tab = useContext(TabContext)!
 
+    const consoleEndRef = useRef<HTMLSpanElement>(null)
+
     const dbConnection = useAppSelector(selectDBConnection)
     const output = useAppSelector(selectBlocks)
     const [input, setInput] = useState("")
@@ -28,12 +30,17 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
         setInput('')
     }
 
+    useEffect(() => {
+        consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [output])
+
     return <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
         <div className={styles.console}>
             {output.map(block => {
                 return <OutputBlock block={block} />
             })}
             <PromptInputWithRef onChange={setInput} confirmInput={confirmInput} />
+            <span ref={consoleEndRef}></span>
         </div>
     </div>
 }
