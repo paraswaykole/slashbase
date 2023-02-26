@@ -20,28 +20,33 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
     const dbConnection = useAppSelector(selectDBConnection)
     const output = useAppSelector(selectBlocks)
     const [input, setInput] = useState("")
+    const [nfocus, setFocus] = useState<number>(0)
 
     useEffect(() => {
         dispatch(initConsole(dbConnection!.id))
     }, [dbConnection])
+
+    useEffect(() => {
+        consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [output])
 
     const confirmInput = () => {
         dispatch(runConsoleCmd({ dbConnId: dbConnection!.id, cmdString: input }))
         setInput('')
     }
 
-    useEffect(() => {
-        consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [output])
+    const focus = (e: any) => {
+        if (e.target.id === "console") {
+            setFocus(Math.random())
+        }
+    }
 
-    return <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
-        <div className={styles.console}>
-            {output.map(block => {
-                return <OutputBlock block={block} />
-            })}
-            <PromptInputWithRef onChange={setInput} confirmInput={confirmInput} />
-            <span ref={consoleEndRef}></span>
-        </div>
+    return <div className={styles.console + " " + (currentTab.isActive ? "db-tab-active" : "db-tab")} id="console" onClick={focus}>
+        {output.map(block => {
+            return <OutputBlock block={block} />
+        })}
+        <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} confirmInput={confirmInput} />
+        <span ref={consoleEndRef}></span>
     </div>
 }
 
@@ -57,6 +62,12 @@ const PromptInputWithRef = (props: any) => {
 
     const defaultValue = useRef("")
     const inputRef = useRef<HTMLParagraphElement>(null)
+
+    useEffect(() => {
+        if (props.isActive) {
+            inputRef.current?.focus()
+        }
+    }, [props.isActive, props.nfocus])
 
     const handleInput = (event: any) => {
         if (props.onChange) {
