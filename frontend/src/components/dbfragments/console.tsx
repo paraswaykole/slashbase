@@ -75,7 +75,7 @@ const PromptInputWithRef = (props: any) => {
 
     return <p
         ref={inputRef}
-        className={styles.prompt + " " + styles.cmd}
+        className={styles.prompt}
         contentEditable={true}
         onInput={handleInput}
         onKeyUp={handleKeyUp}

@@ -9,4 +9,15 @@
         content: "$ ";
     }
 
+    .prompt {
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .prompt::before {
+        content: '$ ';
+        position: absolute;
+        left: 0;
+    }
+
 }
