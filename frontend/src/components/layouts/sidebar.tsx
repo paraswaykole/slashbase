@@ -61,11 +61,6 @@ const Sidebar = (_: SidebarPropType) => {
                 }
                 {sidebarView === SidebarViewType.DATABASE && dbConnection &&
                     <React.Fragment>
-                        <button className={"button is-small " + styles.console} onClick={() => openConsoleTab()}>
-                            <span className="icon is-small">
-                                <i className="fas fa-terminal"></i>
-                            </span>
-                        </button>
                         <Link to={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection?.id)} className="nolink">
                             <i className="fas fa-database" /> {dbConnection?.name}
                         </Link>
@@ -103,6 +98,19 @@ const Sidebar = (_: SidebarPropType) => {
                                         <i className="fas fa-plus-circle"></i>
                                     </span>
                                     &nbsp;New Query
+                                </a>
+                            </li>
+                        </ul>
+                        <p className="menu-label">
+                            Other
+                        </p>
+                        <ul className={"menu-list " + styles.menuList}>
+                            <li>
+                                <a onClick={() => openConsoleTab()}>
+                                    <span className="icon">
+                                        <i className="fas fa-terminal"></i>
+                                    </span>
+                                    &nbsp;Open Console
                                 </a>
                             </li>
                         </ul>
