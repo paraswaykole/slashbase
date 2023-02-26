@@ -1,6 +1,6 @@
-import React, { useContext, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { Tab } from "../../data/models"
-import { runConsoleCmd, selectBlocks } from "../../redux/consoleSlice"
+import { initConsole, runConsoleCmd, selectBlocks } from "../../redux/consoleSlice"
 import { selectDBConnection } from "../../redux/dbConnectionSlice"
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
 import TabContext from "../layouts/tabcontext"
@@ -18,6 +18,10 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
     const dbConnection = useAppSelector(selectDBConnection)
     const output = useAppSelector(selectBlocks)
     const [input, setInput] = useState("")
+
+    useEffect(() => {
+        dispatch(initConsole(dbConnection!.id))
+    }, [dbConnection])
 
     const confirmInput = () => {
         dispatch(runConsoleCmd({ dbConnId: dbConnection!.id, cmdString: input }))

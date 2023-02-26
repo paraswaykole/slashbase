@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { AppState } from './store'
 import eventService from '../events/eventService'
+import { stat } from 'fs'
 
 export interface OutputBlock {
     text: string
@@ -9,10 +10,12 @@ export interface OutputBlock {
 
 export interface ConsoleState {
     blocks: Array<OutputBlock>
+    dbConnectionId: string | undefined
 }
 
 const initialState: ConsoleState = {
     blocks: [],
+    dbConnectionId: undefined
 }
 
 export const runConsoleCmd = createAsyncThunk(
@@ -36,6 +39,12 @@ export const consoleSlice = createSlice({
     initialState,
     reducers: {
         reset: () => initialState,
+        initConsole: (state, { payload }: { payload: string }) => {
+            if (state.dbConnectionId && state.dbConnectionId !== payload) {
+                state.blocks = []
+                state.dbConnectionId = payload
+            }
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -46,6 +55,7 @@ export const consoleSlice = createSlice({
                 })
             })
             .addCase(runConsoleCmd.pending, (state, action) => {
+                state.dbConnectionId = action.meta.arg.dbConnId
                 state.blocks.push({
                     text: action.meta.arg.cmdString,
                     cmd: true
@@ -55,7 +65,7 @@ export const consoleSlice = createSlice({
 })
 
 
-export const { reset } = consoleSlice.actions
+export const { reset, initConsole } = consoleSlice.actions
 
 export const selectBlocks = (state: AppState) => state.console.blocks
 

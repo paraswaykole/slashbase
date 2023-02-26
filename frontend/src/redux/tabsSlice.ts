@@ -4,6 +4,7 @@ import { Tab } from '../data/models'
 import eventService from '../events/eventService'
 import { TabType } from '../data/defaults'
 import { DBConnectionState } from './dbConnectionSlice'
+import { reset as consoleReset } from './consoleSlice'
 
 export interface TabState {
     tabs: Array<Tab>
@@ -103,11 +104,18 @@ export const getTabs = createAsyncThunk(
 
 export const closeTab = createAsyncThunk(
     'tabs/closeTab',
-    async (payload: { dbConnId: string, tabId: string }, { rejectWithValue }: any) => {
+    async (payload: { dbConnId: string, tabId: string }, { getState, rejectWithValue, dispatch }: any) => {
         const dbConnectionId = payload.dbConnId
         const tabId = payload.tabId
+        const tab = (getState('tabs').tabs as TabState).tabs.find(t => t.id === tabId)
+        if (!tab) {
+            return rejectWithValue('tab not open')
+        }
         const result = await eventService.closeTab(dbConnectionId, tabId)
         if (result.success) {
+            if (tab.type === TabType.CONSOLE) {
+                dispatch(consoleReset())
+            }
             return {
                 tabId: tabId
             }
