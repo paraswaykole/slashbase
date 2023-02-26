@@ -79,7 +79,7 @@ code {
 .maincontent {
   padding: 10px;
   width: 100%;
-  height: inherit;
+  height: calc(100% - 42px);
   overflow-x: hidden;
   overflow-y: scroll;
 }
