@@ -110,7 +110,7 @@ const Sidebar = (_: SidebarPropType) => {
                                     <span className="icon">
                                         <i className="fas fa-terminal"></i>
                                     </span>
-                                    &nbsp;Open Console
+                                    &nbsp;Console
                                 </a>
                             </li>
                         </ul>
