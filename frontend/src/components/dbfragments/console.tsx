@@ -1,7 +1,9 @@
-import React, { useRef, useState } from "react"
+import React, { useContext, useRef, useState } from "react"
+import { Tab } from "../../data/models"
 import { runConsoleCmd, selectBlocks } from "../../redux/consoleSlice"
 import { selectDBConnection } from "../../redux/dbConnectionSlice"
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
+import TabContext from "../layouts/tabcontext"
 import styles from './console.module.scss'
 
 type DBConsolePropType = {
@@ -10,6 +12,8 @@ type DBConsolePropType = {
 const DBConsoleFragment = ({ }: DBConsolePropType) => {
 
     const dispatch = useAppDispatch()
+
+    const currentTab: Tab = useContext(TabContext)!
 
     const dbConnection = useAppSelector(selectDBConnection)
     const output = useAppSelector(selectBlocks)
@@ -20,14 +24,14 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
         setInput('')
     }
 
-    return <React.Fragment>
+    return <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
         <div className={styles.console}>
             {output.map(block => {
                 return <OutputBlock block={block} />
             })}
             <PromptInputWithRef onChange={setInput} confirmInput={confirmInput} />
         </div>
-    </React.Fragment>
+    </div>
 }
 
 export default DBConsoleFragment
