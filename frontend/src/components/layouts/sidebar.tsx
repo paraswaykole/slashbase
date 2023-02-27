@@ -49,6 +49,10 @@ const Sidebar = (_: SidebarPropType) => {
         dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.QUERY, metadata: { queryId } }))
     }
 
+    const openConsoleTab = () => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.CONSOLE, metadata: {} }))
+    }
+
     return (
         <aside className={"menu " + styles.sidebar}>
             <div className={styles.spacebox}>
@@ -94,6 +98,19 @@ const Sidebar = (_: SidebarPropType) => {
                                         <i className="fas fa-plus-circle"></i>
                                     </span>
                                     &nbsp;New Query
+                                </a>
+                            </li>
+                        </ul>
+                        <p className="menu-label">
+                            Other
+                        </p>
+                        <ul className={"menu-list " + styles.menuList}>
+                            <li>
+                                <a onClick={() => openConsoleTab()}>
+                                    <span className="icon">
+                                        <i className="fas fa-terminal"></i>
+                                    </span>
+                                    &nbsp;Console
                                 </a>
                             </li>
                         </ul>

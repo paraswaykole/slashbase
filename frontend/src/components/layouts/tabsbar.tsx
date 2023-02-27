@@ -39,6 +39,7 @@ const TabsBar = (_: TabsBarPropType) => {
                         <span>
                             {t.type === TabType.BLANK && "New Tab"}
                             {t.type === TabType.HISTORY && "History"}
+                            {t.type === TabType.CONSOLE && "Console"}
                             {t.type === TabType.DATA && `${t.metadata.schema === '' ? t.metadata.name : `${t.metadata.schema}.${t.metadata.name}`}`}
                             {t.type === TabType.MODEL && `${t.metadata.schema === '' ? t.metadata.name : `${t.metadata.schema}.${t.metadata.name}`}`}
                             {t.type === TabType.QUERY && `${t.metadata.queryName ? t.metadata.queryName : "New Query"}`}

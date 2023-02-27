@@ -191,6 +191,12 @@ const closeTab = async function (dbConnectionId: string, tabId: string): Promise
     return response
 }
 
+const runConsoleCommand = async function (dbConnId: string, cmdString: string): Promise<ApiResult<string>> {
+    const response = responseEvent<ApiResult<string>>(Events.CONSOLE_RUN_COMMAND.RESPONSE)
+    EventsEmit(Events.CONSOLE_RUN_COMMAND.REQUEST, Events.CONSOLE_RUN_COMMAND.RESPONSE, dbConnId, cmdString)
+    return response
+}
+
 export default {
     getHealthCheck,
     getProjects,
@@ -222,5 +228,6 @@ export default {
     createTab,
     getTabsByDBConnection,
     updateTab,
-    closeTab
+    closeTab,
+    runConsoleCommand
 }

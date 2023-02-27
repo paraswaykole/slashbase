@@ -9,6 +9,7 @@ import DBHistoryFragment from '../../components/dbfragments/history'
 import DBShowDataFragment from '../../components/dbfragments/showdata'
 import DBShowModelFragment from '../../components/dbfragments/showmodel'
 import DBQueryFragment from '../../components/dbfragments/query'
+import DBConsoleFragment from '../../components/dbfragments/console'
 import TabContext from '../../components/layouts/tabcontext'
 import { Tab } from '../../data/models'
 
@@ -51,6 +52,7 @@ const DBPage: FunctionComponent<{}> = () => {
                         {tab.type === TabType.DATA && <DBShowDataFragment />}
                         {tab.type === TabType.MODEL && <DBShowModelFragment />}
                         {tab.type === TabType.QUERY && <DBQueryFragment />}
+                        {tab.type === TabType.CONSOLE && <DBConsoleFragment />}
                     </TabContext.Provider>
                 </React.Fragment>)
             )}
