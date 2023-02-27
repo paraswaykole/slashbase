@@ -25,7 +25,7 @@ const AppLayout: FunctionComponent<PageLayoutPropType> = () => {
                 <Header />
                 <div className="appcontent">
                     {isShowingSidebar && <Sidebar />}
-                    <main className="maincontainer">
+                    <main className={"maincontainer" + (isShowingSidebar ? ' withsidebar' : '')}>
                         {showTabsBar && <TabsBar />}
                         <div id="maincontent" className="maincontent">
                             <Outlet />
