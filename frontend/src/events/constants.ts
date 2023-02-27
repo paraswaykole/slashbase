@@ -56,7 +56,7 @@ const Events: EventType = {
     },
     GET_DATA: {
         REQUEST: "event:get:data",
-        RESPONSE: "response:get:data"
+        RESPONSE: "response:get:data:[schema.name]"
     },
     GET_DATAMODELS: {
         REQUEST: "event:get:datamodels",
