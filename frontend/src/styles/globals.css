@@ -80,7 +80,7 @@ code {
   padding: 10px;
   width: 100%;
   height: calc(100% - 42px);
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: scroll;
 }
 
