@@ -1,9 +1,9 @@
 import styles from './queryeditor.module.scss'
 import 'react-tooltip/dist/react-tooltip.css'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { deleteDBQuery, saveDBQuery, selectDBConnection } from '../../../redux/dbConnectionSlice'
-import { DBConnection } from '../../../data/models'
+import { DBConnection, Tab } from '../../../data/models'
 import toast from 'react-hot-toast'
 import { format } from 'sql-formatter'
 import { DBConnType } from '../../../data/defaults'
@@ -14,6 +14,8 @@ import { javascript } from '@codemirror/lang-javascript'
 import { sql } from '@codemirror/lang-sql'
 import CheatSheetModal from '../cheatsheet/cheatsheet'
 import { Tooltip } from 'react-tooltip'
+import eventService from '../../../events/eventService'
+import TabContext from '../../layouts/tabcontext'
 
 type QueryEditorPropType = {
     initialValue: string,
@@ -38,10 +40,17 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
     const editorRef = useRef<ReactCodeMirrorRef | null>(null)
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
+    const currentTab: Tab = useContext(TabContext)!
 
     const onChange = React.useCallback((value: any) => {
         setValue(value)
-    }, []);
+    }, [])
+
+    useEffect(() => {
+        if (value != initialValue) {
+            eventService.updateTab(dbConnection!.id, currentTab.id, currentTab.type, { queryId: currentTab.metadata.queryId, query: value })
+        }
+    }, [value])
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.ctrlKey && event.key.toLocaleLowerCase() === 'enter') {

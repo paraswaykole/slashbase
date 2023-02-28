@@ -31,6 +31,7 @@ const DBQueryFragment = (_: DBQueryPropType) => {
     const [isChartEnabled, setIsChartEnabled] = useState<boolean>(false)
 
     const queryId = currentTab.metadata.queryId
+    const tabQuery = currentTab.metadata.query
 
     useEffect(() => {
         (async () => {
@@ -83,7 +84,7 @@ const DBQueryFragment = (_: DBQueryPropType) => {
         <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {(dbConnection && ((queryId === 'new' && !dbQuery) || (dbQuery && dbQuery.id === queryId))) &&
                 <QueryEditor
-                    initialValue={dbQuery?.query ?? ''}
+                    initialValue={queryId === 'new' ? tabQuery : dbQuery?.query ?? ''}
                     initQueryName={dbQuery?.name ?? ''}
                     queryId={queryId === 'new' ? '' : String(queryId)}
                     dbType={dbConnection!.type}
