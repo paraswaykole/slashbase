@@ -5,11 +5,12 @@ import { DBConnection, DBQuery, DBQueryData, DBQueryResult, Tab } from '../../da
 import QueryEditor from './queryeditor/queryeditor'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { DBConnType } from '../../data/defaults'
+import { DBConnType, TabType } from '../../data/defaults'
 import JsonTable from './jsontable/jsontable'
 import Table from './table/table'
 import Chart from './chart/chart'
 import { getDBQuery, runQuery, selectDBQuery, setDBQuery } from '../../redux/dbQuerySlice'
+import { closeTab, updateActiveTab } from '../../redux/tabsSlice'
 import TabContext from '../layouts/tabcontext'
 
 
@@ -70,12 +71,12 @@ const DBQueryFragment = (_: DBQueryPropType) => {
         setIsChartEnabled(!isChartEnabled)
     }
 
-    const onQuerySaved = () => {
-        //TODO: not implemented
+    const onQuerySaved = (queryId: string, query: string) => {
+        dispatch(updateActiveTab({ tabType: TabType.QUERY, metadata: { queryId: queryId, query: query } }))
     }
 
     const onDelete = () => {
-        // TODO: not implemented
+        dispatch(closeTab({ dbConnId: dbConnection!.id, tabId: currentTab.id }))
     }
 
     return (

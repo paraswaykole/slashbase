@@ -21,7 +21,7 @@ type QueryEditorPropType = {
     queryId: string,
     dbType: DBConnType
     runQuery: (query: string, callback: () => void) => void
-    onSave: (queryId: string) => void
+    onSave: (queryId: string, query: string) => void
     onDelete: () => void
 }
 
@@ -57,7 +57,7 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
         try {
             const result = await dispatch(saveDBQuery({ dbConnId: dbConnection!.id, queryId, name: queryName, query: value })).unwrap()
             toast.success("Saved Succesfully!")
-            onSave(result.dbQuery.id)
+            onSave(result.dbQuery.id, result.dbQuery.query)
         } catch (e) {
             toast.error("There was some problem saving! Please try again.")
         }
