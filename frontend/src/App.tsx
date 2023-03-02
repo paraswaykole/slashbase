@@ -2,8 +2,7 @@ import { useEffect } from "react"
 import { Routes, Route, Link } from "react-router-dom"
 import { Toaster } from 'react-hot-toast'
 import Bowser from "bowser"
-import { useAppDispatch, useAppSelector } from "./redux/hooks"
-import { connectLocal, selectIsConnected } from "./redux/apiSlice"
+import { useAppDispatch } from "./redux/hooks"
 import { getProjects } from "./redux/projectsSlice"
 import { getAllDBConnections } from "./redux/allDBConnectionsSlice"
 import { getConfig } from "./redux/configSlice"
@@ -12,9 +11,6 @@ import HomePage from "./pages/home"
 import ProjectPage from "./pages/project"
 import NewDBPage from "./pages/project/newdb"
 import DBPage from "./pages/db"
-import DBHistoryPage from "./pages/db/history"
-import DBPathPage from "./pages/db/path"
-import DBQueryPage from "./pages/db/query"
 import AdvancedSettingsPage from "./pages/settings/advanced"
 import AboutPage from "./pages/settings/about"
 import SupportPage from "./pages/settings/support"
@@ -26,24 +22,15 @@ function App() {
   const isValidPlatform: boolean = Bowser.getParser(window.navigator.userAgent).getPlatformType(true) === "desktop"
 
   const dispatch = useAppDispatch()
-  const isConnected = useAppSelector(selectIsConnected)
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      dispatch(connectLocal())
-    }
-    checkConnection()
-  }, [dispatch])
 
   useEffect(() => {
     (async () => {
-      if (isConnected) {
-        await dispatch(getProjects())
-        await dispatch(getAllDBConnections({}))
-      }
-      dispatch(getConfig())
+      await dispatch(getProjects())
+      await dispatch(getAllDBConnections({}))
+      await dispatch(getConfig())
     })()
-  }, [dispatch, isConnected])
+  }, [dispatch])
 
   if (!isValidPlatform) {
     return <NotSupportedPlatform />
@@ -57,9 +44,6 @@ function App() {
           <Route path="project/:id" element={<ProjectPage />} />
           <Route path="project/:id/newdb" element={<NewDBPage />} />
           <Route path="db/:id" element={<DBPage />} />
-          <Route path="db/:id/history" element={<DBHistoryPage />} />
-          <Route path="db/:id/query/:queryId" element={<DBQueryPage />} />
-          <Route path="db/:id/:path" element={<DBPathPage />} />
           <Route path="settings/general" element={<GeneralSettingsPage />} />
           <Route path="settings/advanced" element={<AdvancedSettingsPage />} />
           <Route path="settings/about" element={<AboutPage />} />

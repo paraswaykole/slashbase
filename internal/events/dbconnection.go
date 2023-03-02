@@ -18,6 +18,7 @@ const (
 	eventDeleteDBConnection        = "event:delete:dbconnection"
 	eventGetSingleDBConnection     = "event:getsingle:dbconnection"
 	eventGetDBConnectionsByProject = "event:get:dbconnections:byproject"
+	eventCheckDBConnection         = "event:check:dbconnection"
 )
 
 func (DBConnectionEventListeners) CreateDBConnection(ctx context.Context) {
@@ -124,6 +125,25 @@ func (DBConnectionEventListeners) GetDBConnectionsByProject(ctx context.Context)
 		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 			"success": true,
 			"data":    dbConnViews,
+		})
+	})
+}
+
+func (DBConnectionEventListeners) CheckDBConnection(ctx context.Context) {
+	runtime.EventsOn(ctx, eventCheckDBConnection, func(args ...interface{}) {
+		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
+		dbConnectionID := args[1].(string)
+		err := dbConnController.CheckDBConnection(dbConnectionID)
+		if err != nil {
+			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
+				"success": false,
+				"error":   err.Error(),
+			})
+			return
+		}
+		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
+			"success": true,
 		})
 	})
 }

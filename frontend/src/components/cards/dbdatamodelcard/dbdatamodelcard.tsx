@@ -1,8 +1,8 @@
 import styles from './dbdatamodelcard.module.scss'
 import { DBConnection, DBDataModel } from '../../../data/models'
-import Constants from '../../../constants'
-import { DBConnType } from '../../../data/defaults'
-import { Link } from 'react-router-dom'
+import { DBConnType, TabType } from '../../../data/defaults'
+import { useAppDispatch } from '../../../redux/hooks'
+import { updateActiveTab } from '../../../redux/tabsSlice'
 
 type DBDataModelPropType = {
     dbConnection: DBConnection
@@ -11,14 +11,20 @@ type DBDataModelPropType = {
 
 const DBDataModelCard = ({ dataModel, dbConnection }: DBDataModelPropType) => {
 
+    const dispatch = useAppDispatch()
+
+    const updateActiveTabToData = () => {
+        dispatch(updateActiveTab({ tabType: TabType.DATA, metadata: { schema: dataModel.schemaName, name: dataModel.name } }))
+    }
+
+    const updateActiveTabToModel = () => {
+        dispatch(updateActiveTab({ tabType: TabType.MODEL, metadata: { schema: dataModel.schemaName, name: dataModel.name } }))
+    }
+
     return (
         <div className={"card " + styles.cardContainer}>
-            <Link
-                to={Constants.APP_PATHS.DB_PATH.path.replace('[id]', dbConnection.id).replace('[path]', String('data')) + "?mschema=" + dataModel.schemaName + "&mname=" + dataModel.name}
-                className={styles.cardLink}
-            >
-                <div className="card-content">
-                    <i className={"fas fa-table"} />&nbsp;&nbsp;
+            <div className={"card-content " + styles.cardContent}>
+                <div>
                     {dbConnection.type === DBConnType.POSTGRES &&
                         <b>{dataModel.schemaName}.{dataModel.name}</b>}
                     {dbConnection.type === DBConnType.MONGO &&
@@ -26,7 +32,17 @@ const DBDataModelCard = ({ dataModel, dbConnection }: DBDataModelPropType) => {
                     {dbConnection.type === DBConnType.MYSQL &&
                         <b>{dataModel.name}</b>}
                 </div>
-            </Link>
+                <div className="buttons">
+                    <button className="button is-small is-white" onClick={updateActiveTabToData}>
+                        <span className="icon is-small"><i className="fas fa-table" /></span>
+                        <span>View Data</span>
+                    </button>
+                    <button className="button is-small is-white" onClick={updateActiveTabToModel}>
+                        <span className="icon is-small"><i className="fas fa-list-alt" /></span>
+                        <span>View Model</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
     )

@@ -56,7 +56,7 @@ const Events: EventType = {
     },
     GET_DATA: {
         REQUEST: "event:get:data",
-        RESPONSE: "response:get:data"
+        RESPONSE: "response:get:data:[schema.name]"
     },
     GET_DATAMODELS: {
         REQUEST: "event:get:datamodels",
@@ -113,6 +113,30 @@ const Events: EventType = {
     GET_QUERYHISTORY_INDBCONNECTION: {
         REQUEST: "event:get:queryhistory:indbconnection",
         RESPONSE: "response:get:queryhistory:indbconnection"
+    },
+    CREATE_TAB: {
+        REQUEST: "event:create:tab",
+        RESPONSE: "response:create:tab"
+    },
+    GET_TABS_BYDBCONNECTION: {
+        REQUEST: "event:get:tabs:bydbconnection",
+        RESPONSE: "response:get:tabs:bydbconnection"
+    },
+    UPDATE_TAB: {
+        REQUEST: "event:update:tab",
+        RESPONSE: "response:update:tab"
+    },
+    CLOSE_TAB: {
+        REQUEST: "event:close:tab",
+        RESPONSE: "response:close:tab"
+    },
+    CONSOLE_RUN_COMMAND: {
+        REQUEST: "event:run:cmd",
+        RESPONSE: "response:run:cmd"
+    },
+    CHECK_DBCONNECTION: {
+        REQUEST: "event:check:dbconnection",
+        RESPONSE: "response:check:dbconnection:[dbid]"
     }
 }
 

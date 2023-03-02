@@ -72,10 +72,15 @@ code {
 }
 
 .maincontainer {
-  padding: 10px;
   height: calc(100% - 20px);
   width: 100%;
-  overflow-x: hidden;
+}
+
+.maincontent {
+  padding: 10px;
+  width: 100%;
+  height: calc(100% - 42px);
+  overflow-x: scroll;
   overflow-y: scroll;
 }
 
@@ -157,4 +162,16 @@ code {
 
 ::-ms-reveal {
   display: none;
+}
+
+.db-tab {
+  display: none;
+}
+
+.db-tab-active {
+  display: inherit !important;
+}
+
+[contenteditable] {
+  outline: 0px solid transparent;
 }

@@ -5,17 +5,29 @@ import eventService from '../events/eventService'
 
 
 export interface QueryDataModelState {
-  queryData: DBQueryData | undefined
-  dataModel: DBDataModel | undefined
-  isFetchingData: boolean
-  isFetchingModel: boolean
+  [tabId: string]: {
+    queryData: DBQueryData | undefined
+    dataModel: DBDataModel | undefined
+    isFetching: {
+      data: boolean
+      model: boolean
+    }
+  }
 }
 
-const initialState: QueryDataModelState = {
-  queryData: undefined,
-  dataModel: undefined,
-  isFetchingData: false,
-  isFetchingModel: false
+const initialState: QueryDataModelState = {}
+
+const createInitialTabState = (state: QueryDataModelState, tabId: string) => {
+  if (state[tabId] === undefined) {
+    state[tabId] = {
+      queryData: undefined,
+      dataModel: undefined,
+      isFetching: {
+        data: false,
+        model: false
+      }
+    }
+  }
 }
 
 export const getDBDataInDataModel = createAsyncThunk(
@@ -127,41 +139,47 @@ export const dataModelSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    setQueryData: (state, { payload }: { payload: DBQueryData | undefined }) => {
-      state.queryData = payload
+    setQueryData: (state, action: { payload: { data: DBQueryData | undefined, tabId: string } }) => {
+      state[action.payload.tabId].queryData = action.payload.data
     }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getDBDataInDataModel.pending, (state) => {
-        state.isFetchingData = true
+      .addCase(getDBDataInDataModel.pending, (state, action: any) => {
+        createInitialTabState(state, action.meta.arg.tabId)
+        state[action.meta.arg.tabId].isFetching.data = true
       })
       .addCase(getDBDataInDataModel.fulfilled, (state, action: any) => {
-        state.isFetchingData = false
-        state.queryData = action.payload.data
+        createInitialTabState(state, action.meta.arg.tabId)
+        state[action.meta.arg.tabId].isFetching.data = false
+        state[action.meta.arg.tabId].queryData = action.payload.data
       })
-      .addCase(getSingleDataModel.pending, (state) => {
-        state.isFetchingModel = true
+      .addCase(getSingleDataModel.pending, (state, action: any) => {
+        createInitialTabState(state, action.meta.arg.tabId)
+        state[action.meta.arg.tabId].isFetching.model = true
       })
       .addCase(getSingleDataModel.fulfilled, (state, action: any) => {
-        state.isFetchingModel = false
-        state.dataModel = action.payload.data
+        createInitialTabState(state, action.meta.arg.tabId)
+        state[action.meta.arg.tabId].isFetching.model = false
+        state[action.meta.arg.tabId].dataModel = action.payload.data
       })
-      .addCase(addDBDataModelField.fulfilled, (state) => {
-        state.queryData = undefined
+      .addCase(addDBDataModelField.fulfilled, (state, action: any) => {
+        createInitialTabState(state, action.meta.arg.tabId)
+        state[action.meta.arg.tabId].queryData = undefined
       })
-      .addCase(deleteDBDataModelField.fulfilled, (state) => {
-        state.queryData = undefined
+      .addCase(deleteDBDataModelField.fulfilled, (state, action: any) => {
+        createInitialTabState(state, action.meta.arg.tabId)
+        state[action.meta.arg.tabId].queryData = undefined
       })
   },
 })
 
 export const { reset, setQueryData } = dataModelSlice.actions
 
-export const selectQueryData = (state: AppState) => state.dataModel.queryData
+export const selectQueryData = (state: AppState) => state.tabs.activeTabId ? state.dataModel[String(state.tabs.activeTabId)]?.queryData : undefined
 
-export const selectIsFetchingQueryData = (state: AppState) => state.dataModel.isFetchingData
+export const selectIsFetchingQueryData = (state: AppState) => state.tabs.activeTabId ? state.dataModel[String(state.tabs.activeTabId)]?.isFetching.data : false
 
-export const selectSingleDataModel = (state: AppState) => state.dataModel.dataModel
+export const selectSingleDataModel = (state: AppState) => state.tabs.activeTabId ? state.dataModel[String(state.tabs.activeTabId)]?.dataModel : undefined
 
 export default dataModelSlice.reducer

@@ -1,9 +1,9 @@
 import styles from './queryeditor.module.scss'
 import 'react-tooltip/dist/react-tooltip.css'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { deleteDBQuery, saveDBQuery, selectDBConnection } from '../../../redux/dbConnectionSlice'
-import { DBConnection } from '../../../data/models'
+import { DBConnection, Tab } from '../../../data/models'
 import toast from 'react-hot-toast'
 import { format } from 'sql-formatter'
 import { DBConnType } from '../../../data/defaults'
@@ -14,6 +14,8 @@ import { javascript } from '@codemirror/lang-javascript'
 import { sql } from '@codemirror/lang-sql'
 import CheatSheetModal from '../cheatsheet/cheatsheet'
 import { Tooltip } from 'react-tooltip'
+import eventService from '../../../events/eventService'
+import TabContext from '../../layouts/tabcontext'
 
 type QueryEditorPropType = {
     initialValue: string,
@@ -21,7 +23,7 @@ type QueryEditorPropType = {
     queryId: string,
     dbType: DBConnType
     runQuery: (query: string, callback: () => void) => void
-    onSave: (queryId: string) => void
+    onSave: (queryId: string, query: string) => void
     onDelete: () => void
 }
 
@@ -38,10 +40,17 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
     const editorRef = useRef<ReactCodeMirrorRef | null>(null)
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
+    const currentTab: Tab = useContext(TabContext)!
 
     const onChange = React.useCallback((value: any) => {
         setValue(value)
-    }, []);
+    }, [])
+
+    useEffect(() => {
+        if (value != initialValue) {
+            eventService.updateTab(dbConnection!.id, currentTab.id, currentTab.type, { queryId: currentTab.metadata.queryId, query: value })
+        }
+    }, [value])
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.ctrlKey && event.key.toLocaleLowerCase() === 'enter') {
@@ -57,7 +66,7 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
         try {
             const result = await dispatch(saveDBQuery({ dbConnId: dbConnection!.id, queryId, name: queryName, query: value })).unwrap()
             toast.success("Saved Succesfully!")
-            onSave(result.dbQuery.id)
+            onSave(result.dbQuery.id, result.dbQuery.query)
         } catch (e) {
             toast.error("There was some problem saving! Please try again.")
         }

@@ -1,5 +1,6 @@
 import { EventsEmit } from '../../wailsjs/runtime/runtime'
-import { ApiResult, CTIDResponse, DBConnection, DBDataModel, DBQuery, DBQueryData, DBQueryLog, DBQueryResult, PaginatedApiResult, Project } from '../data/models'
+import { TabType } from '../data/defaults'
+import { ApiResult, CTIDResponse, DBConnection, DBDataModel, DBQuery, DBQueryData, DBQueryLog, DBQueryResult, PaginatedApiResult, Project, Tab } from '../data/models'
 import Events from './constants'
 import { AddDBConnPayload } from './payloads'
 import responseEvent from './responseEvent'
@@ -95,8 +96,9 @@ const deleteDBSingleDataModelIndex = async function (dbConnId: string, schemaNam
 }
 
 const getDBDataInDataModel = async function (dbConnId: string, schemaName: string, mName: string, limit: number, offset: number, fetchCount: boolean, filter?: string[], sort?: string[]): Promise<ApiResult<DBQueryData>> {
-    const response = responseEvent<ApiResult<DBQueryData>>(Events.GET_DATA.RESPONSE)
-    EventsEmit(Events.GET_DATA.REQUEST, Events.GET_DATA.RESPONSE, { dbConnectionId: dbConnId, schema: schemaName, name: mName, fetchCount, limit, offset, filter, sort })
+    const responseEventName = Events.GET_DATA.RESPONSE.replaceAll("[schema.name]", schemaName + "." + mName)
+    const response = responseEvent<ApiResult<DBQueryData>>(responseEventName)
+    EventsEmit(Events.GET_DATA.REQUEST, responseEventName, { dbConnectionId: dbConnId, schema: schemaName, name: mName, fetchCount, limit, offset, filter, sort })
     return response
 }
 
@@ -166,6 +168,42 @@ const updateSingleSetting = async function (name: string, value: string): Promis
     return response
 }
 
+const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string): Promise<ApiResult<Tab>> {
+    const response = responseEvent<ApiResult<Tab>>(Events.CREATE_TAB.RESPONSE)
+    EventsEmit(Events.CREATE_TAB.REQUEST, Events.CREATE_TAB.RESPONSE, dbConnectionId, tabType, mSchema, mName, queryId)
+    return response
+}
+
+const getTabsByDBConnection = async function (dbConnectionId: string): Promise<ApiResult<Array<Tab>>> {
+    const response = responseEvent<ApiResult<Array<Tab>>>(Events.GET_TABS_BYDBCONNECTION.RESPONSE)
+    EventsEmit(Events.GET_TABS_BYDBCONNECTION.REQUEST, Events.GET_TABS_BYDBCONNECTION.RESPONSE, dbConnectionId)
+    return response
+}
+
+const updateTab = async function (dbConnectionId: string, tabId: string, tabType: TabType, metadata: Object): Promise<ApiResult<Tab>> {
+    const response = responseEvent<ApiResult<Tab>>(Events.UPDATE_TAB.RESPONSE)
+    EventsEmit(Events.UPDATE_TAB.REQUEST, Events.UPDATE_TAB.RESPONSE, dbConnectionId, tabId, tabType, metadata)
+    return response
+}
+
+const closeTab = async function (dbConnectionId: string, tabId: string): Promise<ApiResult<undefined>> {
+    const response = responseEvent<ApiResult<undefined>>(Events.CLOSE_TAB.RESPONSE)
+    EventsEmit(Events.CLOSE_TAB.REQUEST, Events.CLOSE_TAB.RESPONSE, dbConnectionId, tabId)
+    return response
+}
+
+const runConsoleCommand = async function (dbConnId: string, cmdString: string): Promise<ApiResult<string>> {
+    const response = responseEvent<ApiResult<string>>(Events.CONSOLE_RUN_COMMAND.RESPONSE)
+    EventsEmit(Events.CONSOLE_RUN_COMMAND.REQUEST, Events.CONSOLE_RUN_COMMAND.RESPONSE, dbConnId, cmdString)
+    return response
+}
+
+const checkConnection = async function (dbConnId: string): Promise<ApiResult<undefined>> {
+    const response = responseEvent<ApiResult<undefined>>(Events.CHECK_DBCONNECTION.RESPONSE.replaceAll("[dbid]", dbConnId))
+    EventsEmit(Events.CHECK_DBCONNECTION.REQUEST, Events.CHECK_DBCONNECTION.RESPONSE.replaceAll("[dbid]", dbConnId), dbConnId)
+    return response
+}
+
 export default {
     getHealthCheck,
     getProjects,
@@ -194,4 +232,10 @@ export default {
     runQuery,
     getSingleSetting,
     updateSingleSetting,
+    createTab,
+    getTabsByDBConnection,
+    updateTab,
+    closeTab,
+    runConsoleCommand,
+    checkConnection
 }

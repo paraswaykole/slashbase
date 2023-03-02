@@ -6,8 +6,9 @@ import { DBConnection, DBDataModel, DBQuery } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
-import { DBConnType } from '../../data/defaults'
+import { DBConnType, TabType } from '../../data/defaults'
 import HomeSidebar from './sidebars/homesidebar'
+import { createTab } from '../../redux/tabsSlice'
 
 enum SidebarViewType {
     HOME = "HOME", // home sidebar
@@ -40,6 +41,18 @@ const Sidebar = (_: SidebarPropType) => {
         dispatch(setIsShowingSidebar(!isShowingSidebar))
     }
 
+    const openDataTab = (schema: string, name: string) => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.DATA, metadata: { schema, name } }))
+    }
+
+    const openQueryTab = (queryId: string) => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.QUERY, metadata: { queryId } }))
+    }
+
+    const openConsoleTab = () => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.CONSOLE, metadata: {} }))
+    }
+
     return (
         <aside className={"menu " + styles.sidebar}>
             <div className={styles.spacebox}>
@@ -59,11 +72,9 @@ const Sidebar = (_: SidebarPropType) => {
                                 const label = dbConnection.type === DBConnType.POSTGRES ? `${dataModel.schemaName}.${dataModel.name}` : `${dataModel.name}`
                                 return (
                                     <li key={dataModel.schemaName + dataModel.name}>
-                                        <Link
-                                            to={Constants.APP_PATHS.DB_PATH.path.replace('[id]', dbConnection!.id).replace('[path]', 'data') + "?mschema=" + dataModel.schemaName + "&mname=" + dataModel.name}
-                                            className={dataModel.schemaName === mschema && dataModel.name === mname ? 'is-active' : ''}>
+                                        <a onClick={() => openDataTab(dataModel.schemaName ?? "", dataModel.name)}>
                                             {label}
-                                        </Link>
+                                        </a>
                                     </li>
                                 )
                             })}
@@ -75,23 +86,32 @@ const Sidebar = (_: SidebarPropType) => {
                             {dbQueries.map((dbQuery: DBQuery) => {
                                 return (
                                     <li key={dbQuery.id}>
-                                        <Link
-                                            to={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection!.id).replace('[queryId]', dbQuery.id)}
-                                            className={queryId === dbQuery.id ? 'is-active' : ''}>
+                                        <a onClick={() => openQueryTab(dbQuery.id)}>
                                             {dbQuery.name}
-                                        </Link>
+                                        </a>
                                     </li>
                                 )
                             })}
                             <li>
-                                <Link
-                                    to={Constants.APP_PATHS.DB_QUERY.path.replace('[id]', dbConnection!.id).replace('[queryId]', 'new')}
-                                    className={queryId === 'new' ? 'is-active' : ''}>
+                                <a onClick={() => openQueryTab("new")}>
                                     <span className="icon">
                                         <i className="fas fa-plus-circle"></i>
                                     </span>
                                     &nbsp;New Query
-                                </Link>
+                                </a>
+                            </li>
+                        </ul>
+                        <p className="menu-label">
+                            Other
+                        </p>
+                        <ul className={"menu-list " + styles.menuList}>
+                            <li>
+                                <a onClick={() => openConsoleTab()}>
+                                    <span className="icon">
+                                        <i className="fas fa-terminal"></i>
+                                    </span>
+                                    &nbsp;Console
+                                </a>
                             </li>
                         </ul>
                     </React.Fragment>
