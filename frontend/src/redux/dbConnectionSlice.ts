@@ -8,6 +8,7 @@ export interface DBConnectionState {
   dbConnection?: DBConnection
   dbDataModels: DBDataModel[]
   dbQueries: DBQuery[]
+  isDBConnected: boolean | undefined
   isFetchingDBDataModels: boolean
   isDBDataModelsFetched: boolean
   isDBQueriesFetched: boolean
@@ -17,6 +18,7 @@ const initialState: DBConnectionState = {
   dbConnection: undefined,
   dbDataModels: [],
   dbQueries: [],
+  isDBConnected: undefined,
   isFetchingDBDataModels: false,
   isDBDataModelsFetched: false,
   isDBQueriesFetched: false,
@@ -43,6 +45,25 @@ export const getDBConnection = createAsyncThunk(
       return rejectWithValue(result.error)
     }
   },
+)
+
+export const checkConnection = createAsyncThunk(
+  'dbConnection/checkConnection',
+  async (_, { getState, rejectWithValue }: any) => {
+    const { dbConnection } = (getState().dbConnection) as DBConnectionState
+    if (!dbConnection) {
+      return rejectWithValue("no active db connection")
+    }
+    const result = await eventService.checkConnection(dbConnection!.id)
+    if (result.success) {
+      return {
+        result: true
+      }
+    }
+    return {
+      result: false
+    }
+  }
 )
 
 export const getDBDataModels = createAsyncThunk(
@@ -157,12 +178,16 @@ export const dbConnectionSlice = createSlice({
       .addCase(deleteDBQuery.fulfilled, (state, action: any) => {
         state.dbQueries = state.dbQueries.filter(x => x.id !== action.payload.queryId)
       })
+      .addCase(checkConnection.fulfilled, (state, action: any) => {
+        state.isDBConnected = action.payload.result
+      })
   },
 })
 
 export const { reset } = dbConnectionSlice.actions
 
 export const selectDBConnection = (state: AppState) => state.dbConnection.dbConnection
+export const selectIsDBConnected = (state: AppState) => state.dbConnection.isDBConnected
 export const selectDBDataModels = (state: AppState) => state.dbConnection.dbDataModels
 export const selectDBDQueries = (state: AppState) => state.dbConnection.dbQueries
 export const selectIsFetchingDBDataModels = (state: AppState) => state.dbConnection.isFetchingDBDataModels

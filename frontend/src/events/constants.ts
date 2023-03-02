@@ -134,6 +134,10 @@ const Events: EventType = {
         REQUEST: "event:run:cmd",
         RESPONSE: "response:run:cmd"
     },
+    CHECK_DBCONNECTION: {
+        REQUEST: "event:check:dbconnection",
+        RESPONSE: "response:check:dbconnection:[dbid]"
+    }
 }
 
 export default Events
