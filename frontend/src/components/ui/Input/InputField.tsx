@@ -9,7 +9,7 @@ const InputTextField = ({ label, className, ...props }: InputProps) => {
     <div className="field">
       <label className="label">{label}</label>
       <div className="control">
-        <input className={`input ${className}`} type="text" {...props} />
+        <input className={`input ${className}`} type="text" {...props} spellCheck={false} />
       </div>
     </div>
   );
