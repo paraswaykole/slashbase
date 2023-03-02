@@ -1,6 +1,6 @@
 module github.com/slashbaseide/slashbase
 
-go 1.18
+go 1.20
 
 require (
 	github.com/auxten/postgresql-parser v1.0.1
