@@ -2,8 +2,7 @@ import { useEffect } from "react"
 import { Routes, Route, Link } from "react-router-dom"
 import { Toaster } from 'react-hot-toast'
 import Bowser from "bowser"
-import { useAppDispatch, useAppSelector } from "./redux/hooks"
-import { connectLocal, selectIsConnected } from "./redux/apiSlice"
+import { useAppDispatch } from "./redux/hooks"
 import { getProjects } from "./redux/projectsSlice"
 import { getAllDBConnections } from "./redux/allDBConnectionsSlice"
 import { getConfig } from "./redux/configSlice"
@@ -23,24 +22,15 @@ function App() {
   const isValidPlatform: boolean = Bowser.getParser(window.navigator.userAgent).getPlatformType(true) === "desktop"
 
   const dispatch = useAppDispatch()
-  const isConnected = useAppSelector(selectIsConnected)
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      dispatch(connectLocal())
-    }
-    checkConnection()
-  }, [dispatch])
 
   useEffect(() => {
     (async () => {
-      if (isConnected) {
-        await dispatch(getProjects())
-        await dispatch(getAllDBConnections({}))
-      }
-      dispatch(getConfig())
+      await dispatch(getProjects())
+      await dispatch(getAllDBConnections({}))
+      await dispatch(getConfig())
     })()
-  }, [dispatch, isConnected])
+  }, [dispatch])
 
   if (!isValidPlatform) {
     return <NotSupportedPlatform />

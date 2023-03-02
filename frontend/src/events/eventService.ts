@@ -198,6 +198,12 @@ const runConsoleCommand = async function (dbConnId: string, cmdString: string): 
     return response
 }
 
+const checkConnection = async function (dbConnId: string): Promise<ApiResult<undefined>> {
+    const response = responseEvent<ApiResult<undefined>>(Events.CHECK_DBCONNECTION.RESPONSE.replaceAll("[dbid]", dbConnId))
+    EventsEmit(Events.CHECK_DBCONNECTION.REQUEST, Events.CHECK_DBCONNECTION.RESPONSE.replaceAll("[dbid]", dbConnId), dbConnId)
+    return response
+}
+
 export default {
     getHealthCheck,
     getProjects,
@@ -230,5 +236,6 @@ export default {
     getTabsByDBConnection,
     updateTab,
     closeTab,
-    runConsoleCommand
+    runConsoleCommand,
+    checkConnection
 }

@@ -27,6 +27,7 @@ func setupEvents(ctx context.Context) {
 		dbConnectionEventListeners.DeleteDBConnection(ctx)
 		dbConnectionEventListeners.GetSingleDBConnection(ctx)
 		dbConnectionEventListeners.GetDBConnectionsByProject(ctx)
+		dbConnectionEventListeners.CheckDBConnection(ctx)
 	}
 	if settingEventListeners := new(events.SettingEventListeners); true {
 		settingEventListeners.GetSingleSetting(ctx)

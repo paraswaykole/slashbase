@@ -87,3 +87,18 @@ func (DBConnectionController) DeleteDBConnection(dbConnId string) error {
 
 	return nil
 }
+
+func (DBConnectionController) CheckDBConnection(dbConnectionID string) error {
+
+	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnectionID)
+	if err != nil {
+		return errors.New("there was some problem")
+	}
+
+	err = queryengines.TestConnection(dbConn.ToQEConnection(), qemodels.NewQueryConfig(false, nil))
+	if err != nil {
+		return err
+	}
+
+	return err
+}
