@@ -44,7 +44,7 @@ It is in beta (v0.8), help us make it better by sending your feedback and reach 
 - **📊 Create Charts**: Create charts from your query results.
 - **📺 Console**: Run commands like in you do in terminal.
 - **🗂 Projects**: Organise all database connections into various projects.
-- **📕 Query Cheatsheets**: Search for query commands right inside IDE, no need to search online when you forget query syntax.
+- **📕 Query Cheatsheets**: Search and view query commands syntax right inside IDE.
 - **✅ Database Support**: MySQL, PostgreSQL and MongoDB.
 
 # Installation
