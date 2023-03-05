@@ -135,7 +135,7 @@ const QueryEditor = ({ initialValue, initQueryName, queryId, dbType, runQuery, o
             />
             <div className={styles.editorBottomBar}>
                 <div className="columns">
-                    <div className="column is-two-thirds">
+                    <div className="column is-half">
                         <input
                             className="input"
                             type="name"
