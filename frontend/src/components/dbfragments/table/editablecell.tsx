@@ -13,6 +13,9 @@ const EditableCell = ({
   initialValue = Array.isArray(initialValue) ?
     `{${initialValue.join(",")}}` : initialValue
 
+  initialValue = typeof initialValue === "object" ?
+    JSON.stringify(initialValue) : initialValue
+
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue)
 
