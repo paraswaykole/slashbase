@@ -70,10 +70,9 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         const result = await dispatch(updateDBSingleData({ dbConnectionId: dbConnection.id, schemaName: mSchema, name: mName, id: ctid, columnName, newValue, columnIdx })).unwrap()
         if (result.success) {
             const rowIdx = queryData!.rows.findIndex(x => x["0"] === ctid)
-            if (rowIdx) {
+            if (rowIdx !== -1) {
                 const newQueryData: DBQueryData = { ...queryData!, rows: [...queryData!.rows] }
-                console.log(result, newQueryData)
-                newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx], ctid: result.data.ctid }
+                newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx], 0: result.data.ctid }
                 newQueryData!.rows[rowIdx][columnIdx] = newValue
                 dispatch(setQueryData({ data: newQueryData, tabId: activeTab.id }))
             } else {
