@@ -47,15 +47,6 @@ It is in beta (v0.8), help us make it better by sending your feedback and reach 
 - **📕 Query Cheatsheets**: Search for query commands right inside IDE, no need to search online when you forget query syntax.
 - **✅ Database Support**: MySQL, PostgreSQL and MongoDB.
 
-## Screenshots
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
-
-
-# Slashbase Cloud
-
-Use Slashbase as a cloud-hosted in-browser collaborative database IDE. Visit [slashbase.com](https://slashbase.com)
-
 # Installation
 
 ## Direct Download
@@ -75,6 +66,15 @@ Follow the steps build & start the app:
 4. The app is created in `build/bin`. 
 5. Double click the Slashbase file to open the app on Window and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
+# Screenshots
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot3.png" alt="Console view" width="100%">
+
+
+# Slashbase Cloud
+
+Use Slashbase as a cloud-hosted in-browser collaborative database IDE. Visit [slashbase.com](https://slashbase.com)
 
 # Documentation
 
