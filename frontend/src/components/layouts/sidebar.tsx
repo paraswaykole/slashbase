@@ -102,7 +102,7 @@ const Sidebar = (_: SidebarPropType) => {
                             </li>
                         </ul>
                         <p className="menu-label">
-                            Other
+                            Toolbox
                         </p>
                         <ul className={"menu-list " + styles.menuList}>
                             <li>
