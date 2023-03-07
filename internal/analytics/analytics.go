@@ -61,6 +61,10 @@ func SendRunQueryEvent() {
 	sendEvent("Run Query", map[string]interface{}{})
 }
 
+func SendRunCommandEvent() {
+	sendEvent("Run Command", map[string]interface{}{})
+}
+
 func SendSavedQueryEvent() {
 	sendEvent("Saved Query", map[string]interface{}{})
 }
