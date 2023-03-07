@@ -3,6 +3,7 @@ package events
 import (
 	"context"
 
+	"github.com/slashbaseide/slashbase/internal/analytics"
 	"github.com/slashbaseide/slashbase/internal/controllers"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -21,6 +22,7 @@ func (ConsoleEventListeners) RunCommandEvent(ctx context.Context) {
 		defer recovery(ctx, responseEventName)
 		dbConnectionId := args[1].(string)
 		cmdString := args[2].(string)
+		analytics.SendRunCommandEvent()
 		output := consoleController.RunCommand(dbConnectionId, cmdString)
 		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 			"success": true,
