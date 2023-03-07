@@ -53,8 +53,11 @@ It is in beta (v0.8), help us make it better by sending your feedback and reach 
 
 Follow the steps below to download & start the app:
 
-1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract the zip.
-2. Double click the Slashbase file to open the app on Window and MacOS. For linux, run `./Slashbase` on terminal to start the app.
+1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract / open the downloaded file.
+2. Follow the platform specific step below
+    - For Windows, double click the Slashbase file to open the app
+    - For MacOS, drag the Slashbase file to Applications folder and start the app from launchpad.
+    - For linux, run `./Slashbase` on terminal to start the app.
 
 ## Build from source
 
@@ -64,7 +67,7 @@ Follow the steps build & start the app:
 2. Make sure Go and Wails is installed. Follow the steps [here](https://wails.io/docs/gettingstarted/installation), if not installed.
 3. Open the terminal at root directory and run `make build`.
 4. The app is created in `build/bin`. 
-5. Double click the Slashbase file to open the app on Window and MacOS. For linux, run `./Slashbase` on terminal to start the app.
+5. Double click the Slashbase file to open the app on Windows and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
 # Screenshots
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
