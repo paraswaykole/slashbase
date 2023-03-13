@@ -139,7 +139,8 @@ export const dbConnectionSlice = createSlice({
   name: 'dbConnection',
   initialState,
   reducers: {
-    reset: (state) => initialState
+    reset: (state) => initialState,
+    resetDBDataModels: (state) => ({ ...state, isDBDataModelsFetched: false })
   },
   extraReducers: (builder) => {
     builder
@@ -184,7 +185,7 @@ export const dbConnectionSlice = createSlice({
   },
 })
 
-export const { reset } = dbConnectionSlice.actions
+export const { reset, resetDBDataModels } = dbConnectionSlice.actions
 
 export const selectDBConnection = (state: AppState) => state.dbConnection.dbConnection
 export const selectIsDBConnected = (state: AppState) => state.dbConnection.isDBConnected

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import styles from './footer.module.scss'
 import Constants from '../../constants'
 import { useEffect } from 'react'
-import { checkConnection, selectDBConnection, selectIsDBConnected } from '../../redux/dbConnectionSlice'
+import { checkConnection, selectDBConnection, selectIsDBConnected, getDBDataModels, resetDBDataModels } from '../../redux/dbConnectionSlice'
 
 
 type FooterPropType = {}
@@ -29,6 +29,10 @@ const Footer = (_: FooterPropType) => {
         navigate(Constants.APP_PATHS.SETTINGS_SUPPORT.path)
     }
 
+    const refreshDataModels = () => {
+        dispatch(resetDBDataModels())
+        dispatch(getDBDataModels({ dbConnId: dbConnection!.id }))
+    }
 
     return (
         <footer className={styles.footer}>
@@ -40,6 +44,14 @@ const Footer = (_: FooterPropType) => {
                             {isDBConnected && <i className="fas fa-circle" />}
                         </span>
                         <span>{(isDBConnected !== undefined && isDBConnected) ? "connected" : "not connected"}</span>
+                    </button>)
+                }
+                {isDBConnected === true &&
+                    (<button className={styles.button + " is-small"} onClick={refreshDataModels}>
+                        <span className="icon is-small">
+                            <i className="fas fa-sync" />
+                        </span>
+                        <span>refresh data models</span>
                     </button>)
                 }
             </div>
