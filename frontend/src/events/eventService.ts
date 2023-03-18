@@ -95,10 +95,10 @@ const deleteDBSingleDataModelIndex = async function (dbConnId: string, schemaNam
     return response
 }
 
-const getDBDataInDataModel = async function (dbConnId: string, schemaName: string, mName: string, limit: number, offset: number, fetchCount: boolean, filter?: string[], sort?: string[]): Promise<ApiResult<DBQueryData>> {
+const getDBDataInDataModel = async function (dbConnId: string, schemaName: string, mName: string, limit: number, offset: number, isFirstFetch: boolean, filter?: string[], sort?: string[]): Promise<ApiResult<DBQueryData>> {
     const responseEventName = Events.GET_DATA.RESPONSE.replaceAll("[schema.name]", schemaName + "." + mName)
     const response = responseEvent<ApiResult<DBQueryData>>(responseEventName)
-    EventsEmit(Events.GET_DATA.REQUEST, responseEventName, { dbConnectionId: dbConnId, schema: schemaName, name: mName, fetchCount, limit, offset, filter, sort })
+    EventsEmit(Events.GET_DATA.REQUEST, responseEventName, { dbConnectionId: dbConnId, schema: schemaName, name: mName, isFirstFetch, limit, offset, filter, sort })
     return response
 }
 

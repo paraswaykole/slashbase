@@ -418,7 +418,7 @@ func (mqe *MongoQueryEngine) DeleteSingleDataModelKey(dbConn *models.DBConnectio
 	return data, err
 }
 
-func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, isFirstFetch bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	query := fmt.Sprintf(`db.%s.find().limit(%d).skip(%d)`, name, limit, offset)
 	countQuery := fmt.Sprintf(`db.%s.count()`, name)
 	if len(filter) == 1 && strings.HasPrefix(filter[0], "{") && strings.HasSuffix(filter[0], "}") {
@@ -432,7 +432,7 @@ func (mqe *MongoQueryEngine) GetData(dbConn *models.DBConnection, name string, l
 	if err != nil {
 		return nil, err
 	}
-	if fetchCount {
+	if isFirstFetch {
 		countData, err := mqe.RunQuery(dbConn, countQuery, config)
 		if err != nil {
 			return nil, err

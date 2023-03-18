@@ -59,11 +59,11 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
     }, [queryFilter])
 
 
-    const fetchData = async (fetchCount: boolean) => {
+    const fetchData = async (isFirstFetch: boolean) => {
         if (!dataModel) return
         try {
-            const result = await dispatch(getDBDataInDataModel({ tabId: currentTab.id, dbConnectionId: dbConnection!.id, schemaName: dataModel!.schemaName ?? '', name: dataModel!.name, queryLimit, queryOffset, fetchCount, queryFilter, querySort })).unwrap()
-            if (fetchCount) {
+            const result = await dispatch(getDBDataInDataModel({ tabId: currentTab.id, dbConnectionId: dbConnection!.id, schemaName: dataModel!.schemaName ?? '', name: dataModel!.name, queryLimit, queryOffset, isFirstFetch, queryFilter, querySort })).unwrap()
+            if (isFirstFetch) {
                 setQueryCount(result.data.count)
             }
         } catch (e) {

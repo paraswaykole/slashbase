@@ -1,12 +1,12 @@
 import styles from './table.module.scss'
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { Cell, useRowSelect, useTable } from 'react-table'
 import toast from 'react-hot-toast'
 import { DBConnection, DBQueryData, Tab } from '../../../data/models'
 import EditableCell from './editablecell'
 import AddModal from './addmodal'
 import ConfirmModal from '../../widgets/confirmModal'
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { useAppDispatch } from '../../../redux/hooks'
 import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice'
 import { DBConnType } from '../../../data/defaults'
 import TabContext from '../../layouts/tabcontext'
@@ -41,7 +41,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         [queryData]
     )
 
-    const displayColumns = queryData.columns.filter(col => col !== 'ctid')
+    const displayColumns = dbConnection.type === DBConnType.POSTGRES ? queryData.columns.filter(col => col !== 'ctid') : queryData.columns
     const ctidExists = queryData.columns.length !== displayColumns.length
 
     const columns = React.useMemo(
@@ -116,11 +116,13 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     const newState: any = state // temporary typescript hack
     const selectedRowIds: any = newState.selectedRowIds
     const selectedRows: number[] = Object.keys(selectedRowIds).map(x => parseInt(x))
-    const selectedCTIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
+    const selectedIDs = dbConnection.type === DBConnType.POSTGRES ?
+        rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
+        : rows.filter((_, i) => selectedRows.includes(i)).map(x => queryData.pkeys!.map((pkey) => ({ [pkey]: x.original[queryData.columns.findIndex(x => x === pkey)] }))).map(x => x.reduce(((r, c) => Object.assign(r, c)), {})).map(x => JSON.stringify(x))
 
     const deleteRows = async () => {
-        if (selectedCTIDs.length > 0) {
-            const result = await dispatch(deleteDBData({ dbConnectionId: dbConnection.id, schemaName: mSchema, name: mName, selectedIDs: selectedCTIDs })).unwrap()
+        if (selectedIDs.length > 0) {
+            const result = await dispatch(deleteDBData({ dbConnectionId: dbConnection.id, schemaName: mSchema, name: mName, selectedIDs: selectedIDs })).unwrap()
             if (result.success) {
                 toast.success('rows deleted')
                 const filteredRows = queryData!.rows.filter((_, i) => !selectedRows.includes(i))
@@ -220,7 +222,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                     </div>
                     {isEditable && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button" disabled={dbConnection.type === DBConnType.MYSQL || selectedCTIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
+                            <button className="button" disabled={selectedIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-trash" />
                                 </span>

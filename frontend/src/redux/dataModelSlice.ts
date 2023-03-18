@@ -33,8 +33,8 @@ const createInitialTabState = (state: QueryDataModelState, tabId: string) => {
 export const getDBDataInDataModel = createAsyncThunk(
   'dataModel/getDBDataInDataModel',
   async (payload: any, { rejectWithValue }: any) => {
-    const { dbConnectionId, schemaName, name, queryLimit, queryOffset, fetchCount, queryFilter, querySort } = payload
-    const result = await eventService.getDBDataInDataModel(dbConnectionId, schemaName, name, queryLimit, queryOffset, fetchCount, queryFilter, querySort)
+    const { dbConnectionId, schemaName, name, queryLimit, queryOffset, isFirstFetch, queryFilter, querySort } = payload
+    const result = await eventService.getDBDataInDataModel(dbConnectionId, schemaName, name, queryLimit, queryOffset, isFirstFetch, queryFilter, querySort)
     if (result.success) {
       return {
         data: result.data

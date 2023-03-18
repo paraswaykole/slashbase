@@ -177,13 +177,13 @@ func DeleteSingleDataModelField(dbConn *models.DBConnection, schemaName string, 
 	return nil, errors.New("invalid db type")
 }
 
-func GetData(dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
+func GetData(dbConn *models.DBConnection, schemaName string, name string, limit int, offset int64, isFirstFetch bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	if dbConn.Type == models.DBTYPE_POSTGRES {
-		return postgresQueryEngine.GetData(dbConn, schemaName, name, limit, offset, fetchCount, filter, sort, config)
+		return postgresQueryEngine.GetData(dbConn, schemaName, name, limit, offset, isFirstFetch, filter, sort, config)
 	} else if dbConn.Type == models.DBTYPE_MONGO {
-		return mongoQueryEngine.GetData(dbConn, name, limit, offset, fetchCount, filter, sort, config)
+		return mongoQueryEngine.GetData(dbConn, name, limit, offset, isFirstFetch, filter, sort, config)
 	} else if dbConn.Type == models.DBTYPE_MYSQL {
-		return mysqlQueryEngine.GetData(dbConn, name, limit, offset, fetchCount, filter, sort, config)
+		return mysqlQueryEngine.GetData(dbConn, name, limit, offset, isFirstFetch, filter, sort, config)
 	}
 	return nil, errors.New("invalid db type")
 }
