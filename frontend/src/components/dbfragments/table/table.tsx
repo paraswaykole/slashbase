@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice'
 import { DBConnType } from '../../../data/defaults'
 import TabContext from '../../layouts/tabcontext'
+import { filter } from 'lodash'
 
 
 type TablePropType = {
@@ -150,6 +151,11 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         }
         onFilterChanged(filter)
     }
+    const onFilterClear = () =>{
+        let filter: string[] | undefined = undefined
+        setFilterValue(['default', 'default', '']);
+        onFilterChanged(filter);
+    }
 
     const changeSort = (newSortIdx: string) => {
         if (!isEditable) {
@@ -215,6 +221,9 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                             </p>
                             <p className="control">
                                 <button className="button" onClick={onFilter}>Filter</button>
+                            </p>
+                            <p className="control">
+                                <button className="button" onClick={onFilterClear} >Clear Filter</button>
                             </p>
                         </div>
                     </div>
