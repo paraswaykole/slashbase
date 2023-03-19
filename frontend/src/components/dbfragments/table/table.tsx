@@ -121,6 +121,9 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         : rows.filter((_, i) => selectedRows.includes(i)).map(x => queryData.pkeys!.map((pkey) => ({ [pkey]: x.original[queryData.columns.findIndex(x => x === pkey)] }))).map(x => x.reduce(((r, c) => Object.assign(r, c)), {})).map(x => JSON.stringify(x))
 
     const deleteRows = async () => {
+        if (dbConnection.type === DBConnType.MYSQL && queryData.pkeys?.length === 0) {
+            return toast.error("to perform delete operation primary keys are required on the table!")
+        }
         if (selectedIDs.length > 0) {
             const result = await dispatch(deleteDBData({ dbConnectionId: dbConnection.id, schemaName: mSchema, name: mName, selectedIDs: selectedIDs })).unwrap()
             if (result.success) {
