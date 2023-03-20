@@ -10,7 +10,6 @@ import { useAppDispatch } from '../../../redux/hooks'
 import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice'
 import { DBConnType } from '../../../data/defaults'
 import TabContext from '../../layouts/tabcontext'
-import { filter } from 'lodash'
 
 
 type TablePropType = {
@@ -163,10 +162,10 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         }
         onFilterChanged(filter)
     }
-    const onFilterClear = () =>{
+    const onFilterClear = () => {
         let filter: string[] | undefined = undefined
-        setFilterValue(['default', 'default', '']);
-        onFilterChanged(filter);
+        setFilterValue(['default', 'default', ''])
+        onFilterChanged(filter)
     }
 
     const changeSort = (newSortIdx: string) => {
@@ -234,9 +233,13 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                             <p className="control">
                                 <button className="button" onClick={onFilter}>Filter</button>
                             </p>
-                            <p className="control">
-                                <button className="button" onClick={onFilterClear} >Clear Filter</button>
-                            </p>
+                            {(filterValue[0] !== 'default' || filterValue[1] !== 'default') && <p className="control">
+                                <button className="button" onClick={onFilterClear} >
+                                    <span className="icon is-small">
+                                        <i className="fas fa-circle-xmark" />
+                                    </span>
+                                </button>
+                            </p>}
                         </div>
                     </div>
                     {isEditable && <React.Fragment>
