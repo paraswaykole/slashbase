@@ -2,6 +2,7 @@ package mysqlutils
 
 import (
 	"database/sql"
+	"fmt"
 	"reflect"
 	"strconv"
 
@@ -138,4 +139,23 @@ func QueryToDataModel(fieldQueryData []map[string]interface{}, constraintsQueryD
 	}
 
 	return fields
+}
+
+func InterfaceToQueryString(value interface{}) string {
+	if value == nil {
+		return "null"
+	}
+	switch v := value.(type) {
+	case int:
+		return strconv.Itoa(v)
+	case int64:
+		return strconv.FormatInt(v, 10)
+	case bool:
+		return strconv.FormatBool(v)
+	case string:
+		return fmt.Sprintf("'%s'", value)
+	case float64:
+		return strconv.FormatFloat(v, 'f', -1, 64)
+	}
+	return ""
 }
