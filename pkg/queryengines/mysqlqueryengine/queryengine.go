@@ -208,8 +208,29 @@ func (mqe *MysqlQueryEngine) GetData(dbConn *models.DBConnection, name string, l
 	return data, err
 }
 
-func (mqe *MysqlQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, pkey string, columnName string, value string, config *models.QueryConfig) (map[string]interface{}, error) {
-	return nil, errors.New("not implemented")
+func (mqe *MysqlQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, pkeysJson string, columnName string, value string, config *models.QueryConfig) (map[string]interface{}, error) {
+	var pkeyObject map[string]interface{}
+	err := json.Unmarshal([]byte(pkeysJson), &pkeyObject)
+	if err != nil {
+		return nil, errors.New("invalid pkey")
+	}
+	whereStr := ""
+	for key, value := range pkeyObject {
+		if whereStr != "" {
+			whereStr += " AND "
+		}
+		whereStr += key + " = " + mysqlutils.InterfaceToQueryString(value)
+	}
+	query := fmt.Sprintf(`UPDATE %s SET %s = '%s' WHERE %s;`, name, columnName, value, whereStr)
+	resultData, err := mqe.RunQuery(dbConn, query, config)
+	fmt.Println(resultData, query, err)
+	if err != nil {
+		return nil, err
+	}
+	if resultData["message"] != "1 rows affected" {
+		return nil, errors.New("failed to update row")
+	}
+	return resultData, nil
 }
 
 func (mqe *MysqlQueryEngine) AddData(dbConn *models.DBConnection, name string, data map[string]interface{}, config *models.QueryConfig) (map[string]interface{}, error) {

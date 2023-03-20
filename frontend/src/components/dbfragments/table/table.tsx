@@ -65,14 +65,21 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         setEditCell([])
     }
 
-    const onSaveCell = async (ctid: string, columnIdx: string, newValue: string) => {
+    const onSaveCell = async (rowIdx: number, originalValue: any, columnIdx: string, newValue: string) => {
+        if (dbConnection.type === DBConnType.MYSQL && queryData.pkeys?.length === 0) {
+            return toast.error("to perform edit operation primary keys are required on the table!")
+        }
         const columnName = queryData.columns[parseInt(columnIdx)]
-        const result = await dispatch(updateDBSingleData({ dbConnectionId: dbConnection.id, schemaName: mSchema, name: mName, id: ctid, columnName, newValue, columnIdx })).unwrap()
+        const uniqueId = dbConnection.type === DBConnType.POSTGRES ? originalValue["0"] : JSON.stringify(queryData.pkeys!.map((pkey) => ({ [pkey]: originalValue[queryData.columns.findIndex(x => x === pkey)] })).reduce(((r, c) => Object.assign(r, c)), {}))
+        const result = await dispatch(updateDBSingleData({ dbConnectionId: dbConnection.id, schemaName: mSchema, name: mName, id: uniqueId, columnName, newValue, columnIdx })).unwrap()
         if (result.success) {
-            const rowIdx = queryData!.rows.findIndex(x => x["0"] === ctid)
             if (rowIdx !== -1) {
                 const newQueryData: DBQueryData = { ...queryData!, rows: [...queryData!.rows] }
-                newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx], 0: result.data.ctid }
+                if (dbConnection.type === DBConnType.POSTGRES) {
+                    newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx], 0: result.data.ctid }
+                } else {
+                    newQueryData!.rows[rowIdx] = { ...newQueryData!.rows[rowIdx] }
+                }
                 newQueryData!.rows[rowIdx][columnIdx] = newValue
                 dispatch(setQueryData({ data: newQueryData, tabId: activeTab.id }))
             } else {
