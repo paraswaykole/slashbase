@@ -223,7 +223,6 @@ func (mqe *MysqlQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name 
 	}
 	query := fmt.Sprintf(`UPDATE %s SET %s = '%s' WHERE %s;`, name, columnName, value, whereStr)
 	resultData, err := mqe.RunQuery(dbConn, query, config)
-	fmt.Println(resultData, query, err)
 	if err != nil {
 		return nil, err
 	}
