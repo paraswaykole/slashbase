@@ -12,8 +12,8 @@
   },
   "info": {
     "productName": "Slashbase",
-    "productVersion": "v0.8.1",
+    "productVersion": "v0.8.2",
     "copyright": "Copyright © Slashbase.com",
-    "comments": "A modern lightweight database IDE"
+    "comments": "Modern database IDE"
   }
 }

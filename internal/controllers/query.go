@@ -27,7 +27,7 @@ func (QueryController) RunQuery(dbConnectionId, query string) (map[string]interf
 	return data, nil
 }
 
-func (QueryController) GetData(dbConnId, schema, name string, fetchCount bool, limit int, offset int64,
+func (QueryController) GetData(dbConnId, schema, name string, isFirstFetch bool, limit int, offset int64,
 	filter, sort []string) (map[string]interface{}, error) {
 
 	dbConn, err := dao.DBConnection.GetDBConnectionByID(dbConnId)
@@ -35,7 +35,7 @@ func (QueryController) GetData(dbConnId, schema, name string, fetchCount bool, l
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.GetData(dbConn.ToQEConnection(), schema, name, limit, offset, fetchCount, filter, sort, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.GetData(dbConn.ToQEConnection(), schema, name, limit, offset, isFirstFetch, filter, sort, getQueryConfigsForProjectMember(dbConn))
 	if err != nil {
 		return nil, err
 	}

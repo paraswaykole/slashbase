@@ -54,6 +54,7 @@ export interface DBQueryData {
     keys: string[]
     data: any[]
     count?: number
+    pkeys?: string[]
 }
 
 export interface DBQueryResult {

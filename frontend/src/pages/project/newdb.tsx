@@ -24,7 +24,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
 
     const [data, setData] = useState({
         dbName: "",
-        dbType: DBConnType.POSTGRES ,
+        dbType: DBConnType.POSTGRES,
         dbScheme: "",
         dbHost: "",
         dbPort: "",
@@ -39,13 +39,13 @@ const NewDBPage: FunctionComponent<{}> = () => {
         dbUseSSL: false,
     })
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement >) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const type = e.target.type
 
         const name = e.target.name
 
         const value = type === "checkbox"
-            ? (e.target as HTMLInputElement).checked 
+            ? (e.target as HTMLInputElement).checked
             : e.target.value
 
         setData(prevData => ({
@@ -81,7 +81,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
             sshKeyFile: data.dbSSHKeyFile,
             useSSL: data.dbUseSSL,
         }
-        
+
         try {
             await dispatch(addNewDBConn(payload)).unwrap()
             navigate(Constants.APP_PATHS.PROJECT.path.replace('[id]', project.id))
@@ -97,17 +97,17 @@ const NewDBPage: FunctionComponent<{}> = () => {
             <div className="form-container">
                 <InputTextField
                     label='Display Name: '
-                    name='dbName' 
-                    value={data.dbName} 
+                    name='dbName'
+                    value={data.dbName}
                     onChange={e => handleChange(e)}
-                    placeholder="Enter a display name for database" 
+                    placeholder="Enter a display name for database"
                 />
                 <div className="field">
                     <label className="label">Database Type:</label>
                     <div className="control">
                         <div className="select">
-                            <select name="dbType" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setData((prev)=> ({...prev, [e.target.name]:e.target.value, dbScheme :""}))}}>
-                                <option value={DBConnType.POSTGRES}>PostgresSQL</option>
+                            <select name="dbType" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setData((prev) => ({ ...prev, [e.target.name]: e.target.value, dbScheme: "" })) }}>
+                                <option value={DBConnType.POSTGRES}>PostgreSQL</option>
                                 <option value={DBConnType.MONGO}>MongoDB</option>
                                 <option value={DBConnType.MYSQL}>MySQL</option>
                             </select>
@@ -118,7 +118,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     <label className="label">Scheme:</label>
                     <div className="control">
                         <div className="select">
-                            <select name='dbScheme'  onChange={e => handleChange(e)}>
+                            <select name='dbScheme' onChange={e => handleChange(e)}>
                                 <option value="default">Select scheme</option>
                                 <option value="mongodb">mongodb</option>
                                 <option value="mongodb+srv">mongodb+srv</option>
@@ -154,11 +154,11 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     onChange={e => handleChange(e)}
                     placeholder="Enter Database username"
                 />
-                <PasswordInputField 
+                <PasswordInputField
                     label='Database Password:'
                     name='dbPassword'
                     value={data.dbPassword}
-                    onChange={e=>handleChange(e)}
+                    onChange={e => handleChange(e)}
                     placeholder="Enter database password"
                 />
                 <div className="field">
@@ -194,7 +194,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                             name='dbUseSSL'
                             type="checkbox"
                             defaultChecked={false}
-                            onChange={e=>handleChange(e)} />
+                            onChange={e => handleChange(e)} />
                         &nbsp;Enable SSL
                         <span className="help">If you are connecting to database which enforce/require SSL connection. (Example: Azure CosmosDB)</span>
                     </label>
@@ -217,11 +217,11 @@ const NewDBPage: FunctionComponent<{}> = () => {
                             placeholder="Enter SSH User"
                         />
                         {(data.dbUseSSH === DBConnectionUseSSHType.PASSWORD || data.dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE) &&
-                            <PasswordInputField 
+                            <PasswordInputField
                                 label='SSH Password:'
                                 name='dbSSHPassword'
                                 value={data.dbSSHPassword}
-                                onChange={e=>handleChange(e)}
+                                onChange={e => handleChange(e)}
                                 placeholder="Enter SSH Password"
                             />
                         }

@@ -153,7 +153,7 @@ func (pgqe *PostgresQueryEngine) DeleteSingleDataModelColumn(dbConn *models.DBCo
 	return data, err
 }
 
-func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
+func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema string, name string, limit int, offset int64, isFirstFetch bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	sortQuery := ""
 	if len(sort) == 2 {
 		sortQuery = fmt.Sprintf(` ORDER BY %s %s`, sort[0], sort[1])
@@ -185,7 +185,7 @@ func (pgqe *PostgresQueryEngine) GetData(dbConn *models.DBConnection, schema str
 	if err != nil {
 		return nil, err
 	}
-	if fetchCount {
+	if isFirstFetch {
 		countData, err := pgqe.RunQuery(dbConn, countQuery, config)
 		if err != nil {
 			return nil, err
