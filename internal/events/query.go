@@ -69,7 +69,7 @@ func (QueryEventListeners) GetData(ctx context.Context) {
 			sort = utils.InterfaceArrayToStringArray(data["sort"].([]interface{}))
 		}
 		analytics.SendLowCodeDataViewEvent()
-		responsedata, err := queryController.GetData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["fetchCount"].(bool), int(data["limit"].(float64)), int64(data["offset"].(float64)), filter, sort)
+		responsedata, err := queryController.GetData(data["dbConnectionId"].(string), data["schema"].(string), data["name"].(string), data["isFirstFetch"].(bool), int(data["limit"].(float64)), int64(data["offset"].(float64)), filter, sort)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,

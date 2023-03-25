@@ -34,7 +34,7 @@ const EditableCell = ({
   }
 
   const onSave = async () => {
-    onSaveCell(original["0"], id, value)
+    onSaveCell(index, original, id, value)
   }
 
   const isEditingCell = editCell.length == 2 && editCell[0] === index && editCell[1] === id

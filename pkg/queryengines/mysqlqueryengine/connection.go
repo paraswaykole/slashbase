@@ -29,7 +29,7 @@ func (myEngine *MysqlQueryEngine) getConnection(dbConnectionId, host string, por
 	if err != nil {
 		return
 	}
-	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, strconv.Itoa(int(port)), database)
+	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", user, password, host, strconv.Itoa(int(port)), database)
 	db, err := sql.Open("mysql", connString)
 	if err != nil {
 		return nil, err

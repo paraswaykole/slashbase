@@ -27,7 +27,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
     })
     const [data, setData] = useState({
         dbName: "",
-        dbType: DBConnType.POSTGRES ,
+        dbType: DBConnType.POSTGRES,
         dbScheme: "",
         dbHost: "",
         dbPort: "",
@@ -41,9 +41,9 @@ const NewDBPage: FunctionComponent<{}> = () => {
         dbSSHKeyFile: "",
         dbUseSSL: false,
     })
-
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement >) => {
-        const type = e.target.type;
+    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const type = e.target.type
         const name = e.target.name;
 
         switch (name) {
@@ -88,7 +88,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
           }
 
         const value = type === "checkbox"
-            ? (e.target as HTMLInputElement).checked 
+            ? (e.target as HTMLInputElement).checked
             : e.target.value
 
         setData(prevData => ({
@@ -165,19 +165,18 @@ const NewDBPage: FunctionComponent<{}> = () => {
             <div className="form-container">
                 <InputTextField
                     label='Display Name: '
-                    name='dbName' 
-                    value={data.dbName} 
+                    name='dbName'
+                    value={data.dbName}
                     onChange={e => handleChange(e)}
                     placeholder="Enter a me for database"
                     style={inputError.error_1 ? inputStyle :  normal} 
-                    
                 />
                 <div className="field">
                     <label className="label">Database Type:</label>
                     <div className="control">
                         <div className="select">
-                            <select name="dbType" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setData((prev)=> ({...prev, [e.target.name]:e.target.value, dbScheme :""}))}}>
-                                <option value={DBConnType.POSTGRES}>PostgresSQL</option>
+                            <select name="dbType" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setData((prev) => ({ ...prev, [e.target.name]: e.target.value, dbScheme: "" })) }}>
+                                <option value={DBConnType.POSTGRES}>PostgreSQL</option>
                                 <option value={DBConnType.MONGO}>MongoDB</option>
                                 <option value={DBConnType.MYSQL}>MySQL</option>
                             </select>
@@ -228,11 +227,11 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     placeholder="Enter Database username"
                     style={inputError.error_6 ? inputStyle :  normal}
                 />
-                <PasswordInputField 
+                <PasswordInputField
                     label='Database Password:'
                     name='dbPassword'
                     value={data.dbPassword}
-                    onChange={e=>handleChange(e)}
+                    onChange={e => handleChange(e)}
                     placeholder="Enter database password"
                     style={inputError.error_7 ? inputStyle :  normal}
                 />
@@ -297,11 +296,11 @@ const NewDBPage: FunctionComponent<{}> = () => {
                             
                         />
                         {(data.dbUseSSH === DBConnectionUseSSHType.PASSWORD || data.dbUseSSH === DBConnectionUseSSHType.PASSKEYFILE) &&
-                            <PasswordInputField 
+                            <PasswordInputField
                                 label='SSH Password:'
                                 name='dbSSHPassword'
                                 value={data.dbSSHPassword}
-                                onChange={e=>handleChange(e)}
+                                onChange={e => handleChange(e)}
                                 placeholder="Enter SSH Password"
                                 style={inputError.error_10 ? inputStyle :  normal}
                                 

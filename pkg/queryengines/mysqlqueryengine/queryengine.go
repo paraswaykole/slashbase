@@ -1,6 +1,7 @@
 package mysqlqueryengine
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -154,7 +155,7 @@ func (mqe *MysqlQueryEngine) DeleteSingleDataModelColumn(dbConn *models.DBConnec
 	return data, err
 }
 
-func (mqe *MysqlQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, fetchCount bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
+func (mqe *MysqlQueryEngine) GetData(dbConn *models.DBConnection, name string, limit int, offset int64, isFirstFetch bool, filter []string, sort []string, config *models.QueryConfig) (map[string]interface{}, error) {
 	sortQuery := ""
 	if len(sort) == 2 {
 		sortQuery = fmt.Sprintf(` ORDER BY %s %s`, sort[0], sort[1])
@@ -184,18 +185,51 @@ func (mqe *MysqlQueryEngine) GetData(dbConn *models.DBConnection, name string, l
 	if err != nil {
 		return nil, err
 	}
-	if fetchCount {
+	if isFirstFetch {
 		countData, err := mqe.RunQuery(dbConn, countQuery, config)
 		if err != nil {
 			return nil, err
 		}
 		data["count"] = countData["rows"].([]map[string]interface{})[0]["0"]
+
+		query := fmt.Sprintf(`
+		SELECT column_name FROM information_schema.columns WHERE table_schema = '%s'
+		AND table_name = '%s' AND column_key = 'PRI' ORDER BY ordinal_position;`, dbConn.DBName, name)
+		pKeyData, err := mqe.RunQuery(dbConn, query, config)
+		if err != nil {
+			return nil, err
+		}
+		pKeys := []string{}
+		for _, value := range pKeyData["rows"].([]map[string]interface{}) {
+			pKeys = append(pKeys, value["0"].(string))
+		}
+		data["pkeys"] = pKeys
 	}
 	return data, err
 }
 
-func (mqe *MysqlQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, pkey string, columnName string, value string, config *models.QueryConfig) (map[string]interface{}, error) {
-	return nil, errors.New("not implemented")
+func (mqe *MysqlQueryEngine) UpdateSingleData(dbConn *models.DBConnection, name string, pkeysJson string, columnName string, value string, config *models.QueryConfig) (map[string]interface{}, error) {
+	var pkeyObject map[string]interface{}
+	err := json.Unmarshal([]byte(pkeysJson), &pkeyObject)
+	if err != nil {
+		return nil, errors.New("invalid pkey")
+	}
+	whereStr := ""
+	for key, value := range pkeyObject {
+		if whereStr != "" {
+			whereStr += " AND "
+		}
+		whereStr += key + " = " + mysqlutils.InterfaceToQueryString(value)
+	}
+	query := fmt.Sprintf(`UPDATE %s SET %s = '%s' WHERE %s;`, name, columnName, value, whereStr)
+	resultData, err := mqe.RunQuery(dbConn, query, config)
+	if err != nil {
+		return nil, err
+	}
+	if resultData["message"] != "1 rows affected" {
+		return nil, errors.New("failed to update row")
+	}
+	return resultData, nil
 }
 
 func (mqe *MysqlQueryEngine) AddData(dbConn *models.DBConnection, name string, data map[string]interface{}, config *models.QueryConfig) (map[string]interface{}, error) {
@@ -219,8 +253,31 @@ func (mqe *MysqlQueryEngine) AddData(dbConn *models.DBConnection, name string, d
 	}, err
 }
 
-func (mqe *MysqlQueryEngine) DeleteData(dbConn *models.DBConnection, name string, ctids []string, config *models.QueryConfig) (map[string]interface{}, error) {
-	return nil, errors.New("not implemented")
+func (mqe *MysqlQueryEngine) DeleteData(dbConn *models.DBConnection, name string, pkeysJsonArray []string, config *models.QueryConfig) (map[string]interface{}, error) {
+	count := 0
+	for _, pkeyJson := range pkeysJsonArray {
+		var pkeyObject map[string]interface{}
+		err := json.Unmarshal([]byte(pkeyJson), &pkeyObject)
+		if err != nil {
+			return nil, errors.New("invalid pkey")
+		}
+		whereStr := ""
+		for key, value := range pkeyObject {
+			if whereStr != "" {
+				whereStr += " AND "
+			}
+			whereStr += key + " = " + mysqlutils.InterfaceToQueryString(value)
+		}
+		query := fmt.Sprintf(`DELETE from %s WHERE %s;`, name, whereStr)
+		_, err = mqe.RunQuery(dbConn, query, config)
+		if err != nil {
+			return nil, err
+		}
+		count += 1
+	}
+	return map[string]interface{}{
+		"message": fmt.Sprintf("%d rows affected", count),
+	}, nil
 }
 
 func (mqe *MysqlQueryEngine) AddSingleDataModelIndex(dbConn *models.DBConnection, name, indexName string, colNames []string, isUnique bool, config *models.QueryConfig) (map[string]interface{}, error) {
