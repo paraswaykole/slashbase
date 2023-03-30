@@ -78,7 +78,11 @@ func MySqlRowsToJson(rows *sql.Rows) ([]string, []map[string]interface{}) {
 			}
 			b, ok := val.(sql.RawBytes)
 			if ok {
-				v = string(b)
+				if b == nil {
+					v = nil
+				} else {
+					v = string(b)
+				}
 			} else {
 				v = val
 			}

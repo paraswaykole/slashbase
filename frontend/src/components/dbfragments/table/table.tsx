@@ -17,14 +17,14 @@ type TablePropType = {
     dbConnection: DBConnection
     mSchema: string,
     mName: string,
-    isEditable: boolean,
+    isInteractive: boolean,
     showHeader?: boolean,
     querySort?: string[],
     onFilterChanged: (newFilter: string[] | undefined) => void,
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader, querySort, onFilterChanged, onSortChanged }: TablePropType) => {
+const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged }: TablePropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -32,6 +32,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
 
     const [editCell, setEditCell] = useState<(string | number)[]>([])
     const [isAdding, setIsAdding] = useState<boolean>(false)
+    const [isEditing, setIsEditing] = useState<boolean>(false)
     const [isDeleting, setIsDeleting] = useState<boolean>(false)
 
     const [filterValue, setFilterValue] = useState<string[]>(['default', 'default', ''])
@@ -41,8 +42,8 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
         [queryData]
     )
 
-    const displayColumns = dbConnection.type === DBConnType.POSTGRES ? queryData.columns.filter(col => col !== 'ctid') : queryData.columns
-    const ctidExists = queryData.columns.length !== displayColumns.length
+    const displayColumns = queryData.columns ? dbConnection.type === DBConnType.POSTGRES ? queryData.columns.filter(col => col !== 'ctid') : queryData.columns : []
+    const ctidExists = queryData.columns ? queryData.columns.length !== displayColumns.length : false
 
     const columns = React.useMemo(
         () => displayColumns.map((col, i) => ({
@@ -107,7 +108,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     },
         useRowSelect,
         hooks => {
-            if (isEditable)
+            if (isInteractive && isEditing)
                 hooks.visibleColumns.push(columns => [
                     {
                         id: 'selection',
@@ -146,7 +147,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     }
 
     const startEditing = (cell: Cell<any, any>) => {
-        if (isEditable)
+        if (isInteractive && isEditing)
             setEditCell([cell.row.index, cell.column.id])
     }
 
@@ -169,7 +170,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
     }
 
     const changeSort = (newSortIdx: string) => {
-        if (!isEditable) {
+        if (!isInteractive) {
             return
         }
         const newSortName: string = displayColumns.find((_, i) => {
@@ -196,7 +197,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
 
     return (
         <React.Fragment>
-            {(showHeader || isEditable) && <div className={styles.tableHeader}>
+            {(showHeader || (isInteractive && isEditing)) && <div className={styles.tableHeader}>
                 <div className="columns">
                     <div className="column is-9">
                         <div className="field has-addons">
@@ -242,7 +243,16 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                             </p>}
                         </div>
                     </div>
-                    {isEditable && <React.Fragment>
+                    {isInteractive && !isEditing && <React.Fragment>
+                        <div className="column is-3 is-flex is-justify-content-flex-end">
+                            <button className="button is-primary" onClick={() => { setIsEditing(true) }}>
+                                <span className="icon is-small">
+                                    <i className="fas fa-pen" />
+                                </span>
+                            </button>
+                        </div>
+                    </React.Fragment>}
+                    {isInteractive && isEditing && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
                             <button className="button" disabled={selectedIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
                                 <span className="icon is-small">
@@ -250,9 +260,15 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isEditable, showHeader
                                 </span>
                             </button>
                             &nbsp;&nbsp;
-                            <button className="button is-primary" onClick={() => { setIsAdding(true) }}>
+                            <button className="button is-secondary" onClick={() => { setIsAdding(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-plus" />
+                                </span>
+                            </button>
+                            &nbsp;&nbsp;
+                            <button className="button is-primary" onClick={() => { setIsEditing(false) }}>
+                                <span className="icon is-small">
+                                    <i className="fas fa-check" />
                                 </span>
                             </button>
                         </div>

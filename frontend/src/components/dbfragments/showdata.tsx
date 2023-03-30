@@ -107,7 +107,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     mName={String(mname)}
                     queryData={queryData}
                     querySort={querySort}
-                    isEditable={true}
+                    isInteractive={true}
                     showHeader={true}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
@@ -120,7 +120,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     mName={String(mname)}
                     queryData={queryData}
                     querySort={querySort}
-                    isEditable={true}
+                    isInteractive={true}
                     showHeader={true}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
@@ -131,7 +131,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     dbConnection={dbConnection}
                     mName={String(mname)}
                     queryData={queryData}
-                    isEditable={true}
+                    isInteractive={true}
                     showHeader={true}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}

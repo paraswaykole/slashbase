@@ -124,7 +124,7 @@ const DBQueryFragment = (_: DBQueryPropType) => {
                             mName={''}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
-                            isEditable={false} />
+                            isInteractive={false} />
                     }
                     {dbConnection!.type === DBConnType.MONGO &&
                         <JsonTable
@@ -133,7 +133,7 @@ const DBQueryFragment = (_: DBQueryPropType) => {
                             mName={''}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
-                            isEditable={false} />
+                            isInteractive={false} />
                     }
                 </React.Fragment>
                 : null
