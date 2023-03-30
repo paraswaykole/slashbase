@@ -42,8 +42,8 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
         [queryData]
     )
 
-    const displayColumns = dbConnection.type === DBConnType.POSTGRES ? queryData.columns.filter(col => col !== 'ctid') : queryData.columns
-    const ctidExists = queryData.columns.length !== displayColumns.length
+    const displayColumns = queryData.columns ? dbConnection.type === DBConnType.POSTGRES ? queryData.columns.filter(col => col !== 'ctid') : queryData.columns : []
+    const ctidExists = queryData.columns ? queryData.columns.length !== displayColumns.length : false
 
     const columns = React.useMemo(
         () => displayColumns.map((col, i) => ({
