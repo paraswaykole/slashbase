@@ -14,19 +14,20 @@ type JsonTablePropType = {
     queryData: DBQueryData,
     dbConnection: DBConnection
     mName: string,
-    isEditable: boolean,
+    isInteractive: boolean,
     showHeader?: boolean,
     onFilterChanged: (newFilter: string[] | undefined) => void,
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onFilterChanged, onSortChanged }: JsonTablePropType) => {
+const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, onFilterChanged, onSortChanged }: JsonTablePropType) => {
 
     const dispatch = useAppDispatch()
 
     const activeTab: Tab = useContext(TabContext)!
 
     const [isAdding, setIsAdding] = useState<boolean>(false)
+    const [isEditing, setIsEditing] = useState<boolean>(false)
     const [isDeleting, setIsDeleting] = useState<boolean>(false)
     const [editingCellIndex, setEditingCellIndex] = useState<(number | null)>(null)
 
@@ -53,7 +54,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
     }
 
     const startEditing = (index: number | null) => {
-        if (!isEditable) {
+        if (!(isInteractive && isEditing)) {
             return
         }
         setEditingCellIndex(index)
@@ -69,7 +70,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
     }
 
     const changeSort = () => {
-        if (!isEditable) {
+        if (!isInteractive) {
             return
         }
         let sort: string[] | undefined = undefined
@@ -112,7 +113,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
         defaultColumn,
         ...{ editingCellIndex, startEditing, onSaveCell }
     }, useRowSelect, hooks => {
-        if (isEditable)
+        if (isInteractive && isEditing)
             hooks.visibleColumns.push(columns => [
                 {
                     id: 'selection',
@@ -145,7 +146,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
 
     return (
         <React.Fragment>
-            {(showHeader || isEditable) && <div className={styles.tableHeader}>
+            {(showHeader || (isInteractive && isEditing)) && <div className={styles.tableHeader}>
                 <div className="columns">
                     <div className="column is-3">
                         <div className="field has-addons">
@@ -167,7 +168,16 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
                             </p>
                         </div>
                     </div>
-                    {isEditable && <React.Fragment>
+                    {isInteractive && !isEditing && <React.Fragment>
+                        <div className="column is-3 is-flex is-justify-content-flex-end">
+                            <button className="button is-primary" onClick={() => { setIsEditing(true) }}>
+                                <span className="icon is-small">
+                                    <i className="fas fa-pen" />
+                                </span>
+                            </button>
+                        </div>
+                    </React.Fragment>}
+                    {isInteractive && isEditing && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
                             <button className="button" disabled={selectedUnderscoreIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
                                 <span className="icon is-small">
@@ -175,9 +185,15 @@ const JsonTable = ({ queryData, dbConnection, mName, isEditable, showHeader, onF
                                 </span>
                             </button>
                             &nbsp;&nbsp;
-                            <button className="button is-primary" onClick={() => { setIsAdding(true) }}>
+                            <button className="button is-secondary" onClick={() => { setIsAdding(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-plus" />
+                                </span>
+                            </button>
+                            &nbsp;&nbsp;
+                            <button className="button is-primary" onClick={() => { setIsEditing(false) }}>
+                                <span className="icon is-small">
+                                    <i className="fas fa-check" />
                                 </span>
                             </button>
                         </div>

@@ -131,7 +131,7 @@ const DBShowDataFragment = (_: DBShowDataPropType) => {
                     dbConnection={dbConnection}
                     mName={String(mname)}
                     queryData={queryData}
-                    isEditable={true}
+                    isInteractive={true}
                     showHeader={true}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
