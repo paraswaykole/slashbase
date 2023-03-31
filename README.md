@@ -72,6 +72,12 @@ Follow the steps build & start the app:
 4. The app is created in `build/bin`. 
 5. Double click the Slashbase file to open the app on Windows and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
+## Arch Linux
+Install from the Arch User Repository:
+```shell
+yay -S slashbase
+```
+
 # Screenshots
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
