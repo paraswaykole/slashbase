@@ -130,7 +130,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     name='dbName'
                     value={data.dbName}
                     onChange={e => handleChange(e)}
-                    placeholder="Enter a me for database"
+                    placeholder="Enter a display name for database"
                     style={inputError.error_1 ? inputStyle :  normal} 
                 />
                 <div className="field">
@@ -138,7 +138,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     <div className="control">
                         <div className="select">
                             <select name="dbType" style= {normal} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setData((prev)=> ({...prev, [e.target.name]:e.target.value, dbScheme :""}))}}>
-                                <option value={DBConnType.POSTGRES}>PostgresSQL</option>
+                                <option value={DBConnType.POSTGRES}>PostgreSQL</option>
                                 <option value={DBConnType.MONGO}>MongoDB</option>
                                 <option value={DBConnType.MYSQL}>MySQL</option>
                             </select>
