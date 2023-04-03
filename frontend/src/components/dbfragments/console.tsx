@@ -46,8 +46,8 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
             text: "Start typing command and press enter to run it.\nType 'help' for more info on console.",
             cmd: false
         }} />
-        {output.map(block => {
-            return <OutputBlock block={block} />
+        {output.map((block, idx) => {
+            return <OutputBlock block={block} key={idx} />
         })}
         <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} confirmInput={confirmInput} />
         <span ref={consoleEndRef}></span>
