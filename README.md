@@ -9,6 +9,9 @@
   <a href="https://github.com/slashbaseide/slashbase/releases">
     <img src="https://img.shields.io/github/release/slashbaseide/slashbase.svg" alt="Release version">
   </a>
+  <a href="#installation">
+    <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total" alt="Total downloads">
+  </a>
   <a href="https://discord.gg/U6fXgm3FAX">
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
   </a>
@@ -70,6 +73,12 @@ Follow the steps to build & start the app:
 3. Open the terminal at root directory and run `make build`.
 4. The app is created in `build/bin`. 
 5. Double click the Slashbase file to open the app on Windows and MacOS. For linux, run `./Slashbase` on terminal to start the app.
+
+## Arch Linux
+Install from the Arch User Repository:
+```shell
+yay -S slashbase
+```
 
 # Screenshots
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
