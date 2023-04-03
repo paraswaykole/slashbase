@@ -46,7 +46,7 @@ const Footer = (_: FooterPropType) => {
                         <span>{(isDBConnected !== undefined && isDBConnected) ? "connected" : "not connected"}</span>
                     </button>)
                 }
-                {isDBConnected === true &&
+                {showStatus && isDBConnected === true &&
                     (<button className={styles.button + " is-small"} onClick={refreshDataModels}>
                         <span className="icon is-small">
                             <i className="fas fa-sync" />
