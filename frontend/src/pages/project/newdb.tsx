@@ -106,7 +106,10 @@ const NewDBPage: FunctionComponent<{}> = () => {
             (payload.port.length === 0) ? f3 = true : f3 = false;
             (payload.dbname.length === 0) ? f4 = true : f4 = false;
             setInputError({
-                ...inputError, error_1: f1, error_2: f2, error_3: f3,
+                ...inputError,
+                error_1: f1,
+                error_2: f2,
+                error_3: f3,
                 error_4: f4
             })
             setAddingError(e)
