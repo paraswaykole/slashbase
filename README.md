@@ -64,13 +64,14 @@ Follow the steps below to download & start the app:
 
 ## Build from source
 
-Follow the steps build & start the app:
+Follow the steps below to build & start the app:
 
 1. Clone the repository or download the zip.
 2. Make sure Go and Wails is installed. Follow the steps [here](https://wails.io/docs/gettingstarted/installation), if not installed.
-3. Open the terminal at root directory and run `make build`.
-4. The app is created in `build/bin`. 
-5. Double click the Slashbase file to open the app on Windows and MacOS. For linux, run `./Slashbase` on terminal to start the app.
+3. Go to the project root directory and copy the file at development.env.sample and paste as development.env in the root directory of the project.
+4. Open the terminal at root directory and run `make build`.
+5. The app is created in `build/bin`. 
+6. Double click the Slashbase file to open the app on Windows and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
 ## Arch Linux
 Install from the Arch User Repository:
