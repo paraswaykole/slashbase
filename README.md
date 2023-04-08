@@ -73,6 +73,13 @@ Follow the steps below to build & start the app:
 5. The app is created in `build/bin`. 
 6. Double click the Slashbase file to open the app on Windows and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
+## Scoop on Windows
+Make sure [Scoop](https://scoop.sh) is installed and run the following commands:
+```shell
+scoop bucket add kulfi-scoop https://github.com/Animesh-Ghosh/kulfi-scoop
+scoop install slashbase
+```
+
 ## Arch Linux
 Install from the Arch User Repository:
 ```shell
