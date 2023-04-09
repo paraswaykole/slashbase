@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/slashbaseide/slashbase/internal/utils"
+	"github.com/slashbaseide/slashbase/internal/common/utils"
 	"github.com/tdewolff/parse/v2"
 	"github.com/tdewolff/parse/v2/js"
 	"go.mongodb.org/mongo-driver/bson"
