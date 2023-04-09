@@ -32,22 +32,22 @@
 
 # About
 
-Slashbase is open-source modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts. Supports MySQL, PostgreSQL and MongoDB.
+Slashbase is an open-source modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts. Supports MySQL, PostgreSQL and MongoDB.
 
 It is in beta (v0.8), help us make it better by sending your feedback and reach a stable (v1.0) version.
 > Star 🌟 & watch 👀 the repository to get updates.
 
 ## Features:
 
-- **🧑‍💻 Desktop App**: Use the IDE as standalone desktop app.
+- **🧑‍💻 Desktop App**: Use the IDE as a standalone desktop app.
 - **🪄 Modern Interface**: With a modern interface, it is easy to use.
 - **🪶 Lightweight**: Doesn't take much space on your system.
 - **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
-- **💾 Save Queries**: Write and Save queries to re-run in future.
+- **💾 Save Queries**: Write and Save queries to re-run in the future.
 - **📊 Create Charts**: Create charts from your query results.
-- **📺 Console**: Run commands like in you do in terminal.
+- **📺 Console**: Run commands like you do in the terminal.
 - **🗂 Projects**: Organise all database connections into various projects.
-- **📕 Query Cheatsheets**: Search and view query commands syntax right inside IDE.
+- **📕 Query Cheatsheets**: Search and view query commands syntax right inside the IDE.
 - **✅ Database Support**: MySQL, PostgreSQL and MongoDB.
 
 # Installation
@@ -59,8 +59,10 @@ Follow the steps below to download & start the app:
 1. Download the [latest release](https://github.com/slashbaseide/slashbase/releases) and extract / open the downloaded file.
 2. Follow the platform specific step below
     - For Windows, double click the Slashbase file to open the app
-    - For MacOS, drag the Slashbase file to Applications folder and start the app from launchpad.
-    - For linux, run `./Slashbase` on terminal to start the app.
+    - For MacOS, drag the Slashbase file into the Applications folder and start the app from Launchpad.
+    - For Linux, run `./Slashbase` in the terminal to start the app.
+      - Requires `libwebkit2gtk-4.0` to be installed. 
+        - On Arch-based distributions, you can install it with `pacman -S webkit2gtk`
 
 ## Build from source
 
@@ -108,18 +110,18 @@ Detailed documentation is available on [slashbase guide](https://slashbase.bip.w
 
 # Community
 
-Join our community on [discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
+Join our community on [Discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
 
 # Roadmap
 
-### Database Support
+## Database Support
 - ✅ PostgreSQL Query Engine
 - ✅ MongoDB Query Engine
 - ✅ MySQL Query Engine
 - ☑️ SQLite Query Engine
 - ☑️ Redis Query Engine
 
-### Features
+## Features
 - ✅ Query Cheatsheets
 - ☑️ Add/delete Data Models (Table/collections)
 - ☑️ Manage Views
@@ -132,7 +134,7 @@ Read our [contribution guide](CONTRIBUTING.md) for getting started on contributi
 
 # Support
 
-If you face any issues installing or using slashbase, send us a mail on slashbaseide@gmail.com or contact support chat on our website [slashbase.com](https://slashbase.com).
+If you face any issues installing or using Slashbase, send us a mail to slashbaseide@gmail.com or contact support chat on our website [slashbase.com](https://slashbase.com).
 
 # License
 

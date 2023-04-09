@@ -350,6 +350,8 @@ func mapToBsonD(data *map[string]interface{}) bson.D {
 				} else if str, isTrue := item.(string); isTrue {
 					if oID := stringToObjectID(str); oID != nil {
 						array = append(array, *oID)
+					} else {
+						array = append(array, str)
 					}
 				} else {
 					array = append(array, item)
