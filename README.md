@@ -61,6 +61,7 @@ Follow the steps below to download & start the app:
     - For Windows, double click the Slashbase file to open the app
     - For MacOS, drag the Slashbase file into the Applications folder and start the app from Launchpad.
     - For Linux, run `./Slashbase` in the terminal to start the app.
+      - Requires `GLIBC 2.31` minimum to be installed. Check your system version with `ldd --version`
       - Requires `libwebkit2gtk-4.0` to be installed. 
         - On Arch-based distributions, you can install it with `pacman -S webkit2gtk`
 
