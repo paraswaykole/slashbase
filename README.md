@@ -32,7 +32,7 @@
 
 # About
 
-Slashbase is a modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your databases, browse data and schemas, write, run and save queries, and create charts. Supports MySQL, PostgreSQL and MongoDB.
+Slashbase is an open-source modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts. Supports MySQL, PostgreSQL and MongoDB.
 
 It is in beta (v0.8), help us make it better by sending your feedback and reach a stable (v1.0) version.
 > Star 🌟 & watch 👀 the repository to get updates.
@@ -75,7 +75,20 @@ Follow the steps below to build & start the app:
 5. The app is created in `build/bin`. 
 6. Double click the Slashbase file to open the app on Windows and MacOS. For linux, run `./Slashbase` on terminal to start the app.
 
-## Arch Linux
+## Using Homebrew on macOS.
+Make sure [Homebrew](https://brew.sh/) is installed and run the following commands:
+```shell
+brew install slashbaseide/tap/slashbase
+```
+
+## Using Scoop on Windows
+Make sure [Scoop](https://scoop.sh) is installed and run the following commands:
+```shell
+scoop bucket add kulfi-scoop https://github.com/Animesh-Ghosh/kulfi-scoop
+scoop install slashbase
+```
+
+## Using Arch Linux Repository
 Install from the Arch User Repository:
 ```shell
 yay -S slashbase
