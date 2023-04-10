@@ -20,8 +20,9 @@ __debug_bin
 *.out
 
 # Environment
-local.env
+.env
 development.env
+development.server.env
 production.env
 
 # Database

@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 	"unsafe"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func ContainsString(s []string, str string) bool {
@@ -82,4 +84,16 @@ func FileExtensionFromPath(path string) string {
 		}
 	}
 	return ""
+}
+
+func GetRequestCookieHost(c *fiber.Ctx) string {
+	protocol := "http"
+	if c.Context().IsTLS() {
+		protocol = "https"
+	}
+	host := string(c.Request().Host())
+	if strings.HasPrefix(host, "localhost:") {
+		return "localhost"
+	}
+	return protocol + "://" + host
 }

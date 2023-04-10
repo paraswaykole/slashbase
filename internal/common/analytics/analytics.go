@@ -39,6 +39,7 @@ func sendEvent(eventName string, properties map[string]interface{}) {
 		return
 	}
 	properties["version"] = config.GetConfig().Version
+	properties["build"] = config.GetConfig().Build
 	client.Enqueue(posthog.Capture{
 		DistinctId: setting.UUID().String(),
 		Event:      eventName,

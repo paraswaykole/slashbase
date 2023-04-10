@@ -3,13 +3,21 @@ package desktop
 import (
 	"embed"
 
+	"github.com/slashbaseide/slashbase/internal/common/analytics"
+	"github.com/slashbaseide/slashbase/internal/common/tasks"
 	"github.com/slashbaseide/slashbase/internal/desktop/app"
+	"github.com/slashbaseide/slashbase/internal/desktop/setup"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
 func Start(assets embed.FS) {
+
+	setup.SetupApp()
+	analytics.InitAnalytics()
+	tasks.InitCron()
+
 	// Create an instance of the app structure
 	app := app.NewApp()
 
