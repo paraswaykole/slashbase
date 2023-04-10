@@ -29,6 +29,19 @@ func InitMongoQueryEngine() *MongoQueryEngine {
 	}
 }
 
+func (mqw *MongoQueryEngine) runFindOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result := db.Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Args[0])
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+	keys, data := mongoutils.MongoSingleResultToJson(result)
+	return map[string]interface{}{
+		"keys": keys,
+		"data": data,
+	}, nil
+
+}
+
 func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string, config *models.QueryConfig) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
@@ -57,19 +70,13 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 	}
 
 	if queryType.QueryType == mongoutils.QUERY_FINDONE {
-		result := db.Collection(queryType.CollectionName).
-			FindOne(context.Background(), queryType.Args[0])
-		if result.Err() != nil {
-			return nil, result.Err()
+		result, err := mqe.runFindOneQuery(db, queryType)
+		if err != nil {
+			return nil, err
 		}
-		keys, data := mongoutils.MongoSingleResultToJson(result)
-		if config.CreateLogFn != nil {
-			config.CreateLogFn(query)
-		}
-		return map[string]interface{}{
-			"keys": keys,
-			"data": data,
-		}, nil
+
+		return result, nil
+
 	} else if queryType.QueryType == mongoutils.QUERY_FIND {
 		collection := db.Collection(queryType.CollectionName)
 		opts := &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort}
