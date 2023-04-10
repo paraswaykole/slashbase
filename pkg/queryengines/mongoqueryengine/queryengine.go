@@ -355,15 +355,16 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		return nil, errors.New("not allowed run this query")
 	}
 
-	if queryType.QueryType == mongoutils.QUERY_FINDONE {
+	switch queryType.QueryType {
+
+	case mongoutils.QUERY_FINDONE:
 		result, err := mqe.runFindOneQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 
 		return result, nil
-
-	} else if queryType.QueryType == mongoutils.QUERY_FIND {
+	case mongoutils.QUERY_FIND:
 		result, err := mqe.runFindQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -374,7 +375,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 
 		return result, nil
 
-	} else if queryType.QueryType == mongoutils.QUERY_INSERTONE {
+	case mongoutils.QUERY_INSERTONE:
 		result, err := mqe.runInsertOneQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -385,8 +386,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return result, nil
-
-	} else if queryType.QueryType == mongoutils.QUERY_INSERT {
+	case mongoutils.QUERY_INSERT:
 		result, err := mqe.runInsertManyQuery(db, queryType)
 
 		if err != nil {
@@ -398,7 +398,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 
 		return result, nil
 
-	} else if queryType.QueryType == mongoutils.QUERY_DELETEONE {
+	case mongoutils.QUERY_DELETEONE:
 		result, err := mqe.runDeleteOneQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -409,7 +409,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 
 		return result, nil
 
-	} else if queryType.QueryType == mongoutils.QUERY_DELETEMANY {
+	case mongoutils.QUERY_DELETEMANY:
 		result, err := mqe.runDeleteManyQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -420,8 +420,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return result, nil
-
-	} else if queryType.QueryType == mongoutils.QUERY_UPDATEONE {
+	case mongoutils.QUERY_UPDATEONE:
 		result, err := mqe.runUpdateOneQuery(db, queryType)
 
 		if err != nil {
@@ -431,7 +430,8 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			config.CreateLogFn(query)
 		}
 		return result, nil
-	} else if queryType.QueryType == mongoutils.QUERY_UPDATEMANY {
+
+	case mongoutils.QUERY_UPDATEMANY:
 		result, err := mqe.runUpdateManyQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -441,7 +441,8 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return result, nil
-	} else if queryType.QueryType == mongoutils.QUERY_REPLACEONE {
+
+	case mongoutils.QUERY_REPLACEONE:
 		result, err := mqe.runReplaceOneQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -451,7 +452,8 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return result, nil
-	} else if queryType.QueryType == mongoutils.QUERY_RUNCMD {
+
+	case mongoutils.QUERY_RUNCMD:
 		result, err := mqe.runCMDQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -462,8 +464,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return result, nil
-
-	} else if queryType.QueryType == mongoutils.QUERY_GETINDEXES {
+	case mongoutils.QUERY_GETINDEXES:
 		results, err := mqe.runGetIndexesQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -474,7 +475,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return results, nil
-	} else if queryType.QueryType == mongoutils.QUERY_LISTCOLLECTIONS {
+	case mongoutils.QUERY_LISTCOLLECTIONS:
 		list, err := mqe.runListCollectionsQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -484,8 +485,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return list, nil
-
-	} else if queryType.QueryType == mongoutils.QUERY_COUNT {
+	case mongoutils.QUERY_COUNT:
 
 		count, err := mqe.runCountQuery(db, queryType)
 		if err != nil {
@@ -496,8 +496,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return count, nil
-
-	} else if queryType.QueryType == mongoutils.QUERY_AGGREGATE {
+	case mongoutils.QUERY_AGGREGATE:
 		cursor, err := mqe.runAggregateQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -507,7 +506,8 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		}
 
 		return cursor, nil
-	} else if queryType.QueryType == mongoutils.QUERY_DROP {
+
+	case mongoutils.QUERY_DROP:
 		result, err := mqe.runDropQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -516,7 +516,7 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			config.CreateLogFn(query)
 		}
 		return result, nil
-	} else if queryType.QueryType == mongoutils.QUERY_CREATEINDEX {
+	case mongoutils.QUERY_CREATEINDEX:
 		index, err := mqe.runCreateIndexQuery(db, queryType)
 		if err != nil {
 			return nil, err
@@ -527,15 +527,18 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 
 		return index, nil
 
-	} else if queryType.QueryType == mongoutils.QUERY_DROPINDEX {
+	case mongoutils.QUERY_DROPINDEX:
 		result, err := mqe.runDropIndexQuery(db, queryType)
 
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
 		return result, err
+
+	default:
+		return nil, errors.New("unknown query")
 	}
-	return nil, errors.New("unknown query")
+
 }
 
 func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) error {
