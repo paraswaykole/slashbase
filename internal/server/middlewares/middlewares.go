@@ -41,11 +41,10 @@ func AuthUserMiddleware() func(c *fiber.Ctx) error {
 		if value := c.Context().UserValue(USER_SESSION); value != nil {
 			return c.Next()
 		}
-		c.JSON(map[string]interface{}{
+		return c.JSON(map[string]interface{}{
 			"success": false,
 			"error":   "Unauthorized",
 		})
-		return c.Next()
 	}
 }
 
