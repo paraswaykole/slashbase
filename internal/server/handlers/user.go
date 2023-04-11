@@ -52,7 +52,7 @@ func (UserHandlers) LoginUser(c *fiber.Ctx) error {
 }
 
 func (UserHandlers) CheckAuth(c *fiber.Ctx) error {
-	tokenString := c.Cookies("session", "")
+	tokenString := c.Cookies(config.SESSION_COOKIE_NAME)
 	if tokenString != "" {
 		return c.JSON(map[string]interface{}{
 			"success": true,
