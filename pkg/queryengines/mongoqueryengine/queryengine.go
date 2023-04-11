@@ -47,7 +47,7 @@ func (mqw *MongoQueryEngine) runFindQuery(db *mongo.Database, queryType *mongout
 	if len(queryType.Args) > 1 {
 		opts.SetProjection(queryType.Args[1])
 	}
-	//TODO could consider using context.WithTimeout here
+
 	cursor, err := collection.
 		Find(context.Background(), queryType.Args[0], opts)
 	if err != nil {
@@ -363,6 +363,9 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 			return nil, err
 		}
 
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
 		return result, nil
 	case mongoutils.QUERY_FIND:
 		result, err := mqe.runFindQuery(db, queryType)
