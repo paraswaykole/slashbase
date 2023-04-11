@@ -29,7 +29,7 @@ func InitMongoQueryEngine() *MongoQueryEngine {
 	}
 }
 
-func (mqw *MongoQueryEngine) runFindOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runFindOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result := db.Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Args[0])
 	if result.Err() != nil {
 		return nil, result.Err()
@@ -41,7 +41,7 @@ func (mqw *MongoQueryEngine) runFindOneQuery(db *mongo.Database, queryType *mong
 	}, nil
 }
 
-func (mqw *MongoQueryEngine) runFindQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runFindQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	collection := db.Collection(queryType.CollectionName)
 	opts := &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort}
 	if len(queryType.Args) > 1 {
@@ -62,7 +62,7 @@ func (mqw *MongoQueryEngine) runFindQuery(db *mongo.Database, queryType *mongout
 
 }
 
-func (mqw *MongoQueryEngine) runInsertOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runInsertOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result, err := db.Collection(queryType.CollectionName).
 		InsertOne(context.Background(), queryType.Args[0])
 	if err != nil {
@@ -79,7 +79,7 @@ func (mqw *MongoQueryEngine) runInsertOneQuery(db *mongo.Database, queryType *mo
 
 }
 
-func (mqw *MongoQueryEngine) runInsertManyQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runInsertManyQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result, err := db.Collection(queryType.CollectionName).
 		InsertMany(context.Background(), queryType.Args[0].(bson.A))
 	if err != nil {
@@ -96,7 +96,7 @@ func (mqw *MongoQueryEngine) runInsertManyQuery(db *mongo.Database, queryType *m
 
 }
 
-func (mqw *MongoQueryEngine) runDeleteOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runDeleteOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result, err := db.Collection(queryType.CollectionName).
 		DeleteOne(context.Background(), queryType.Args[0])
 	if err != nil {
@@ -113,7 +113,7 @@ func (mqw *MongoQueryEngine) runDeleteOneQuery(db *mongo.Database, queryType *mo
 
 }
 
-func (mqw *MongoQueryEngine) runDeleteManyQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runDeleteManyQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result, err := db.Collection(queryType.CollectionName).
 		DeleteMany(context.Background(), queryType.Args[0].(bson.D))
 	if err != nil {
@@ -130,7 +130,7 @@ func (mqw *MongoQueryEngine) runDeleteManyQuery(db *mongo.Database, queryType *m
 
 }
 
-func (mqw *MongoQueryEngine) runUpdateOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runUpdateOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result, err := db.Collection(queryType.CollectionName).
 		UpdateOne(context.Background(), queryType.Args[0], queryType.Args[1])
 	if err != nil {
@@ -168,7 +168,7 @@ func (mwq *MongoQueryEngine) runUpdateManyQuery(db *mongo.Database, queryType *m
 
 }
 
-func (mqw *MongoQueryEngine) runReplaceOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runReplaceOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result, err := db.Collection(queryType.CollectionName).
 		ReplaceOne(context.Background(), queryType.Args[0], queryType.Args[1])
 	if err != nil {
@@ -187,7 +187,7 @@ func (mqw *MongoQueryEngine) runReplaceOneQuery(db *mongo.Database, queryType *m
 
 }
 
-func (mqw *MongoQueryEngine) runCMDQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runCMDQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	result := db.RunCommand(context.Background(), queryType.Args[0])
 	if result.Err() != nil {
 		return nil, result.Err()
@@ -202,7 +202,7 @@ func (mqw *MongoQueryEngine) runCMDQuery(db *mongo.Database, queryType *mongouti
 
 }
 
-func (mqw *MongoQueryEngine) runGetIndexesQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runGetIndexesQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	cursor, err := db.RunCommandCursor(context.Background(), bson.M{
 		"listIndexes": queryType.CollectionName,
 	})
@@ -219,7 +219,7 @@ func (mqw *MongoQueryEngine) runGetIndexesQuery(db *mongo.Database, queryType *m
 
 }
 
-func (mqw *MongoQueryEngine) runListCollectionsQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runListCollectionsQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	list, err := db.ListCollectionNames(context.Background(), queryType.Args[0])
 	if err != nil {
 		return nil, err
@@ -235,7 +235,7 @@ func (mqw *MongoQueryEngine) runListCollectionsQuery(db *mongo.Database, queryTy
 
 }
 
-func (mqw *MongoQueryEngine) runCountQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runCountQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	opts := &options.CountOptions{Limit: queryType.Limit, Skip: queryType.Skip}
 	count, err := db.Collection(queryType.CollectionName).
 		CountDocuments(context.Background(), queryType.Args[0], opts)
@@ -252,7 +252,7 @@ func (mqw *MongoQueryEngine) runCountQuery(db *mongo.Database, queryType *mongou
 	}, nil
 }
 
-func (mqw *MongoQueryEngine) runAggregateQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runAggregateQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	cursor, err := db.Collection(queryType.CollectionName).
 		Aggregate(context.Background(), queryType.Args[0])
 	if err != nil {
@@ -267,7 +267,7 @@ func (mqw *MongoQueryEngine) runAggregateQuery(db *mongo.Database, queryType *mo
 	}, nil
 }
 
-func (mqw *MongoQueryEngine) runDropQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runDropQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	err := db.Collection(queryType.CollectionName).Drop(context.Background())
 	if err != nil {
 		return nil, err
@@ -277,7 +277,7 @@ func (mqw *MongoQueryEngine) runDropQuery(db *mongo.Database, queryType *mongout
 	}, nil
 }
 
-func (mqw *MongoQueryEngine) runCreateIndexQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runCreateIndexQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	opts := options.Index()
 	if len(queryType.Args) > 1 {
 		if d, ok := queryType.Args[1].(bson.D); ok {
@@ -303,7 +303,7 @@ func (mqw *MongoQueryEngine) runCreateIndexQuery(db *mongo.Database, queryType *
 	}, nil
 }
 
-func (mqw *MongoQueryEngine) runDropIndexQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+func (mqe *MongoQueryEngine) runDropIndexQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
 	indexName, ok := queryType.Args[0].(string)
 	if !ok {
 		return nil, errors.New("invalid query")
