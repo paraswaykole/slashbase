@@ -33,3 +33,6 @@ build/bin
 node_modules
 frontend/dist
 build/darwin/gon-notarize.json
+
+# Frontend Server
+frontend-server/dist
