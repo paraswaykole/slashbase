@@ -24,6 +24,62 @@ func SetupRoutes(app *fiber.App) {
 			userGroup.Get("/all", userHandlers.GetUsers)
 			userGroup.Get("/logout", userHandlers.Logout)
 		}
+		projectGroup := api.Group("project")
+		{
+			projectHandlers := new(handlers.ProjectHandlers)
+			projectGroup.Use(middlewares.FindUserMiddleware())
+			projectGroup.Use(middlewares.AuthUserMiddleware())
+			projectGroup.Post("/create", projectHandlers.CreateProject)
+			projectGroup.Get("/all", projectHandlers.GetProjects)
+			projectGroup.Delete("/:projectId", projectHandlers.DeleteProject)
+		}
+		dbConnGroup := api.Group("dbconnection")
+		{
+			dbConnectionHandler := new(handlers.DBConnectionHandlers)
+			dbConnGroup.Use(middlewares.FindUserMiddleware())
+			dbConnGroup.Use(middlewares.AuthUserMiddleware())
+			dbConnGroup.Post("/create", dbConnectionHandler.CreateDBConnection)
+			dbConnGroup.Get("/all", dbConnectionHandler.GetDBConnections)
+			dbConnGroup.Get("/project/:projectId", dbConnectionHandler.GetDBConnectionsByProject)
+			dbConnGroup.Get("/:dbConnId", dbConnectionHandler.GetSingleDBConnection)
+			dbConnGroup.Delete("/:dbConnId", dbConnectionHandler.DeleteDBConnection)
+		}
+		queryGroup := api.Group("query")
+		{
+			queryHandlers := new(handlers.QueryHandlers)
+			queryGroup.Use(middlewares.FindUserMiddleware())
+			queryGroup.Use(middlewares.AuthUserMiddleware())
+			queryGroup.Post("/run", queryHandlers.RunQuery)
+			queryGroup.Post("/save/:dbConnId", queryHandlers.SaveDBQuery)
+			queryGroup.Get("/getall/:dbConnId", queryHandlers.GetDBQueriesInDBConnection)
+			queryGroup.Get("/get/:queryId", queryHandlers.GetSingleDBQuery)
+			queryGroup.Delete("/delete/:queryId", queryHandlers.DeleteDBQuery)
+			queryGroup.Get("/history/:dbConnId", queryHandlers.GetQueryHistoryInDBConnection)
+			dataGroup := queryGroup.Group("data")
+			{
+				dataGroup.Get("/:dbConnId", queryHandlers.GetData)
+				dataGroup.Post("/:dbConnId/single", queryHandlers.UpdateSingleData)
+				dataGroup.Post("/:dbConnId/add", queryHandlers.AddData)
+				dataGroup.Post("/:dbConnId/delete", queryHandlers.DeleteData)
+			}
+			dataModelGroup := queryGroup.Group("datamodel")
+			{
+				dataModelGroup.Get("/all/:dbConnId", queryHandlers.GetDataModels)
+				dataModelGroup.Get("/single/:dbConnId", queryHandlers.GetSingleDataModel)
+				dataModelGroup.Post("/single/addfield", queryHandlers.AddSingleDataModelField)
+				dataModelGroup.Post("/single/deletefield", queryHandlers.DeleteSingleDataModelField)
+				dataModelGroup.Post("/single/addindex", queryHandlers.AddSingleDataModelIndex)
+				dataModelGroup.Post("/single/deleteindex", queryHandlers.DeleteSingleDataModelIndex)
+			}
+		}
+		settingGroup := api.Group("setting")
+		{
+			settingHandlers := new(handlers.SettingHandlers)
+			settingGroup.Use(middlewares.FindUserMiddleware())
+			settingGroup.Use(middlewares.AuthUserMiddleware())
+			settingGroup.Get("/single", settingHandlers.GetSingleSetting)
+			settingGroup.Post("/single", settingHandlers.UpdateSingleSetting)
+		}
 	}
 }
 
