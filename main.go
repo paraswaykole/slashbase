@@ -10,7 +10,7 @@ import (
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
 )
 
-//go:embed all:frontend/dist
+//go:embed all:frontend/desktop/dist
 var assets embed.FS
 
 var build = config.BUILD_DESKTOP
