@@ -62,7 +62,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, 
 
     const changeFilter = () => {
         let filter: string[] | undefined = undefined
-        let filterText = filterRef.current!.value.trim()
+        const filterText = filterRef.current!.value.trim()
         if (filterText !== '' && filterText.startsWith("{") && filterText.endsWith("}")) {
             filter = [filterText]
         }
@@ -74,7 +74,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, 
             return
         }
         let sort: string[] | undefined = undefined
-        let sortText = sortRef.current!.value.trim()
+        const sortText = sortRef.current!.value.trim()
         if (sortText !== '' && sortText.startsWith("{") && sortText.endsWith("}")) {
             sort = [sortText]
         }

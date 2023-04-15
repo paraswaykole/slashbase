@@ -11,11 +11,7 @@ import JsonTable from './jsontable/jsontable'
 import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData } from '../../redux/dataModelSlice'
 import TabContext from '../layouts/tabcontext'
 
-type DBShowDataPropType = {
-
-}
-
-const DBShowDataFragment = (_: DBShowDataPropType) => {
+const DBShowDataFragment = () => {
 
     const dispatch = useAppDispatch()
 

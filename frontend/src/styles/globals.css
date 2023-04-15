@@ -110,7 +110,6 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
-  display: inline-flex;
   border-radius: 100px;
 }
 
