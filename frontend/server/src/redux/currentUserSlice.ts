@@ -21,6 +21,22 @@ const initialState: CurrentUserState = {
   isAuthenticated: null
 }
 
+export const loginUser = createAsyncThunk(
+  'currentUser/loginUser',
+  async (payload: { email: string, password: string }, { dispatch, rejectWithValue }) => {
+    let response = await apiService.loginUser(payload.email, payload.password)
+    if (response.success) {
+      await storage.loginCurrentUser(response.data.user)
+      return {
+        currentUser: response.data.user,
+        isAuthenticated: true,
+      }
+    } else {
+      return rejectWithValue(response.error)
+    }
+  }
+)
+
 export const getUser = createAsyncThunk(
   'currentUser/getUser',
   async () => {
@@ -95,6 +111,12 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(loginUser.fulfilled, (state, action: any) => {
+        if (action.payload) {
+          state.user = action.payload.currentUser
+          state.isAuthenticated = action.payload.isAuthenticated
+        }
+      })
       .addCase(getUser.fulfilled, (state, action: any) => {
         state.user = action.payload.currentUser ? action.payload.currentUser : undefined
         state.isAuthenticated = action.payload.isAuthenticated

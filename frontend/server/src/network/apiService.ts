@@ -9,9 +9,9 @@ const getHealthCheck = async function (): Promise<any> {
         .then(res => res.data)
 }
 
-const loginUser = async function (email: string, password: string): Promise<ApiResult<undefined>> {
+const loginUser = async function (email: string, password: string): Promise<ApiResult<UserSession>> {
     return await Request.apiInstance
-        .post<any, AxiosResponse<ApiResult<undefined>>>('/user/login', { email, password })
+        .post<any, AxiosResponse<ApiResult<UserSession>>>('/user/login', { email, password })
         .then(res => res.data)
 }
 

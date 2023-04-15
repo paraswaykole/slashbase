@@ -4,9 +4,9 @@ import CreateNewProjectModal from './createprojectmodal'
 import Constants from '../../constants'
 import { selectProjects } from '../../redux/projectsSlice'
 import { Project } from '../../data/models'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { useNavigate } from 'react-router-dom'
-import apiService from '../../network/apiService'
+import { loginUser, selectIsAuthenticated } from '../../redux/currentUserSlice'
 
 
 const WelcomeCard: FunctionComponent<{}> = () => {
@@ -14,15 +14,8 @@ const WelcomeCard: FunctionComponent<{}> = () => {
     const navigate = useNavigate()
 
     const [isShowingCreateProject, setIsShowingCreateProject] = useState(false)
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const isAuthenticated = useAppSelector(selectIsAuthenticated)
     const projects: Project[] = useAppSelector(selectProjects)
-
-    useEffect(() => {
-        (async () => {
-            const isAuth = await apiService.isUserAuthenticated()
-            setIsAuthenticated(isAuth)
-        })()
-    }, [])
 
     const navigateToNewDB = () => {
         if (projects.length > 0) {
@@ -69,17 +62,18 @@ const WelcomeCard: FunctionComponent<{}> = () => {
 
 const LoginComponent = () => {
 
+    const dispatch = useAppDispatch()
+
     const [userEmail, setUserEmail] = useState('')
     const [userPassword, setUserPassword] = useState('')
     const [loginError, setLoginError] = useState<string | undefined>(undefined)
 
     const onLoginBtn = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const response = await apiService.loginUser(userEmail, userPassword)
-        if (!response.success && response.error === 'not invited') {
-            setLoginError("Sorry! You are not yet invited. We will invite you soon if you are on our waitlist.")
-        } else {
-            setLoginError(response.error)
+        try {
+            await dispatch(loginUser({ email: userEmail, password: userPassword })).unwrap()
+        } catch (e: any) {
+            setLoginError(e)
         }
     }
 
