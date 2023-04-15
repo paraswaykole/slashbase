@@ -100,10 +100,11 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
         rows,
         prepareRow,
         state,
-    } = useTable<any>({
+    } = useTable({
         columns,
         data,
         defaultColumn,
+        initialState: { selectedRowIds: {}},
         ...{ editCell, resetEditCell, onSaveCell }
     },
         useRowSelect,
@@ -121,12 +122,10 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
         }
     )
 
-    const newState: any = state // temporary typescript hack
-    const selectedRowIds: any = newState.selectedRowIds
-    const selectedRows: number[] = Object.keys(selectedRowIds).map(x => parseInt(x))
+    const selectedRows: number[] = Object.keys(state.selectedRowIds).map(x => parseInt(x))
     const selectedIDs = dbConnection.type === DBConnType.POSTGRES ?
-        rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['0']).filter(x => x)
-        : rows.filter((_, i) => selectedRows.includes(i)).map(x => queryData.pkeys!.map((pkey) => ({ [pkey]: x.original[queryData.columns.findIndex(x => x === pkey)] }))).map(x => x.reduce(((r, c) => Object.assign(r, c)), {})).map(x => JSON.stringify(x))
+        rows.filter((_, i) => selectedRows.includes(i)).map(x => (x.original as any)['0']).filter(x => x)
+        : rows.filter((_, i) => selectedRows.includes(i)).map(x => queryData.pkeys!.map((pkey) => ({ [pkey]: (x.original as any)[queryData.columns.findIndex(x => x === pkey)] }))).map(x => x.reduce(((r, c) => Object.assign(r, c)), {})).map(x => JSON.stringify(x))
 
     const deleteRows = async () => {
         if (dbConnection.type === DBConnType.MYSQL && queryData.pkeys?.length === 0) {
