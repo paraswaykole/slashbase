@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react'
+import React, { FunctionComponent } from 'react'
 import Header from './header'
 import Footer from './footer'
 import Sidebar from './sidebar'
@@ -7,11 +7,7 @@ import { useAppSelector } from '../../redux/hooks';
 import { selectIsShowingSidebar } from '../../redux/configSlice';
 import TabsBar from './tabsbar';
 
-type PageLayoutPropType = {
-
-}
-
-const AppLayout: FunctionComponent<PageLayoutPropType> = () => {
+const AppLayout: FunctionComponent = () => {
 
     const location = useLocation()
 
