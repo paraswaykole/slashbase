@@ -59,6 +59,22 @@ export interface DBConnection {
     updatedAt: string
 }
 
+export interface Tab {
+    id: string
+    type: TabType
+    metadata: {
+        schema: string,
+        name: string,
+        queryId: string,
+        query: string,
+        queryName: string,
+    }
+    dbConnectionId: string
+    isActive: bool
+    createdAt: string
+    updatedAt: string
+}
+
 export interface DBDataModel {
     name: string
     schemaName: string | null

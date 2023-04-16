@@ -42,6 +42,7 @@ func SetupRoutes(app *fiber.App) {
 			dbConnGroup.Get("/all", dbConnectionHandler.GetDBConnections)
 			dbConnGroup.Get("/project/:projectId", dbConnectionHandler.GetDBConnectionsByProject)
 			dbConnGroup.Get("/:dbConnId", dbConnectionHandler.GetSingleDBConnection)
+			dbConnGroup.Get("/check/:dbConnId", dbConnectionHandler.CheckDBConnection)
 			dbConnGroup.Delete("/:dbConnId", dbConnectionHandler.DeleteDBConnection)
 		}
 		queryGroup := api.Group("query")

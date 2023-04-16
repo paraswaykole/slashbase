@@ -16,7 +16,7 @@ func (TabsHandlers) CreateNewTab(c *fiber.Ctx) error {
 		TabType        string `json:"tabType"`
 		Modelschema    string `json:"modelschema"`
 		Modelname      string `json:"modelname"`
-		QueryID        string `json:"queryID"`
+		QueryID        string `json:"queryId"`
 	}
 	if err := c.BodyParser(&createBody); err != nil {
 		return c.JSON(map[string]interface{}{
@@ -59,7 +59,7 @@ func (TabsHandlers) GetTabsByDBConnection(c *fiber.Ctx) error {
 func (TabsHandlers) UpdateTab(c *fiber.Ctx) error {
 	var updateBody struct {
 		DBConnectionID string                 `json:"dbConnectionId"`
-		TabID          string                 `json:"tabID"`
+		TabID          string                 `json:"tabId"`
 		TabType        string                 `json:"tabType"`
 		Metadata       map[string]interface{} `json:"metadata"`
 	}

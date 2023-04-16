@@ -1,7 +1,8 @@
 import Request from './request'
-import { ApiResult, User, UserSession, Project, DBConnection, DBDataModel, DBQueryData, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, PaginatedApiResult } from '../data/models'
+import { ApiResult, User, UserSession, Project, DBConnection, DBDataModel, DBQueryData, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, Tab, PaginatedApiResult } from '../data/models'
 import { AddDBConnPayload } from './payloads'
 import { AxiosResponse } from 'axios'
+import { TabType } from '../data/defaults'
 
 const getHealthCheck = async function (): Promise<any> {
     return await Request.apiInstance
@@ -213,6 +214,42 @@ const updateSingleSetting = async function (name: string, value: string): Promis
         .then(res => res.data)
 }
 
+const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string): Promise<ApiResult<Tab>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<Tab>>>(`/tab/create`, { dbConnectionId, tabType, modelschema: mSchema, modelname: mName, queryId })
+        .then(res => res.data)
+}
+
+const getTabsByDBConnection = async function (dbConnectionId: string): Promise<ApiResult<Array<Tab>>> {
+    return await Request.apiInstance
+        .get<any, AxiosResponse<ApiResult<Array<Tab>>>>(`/tab/getall/${dbConnectionId}`)
+        .then(res => res.data)
+}
+
+const updateTab = async function (dbConnectionId: string, tabId: string, tabType: TabType, metadata: Object): Promise<ApiResult<Tab>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<Tab>>>(`/tab/update`, { dbConnectionId, tabId, tabType, metadata })
+        .then(res => res.data)
+}
+
+const closeTab = async function (dbConnectionId: string, tabId: string): Promise<ApiResult<undefined>> {
+    return await Request.apiInstance
+        .delete<any, AxiosResponse<ApiResult<any>>>(`/tab/close/${dbConnectionId}/${tabId}`)
+        .then(res => res.data)
+}
+
+const runConsoleCommand = async function (dbConnectionId: string, cmdString: string): Promise<ApiResult<string>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<string>>>(`/console/runcmd`, { dbConnectionId, cmd: cmdString })
+        .then(res => res.data)
+}
+
+const checkConnection = async function (dbConnectionId: string): Promise<ApiResult<undefined>> {
+    return await Request.apiInstance
+        .get<any, AxiosResponse<ApiResult<undefined>>>(`/dbconnection/check/${dbConnectionId}`)
+        .then(res => res.data)
+}
+
 
 export default {
     getHealthCheck,
@@ -248,4 +285,10 @@ export default {
     runQuery,
     getSingleSetting,
     updateSingleSetting,
+    createTab,
+    getTabsByDBConnection,
+    updateTab,
+    closeTab,
+    runConsoleCommand,
+    checkConnection
 }

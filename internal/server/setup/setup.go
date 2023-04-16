@@ -27,6 +27,7 @@ func autoMigrate() {
 		&common.DBConnection{},
 		&common.DBQuery{},
 		&common.DBQueryLog{},
+		&common.Tab{},
 		&common.Setting{},
 	)
 	err := db.GetDB().SetupJoinTable(&models.User{}, "Projects", &models.ProjectMember{})
