@@ -80,6 +80,23 @@ func SetupRoutes(app *fiber.App) {
 			settingGroup.Get("/single", settingHandlers.GetSingleSetting)
 			settingGroup.Post("/single", settingHandlers.UpdateSingleSetting)
 		}
+		tabGroup := api.Group("tab")
+		{
+			tabHandlers := new(handlers.TabsHandlers)
+			tabGroup.Use(middlewares.FindUserMiddleware())
+			tabGroup.Use(middlewares.AuthUserMiddleware())
+			tabGroup.Post("/create", tabHandlers.CreateNewTab)
+			tabGroup.Post("/update", tabHandlers.UpdateTab)
+			tabGroup.Get("/getall/:dbConnId", tabHandlers.GetTabsByDBConnection)
+			tabGroup.Delete("/close/:dbConnId/:tabId", tabHandlers.CloseTab)
+		}
+		consoleGroup := api.Group("console")
+		{
+			consoleHandlers := new(handlers.ConsoleHandlers)
+			consoleGroup.Use(middlewares.FindUserMiddleware())
+			consoleGroup.Use(middlewares.AuthUserMiddleware())
+			consoleGroup.Post("/runcmd", consoleHandlers.RunCommand)
+		}
 	}
 }
 

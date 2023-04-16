@@ -10,7 +10,7 @@ type ConsoleHandlers struct{}
 
 var consoleController controllers.ConsoleController
 
-func (ConsoleHandlers) RunCommandEvent(c *fiber.Ctx) error {
+func (ConsoleHandlers) RunCommand(c *fiber.Ctx) error {
 	var body struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		CmdString      string `json:"cmd"`
