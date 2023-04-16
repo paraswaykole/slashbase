@@ -62,7 +62,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, 
 
     const changeFilter = () => {
         let filter: string[] | undefined = undefined
-        let filterText = filterRef.current!.value.trim()
+        const filterText = filterRef.current!.value.trim()
         if (filterText !== '' && filterText.startsWith("{") && filterText.endsWith("}")) {
             filter = [filterText]
         }
@@ -74,7 +74,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, 
             return
         }
         let sort: string[] | undefined = undefined
-        let sortText = sortRef.current!.value.trim()
+        const sortText = sortRef.current!.value.trim()
         if (sortText !== '' && sortText.startsWith("{") && sortText.endsWith("}")) {
             sort = [sortText]
         }
@@ -107,10 +107,11 @@ const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, 
         rows,
         prepareRow,
         state,
-    } = useTable<any>({
+    } = useTable({
         columns,
         data,
         defaultColumn,
+        initialState: { selectedRowIds: {} },
         ...{ editingCellIndex, startEditing, onSaveCell }
     }, useRowSelect, hooks => {
         if (isInteractive && isEditing)
@@ -127,7 +128,7 @@ const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, 
 
     const newState: any = state // temporary typescript hack
     const selectedRows: number[] = Object.keys(newState.selectedRowIds).map(x => parseInt(x))
-    const selectedUnderscoreIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => x.original['_id']).filter(x => x)
+    const selectedUnderscoreIDs = rows.filter((_, i) => selectedRows.includes(i)).map(x => (x.original as any)['_id']).filter(x => x)
 
     const deleteRows = async () => {
         if (selectedUnderscoreIDs.length > 0) {
