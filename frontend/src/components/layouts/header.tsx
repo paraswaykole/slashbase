@@ -10,11 +10,7 @@ import { selectProjects } from '../../redux/projectsSlice'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import utils from '../../lib/utils'
 
-declare var window: any;
-
-type HeaderPropType = {}
-
-const Header = (_: HeaderPropType) => {
+const Header = () => {
 
     let location = useLocation()
     const navigate = useNavigate()
