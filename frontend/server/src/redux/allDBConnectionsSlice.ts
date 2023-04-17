@@ -42,7 +42,7 @@ export const getAllDBConnections = createAsyncThunk(
 
 export const addNewDBConn = createAsyncThunk(
   'allDBConnections/addNewDBConn',
-  async (payload: AddDBConnPayload, { rejectWithValue, getState }: any) => {
+  async (payload: AddDBConnPayload, { rejectWithValue }: any) => {
     const response = await apiService.addNewDBConn(payload)
     if (response.success) {
       const dbConn = response.success ? response.data : null
@@ -60,7 +60,7 @@ export const allDBConnectionSlice = createSlice({
   name: 'allDBConnections',
   initialState,
   reducers: {
-    reset: (state) => initialState
+    reset: () => initialState
   },
   extraReducers: (builder) => {
     builder

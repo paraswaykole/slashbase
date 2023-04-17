@@ -9,9 +9,7 @@ import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configS
 import { selectProjects } from '../../redux/projectsSlice'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 
-type HeaderPropType = {}
-
-const Header = (_: HeaderPropType) => {
+const Header = () => {
 
     let location = useLocation()
     const navigate = useNavigate()

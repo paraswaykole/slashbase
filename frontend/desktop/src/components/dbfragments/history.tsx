@@ -38,11 +38,24 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
         }
     }
 
+    function refreshHandler() {
+        dispatch(reset())
+        fetchDBQueryLogs()
+    }
+
     return (
         <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {dbConnection &&
                 <React.Fragment>
-                    <h1>Showing History in {dbConnection.name}</h1>
+                    <div className="is-flex is-justify-content-space-between">
+                        <h1>Showing History in {dbConnection.name}</h1>
+                        <button className="button is-flex" onClick={refreshHandler}>
+                            <span className="icon is-small">
+                                <i className="fas fa-sync" />
+                            </span>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
                     <br />
                     <InfiniteScroll
                         dataLength={dbQueryLogs.length}
@@ -62,18 +75,17 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                     >
                         <table className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                             <tbody>
-                                {dbQueryLogs.map((log) => {
-                                    return (
-                                        <tr key={log.id}>
-                                            <td>
-                                                <code>{log.query}</code>
-                                            </td>
-                                            <td style={{ fontSize: '14px', width: '120px' }}>
-                                                {dateformat(log.createdAt, "mmm dd, yyyy HH:MM:ss")}
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
+                                {dbQueryLogs.map((log) => (
+                                    <tr key={log.id}>
+                                        <td>
+                                            <code>{log.query}</code>
+                                        </td>
+                                        <td style={{ fontSize: '14px', width: '120px' }}>
+                                            {dateformat(log.createdAt, "mmm dd, yyyy HH:MM:ss")}
+                                        </td>
+                                    </tr>
+                                )
+                                )}
                             </tbody>
                         </table>
                     </InfiniteScroll>

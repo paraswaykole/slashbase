@@ -5,10 +5,7 @@ import Constants from '../../constants'
 import { useEffect } from 'react'
 import { checkConnection, selectDBConnection, selectIsDBConnected, getDBDataModels, resetDBDataModels } from '../../redux/dbConnectionSlice'
 
-
-type FooterPropType = {}
-
-const Footer = (_: FooterPropType) => {
+const Footer = () => {
 
     const navigate = useNavigate()
     const location = useLocation()

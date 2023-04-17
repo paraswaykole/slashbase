@@ -5,11 +5,7 @@ import { useAppSelector } from '../../redux/hooks'
 import TabContext from '../layouts/tabcontext'
 import DataModel from './datamodel/datamodel'
 
-type DBShowModelPropType = {
-
-}
-
-const DBShowModelFragment = (_: DBShowModelPropType) => {
+const DBShowModelFragment = () => {
 
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const currentTab: Tab = useContext(TabContext)!

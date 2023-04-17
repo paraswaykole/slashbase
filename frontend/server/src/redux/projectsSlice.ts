@@ -113,7 +113,7 @@ export const projectsSlice = createSlice({
   name: 'projects',
   initialState,
   reducers: {
-    reset: (state) => initialState
+    reset: () => initialState
   },
   extraReducers: (builder) => {
     builder

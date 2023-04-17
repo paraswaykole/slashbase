@@ -15,7 +15,7 @@ interface ConstantsType {
 }
 
 declare global {
-    var CONFIG: {
+    const CONFIG: {
         API_HOST: string;
     }
 }
