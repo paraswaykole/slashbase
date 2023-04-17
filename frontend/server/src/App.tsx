@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Routes, Route, Link } from "react-router-dom"
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom"
 import { Toaster } from 'react-hot-toast'
 import Bowser from "bowser"
 import { useAppDispatch, useAppSelector } from "./redux/hooks"
@@ -18,9 +18,13 @@ import SupportPage from "./pages/settings/support"
 import GeneralSettingsPage from "./pages/settings/general"
 import LogoutPage from "./pages/logout"
 import { getUser, selectIsAuthenticated } from "./redux/currentUserSlice"
+import Constants from "./constants"
 
 
 function App() {
+
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const isValidPlatform: boolean = Bowser.getParser(window.navigator.userAgent).getPlatformType(true) === "desktop"
 
@@ -42,6 +46,14 @@ function App() {
       dispatch(getConfig())
     }
   }, [dispatch, isAuthenticated])
+
+  useEffect(() => {
+    if (isAuthenticated === null)
+      return
+    if (location.pathname !== "/" && !isAuthenticated) {
+      navigate(Constants.APP_PATHS.HOME.path)
+    }
+  }, [location.pathname, isAuthenticated])
 
   if (!isValidPlatform) {
     return <NotSupportedPlatform />
