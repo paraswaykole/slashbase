@@ -115,6 +115,10 @@ const Header = () => {
                                 <Link to={Constants.APP_PATHS.SETTINGS_SUPPORT.path} className="dropdown-item">
                                     Support
                                 </Link>
+                                <hr className="dropdown-divider" />
+                                <Link to={Constants.APP_PATHS.LOGOUT.path} className="dropdown-item">
+                                    Logout
+                                </Link>
                             </div>
                         </div>
                     </OutsideClickHandler>

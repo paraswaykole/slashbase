@@ -16,6 +16,7 @@ import AboutPage from "./pages/settings/about"
 import SupportPage from "./pages/settings/support"
 import GeneralSettingsPage from "./pages/settings/general"
 import { getUser, selectIsAuthenticated } from "./redux/currentUserSlice"
+import LogoutPage from "./pages/logout"
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
           <Route path="settings/support" element={<SupportPage />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
+        <Route path="/logout" element={<LogoutPage />} />
       </Routes>
       <Toaster />
     </div>

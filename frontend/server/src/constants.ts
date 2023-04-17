@@ -4,6 +4,7 @@ interface ConstantsType {
     APP_PATHS: {
         [key: string]: {
             path: string
+            isAuth: boolean
         }
     }
     EXTERNAL_PATHS: {
@@ -25,31 +26,44 @@ const Constants: ConstantsType = {
         // APP
         HOME: {
             path: '/',
+            isAuth: false
         },
         PROJECT: {
-            path: '/project/[id]'
+            path: '/project/[id]',
+            isAuth: true
         },
         NEW_DB: {
-            path: '/project/[id]/newdb'
+            path: '/project/[id]/newdb',
+            isAuth: true
         },
         DB: {
-            path: '/db/[id]'
+            path: '/db/[id]',
+            isAuth: true
+        },
+        LOGOUT: {
+            path: '/logout',
+            isAuth: true
         },
         // SETTINGS
         SETTINGS: {
-            path: '/settings'
+            path: '/settings',
+            isAuth: true
         },
         SETTINGS_ABOUT: {
-            path: '/settings/about'
+            path: '/settings/about',
+            isAuth: true
         },
         SETTINGS_SUPPORT: {
-            path: '/settings/support'
+            path: '/settings/support',
+            isAuth: true
         },
         SETTINGS_GENERAL: {
-            path: '/settings/general'
+            path: '/settings/general',
+            isAuth: true
         },
         SETTINGS_ADVANCED: {
-            path: '/settings/advanced'
+            path: '/settings/advanced',
+            isAuth: true
         },
     },
     EXTERNAL_PATHS: {
