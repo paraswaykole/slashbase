@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { Routes, Route, Link } from "react-router-dom"
 import { Toaster } from 'react-hot-toast'
 import Bowser from "bowser"
-import { useAppDispatch } from "./redux/hooks"
+import { useAppDispatch, useAppSelector } from "./redux/hooks"
 import { getProjects } from "./redux/projectsSlice"
 import { getAllDBConnections } from "./redux/allDBConnectionsSlice"
 import { getConfig } from "./redux/configSlice"
@@ -15,6 +15,7 @@ import AdvancedSettingsPage from "./pages/settings/advanced"
 import AboutPage from "./pages/settings/about"
 import SupportPage from "./pages/settings/support"
 import GeneralSettingsPage from "./pages/settings/general"
+import { getUser, selectIsAuthenticated } from "./redux/currentUserSlice"
 
 
 function App() {
@@ -23,14 +24,22 @@ function App() {
 
   const dispatch = useAppDispatch()
 
+  const isAuthenticated = useAppSelector(selectIsAuthenticated)
 
   useEffect(() => {
-    (async () => {
-      await dispatch(getProjects())
-      await dispatch(getAllDBConnections({}))
-      await dispatch(getConfig())
-    })()
-  }, [dispatch])
+    if (isAuthenticated) {
+      return
+    }
+    dispatch(getUser())
+  }, [isAuthenticated, dispatch])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(getProjects())
+      dispatch(getAllDBConnections({}))
+      dispatch(getConfig())
+    }
+  }, [dispatch, isAuthenticated])
 
   if (!isValidPlatform) {
     return <NotSupportedPlatform />
