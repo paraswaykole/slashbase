@@ -11,12 +11,13 @@ import HomePage from "./pages/home"
 import ProjectPage from "./pages/project"
 import NewDBPage from "./pages/project/newdb"
 import DBPage from "./pages/db"
+import AccountPage from "./pages/settings/account"
 import AdvancedSettingsPage from "./pages/settings/advanced"
 import AboutPage from "./pages/settings/about"
 import SupportPage from "./pages/settings/support"
 import GeneralSettingsPage from "./pages/settings/general"
-import { getUser, selectIsAuthenticated } from "./redux/currentUserSlice"
 import LogoutPage from "./pages/logout"
+import { getUser, selectIsAuthenticated } from "./redux/currentUserSlice"
 
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
           <Route path="project/:id" element={<ProjectPage />} />
           <Route path="project/:id/newdb" element={<NewDBPage />} />
           <Route path="db/:id" element={<DBPage />} />
+          <Route path="settings/account" element={<AccountPage />} />
           <Route path="settings/general" element={<GeneralSettingsPage />} />
           <Route path="settings/advanced" element={<AdvancedSettingsPage />} />
           <Route path="settings/about" element={<AboutPage />} />

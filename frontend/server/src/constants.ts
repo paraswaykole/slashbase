@@ -49,6 +49,10 @@ const Constants: ConstantsType = {
             path: '/settings',
             isAuth: true
         },
+        SETTINGS_ACCOUNT: {
+            path: '/settings/account',
+            isAuth: true
+        },
         SETTINGS_ABOUT: {
             path: '/settings/about',
             isAuth: true

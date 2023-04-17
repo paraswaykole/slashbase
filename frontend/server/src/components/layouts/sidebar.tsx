@@ -124,6 +124,15 @@ const Sidebar = () => {
                                 </Link>
                             </li>
                         </ul>
+                        <ul className={"menu-list " + styles.menuList}>
+                            <li>
+                                <Link
+                                    to={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}
+                                    className={location.pathname.startsWith(Constants.APP_PATHS.SETTINGS_ACCOUNT.path) ? 'is-active' : ''}>
+                                    Account
+                                </Link>
+                            </li>
+                        </ul>
                         <p className="menu-label">
                             Info
                         </p>
