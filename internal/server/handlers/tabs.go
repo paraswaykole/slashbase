@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/slashbaseide/slashbase/internal/common/controllers"
 	"github.com/slashbaseide/slashbase/internal/common/views"
+	"github.com/slashbaseide/slashbase/internal/server/controllers"
+	"github.com/slashbaseide/slashbase/internal/server/middlewares"
 )
 
 type TabsHandlers struct{}
@@ -11,6 +12,7 @@ type TabsHandlers struct{}
 var tabController controllers.TabsController
 
 func (TabsHandlers) CreateNewTab(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	var createBody struct {
 		DBConnectionId string `json:"dbConnectionId"`
 		TabType        string `json:"tabType"`
@@ -24,7 +26,7 @@ func (TabsHandlers) CreateNewTab(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	tab, err := tabController.CreateTab(createBody.DBConnectionId, createBody.TabType, createBody.Modelschema, createBody.Modelname, createBody.QueryID)
+	tab, err := tabController.CreateTab(authUser.ID, createBody.DBConnectionId, createBody.TabType, createBody.Modelschema, createBody.Modelname, createBody.QueryID)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -33,13 +35,14 @@ func (TabsHandlers) CreateNewTab(c *fiber.Ctx) error {
 	}
 	return c.JSON(map[string]interface{}{
 		"success": true,
-		"data":    views.BuildTabView(tab),
+		"data":    views.BuildTabView(&tab.Tab),
 	})
 }
 
 func (TabsHandlers) GetTabsByDBConnection(c *fiber.Ctx) error {
 	dbConnectionId := c.Params("dbConnId")
-	tabs, err := tabController.GetTabsByDBConnection(dbConnectionId)
+	authUser := middlewares.GetAuthUser(c)
+	tabs, err := tabController.GetTabsByDBConnection(authUser.ID, dbConnectionId)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -48,7 +51,7 @@ func (TabsHandlers) GetTabsByDBConnection(c *fiber.Ctx) error {
 	}
 	tabViews := []views.TabView{}
 	for _, t := range *tabs {
-		tabViews = append(tabViews, *views.BuildTabView(&t))
+		tabViews = append(tabViews, *views.BuildTabView(&t.Tab))
 	}
 	return c.JSON(map[string]interface{}{
 		"success": true,
@@ -57,6 +60,7 @@ func (TabsHandlers) GetTabsByDBConnection(c *fiber.Ctx) error {
 }
 
 func (TabsHandlers) UpdateTab(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	var updateBody struct {
 		DBConnectionID string                 `json:"dbConnectionId"`
 		TabID          string                 `json:"tabId"`
@@ -69,7 +73,7 @@ func (TabsHandlers) UpdateTab(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	tab, err := tabController.UpdateTab(updateBody.DBConnectionID, updateBody.TabID, updateBody.TabType, updateBody.Metadata)
+	tab, err := tabController.UpdateTab(authUser.ID, updateBody.DBConnectionID, updateBody.TabID, updateBody.TabType, updateBody.Metadata)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -78,14 +82,15 @@ func (TabsHandlers) UpdateTab(c *fiber.Ctx) error {
 	}
 	return c.JSON(map[string]interface{}{
 		"success": true,
-		"data":    views.BuildTabView(tab),
+		"data":    views.BuildTabView(&tab.Tab),
 	})
 }
 
 func (TabsHandlers) CloseTab(c *fiber.Ctx) error {
 	dbConnID := c.Params("dbConnId")
 	tabID := c.Params("tabId")
-	err := tabController.CloseTab(dbConnID, tabID)
+	authUser := middlewares.GetAuthUser(c)
+	err := tabController.CloseTab(authUser.ID, dbConnID, tabID)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,

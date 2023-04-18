@@ -10,6 +10,7 @@ type ProjectMember struct {
 	UserID    string `gorm:"primaryKey"`
 	ProjectID string `gorm:"primaryKey"`
 	RoleID    string
+	IsCreator bool
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 
