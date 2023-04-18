@@ -1,6 +1,8 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/slashbaseide/slashbase/internal/common/config"
 	"github.com/slashbaseide/slashbase/internal/server/handlers"
@@ -111,6 +113,18 @@ func SetupRoutes(app *fiber.App) {
 			consoleGroup.Use(middlewares.AuthUserMiddleware())
 			consoleGroup.Post("/runcmd", consoleHandlers.RunCommand)
 		}
+	}
+
+	// Serving the Frontend files in Production
+	if config.IsLive() {
+		app.Static("/", "./web")
+		app.Get("/*", func(c *fiber.Ctx) error {
+			tokenString := c.Cookies("session")
+			if tokenString != "" || c.Path() == "/" {
+				return c.SendFile("./web/index.html", true)
+			}
+			return c.Redirect("/", http.StatusTemporaryRedirect)
+		})
 	}
 }
 

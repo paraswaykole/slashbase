@@ -9,6 +9,10 @@ WAILS ?= $(GOPATH)/bin/wails
 build:
 	env CGO_ENABLED=1 $(WAILS) build -trimpath -ldflags="-s -w -X 'main.envName=production' -X 'main.version=$(VERSION)'"
 
+.PHONY: build-server
+build-server:
+	env CGO_ENABLED=1 go build -trimpath -ldflags="-s -w -X 'main.envName=production' -X 'main.build=server' -X 'main.version=$(VERSION)'"
+
 # DO NOT USE THE FOLLOWING PHONY RECIPIES, THEY ARE ONLY FOR DISTRIBUTION
 
 .PHONY: build-win

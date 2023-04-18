@@ -1,0 +1,38 @@
+# General
+.DS_Store
+
+# Visual Studio Code
+.vscode/*
+.history/
+__debug_bin
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Environment
+.env
+development.env
+development.server.env
+production.env
+
+# Database
+app.db
+
+# Wails
+build/bin
+node_modules
+frontend/desktop/dist
+build/darwin/gon-notarize.json
+
+# Frontend Server
+frontend/server/dist
