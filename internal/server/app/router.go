@@ -32,6 +32,9 @@ func SetupRoutes(app *fiber.App) {
 			projectGroup.Post("/create", projectHandlers.CreateProject)
 			projectGroup.Get("/all", projectHandlers.GetProjects)
 			projectGroup.Delete("/:projectId", projectHandlers.DeleteProject)
+			projectGroup.Post("/:projectId/members/create", projectHandlers.AddProjectMember)
+			projectGroup.Get("/:projectId/members", projectHandlers.GetProjectMembers)
+			projectGroup.Delete("/:projectId/members/:userId", projectHandlers.DeleteProjectMember)
 		}
 		dbConnGroup := api.Group("dbconnection")
 		{

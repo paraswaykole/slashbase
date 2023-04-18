@@ -118,17 +118,3 @@ func (UserController) AddUser(authUser *models.User, email, password string) err
 	}
 	return nil
 }
-
-func (UserController) addNewRootUser(email, password string) (*models.User, error) {
-	usr, err := models.NewUser(email, password)
-	if err != nil {
-		return nil, err
-	}
-	usr.IsRoot = true
-	err = dao.User.CreateUser(usr)
-	if err != nil {
-		return nil, errors.New("there was some problem")
-	}
-
-	return usr, nil
-}

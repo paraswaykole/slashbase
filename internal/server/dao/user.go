@@ -23,6 +23,12 @@ func (userDao) CreateUsers(users *[]models.User) error {
 	return result.Error
 }
 
+func (userDao) GetRootUserOrCreate(user models.User) (*models.User, error) {
+	var result models.User
+	err := db.GetDB().Model(&models.User{}).Where(&models.User{Email: user.Email}).Attrs(&user).FirstOrCreate(&result).Error
+	return &result, err
+}
+
 func (userDao) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	err := db.GetDB().Where(&models.User{Email: email}).First(&user).Error

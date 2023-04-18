@@ -12,6 +12,7 @@ type AppConfig struct {
 	AuthTokenSecret   string
 	CryptedDataSecret string
 	AppDB             AppDBConfig
+	RootUser          RootUser
 }
 
 type AppDBConfig struct {
@@ -20,6 +21,11 @@ type AppDBConfig struct {
 	User string
 	Pass string
 	Name string
+}
+
+type RootUser struct {
+	Email    string
+	Password string
 }
 
 func newConfig(build, envName, version string) AppConfig {
@@ -36,6 +42,10 @@ func newConfig(build, envName, version string) AppConfig {
 			User: os.Getenv("APP_DB_USER"),
 			Pass: os.Getenv("APP_DB_PASS"),
 			Name: os.Getenv("APP_DB_NAME"),
+		},
+		RootUser: RootUser{
+			Email:    os.Getenv("ROOT_USER_EMAIL"),
+			Password: os.Getenv("ROOT_USER_PASSWORD"),
 		},
 	}
 }
