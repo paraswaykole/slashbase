@@ -76,6 +76,16 @@ func SetupRoutes(app *fiber.App) {
 				dataModelGroup.Post("/single/deleteindex", queryHandlers.DeleteSingleDataModelIndex)
 			}
 		}
+		roleGroup := api.Group("role")
+		{
+			roleHandlers := new(handlers.RoleHandlers)
+			roleGroup.Use(middlewares.FindUserMiddleware())
+			roleGroup.Use(middlewares.AuthUserMiddleware())
+			roleGroup.Get("/all", roleHandlers.GetAllRoles)
+			roleGroup.Post("/add", roleHandlers.AddRole)
+			roleGroup.Delete("/:id", roleHandlers.DeleteRole)
+			roleGroup.Post("/:id/permission", roleHandlers.UpdateRolePermission)
+		}
 		settingGroup := api.Group("setting")
 		{
 			settingHandlers := new(handlers.SettingHandlers)
