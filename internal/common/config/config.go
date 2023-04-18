@@ -27,11 +27,6 @@ func Init(build, envName, version string) {
 			if err != nil {
 				log.Fatal("Error loading development.server.env file")
 			}
-		} else if envName == ENV_NAME_PRODUCTION {
-			err := godotenv.Load(".env")
-			if err != nil {
-				log.Fatal("Error loading .env file")
-			}
 		}
 	}
 	config = newConfig(build, envName, version)
