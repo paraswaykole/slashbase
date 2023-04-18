@@ -6,9 +6,10 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/slashbaseide/slashbase/internal/common/analytics"
-	"github.com/slashbaseide/slashbase/internal/common/controllers"
 	"github.com/slashbaseide/slashbase/internal/common/utils"
 	"github.com/slashbaseide/slashbase/internal/common/views"
+	"github.com/slashbaseide/slashbase/internal/server/controllers"
+	"github.com/slashbaseide/slashbase/internal/server/middlewares"
 )
 
 type QueryHandlers struct{}
@@ -16,6 +17,7 @@ type QueryHandlers struct{}
 var queryController controllers.QueryController
 
 func (QueryHandlers) RunQuery(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	var runBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Query          string `json:"query"`
@@ -27,7 +29,7 @@ func (QueryHandlers) RunQuery(c *fiber.Ctx) error {
 		})
 	}
 	analytics.SendRunQueryEvent()
-	response, err := queryController.RunQuery(runBody.DBConnectionID, runBody.Query)
+	response, err := queryController.RunQuery(authUser, runBody.DBConnectionID, runBody.Query)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -41,6 +43,8 @@ func (QueryHandlers) RunQuery(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) GetData(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	dbConnId := c.Params("dbConnId")
 
 	schema := c.Query("schema")
@@ -60,7 +64,7 @@ func (QueryHandlers) GetData(c *fiber.Ctx) error {
 	// filter, _ := c.GetQueryArray("filter[]")
 	// sort, _ := c.GetQueryArray("sort[]")
 	analytics.SendLowCodeDataViewEvent()
-	responsedata, err := queryController.GetData(dbConnId, schema, name, fetchCount, limit, offset, []string{}, []string{})
+	responsedata, err := queryController.GetData(authUser, authUserProjectIds, dbConnId, schema, name, fetchCount, limit, offset, []string{}, []string{})
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -74,8 +78,10 @@ func (QueryHandlers) GetData(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) GetDataModels(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	dbConnId := c.Params("dbConnId")
-	dataModels, err := queryController.GetDataModels(dbConnId)
+	dataModels, err := queryController.GetDataModels(authUser, authUserProjectIds, dbConnId)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -89,11 +95,13 @@ func (QueryHandlers) GetDataModels(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) GetSingleDataModel(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	dbConnId := c.Params("dbConnId")
 	schema := c.Query("schema")
 	name := c.Query("name")
 	analytics.SendLowCodeModelViewEvent()
-	data, err := queryController.GetSingleDataModel(dbConnId, schema, name)
+	data, err := queryController.GetSingleDataModel(authUser, authUserProjectIds, dbConnId, schema, name)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -107,6 +115,8 @@ func (QueryHandlers) GetSingleDataModel(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) AddSingleDataModelField(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	var reqBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Schema         string `json:"schema"`
@@ -120,7 +130,7 @@ func (QueryHandlers) AddSingleDataModelField(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	responseData, err := queryController.AddSingleDataModelField(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName, reqBody.DataType)
+	responseData, err := queryController.AddSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName, reqBody.DataType)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -134,6 +144,8 @@ func (QueryHandlers) AddSingleDataModelField(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) DeleteSingleDataModelField(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	var reqBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Schema         string `json:"schema"`
@@ -146,7 +158,7 @@ func (QueryHandlers) DeleteSingleDataModelField(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	responseData, err := queryController.DeleteSingleDataModelField(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName)
+	responseData, err := queryController.DeleteSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -160,6 +172,7 @@ func (QueryHandlers) DeleteSingleDataModelField(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) AddData(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	dbConnId := c.Params("dbConnId")
 	var addBody struct {
 		Schema string                 `json:"schema"`
@@ -172,7 +185,7 @@ func (QueryHandlers) AddData(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	responseData, err := queryController.AddData(dbConnId, addBody.Schema, addBody.Name, addBody.Data)
+	responseData, err := queryController.AddData(authUser, dbConnId, addBody.Schema, addBody.Name, addBody.Data)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -186,6 +199,7 @@ func (QueryHandlers) AddData(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) DeleteData(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	dbConnId := c.Params("dbConnId")
 	var deleteBody struct {
 		Schema string   `json:"schema"`
@@ -198,7 +212,7 @@ func (QueryHandlers) DeleteData(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	responseData, err := queryController.DeleteData(dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
+	responseData, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -212,6 +226,7 @@ func (QueryHandlers) DeleteData(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) UpdateSingleData(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	dbConnId := c.Params("dbConnId")
 	var updateBody struct {
 		Schema     string `json:"schema"`
@@ -226,7 +241,7 @@ func (QueryHandlers) UpdateSingleData(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	responseData, err := queryController.UpdateSingleData(dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
+	responseData, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -240,6 +255,7 @@ func (QueryHandlers) UpdateSingleData(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) AddSingleDataModelIndex(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	var reqBody struct {
 		DBConnectionID string   `json:"dbConnectionId"`
 		Schema         string   `json:"schema"`
@@ -254,7 +270,7 @@ func (QueryHandlers) AddSingleDataModelIndex(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	responseData, err := queryController.AddSingleDataModelIndex(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName, reqBody.FieldNames, reqBody.IsUnique)
+	responseData, err := queryController.AddSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName, reqBody.FieldNames, reqBody.IsUnique)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -268,6 +284,7 @@ func (QueryHandlers) AddSingleDataModelIndex(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) DeleteSingleDataModelIndex(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	var reqBody struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		Schema         string `json:"schema"`
@@ -280,7 +297,7 @@ func (QueryHandlers) DeleteSingleDataModelIndex(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	responseData, err := queryController.DeleteSingleDataModelIndex(reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName)
+	responseData, err := queryController.DeleteSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -294,6 +311,8 @@ func (QueryHandlers) DeleteSingleDataModelIndex(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) SaveDBQuery(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	dbConnId := c.Params("dbConnId")
 	var createBody struct {
 		Name    string `json:"name"`
@@ -307,7 +326,7 @@ func (QueryHandlers) SaveDBQuery(c *fiber.Ctx) error {
 		})
 	}
 	analytics.SendSavedQueryEvent()
-	queryObj, err := queryController.SaveDBQuery(dbConnId, createBody.Name, createBody.Query, createBody.QueryID)
+	queryObj, err := queryController.SaveDBQuery(authUser, authUserProjectIds, dbConnId, createBody.Name, createBody.Query, createBody.QueryID)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -321,8 +340,10 @@ func (QueryHandlers) SaveDBQuery(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) DeleteDBQuery(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	queryID := c.Params("queryId")
-	err := queryController.DeleteDBQuery(queryID)
+	err := queryController.DeleteDBQuery(authUser, authUserProjectIds, queryID)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -335,8 +356,9 @@ func (QueryHandlers) DeleteDBQuery(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) GetDBQueriesInDBConnection(c *fiber.Ctx) error {
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	dbConnID := c.Params("dbConnId")
-	dbQueries, err := queryController.GetDBQueriesInDBConnection(dbConnID)
+	dbQueries, err := queryController.GetDBQueriesInDBConnection(authUserProjectIds, dbConnID)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -354,8 +376,9 @@ func (QueryHandlers) GetDBQueriesInDBConnection(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) GetSingleDBQuery(c *fiber.Ctx) error {
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	queryID := c.Params("queryId")
-	dbQuery, err := queryController.GetSingleDBQuery(queryID)
+	dbQuery, err := queryController.GetSingleDBQuery(authUserProjectIds, queryID)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
@@ -369,6 +392,8 @@ func (QueryHandlers) GetSingleDBQuery(c *fiber.Ctx) error {
 }
 
 func (QueryHandlers) GetQueryHistoryInDBConnection(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
+	authUserProjectIds := middlewares.GetAuthUserProjectIds(c)
 	dbConnID := c.Params("dbConnId")
 	beforeInt, err := strconv.ParseInt(c.Query("before"), 10, 64)
 	var before time.Time
@@ -377,7 +402,7 @@ func (QueryHandlers) GetQueryHistoryInDBConnection(c *fiber.Ctx) error {
 	} else {
 		before = utils.UnixNanoToTime(beforeInt)
 	}
-	dbQueryLogs, next, err := queryController.GetQueryHistoryInDBConnection(dbConnID, before)
+	dbQueryLogs, next, err := queryController.GetQueryHistoryInDBConnection(authUser, authUserProjectIds, dbConnID, before)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,

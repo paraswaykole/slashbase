@@ -3,7 +3,8 @@ package handlers
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/slashbaseide/slashbase/internal/common/analytics"
-	"github.com/slashbaseide/slashbase/internal/common/controllers"
+	"github.com/slashbaseide/slashbase/internal/server/controllers"
+	"github.com/slashbaseide/slashbase/internal/server/middlewares"
 )
 
 type ConsoleHandlers struct{}
@@ -11,6 +12,7 @@ type ConsoleHandlers struct{}
 var consoleController controllers.ConsoleController
 
 func (ConsoleHandlers) RunCommand(c *fiber.Ctx) error {
+	authUser := middlewares.GetAuthUser(c)
 	var body struct {
 		DBConnectionID string `json:"dbConnectionId"`
 		CmdString      string `json:"cmd"`
@@ -22,7 +24,7 @@ func (ConsoleHandlers) RunCommand(c *fiber.Ctx) error {
 		})
 	}
 	analytics.SendRunCommandEvent()
-	output := consoleController.RunCommand(body.DBConnectionID, body.CmdString)
+	output := consoleController.RunCommand(authUser, body.DBConnectionID, body.CmdString)
 	return c.JSON(map[string]interface{}{
 		"success": false,
 		"data":    output,

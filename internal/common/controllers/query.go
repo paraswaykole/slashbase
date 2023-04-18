@@ -20,7 +20,7 @@ func (QueryController) RunQuery(dbConnectionId, query string) (map[string]interf
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.RunQuery(dbConn.ToQEConnection(), query, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.RunQuery(dbConn.ToQEConnection(), query, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func (QueryController) GetData(dbConnId, schema, name string, isFirstFetch bool,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.GetData(dbConn.ToQEConnection(), schema, name, limit, offset, isFirstFetch, filter, sort, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.GetData(dbConn.ToQEConnection(), schema, name, limit, offset, isFirstFetch, filter, sort, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (QueryController) GetDataModels(dbConnId string) ([]*qemodels.DBDataModel, 
 		return nil, errors.New("there was some problem")
 	}
 
-	dataModels, err := queryengines.GetDataModels(dbConn.ToQEConnection(), getQueryConfigsForProjectMember(dbConn))
+	dataModels, err := queryengines.GetDataModels(dbConn.ToQEConnection(), getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (QueryController) GetSingleDataModel(dbConnId string, schema, name string) 
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.GetSingleDataModel(dbConn.ToQEConnection(), schema, name, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.GetSingleDataModel(dbConn.ToQEConnection(), schema, name, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (QueryController) AddSingleDataModelField(dbConnId string, schema, name str
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.AddSingleDataModelField(dbConn.ToQEConnection(), schema, name, fieldName, dataType, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.AddSingleDataModelField(dbConn.ToQEConnection(), schema, name, fieldName, dataType, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (QueryController) DeleteSingleDataModelField(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.DeleteSingleDataModelField(dbConn.ToQEConnection(), schema, name, fieldName, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.DeleteSingleDataModelField(dbConn.ToQEConnection(), schema, name, fieldName, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (QueryController) AddData(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	resultData, err := queryengines.AddData(dbConn.ToQEConnection(), schema, name, data, getQueryConfigsForProjectMember(dbConn))
+	resultData, err := queryengines.AddData(dbConn.ToQEConnection(), schema, name, data, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -122,7 +122,7 @@ func (QueryController) DeleteData(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.DeleteData(dbConn.ToQEConnection(), schema, name, ids, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.DeleteData(dbConn.ToQEConnection(), schema, name, ids, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -137,7 +137,7 @@ func (QueryController) UpdateSingleData(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.UpdateSingleData(dbConn.ToQEConnection(), schema, name, id, columnName, columnValue, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.UpdateSingleData(dbConn.ToQEConnection(), schema, name, id, columnName, columnValue, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, errors.New("there was some problem")
 	}
@@ -152,7 +152,7 @@ func (QueryController) AddSingleDataModelIndex(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.AddSingleDataModelIndex(dbConn.ToQEConnection(), schema, name, indexName, fieldNames, isUnique, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.AddSingleDataModelIndex(dbConn.ToQEConnection(), schema, name, indexName, fieldNames, isUnique, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (QueryController) DeleteSingleDataModelIndex(dbConnId string,
 		return nil, errors.New("there was some problem")
 	}
 
-	data, err := queryengines.DeleteSingleDataModelIndex(dbConn.ToQEConnection(), schema, name, indexName, getQueryConfigsForProjectMember(dbConn))
+	data, err := queryengines.DeleteSingleDataModelIndex(dbConn.ToQEConnection(), schema, name, indexName, getQueryConfigs(dbConn))
 	if err != nil {
 		return nil, err
 	}

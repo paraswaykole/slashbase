@@ -6,7 +6,7 @@ import (
 	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 )
 
-func getQueryConfigsForProjectMember(dbConn *models.DBConnection) *qemodels.QueryConfig {
+func getQueryConfigs(dbConn *models.DBConnection) *qemodels.QueryConfig {
 	createLog := func(query string) {
 		queryLog := models.NewQueryLog(dbConn.ID, query)
 		go dao.DBQueryLog.CreateDBQueryLog(queryLog)

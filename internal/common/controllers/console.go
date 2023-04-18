@@ -14,5 +14,5 @@ func (ConsoleController) RunCommand(dbConnectionID, cmdString string) string {
 		return "there was some problem"
 	}
 
-	return console.HandleCommand(dbConn, cmdString, getQueryConfigsForProjectMember(dbConn))
+	return console.HandleCommand(dbConn, cmdString, getQueryConfigs(dbConn))
 }

@@ -3,8 +3,11 @@ package controllers
 import (
 	"errors"
 
+	commondao "github.com/slashbaseide/slashbase/internal/common/dao"
+	common "github.com/slashbaseide/slashbase/internal/common/models"
 	"github.com/slashbaseide/slashbase/internal/server/dao"
 	"github.com/slashbaseide/slashbase/internal/server/models"
+	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 )
 
 func getAuthUserHasAdminRoleForProject(authUser *models.User, projectID string) (bool, error) {
@@ -29,4 +32,19 @@ func getIfAuthUserProjectMemberForProject(authUser *models.User, projectID strin
 	}
 
 	return pMember, nil
+}
+
+func getQueryConfigsForProjectMember(projectMember *models.ProjectMember, dbConn *common.DBConnection) *qemodels.QueryConfig {
+	createLog := func(query string) {
+		queryLog := common.NewQueryLog(dbConn.ID, query)
+		go commondao.DBQueryLog.CreateDBQueryLog(queryLog)
+	}
+	rolePermissions, _ := dao.RolePermission.GetRolePermissionsForRole(projectMember.RoleID)
+	readOnly := false
+	for _, perm := range *rolePermissions {
+		if perm.Name == models.ROLE_PERMISSION_NAME_READ_ONLY && perm.Value {
+			readOnly = true
+		}
+	}
+	return qemodels.NewQueryConfig(readOnly, createLog)
 }
