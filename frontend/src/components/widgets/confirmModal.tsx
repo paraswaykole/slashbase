@@ -1,5 +1,4 @@
-
-import React from 'react'
+import Button from "../ui/Button"
 
 type AddModal = {
     message: string,
@@ -15,8 +14,8 @@ const ConfirmModal = ({ message, onConfirm, onClose }: AddModal) => {
             <div className="modal-content" style={{ width: 'initial' }}>
                 <div className="box">
                     <h2>{message}</h2><br />
-                    <button className="button is-small is-primary" onClick={onConfirm}>Confirm</button>&nbsp;
-                    <button className="button is-small " onClick={onClose}>Cancel</button>
+                    <Button className="is-small is-primary" onClick={onConfirm}>Confirm</Button>&nbsp;
+                    <Button className="is-small" onClick={onClose}>Cancel</Button>
                 </div>
             </div>
         </div >

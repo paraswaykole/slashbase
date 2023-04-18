@@ -8,6 +8,7 @@ import { deleteDBConnectionInProject, deleteProject, getDBConnectionsInProjects,
 import emptyStateDatabaseImg from '../../assets/images/empty-state-database.svg'
 import ConfirmModal from '../../components/widgets/confirmModal'
 import Constants from '../../constants'
+import Button from '../../components/ui/Button'
 
 const ProjectPage: FunctionComponent<{}> = () => {
 
@@ -54,12 +55,9 @@ const ProjectPage: FunctionComponent<{}> = () => {
             ))}
             {project && <NewDBConnButton project={project} />}
             &nbsp;&nbsp;
-            <button className="button is-danger" onClick={() => { setIsDeleting(true) }}>
-                <span className="icon is-small">
-                    <i className="fas fa-trash"></i>
-                </span>
-                <span>Delete Project</span>
-            </button>
+            <Button className="is-danger" icon={<i className="fas fa-trash"/>} onClick={() => { setIsDeleting(true) }}>
+                Delete Project
+            </Button>
             {isDeleting && <ConfirmModal
                 message={`Are you sure you want to delete  ${project.name}?`}
                 onConfirm={onDeleteProject}

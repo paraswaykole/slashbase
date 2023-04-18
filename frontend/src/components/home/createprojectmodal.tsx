@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Constants from '../../constants'
 import { useAppDispatch } from '../../redux/hooks'
 import { createNewProject } from '../../redux/projectsSlice'
+import Button from '../ui/Button'
 
 type CreateNewProjectModalPropType = {
     onClose: () => void
@@ -49,8 +50,8 @@ const CreateNewProjectModal = ({ onClose }: CreateNewProjectModalPropType) => {
                         </div>
                     </div>
                     <div className='buttons'>
-                        <button className="button is-small is-primary" onClick={startCreatingProject}>{loading ? 'Creating' : 'Create'}</button>
-                        <button className="button is-small " onClick={onClose}>Cancel</button>
+                        <Button className="is-small is-primary" onClick={startCreatingProject}>{loading ? 'Creating' : 'Create'}</Button>
+                        <Button className="is-small " onClick={onClose}>Cancel</Button>
                     </div>
                 </div>
             </div>

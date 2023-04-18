@@ -13,6 +13,7 @@ import {
     ArcElement,
     Tooltip
 } from 'chart.js'
+import Button from '../../ui/Button'
 
 ChartJS.register(
     CategoryScale,
@@ -135,7 +136,7 @@ const Chart = ({ dbConn, queryData }: ChartPropType) => {
                             </div>
                             <br />
                             <div className="control">
-                                <button className="button is-primary" onClick={createChart}>Create</button>
+                                <Button className="is-primary" onClick={createChart}>Create</Button>
                             </div>
 
                         </React.Fragment>

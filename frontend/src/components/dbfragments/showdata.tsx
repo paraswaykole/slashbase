@@ -10,6 +10,7 @@ import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
 import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData } from '../../redux/dataModelSlice'
 import TabContext from '../layouts/tabcontext'
+import Button from '../ui/Button'
 
 const DBShowDataFragment = () => {
 
@@ -139,8 +140,8 @@ const DBShowDataFragment = () => {
                     <progress className="progress is-primary" max="100">loading</progress>
                     :
                     <nav className="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
-                        <button className="button pagination-previous" onClick={onPreviousPage}>Previous</button>
-                        <button className="button pagination-next" onClick={onNextPage}>Next</button>
+                        <Button className="pagination-previous" onClick={onPreviousPage}>Previous</Button>
+                        <Button className="pagination-next" onClick={onNextPage}>Next</Button>
                         <ul className="pagination-list">
                             Showing {queryOffset} - {queryOffsetRangeEnd} of {queryCount}
                         </ul>

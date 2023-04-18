@@ -10,6 +10,7 @@ import AddIndexModal from './addindexmodal'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { deleteDBDataModelField, deleteDBDataModelIndex, getSingleDataModel, selectSingleDataModel } from '../../../redux/dataModelSlice'
 import TabContext from '../../layouts/tabcontext'
+import Button from '../../ui/Button'
 
 type DataModelPropType = {
     dbConn: DBConnection
@@ -123,15 +124,19 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                             <tr>
                                 <th colSpan={2}>
                                     Indexes
-                                    {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditingIndex(!isEditingIndex) }}>
-                                        {isEditingIndex && <i className={"fas fa-check"} />}
-                                        {!isEditingIndex && <i className={"fas fa-pen"} />}
-                                    </button>}
+                                    {isEditable && <Button className="is-small" 
+                                            style={{ float: 'right' }} 
+                                            onClick={() => { setIsEditingIndex(!isEditingIndex) }}
+                                            icon={isEditingIndex ? <i className='fas fa-check'/> : <i className='fas fa-pen'/>}
+                                        />
+                                    }
                                 </th>
                                 {isEditingIndex && <th>
-                                    <button className="button is-primary is-small" onClick={() => { setShowingAddIndexModal(true) }}>
-                                        <i className={"fas fa-plus"} />
-                                    </button>
+                                    <Button className="is-primary is-small" 
+                                        onClick={() => { setShowingAddIndexModal(true) }}
+                                        icon={<i className={"fas fa-plus"}/>}
+                                    >
+                                    </Button>
                                 </th>}
                             </tr>
                         </thead>
@@ -142,9 +147,13 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                                         <td>{idx.name}</td>
                                         <td>{idx.indexDef}</td>
                                         {isEditingIndex && <td>
-                                            <button className="button is-danger is-small" style={{ float: 'right' }} onClick={() => { setDeletingIndex(idx.name) }}>
-                                                <i className={"fas fa-trash"} />
-                                            </button>
+                                            <Button 
+                                                className="is-danger is-small" 
+                                                style={{ float: 'right' }} 
+                                                onClick={() => { setDeletingIndex(idx.name) }}
+                                                icon={<i className={"fas fa-trash"}/>}
+                                            >
+                                            </Button>
                                         </td>}
                                     </tr>
                                 ))

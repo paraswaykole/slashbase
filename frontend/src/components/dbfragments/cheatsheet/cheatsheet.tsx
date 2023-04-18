@@ -3,6 +3,7 @@ import { DBConnType } from '../../../data/defaults'
 import CheatsheetCommand from './command'
 import _ from 'lodash'
 import lunr from 'lunr'
+import Button from '../../ui/Button'
 
 type CheatSheetPropType = {
     dbType: DBConnType
@@ -69,7 +70,7 @@ const CheatSheetModal = ({ dbType, onClose }: CheatSheetPropType) => {
                     </>}
                 </section>
                 <footer className="modal-card-foot">
-                    <button className="button" onClick={onClose}>Close</button>
+                    <Button onClick={onClose}>Close</Button>
                 </footer>
             </div>
         </div>

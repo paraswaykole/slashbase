@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { addDBDataModelField } from '../../../redux/dataModelSlice'
 import TabContext from '../../layouts/tabcontext'
+import Button from '../../ui/Button'
 
 type AddModal = {
     dbConn: DBConnection
@@ -64,8 +65,8 @@ const AddFieldModal = ({ dbConn, mSchema, mName, onAddField, onClose }: AddModal
                     </div>
                 </section>
                 <footer className="modal-card-foot">
-                    <button className="button is-primary" onClick={startAdding}>Add</button>
-                    <button className="button" onClick={onClose}>Cancel</button>
+                    <Button className="is-primary" onClick={startAdding}>Add</Button>
+                    <Button onClick={onClose}>Cancel</Button>
                 </footer>
             </div>
         </div>

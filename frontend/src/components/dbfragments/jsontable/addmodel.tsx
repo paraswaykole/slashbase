@@ -7,6 +7,7 @@ import { javascript } from '@codemirror/lang-javascript'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { addDBData, selectQueryData, setQueryData } from '../../../redux/dataModelSlice'
 import TabContext from '../../layouts/tabcontext'
+import Button from '../../ui/Button'
 
 type AddModal = {
     dbConnection: DBConnection
@@ -66,8 +67,8 @@ const AddModal = ({ dbConnection, mName, onClose }: AddModal) => {
                 />
             </section>
             <footer className="modal-card-foot">
-                <button className="button is-primary" onClick={startAdding}>Add</button>
-                <button className="button" onClick={onClose}>Cancel</button>
+                <Button className="is-primary" onClick={startAdding}>Add</Button>
+                <Button onClick={onClose}>Cancel</Button>
             </footer>
         </div>
     </div>)

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import ReactJson from 'react-json-view'
 import ReactCodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
+import Button from '../../ui/Button'
 
 
 const JsonCell = ({
@@ -58,17 +59,17 @@ const JsonCell = ({
                 onChange={onChange}
             />
             <div className="column is-flex is-justify-content-flex-end">
-                <button className="button is-small" onClick={cancelEdit}>
-                    <span className="icon is-small">
-                        <i className="fas fa-window-close" />
-                    </span>
-                </button>
+                <Button 
+                    className="is-small" 
+                    icon={<i className="fas fa-window-close"/>} 
+                    onClick={cancelEdit}
+                />
                 <span>&nbsp;&nbsp;</span>
-                <button className="button is-primary is-small" onClick={onSave}>
-                    <span className="icon is-small">
-                        <i className="fas fa-save" />
-                    </span>
-                </button>
+                <Button 
+                    className="is-primary is-small" 
+                    icon={<i className="fas fa-save"/>} 
+                    onClick={onSave}
+                />
             </div>
         </React.Fragment>)
     }
