@@ -57,6 +57,13 @@ const Constants: ConstantsType = {
         SETTINGS_ADVANCED: {
             path: '/settings/advanced'
         },
+
+        SETTINGS_USERS: {
+            path: '/settings/users'
+        },
+        SETTINGS_ADD_USER: {
+            path: '/settings/users/add'
+        },
     },
     EXTERNAL_PATHS: {
         OFFICIAL_WEBSITE: "https://slashbase.com",

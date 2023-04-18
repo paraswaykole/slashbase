@@ -2,13 +2,14 @@ import styles from './sidebar.module.scss'
 import React from 'react'
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import Constants from '../../constants'
-import { DBConnection, DBDataModel, DBQuery } from '../../data/models'
+import { DBConnection, DBDataModel, DBQuery, User } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { DBConnType, TabType } from '../../data/defaults'
 import HomeSidebar from './sidebars/homesidebar'
 import { createTab } from '../../redux/tabsSlice'
+import { selectCurrentUser } from '../../redux/currentUserSlice'
 
 enum SidebarViewType {
     HOME = "HOME", // home sidebar
@@ -28,6 +29,7 @@ const Sidebar = () => {
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const dbQueries: DBQuery[] = useAppSelector(selectDBDQueries)
+    const currentUser: User = useAppSelector(selectCurrentUser)
 
     const dispatch = useAppDispatch()
 
@@ -133,6 +135,20 @@ const Sidebar = () => {
                                 </Link>
                             </li>
                         </ul>
+                        {currentUser && currentUser.isRoot && <React.Fragment>
+                            <p className="menu-label">
+                                Manage Team
+                            </p>
+                            <ul className={"menu-list " + styles.menuList}>
+                                <li>
+                                    <Link
+                                        to={Constants.APP_PATHS.SETTINGS_USERS.path}
+                                        className={location.pathname.startsWith(Constants.APP_PATHS.SETTINGS_USERS.path) ? 'is-active' : ''}>
+                                        Manage Users
+                                    </Link>
+                                </li>
+                            </ul>
+                        </React.Fragment>}
                         <p className="menu-label">
                             Info
                         </p>

@@ -40,10 +40,15 @@ const getUsers = async function (offset: number): Promise<PaginatedApiResult<Use
         .then(res => res.data)
 }
 
-
 const searchUsers = async function (searchTerm: string, offset: number): Promise<PaginatedApiResult<User, number>> {
     return await Request.apiInstance
         .get<PaginatedApiResult<User, number>>(`/user/all?offset=${offset}&search=${searchTerm}`)
+        .then(res => res.data)
+}
+
+const addUsers = async function (email: string, password: string): Promise<ApiResult<undefined>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<undefined>>>(`/user/add`, { email, password })
         .then(res => res.data)
 }
 
@@ -259,6 +264,7 @@ export default {
     editUser,
     getUsers,
     searchUsers,
+    addUsers,
     getProjects,
     createNewProject,
     deleteProject,

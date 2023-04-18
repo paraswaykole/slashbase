@@ -16,6 +16,8 @@ import AdvancedSettingsPage from "./pages/settings/advanced"
 import AboutPage from "./pages/settings/about"
 import SupportPage from "./pages/settings/support"
 import GeneralSettingsPage from "./pages/settings/general"
+import UsersPage from "./pages/settings/users"
+import AddNewUserPage from "./pages/settings/usersAdd"
 import LogoutPage from "./pages/logout"
 import { getUser, selectIsAuthenticated } from "./redux/currentUserSlice"
 import Constants from "./constants"
@@ -72,6 +74,8 @@ function App() {
           <Route path="settings/advanced" element={<AdvancedSettingsPage />} />
           <Route path="settings/about" element={<AboutPage />} />
           <Route path="settings/support" element={<SupportPage />} />
+          <Route path="settings/users" element={<UsersPage />} />
+          <Route path="settings/users/add" element={<AddNewUserPage />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
         <Route path="/logout" element={<LogoutPage />} />
