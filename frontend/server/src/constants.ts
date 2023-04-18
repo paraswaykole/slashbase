@@ -35,6 +35,9 @@ const Constants: ConstantsType = {
         PROJECT: {
             path: '/project/[id]'
         },
+        PROJECT_MEMBERS: {
+            path: '/project/[id]/members'
+        },
         NEW_DB: {
             path: '/project/[id]/newdb'
         },

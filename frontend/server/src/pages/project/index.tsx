@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import DBConnCard from '../../components/cards/dbconncard/dbconncard'
 import NewDBConnButton from '../../components/cards/dbconncard/newdbconnectionbutton'
 import { DBConnection, Project } from '../../data/models'
@@ -53,6 +53,14 @@ const ProjectPage: FunctionComponent<{}> = () => {
                 <DBConnCard key={db.id} dbConn={db} onDeleteDB={onDeleteDB} />
             ))}
             {project && <NewDBConnButton project={project} />}
+            &nbsp;&nbsp;
+            {project && <Link to={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
+                <button className="button" >
+                    <i className={"fas fa-users"} />
+                    &nbsp;&nbsp;
+                    View Project Members
+                </button>
+            </Link>}
             &nbsp;&nbsp;
             <button className="button is-danger" onClick={() => { setIsDeleting(true) }}>
                 <span className="icon is-small">

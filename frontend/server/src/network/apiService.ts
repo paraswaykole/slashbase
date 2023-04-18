@@ -1,6 +1,6 @@
 import Request from './request'
-import { ApiResult, User, UserSession, Project, DBConnection, DBDataModel, DBQueryData, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, Tab, PaginatedApiResult, Role, RolePermission } from '../data/models'
-import { AddDBConnPayload } from './payloads'
+import { ApiResult, User, UserSession, Project, DBConnection, DBDataModel, DBQueryData, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, Tab, PaginatedApiResult, Role, RolePermission, ProjectMember } from '../data/models'
+import { AddDBConnPayload, AddProjectMemberPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 import { TabType } from '../data/defaults'
 
@@ -68,6 +68,27 @@ const getProjects = async function (): Promise<ApiResult<Array<Project>>> {
     return await Request.apiInstance
         .get<ApiResult<Array<Project>>>('/project/all')
         .then(res => res.data)
+}
+
+const addNewProjectMember = async function (projectId: string, payload: AddProjectMemberPayload): Promise<ApiResult<ProjectMember>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<ProjectMember>>>(`/project/${projectId}/members/create`, payload)
+        .then(res => res.data)
+
+}
+
+const deleteProjectMember = async function (projectId: string, userId: string): Promise<ApiResult<undefined>> {
+    return await Request.apiInstance
+        .delete<ApiResult<undefined>>(`/project/${projectId}/members/${userId}`)
+        .then(res => res.data)
+
+}
+
+const getProjectMembers = async function (projectId: string): Promise<ApiResult<Array<ProjectMember>>> {
+    return await Request.apiInstance
+        .get<ApiResult<Array<ProjectMember>>>(`/project/${projectId}/members`)
+        .then(res => res.data)
+
 }
 
 const addNewDBConn = async function (dbConnPayload: AddDBConnPayload): Promise<ApiResult<DBConnection>> {
@@ -292,6 +313,9 @@ export default {
     getProjects,
     createNewProject,
     deleteProject,
+    getProjectMembers,
+    addNewProjectMember,
+    deleteProjectMember,
     getAllDBConnections,
     getSingleDBConnection,
     deleteDBConnection,

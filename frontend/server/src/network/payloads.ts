@@ -17,3 +17,8 @@ export interface AddDBConnPayload {
     sshKeyFile: string
     useSSL: boolean
 }
+
+export interface AddProjectMemberPayload {
+    email: string
+    roleId: string
+}

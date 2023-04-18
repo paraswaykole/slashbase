@@ -9,6 +9,7 @@ import { getConfig } from "./redux/configSlice"
 import AppLayout from "./components/layouts/applayout"
 import HomePage from "./pages/home"
 import ProjectPage from "./pages/project"
+import ProjectMembersPage from "./pages/project/members"
 import NewDBPage from "./pages/project/newdb"
 import DBPage from "./pages/db"
 import AccountPage from "./pages/settings/account"
@@ -68,6 +69,7 @@ function App() {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<HomePage />} />
           <Route path="project/:id" element={<ProjectPage />} />
+          <Route path="project/:id/members" element={<ProjectMembersPage />} />
           <Route path="project/:id/newdb" element={<NewDBPage />} />
           <Route path="db/:id" element={<DBPage />} />
           <Route path="settings/account" element={<AccountPage />} />
