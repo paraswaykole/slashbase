@@ -16,17 +16,19 @@ enum SidebarViewType {
     SETTINGS = "SETTINGS" // Used to show elements of settings screen
 }
 
-type SidebarPropType = {}
+// type SidebarPropType = {}
 
-const Sidebar = (_: SidebarPropType) => {
+const Sidebar = () => {
 
     const location = useLocation()
-    const { queryId } = useParams()
-    const [searchParams] = useSearchParams()
-    const mschema = searchParams.get("mschema")
-    const mname = searchParams.get("mname")
 
-    let sidebarView: SidebarViewType =
+    // Commenting them as they might be neded in future
+    // const { queryId } = useParams()
+    // const [searchParams] = useSearchParams()
+    // const mschema = searchParams.get("mschema")
+    // const mname = searchParams.get("mname")
+
+    const sidebarView: SidebarViewType =
         (location.pathname.startsWith("/db")) ?
             SidebarViewType.DATABASE : (location.pathname.startsWith("/settings")) ? SidebarViewType.SETTINGS : SidebarViewType.HOME
 

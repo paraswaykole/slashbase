@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { DBConnection, Tab } from '../../data/models'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
@@ -38,11 +38,24 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
         }
     }
 
+    function refreshHandler() {
+      dispatch(reset());
+      fetchDBQueryLogs();
+    }
+
     return (
         <div className={currentTab.isActive ? "db-tab-active" : "db-tab"}>
             {dbConnection &&
-                <React.Fragment>
-                    <h1>Showing History in {dbConnection.name}</h1>
+                <>
+                     <div className="is-flex is-justify-content-space-between	">
+                        <h1>Showing History in {dbConnection.name}</h1>
+                        <button className="button is-flex" onClick={refreshHandler}>
+                           <span className="icon is-small">
+                              <i className="fas fa-sync" />
+                           </span>
+                           <span>Refresh</span>
+                        </button>
+                     </div>
                     <br />
                     <InfiniteScroll
                         dataLength={dbQueryLogs.length}
@@ -62,8 +75,7 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                     >
                         <table className={"table is-bordered is-striped is-narrow is-hoverable is-fullwidth"}>
                             <tbody>
-                                {dbQueryLogs.map((log) => {
-                                    return (
+                                {dbQueryLogs.map((log) =>  (
                                         <tr key={log.id}>
                                             <td>
                                                 <code>{log.query}</code>
@@ -73,15 +85,14 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                                             </td>
                                         </tr>
                                     )
-                                })}
+                                )}
                             </tbody>
                         </table>
                     </InfiniteScroll>
-                </React.Fragment>
+                </>
             }
         </div>
     )
 }
-
 
 export default DBHistoryFragment

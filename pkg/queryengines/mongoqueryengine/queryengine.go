@@ -29,6 +29,305 @@ func InitMongoQueryEngine() *MongoQueryEngine {
 	}
 }
 
+func (mqe *MongoQueryEngine) runFindOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result := db.Collection(queryType.CollectionName).FindOne(context.Background(), queryType.Args[0])
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+	keys, data := mongoutils.MongoSingleResultToJson(result)
+	return map[string]interface{}{
+		"keys": keys,
+		"data": data,
+	}, nil
+}
+
+func (mqe *MongoQueryEngine) runFindQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	collection := db.Collection(queryType.CollectionName)
+	opts := &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort}
+	if len(queryType.Args) > 1 {
+		opts.SetProjection(queryType.Args[1])
+	}
+
+	cursor, err := collection.
+		Find(context.Background(), queryType.Args[0], opts)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	keys, data := mongoutils.MongoCursorToJson(cursor)
+	return map[string]interface{}{
+		"keys": keys,
+		"data": data,
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runInsertOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result, err := db.Collection(queryType.CollectionName).
+		InsertOne(context.Background(), queryType.Args[0])
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"insertedId"},
+		"data": []map[string]interface{}{
+			{
+				"insertedId": result.InsertedID,
+			},
+		},
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runInsertManyQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result, err := db.Collection(queryType.CollectionName).
+		InsertMany(context.Background(), queryType.Args[0].(bson.A))
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"insertedIds"},
+		"data": []map[string]interface{}{
+			{
+				"insertedIds": result.InsertedIDs,
+			},
+		},
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runDeleteOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result, err := db.Collection(queryType.CollectionName).
+		DeleteOne(context.Background(), queryType.Args[0])
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"deletedCount"},
+		"data": []map[string]interface{}{
+			{
+				"deletedCount": result.DeletedCount,
+			},
+		},
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runDeleteManyQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result, err := db.Collection(queryType.CollectionName).
+		DeleteMany(context.Background(), queryType.Args[0].(bson.D))
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"deletedCount"},
+		"data": []map[string]interface{}{
+			{
+				"deletedCount": result.DeletedCount,
+			},
+		},
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runUpdateOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result, err := db.Collection(queryType.CollectionName).
+		UpdateOne(context.Background(), queryType.Args[0], queryType.Args[1])
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"matchedCount", "modifiedCount", "upsertedCount"},
+		"data": []map[string]interface{}{
+			{
+				"matchedCount":  result.MatchedCount,
+				"modifiedCount": result.ModifiedCount,
+				"upsertedCount": result.UpsertedCount,
+			},
+		},
+	}, nil
+
+}
+
+func (mwq *MongoQueryEngine) runUpdateManyQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result, err := db.Collection(queryType.CollectionName).
+		UpdateMany(context.Background(), queryType.Args[0], queryType.Args[1])
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"matchedCount", "modifiedCount", "upsertedCount"},
+		"data": []map[string]interface{}{
+			{
+				"matchedCount":  result.MatchedCount,
+				"modifiedCount": result.ModifiedCount,
+				"upsertedCount": result.UpsertedCount,
+			},
+		},
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runReplaceOneQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result, err := db.Collection(queryType.CollectionName).
+		ReplaceOne(context.Background(), queryType.Args[0], queryType.Args[1])
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"matchedCount", "modifiedCount", "upsertedCount"},
+		"data": []map[string]interface{}{
+			{
+				"matchedCount":  result.MatchedCount,
+				"modifiedCount": result.ModifiedCount,
+				"upsertedCount": result.UpsertedCount,
+			},
+		},
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runCMDQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	result := db.RunCommand(context.Background(), queryType.Args[0])
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+	keys, data := mongoutils.MongoSingleResultToJson(result)
+
+	return map[string]interface{}{
+			"keys": keys,
+			"data": data,
+		},
+		nil
+
+}
+
+func (mqe *MongoQueryEngine) runGetIndexesQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	cursor, err := db.RunCommandCursor(context.Background(), bson.M{
+		"listIndexes": queryType.CollectionName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	keys, data := mongoutils.MongoCursorToJson(cursor)
+
+	return map[string]interface{}{
+		"keys": keys,
+		"data": data,
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runListCollectionsQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	list, err := db.ListCollectionNames(context.Background(), queryType.Args[0])
+	if err != nil {
+		return nil, err
+	}
+	data := []map[string]interface{}{}
+	for _, name := range list {
+		data = append(data, map[string]interface{}{"collectionName": name})
+	}
+	return map[string]interface{}{
+		"keys": []string{"collectionName"},
+		"data": data,
+	}, nil
+
+}
+
+func (mqe *MongoQueryEngine) runCountQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	opts := &options.CountOptions{Limit: queryType.Limit, Skip: queryType.Skip}
+	count, err := db.Collection(queryType.CollectionName).
+		CountDocuments(context.Background(), queryType.Args[0], opts)
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"keys": []string{"count"},
+		"data": []map[string]interface{}{
+			{
+				"count": count,
+			},
+		},
+	}, nil
+}
+
+func (mqe *MongoQueryEngine) runAggregateQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	cursor, err := db.Collection(queryType.CollectionName).
+		Aggregate(context.Background(), queryType.Args[0])
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	keys, data := mongoutils.MongoCursorToJson(cursor)
+
+	return map[string]interface{}{
+		"keys": keys,
+		"data": data,
+	}, nil
+}
+
+func (mqe *MongoQueryEngine) runDropQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	err := db.Collection(queryType.CollectionName).Drop(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"message": "droped collection: " + queryType.CollectionName,
+	}, nil
+}
+
+func (mqe *MongoQueryEngine) runCreateIndexQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	opts := options.Index()
+	if len(queryType.Args) > 1 {
+		if d, ok := queryType.Args[1].(bson.D); ok {
+			if unique, ok := d.Map()["unique"].(bool); ok {
+				opts.SetUnique(unique)
+			}
+			if name, ok := d.Map()["name"].(string); ok {
+				opts.SetName(name)
+			}
+		}
+	}
+	indexModel := mongo.IndexModel{
+		Keys:    queryType.Args[0],
+		Options: opts,
+	}
+	idxName, err := db.Collection(queryType.CollectionName).Indexes().CreateOne(context.Background(), indexModel)
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]interface{}{
+		"message": "created index: " + idxName,
+	}, nil
+}
+
+func (mqe *MongoQueryEngine) runDropIndexQuery(db *mongo.Database, queryType *mongoutils.MongoQuery) (map[string]interface{}, error) {
+	indexName, ok := queryType.Args[0].(string)
+	if !ok {
+		return nil, errors.New("invalid query")
+	}
+	if indexName == "*" {
+		_, err := db.Collection(queryType.CollectionName).Indexes().DropAll(context.Background(), options.DropIndexes())
+		if err != nil {
+			return nil, err
+		}
+
+		return map[string]interface{}{
+			"message": "droped all indexes in collection: " + queryType.CollectionName,
+		}, nil
+	}
+	_, err := db.Collection(queryType.CollectionName).Indexes().DropOne(context.Background(), indexName, options.DropIndexes())
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]interface{}{
+		"message": "droped index: " + indexName,
+	}, nil
+}
+
 func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string, config *models.QueryConfig) (map[string]interface{}, error) {
 	port, _ := strconv.Atoi(string(dbConn.DBPort))
 	if dbConn.UseSSH != models.DBUSESSH_NONE {
@@ -56,309 +355,193 @@ func (mqe *MongoQueryEngine) RunQuery(dbConn *models.DBConnection, query string,
 		return nil, errors.New("not allowed run this query")
 	}
 
-	if queryType.QueryType == mongoutils.QUERY_FINDONE {
-		result := db.Collection(queryType.CollectionName).
-			FindOne(context.Background(), queryType.Args[0])
-		if result.Err() != nil {
-			return nil, result.Err()
-		}
-		keys, data := mongoutils.MongoSingleResultToJson(result)
-		if config.CreateLogFn != nil {
-			config.CreateLogFn(query)
-		}
-		return map[string]interface{}{
-			"keys": keys,
-			"data": data,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_FIND {
-		collection := db.Collection(queryType.CollectionName)
-		opts := &options.FindOptions{Limit: queryType.Limit, Skip: queryType.Skip, Sort: queryType.Sort}
-		if len(queryType.Args) > 1 {
-			opts.SetProjection(queryType.Args[1])
-		}
-		cursor, err := collection.
-			Find(context.Background(), queryType.Args[0], opts)
+	switch queryType.QueryType {
+
+	case mongoutils.QUERY_FINDONE:
+		result, err := mqe.runFindOneQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
-		defer cursor.Close(context.Background())
-		keys, data := mongoutils.MongoCursorToJson(cursor)
+
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": keys,
-			"data": data,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_INSERTONE {
-		result, err := db.Collection(queryType.CollectionName).
-			InsertOne(context.Background(), queryType.Args[0])
+		return result, nil
+	case mongoutils.QUERY_FIND:
+		result, err := mqe.runFindQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"insertedId"},
-			"data": []map[string]interface{}{
-				{
-					"insertedId": result.InsertedID,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_INSERT {
-		result, err := db.Collection(queryType.CollectionName).
-			InsertMany(context.Background(), queryType.Args[0].(bson.A))
+
+		return result, nil
+
+	case mongoutils.QUERY_INSERTONE:
+		result, err := mqe.runInsertOneQuery(db, queryType)
+		if err != nil {
+			return nil, err
+		}
+
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+
+		return result, nil
+	case mongoutils.QUERY_INSERT:
+		result, err := mqe.runInsertManyQuery(db, queryType)
+
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"insertedIDs"},
-			"data": []map[string]interface{}{
-				{
-					"insertedIDs": result.InsertedIDs,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_DELETEONE {
-		result, err := db.Collection(queryType.CollectionName).
-			DeleteOne(context.Background(), queryType.Args[0])
+
+		return result, nil
+
+	case mongoutils.QUERY_DELETEONE:
+		result, err := mqe.runDeleteOneQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"deletedCount"},
-			"data": []map[string]interface{}{
-				{
-					"deletedCount": result.DeletedCount,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_DELETEMANY {
-		result, err := db.Collection(queryType.CollectionName).
-			DeleteMany(context.Background(), queryType.Args[0].(bson.D))
+
+		return result, nil
+
+	case mongoutils.QUERY_DELETEMANY:
+		result, err := mqe.runDeleteManyQuery(db, queryType)
+		if err != nil {
+			return nil, err
+		}
+
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+
+		return result, nil
+	case mongoutils.QUERY_UPDATEONE:
+		result, err := mqe.runUpdateOneQuery(db, queryType)
+
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"deletedCount"},
-			"data": []map[string]interface{}{
-				{
-					"deletedCount": result.DeletedCount,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_UPDATEONE {
-		result, err := db.Collection(queryType.CollectionName).
-			UpdateOne(context.Background(), queryType.Args[0], queryType.Args[1])
+		return result, nil
+
+	case mongoutils.QUERY_UPDATEMANY:
+		result, err := mqe.runUpdateManyQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"matchedCount", "updatedCount", "upsertedCount"},
-			"data": []map[string]interface{}{
-				{
-					"matchedCount":  result.MatchedCount,
-					"updatedCount":  result.ModifiedCount,
-					"upsertedCount": result.UpsertedCount,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_UPDATEMANY {
-		result, err := db.Collection(queryType.CollectionName).
-			UpdateMany(context.Background(), queryType.Args[0], queryType.Args[1])
+
+		return result, nil
+
+	case mongoutils.QUERY_REPLACEONE:
+		result, err := mqe.runReplaceOneQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"matchedCount", "updatedCount", "upsertedCount"},
-			"data": []map[string]interface{}{
-				{
-					"matchedCount":  result.MatchedCount,
-					"updatedCount":  result.ModifiedCount,
-					"upsertedCount": result.UpsertedCount,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_REPLACEONE {
-		result, err := db.Collection(queryType.CollectionName).
-			ReplaceOne(context.Background(), queryType.Args[0], queryType.Args[1])
+
+		return result, nil
+
+	case mongoutils.QUERY_RUNCMD:
+		result, err := mqe.runCMDQuery(db, queryType)
+		if err != nil {
+			return nil, err
+		}
+
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+
+		return result, nil
+	case mongoutils.QUERY_GETINDEXES:
+		results, err := mqe.runGetIndexesQuery(db, queryType)
+		if err != nil {
+			return nil, err
+		}
+
+		if config.CreateLogFn != nil {
+			config.CreateLogFn(query)
+		}
+
+		return results, nil
+	case mongoutils.QUERY_LISTCOLLECTIONS:
+		list, err := mqe.runListCollectionsQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"matchedCount", "updatedCount", "upsertedCount"},
-			"data": []map[string]interface{}{
-				{
-					"matchedCount":  result.MatchedCount,
-					"updatedCount":  result.ModifiedCount,
-					"upsertedCount": result.UpsertedCount,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_RUNCMD {
-		result := db.RunCommand(context.Background(), queryType.Args[0])
-		if result.Err() != nil {
-			return nil, result.Err()
-		}
-		keys, data := mongoutils.MongoSingleResultToJson(result)
-		if config.CreateLogFn != nil {
-			config.CreateLogFn(query)
-		}
-		return map[string]interface{}{
-			"keys": keys,
-			"data": data,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_GETINDEXES {
-		cursor, err := db.RunCommandCursor(context.Background(), bson.M{
-			"listIndexes": queryType.CollectionName,
-		})
-		if err != nil {
-			return nil, err
-		}
-		defer cursor.Close(context.Background())
-		keys, data := mongoutils.MongoCursorToJson(cursor)
-		if config.CreateLogFn != nil {
-			config.CreateLogFn(query)
-		}
-		return map[string]interface{}{
-			"keys": keys,
-			"data": data,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_LISTCOLLECTIONS {
-		list, err := db.ListCollectionNames(context.Background(), queryType.Args[0])
+
+		return list, nil
+	case mongoutils.QUERY_COUNT:
+
+		count, err := mqe.runCountQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		data := []map[string]interface{}{}
-		for _, name := range list {
-			data = append(data, map[string]interface{}{"collectionName": name})
-		}
-		return map[string]interface{}{
-			"keys": []string{"collectionName"},
-			"data": data,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_COUNT {
-		opts := &options.CountOptions{Limit: queryType.Limit, Skip: queryType.Skip}
-		count, err := db.Collection(queryType.CollectionName).
-			CountDocuments(context.Background(), queryType.Args[0], opts)
+
+		return count, nil
+	case mongoutils.QUERY_AGGREGATE:
+		cursor, err := mqe.runAggregateQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"keys": []string{"count"},
-			"data": []map[string]interface{}{
-				{
-					"count": count,
-				},
-			},
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_AGGREGATE {
-		cursor, err := db.Collection(queryType.CollectionName).
-			Aggregate(context.Background(), queryType.Args[0])
-		if err != nil {
-			return nil, err
-		}
-		defer cursor.Close(context.Background())
-		keys, data := mongoutils.MongoCursorToJson(cursor)
-		if config.CreateLogFn != nil {
-			config.CreateLogFn(query)
-		}
-		return map[string]interface{}{
-			"keys": keys,
-			"data": data,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_DROP {
-		err := db.Collection(queryType.CollectionName).Drop(context.Background())
+
+		return cursor, nil
+
+	case mongoutils.QUERY_DROP:
+		result, err := mqe.runDropQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"message": "droped collection: " + queryType.CollectionName,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_CREATEINDEX {
-		opts := options.Index()
-		if len(queryType.Args) > 1 {
-			if d, ok := queryType.Args[1].(bson.D); ok {
-				if unique, ok := d.Map()["unique"].(bool); ok {
-					opts.SetUnique(unique)
-				}
-				if name, ok := d.Map()["name"].(string); ok {
-					opts.SetName(name)
-				}
-			}
-		}
-		indexModel := mongo.IndexModel{
-			Keys:    queryType.Args[0],
-			Options: opts,
-		}
-		idxName, err := db.Collection(queryType.CollectionName).Indexes().CreateOne(context.Background(), indexModel)
+		return result, nil
+	case mongoutils.QUERY_CREATEINDEX:
+		index, err := mqe.runCreateIndexQuery(db, queryType)
 		if err != nil {
 			return nil, err
 		}
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"message": "created index: " + idxName,
-		}, nil
-	} else if queryType.QueryType == mongoutils.QUERY_DROPINDEX {
-		indexName, ok := queryType.Args[0].(string)
-		if !ok {
-			return nil, errors.New("invalid query")
-		}
-		if indexName == "*" {
-			_, err := db.Collection(queryType.CollectionName).Indexes().DropAll(context.Background(), options.DropIndexes())
-			if err != nil {
-				return nil, err
-			}
-			if config.CreateLogFn != nil {
-				config.CreateLogFn(query)
-			}
-			return map[string]interface{}{
-				"message": "droped all indexes in collection: " + queryType.CollectionName,
-			}, nil
-		}
-		_, err := db.Collection(queryType.CollectionName).Indexes().DropOne(context.Background(), indexName, options.DropIndexes())
-		if err != nil {
-			return nil, err
-		}
+
+		return index, nil
+
+	case mongoutils.QUERY_DROPINDEX:
+		result, err := mqe.runDropIndexQuery(db, queryType)
+
 		if config.CreateLogFn != nil {
 			config.CreateLogFn(query)
 		}
-		return map[string]interface{}{
-			"message": "droped index: " + indexName,
-		}, nil
+		return result, err
+
+	default:
+		return nil, errors.New("unknown query")
 	}
-	return nil, errors.New("unknown query")
+
 }
 
 func (mqe *MongoQueryEngine) TestConnection(dbConn *models.DBConnection, config *models.QueryConfig) error {

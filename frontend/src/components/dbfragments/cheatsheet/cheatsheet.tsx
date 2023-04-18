@@ -1,4 +1,3 @@
-import styles from './cheatsheet.module.scss'
 import React, { useRef, useState } from 'react'
 import { DBConnType } from '../../../data/defaults'
 import CheatsheetCommand from './command'

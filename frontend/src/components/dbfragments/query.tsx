@@ -1,7 +1,7 @@
 import styles from './query.module.scss'
 import React, { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { DBConnection, DBQuery, DBQueryData, DBQueryResult, Tab } from '../../data/models'
+import { DBConnection, DBQueryData, DBQueryResult, Tab } from '../../data/models'
 import QueryEditor from './queryeditor/queryeditor'
 import { selectDBConnection } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
@@ -14,10 +14,7 @@ import { closeTab, updateActiveTab } from '../../redux/tabsSlice'
 import TabContext from '../layouts/tabcontext'
 
 
-type DBQueryPropType = {
-}
-
-const DBQueryFragment = (_: DBQueryPropType) => {
+const DBQueryFragment = () => {
 
     const dispatch = useAppDispatch()
 
