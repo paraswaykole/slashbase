@@ -2,6 +2,7 @@
   "$schema": "https://wails.io/schemas/config.v2.json",
   "name": "Slashbase",
   "outputfilename": "Slashbase",
+  "frontend:dir": "frontend/desktop",
   "frontend:install": "yarn install",
   "frontend:build": "yarn build",
   "frontend:dev:watcher": "yarn dev",

@@ -1,0 +1,25 @@
+.cardContainer {
+  margin: 15px 0px;
+  max-width: 600px;
+}
+
+.roleTag {
+  float: right;
+}
+
+.cancelBtn {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.searchResults {
+  margin-top: 25px;
+  max-height: 215px;
+  overflow-x: clip !important;
+  .searchItem {
+    cursor: pointer;
+  }
+  .searchItem:hover {
+    background: #dddddd;
+  }
+}

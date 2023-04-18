@@ -20,8 +20,9 @@ __debug_bin
 *.out
 
 # Environment
-local.env
+.env
 development.env
+development.server.env
 production.env
 
 # Database
@@ -30,5 +31,8 @@ app.db
 # Wails
 build/bin
 node_modules
-frontend/dist
+frontend/desktop/dist
 build/darwin/gon-notarize.json
+
+# Frontend Server
+frontend/server/dist
