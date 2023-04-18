@@ -60,11 +60,13 @@ func (QueryHandlers) GetData(c *fiber.Ctx) error {
 	if err != nil {
 		offset = int64(0)
 	}
-	// TODO: update and fix
-	// filter, _ := c.GetQueryArray("filter[]")
-	// sort, _ := c.GetQueryArray("sort[]")
+	var query struct {
+		Filter []string `query:"filter"`
+		Sort   []string `query:"sort"`
+	}
+	c.QueryParser(&query)
 	analytics.SendLowCodeDataViewEvent()
-	responsedata, err := queryController.GetData(authUser, authUserProjectIds, dbConnId, schema, name, fetchCount, limit, offset, []string{}, []string{})
+	responsedata, err := queryController.GetData(authUser, authUserProjectIds, dbConnId, schema, name, fetchCount, limit, offset, query.Filter, query.Sort)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
