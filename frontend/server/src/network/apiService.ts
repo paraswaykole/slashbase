@@ -1,5 +1,5 @@
 import Request from './request'
-import { ApiResult, User, UserSession, Project, DBConnection, DBDataModel, DBQueryData, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, Tab, PaginatedApiResult } from '../data/models'
+import { ApiResult, User, UserSession, Project, DBConnection, DBDataModel, DBQueryData, CTIDResponse, DBQuery, DBQueryResult, DBQueryLog, Tab, PaginatedApiResult, Role, RolePermission } from '../data/models'
 import { AddDBConnPayload } from './payloads'
 import { AxiosResponse } from 'axios'
 import { TabType } from '../data/defaults'
@@ -255,6 +255,30 @@ const checkConnection = async function (dbConnectionId: string): Promise<ApiResu
         .then(res => res.data)
 }
 
+const getRoles = async function (): Promise<ApiResult<Role[]>> {
+    return await Request.apiInstance
+        .get<any, AxiosResponse<ApiResult<Role[]>>>(`/role/all`)
+        .then(res => res.data)
+}
+
+const addRole = async function (name: string): Promise<ApiResult<Role>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<Role>>>(`/role/add`, { name })
+        .then(res => res.data)
+}
+
+const deleteRole = async function (roleId: string): Promise<ApiResult<Role>> {
+    return await Request.apiInstance
+        .delete<any, AxiosResponse<ApiResult<Role>>>(`/role/${roleId}`)
+        .then(res => res.data)
+}
+
+const updateRolePermission = async function (roleId: string, name: string, value: boolean): Promise<ApiResult<RolePermission>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<RolePermission>>>(`/role/${roleId}/permission`, { roleId, name, value })
+        .then(res => res.data)
+}
+
 
 export default {
     getHealthCheck,
@@ -296,5 +320,9 @@ export default {
     updateTab,
     closeTab,
     runConsoleCommand,
-    checkConnection
+    checkConnection,
+    getRoles,
+    addRole,
+    deleteRole,
+    updateRolePermission
 }

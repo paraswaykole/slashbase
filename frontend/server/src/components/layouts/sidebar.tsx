@@ -147,6 +147,13 @@ const Sidebar = () => {
                                         Manage Users
                                     </Link>
                                 </li>
+                                <li>
+                                    <Link
+                                        to={Constants.APP_PATHS.SETTINGS_ROLES.path}
+                                        className={location.pathname === Constants.APP_PATHS.SETTINGS_ROLES.path ? 'is-active' : ''}>
+                                        Manage Roles
+                                    </Link>
+                                </li>
                             </ul>
                         </React.Fragment>}
                         <p className="menu-label">

@@ -12,6 +12,12 @@ interface ConstantsType {
     SETTING_KEYS: {
         [key: string]: string
     }
+    ROLES: {
+        [key: string]: string
+    }
+    ROLES_PERMISSIONS: {
+        [key: string]: string
+    }
 }
 
 declare global {
@@ -57,12 +63,14 @@ const Constants: ConstantsType = {
         SETTINGS_ADVANCED: {
             path: '/settings/advanced'
         },
-
         SETTINGS_USERS: {
             path: '/settings/users'
         },
         SETTINGS_ADD_USER: {
             path: '/settings/users/add'
+        },
+        SETTINGS_ROLES: {
+            path: '/settings/roles'
         },
     },
     EXTERNAL_PATHS: {
@@ -77,6 +85,12 @@ const Constants: ConstantsType = {
         TELEMETRY_ENABLED: "TELEMETRY_ENABLED",
         LOGS_EXPIRE: "LOGS_EXPIRE",
     },
+    ROLES: {
+        ADMIN: "Admin"
+    },
+    ROLES_PERMISSIONS: {
+        READ_ONLY: "READ_ONLY"
+    }
 }
 
 export default Constants
