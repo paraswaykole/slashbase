@@ -3,7 +3,7 @@ package sbsql
 import (
 	"database/sql/driver"
 
-	"github.com/slashbaseide/slashbase/internal/config"
+	"github.com/slashbaseide/slashbase/internal/common/config"
 )
 
 type CryptedData string

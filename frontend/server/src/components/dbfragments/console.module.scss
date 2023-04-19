@@ -1,0 +1,25 @@
+.console {
+    font-family: monospace;
+    cursor: text;
+    height: 100%;
+
+    .block {
+        white-space: pre;
+    }
+
+    .cmd::before {
+        content: "〉";
+    }
+
+    .prompt {
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .prompt::before {
+        content: '〉';
+        position: absolute;
+        left: 0;
+    }
+
+}
