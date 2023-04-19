@@ -10,9 +10,8 @@ import (
 
 func Start() {
 	setup.SetupServer()
-	tasks.InitCron()
 	analytics.InitAnalytics()
-	analytics.SendTelemetryEvent()
+	tasks.InitCron()
 
 	serverApp := app.CreateFiberApp()
 	app.SetupRoutes(serverApp)

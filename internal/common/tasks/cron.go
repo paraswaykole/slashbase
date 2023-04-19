@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
+	"github.com/slashbaseide/slashbase/internal/common/analytics"
+	"github.com/slashbaseide/slashbase/internal/common/config"
 	"github.com/slashbaseide/slashbase/internal/common/dao"
 	"github.com/slashbaseide/slashbase/internal/common/models"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
@@ -14,6 +16,9 @@ func InitCron() {
 	scheduler := gocron.NewScheduler(time.UTC)
 	clearQueryEngineUnusedConnections(scheduler)
 	clearOldLogs(scheduler)
+	if !config.IsDesktop() {
+		sendTelemetryEvents(scheduler)
+	}
 	scheduler.StartAsync()
 }
 
@@ -35,5 +40,11 @@ func clearOldLogs(s *gocron.Scheduler) {
 		if err != nil {
 			return
 		}
+	})
+}
+
+func sendTelemetryEvents(s *gocron.Scheduler) {
+	s.Every(1).Day().Do(func() {
+		analytics.SendTelemetryEvent()
 	})
 }

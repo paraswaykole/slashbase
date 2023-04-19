@@ -99,7 +99,7 @@ const Constants: ConstantsType = {
 export default Constants
 
 export const GetAPIConfig = function () {
-    let API_HOST = String("http://localhost:3000")
+    let API_HOST = import.meta.env.MODE === 'production' ? "" : "http://localhost:3000"
     return {
         API_HOST: API_HOST,
         API_URL: API_HOST + "/api/v1"
