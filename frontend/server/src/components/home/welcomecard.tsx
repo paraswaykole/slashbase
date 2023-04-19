@@ -7,6 +7,7 @@ import { Project } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { useNavigate } from 'react-router-dom'
 import { loginUser, selectIsAuthenticated } from '../../redux/currentUserSlice'
+import Button from '../ui/Button'
 
 
 const WelcomeCard: FunctionComponent<{}> = () => {
@@ -32,18 +33,19 @@ const WelcomeCard: FunctionComponent<{}> = () => {
                         <>
                             <h1>Get started</h1>
                             <br />
-                            <button className="button is-white" onClick={() => { setIsShowingCreateProject(true) }}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-folder-plus"></i>
-                                </span>
-                                <span>Create new project</span>
-                            </button><br />
-                            <button className="button is-white" onClick={navigateToNewDB}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-circle-plus"></i>
-                                </span>
-                                <span>Add new db</span>
-                            </button>
+                            <Button
+                                className="is-white"
+                                text='Create new project'
+                                onClick={() => { setIsShowingCreateProject(true) }}
+                                icon={<i className="fas fa-folder-plus"></i>}
+                            />
+                            <br />
+                            <Button
+                                className="is-white"
+                                text='Add new db'
+                                onClick={navigateToNewDB}
+                                icon={<i className="fas fa-circle-plus"></i>}
+                            />
                         </>
                         :
                         <>

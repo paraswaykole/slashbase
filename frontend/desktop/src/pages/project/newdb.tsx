@@ -9,6 +9,7 @@ import Constants from '../../constants'
 import { useNavigate, useParams } from 'react-router-dom'
 import InputTextField from '../../components/ui/Input/InputField'
 import PasswordInputField from '../../components/ui/Input/PasswordInputField'
+import Button from '../../components/ui/Button'
 
 const NewDBPage: FunctionComponent<{}> = () => {
 
@@ -289,8 +290,8 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     </>
                 }
                 <div className="control">
-                    {!adding && <button className="button is-primary" onClick={startAddingDB}>Add</button>}
-                    {adding && <button className="button is-primary">Adding...</button>}
+                    {!adding && <Button className="is-primary" text='Add' onClick={startAddingDB}/>}
+                    {adding && <Button className="is-primary" text='Adding...'/>}
                     {!adding && addingError && <span className="help is-danger" style={{ display: "inline-flex" }}>&nbsp;&nbsp;{addingError}</span>}
                 </div>
             </div>
