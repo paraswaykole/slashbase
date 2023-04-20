@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+
+  slashbase-db:
+    image: postgres
+    container_name: slashbase-db
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+  slashbase-app:
+    image: slashbaseide/slashbase
+    container_name: slashbase-app
+    restart: always
+    ports:
+      - '3000:3000'
+    env_file:
+      - app.env
+    depends_on:
+      slashbase-db:
+        condition: service_healthy
