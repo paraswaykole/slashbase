@@ -22,7 +22,7 @@
 <p align="center">
   <a href="https://discord.gg/U6fXgm3FAX">Join Discord</a>
   ·
-  <a href="https://slashbase.bip.wiki">Read docs</a>
+  <a href="https://docs.slashbase.com">Read docs</a>
   ·
   <a href="https://slashbase.com/updates">What's new</a>
   <br/><br/>
@@ -34,7 +34,7 @@
 
 Slashbase is an open-source modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts. Supports MySQL, PostgreSQL and MongoDB.
 
-It is in beta (v0.8), help us make it better by sending your feedback and reach a stable (v1.0) version.
+It is in beta (v0.9), help us make it better by sending your feedback and reach a stable (v1.0) version.
 > Star 🌟 & watch 👀 the repository to get updates.
 
 ## Features:
@@ -107,7 +107,7 @@ Use Slashbase as a cloud-hosted in-browser collaborative database IDE. Visit [sl
 
 # Documentation
 
-Detailed documentation is available on [slashbase guide](https://slashbase.bip.wiki).
+Detailed documentation is available on [docs.slashbase.com](https://docs.slashbase.com).
 
 # Community
 
