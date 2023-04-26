@@ -90,6 +90,10 @@ const DBShowDataFragment = () => {
         setQuerySort(newSort)
     }
 
+    const onRefresh = () => {
+        fetchData(false);
+    }
+
     const rowsLength = queryData ? (queryData.rows ? queryData.rows.length : queryData.data.length) : 0
     const queryOffsetRangeEnd = (rowsLength ?? 0) === queryLimit ?
         queryOffset + queryLimit : queryOffset + (rowsLength ?? 0)
@@ -105,6 +109,7 @@ const DBShowDataFragment = () => {
                     querySort={querySort}
                     isInteractive={true}
                     showHeader={true}
+                    onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
                 />
@@ -118,6 +123,7 @@ const DBShowDataFragment = () => {
                     querySort={querySort}
                     isInteractive={true}
                     showHeader={true}
+                    onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
                 />
@@ -129,6 +135,7 @@ const DBShowDataFragment = () => {
                     queryData={queryData}
                     isInteractive={true}
                     showHeader={true}
+                    onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
                 />

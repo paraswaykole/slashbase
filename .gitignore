@@ -36,3 +36,6 @@ build/darwin/gon-notarize.json
 
 # Frontend Server
 frontend/server/dist
+
+#node modules
+.yarn

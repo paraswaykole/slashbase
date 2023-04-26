@@ -19,12 +19,13 @@ type TablePropType = {
     mName: string,
     isInteractive: boolean,
     showHeader?: boolean,
+    onRefresh:()=>void,
     querySort?: string[],
     onFilterChanged: (newFilter: string[] | undefined) => void,
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged }: TablePropType) => {
+const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged ,onRefresh}: TablePropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -243,7 +244,13 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                         </div>
                     </div>
                     {isInteractive && !isEditing && <React.Fragment>
-                        <div className="column is-3 is-flex is-justify-content-flex-end">
+                        <div className="column is-3 gap-3 is-flex is-justify-content-flex-end">
+                            <button style={{marginRight:16}} className="button mgr-medium" onClick={onRefresh}>
+                                <span className="icon is-small">
+                                    <i className="fas fa-refresh" />
+                                </span>
+                                <span>Refresh</span>
+                            </button>
                             <button className="button is-primary" onClick={() => { setIsEditing(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-pen" />
@@ -251,6 +258,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                             </button>
                         </div>
                     </React.Fragment>}
+                    
                     {isInteractive && isEditing && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
                             <button className="button" disabled={selectedIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
@@ -272,8 +280,11 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                             </button>
                         </div>
                     </React.Fragment>}
+
+                    
                 </div>
             </div>}
+
             {isAdding &&
                 <AddModal
                     queryData={queryData}

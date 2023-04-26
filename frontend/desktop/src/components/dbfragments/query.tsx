@@ -121,6 +121,7 @@ const DBQueryFragment = () => {
                             mName={''}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
+                            onRefresh={()=>{}}
                             isInteractive={false} />
                     }
                     {dbConnection!.type === DBConnType.MONGO &&
@@ -130,6 +131,7 @@ const DBQueryFragment = () => {
                             mName={''}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
+                            onRefresh={()=>{}}
                             isInteractive={false} />
                     }
                 </React.Fragment>
