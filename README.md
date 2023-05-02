@@ -12,6 +12,9 @@
   <a href="#installation">
     <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total" alt="Total downloads">
   </a>
+  <a href="#slashbase-server">
+    <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker Pulls">
+  </a>
   <a href="https://discord.gg/U6fXgm3FAX">
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
   </a>
