@@ -12,6 +12,9 @@
   <a href="#installation">
     <img src="https://img.shields.io/github/downloads/slashbaseide/slashbase/total" alt="Total downloads">
   </a>
+  <a href="#slashbase-server">
+    <img src="https://img.shields.io/docker/pulls/slashbaseide/slashbase" alt="Docker Pulls">
+  </a>
   <a href="https://discord.gg/U6fXgm3FAX">
     <img src="https://img.shields.io/discord/1039799991776067615?label=discord" alt="Discord">
   </a>
@@ -22,7 +25,7 @@
 <p align="center">
   <a href="https://discord.gg/U6fXgm3FAX">Join Discord</a>
   ·
-  <a href="https://slashbase.bip.wiki">Read docs</a>
+  <a href="https://docs.slashbase.com">Read docs</a>
   ·
   <a href="https://slashbase.com/updates">What's new</a>
   <br/><br/>
@@ -34,12 +37,12 @@
 
 Slashbase is an open-source modern database IDE for your dev/data workflows. Use Slashbase to connect to any of your database, browse data and schema, write, run and save queries, create charts. Supports MySQL, PostgreSQL and MongoDB.
 
-It is in beta (v0.8), help us make it better by sending your feedback and reach a stable (v1.0) version.
+It is in beta (v0.9), help us make it better by sending your feedback and reach a stable (v1.0) version.
 > Star 🌟 & watch 👀 the repository to get updates.
 
 ## Features:
 
-- **🧑‍💻 Desktop App**: Use the IDE as a standalone desktop app.
+- **🧑‍💻 Desktop and Server App**: Use the IDE as a standalone desktop app or self-host on your server.
 - **🪄 Modern Interface**: With a modern interface, it is easy to use.
 - **🪶 Lightweight**: Doesn't take much space on your system.
 - **⚡️ Quick Browse**: Quickly filter, sort & browse data and schema with a low-code UI.
@@ -101,13 +104,13 @@ yay -S slashbase
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot3.png" alt="Console view" width="100%">
 
 
-# Slashbase Cloud
+# Slashbase Server
 
-Use Slashbase as a cloud-hosted in-browser collaborative database IDE. Visit [slashbase.com](https://slashbase.com)
+To use Slashbase as a self-hosted in-browser collaborative database IDE. See [instructions](https://docs.slashbase.com/docs/server-ide/installation).
 
 # Documentation
 
-Detailed documentation is available on [slashbase guide](https://slashbase.bip.wiki).
+Detailed documentation is available on [docs.slashbase.com](https://docs.slashbase.com).
 
 # Community
 

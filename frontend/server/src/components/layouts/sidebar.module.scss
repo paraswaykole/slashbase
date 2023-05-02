@@ -1,0 +1,48 @@
+.sidebar {
+  height: calc(100% - 20px);
+  background: #f3f3f3;
+  min-width: 260px;
+  border-right: 1px solid #dbdbdb;
+  white-space: nowrap;
+  overflow-x: hidden;
+
+  .spacebox {
+    padding: 15px 10px;
+    height: calc(100% - 50px);
+    overflow-y: scroll;
+  }
+
+  .menuList {
+    a {
+      overflow-x: hidden;
+    }
+  }
+
+  .subMenuList {
+    margin: 0rem 0.75rem 0.75rem 0.75rem;
+  }
+
+  .console {
+    float: right;
+  }
+}
+
+.sidebarHideBtn {
+  position: relative;
+  float: right;
+  right: 10px;
+}
+
+.btn {
+  height: 40px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+  margin-right: 5px;
+
+  .btnMsg {
+    font-size: 14px;
+  }
+}
