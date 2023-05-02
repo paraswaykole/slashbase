@@ -101,9 +101,9 @@ yay -S slashbase
 <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot3.png" alt="Console view" width="100%">
 
 
-# Slashbase Cloud
+# Slashbase Server
 
-Use Slashbase as a cloud-hosted in-browser collaborative database IDE. Visit [slashbase.com](https://slashbase.com)
+To use Slashbase as a self-hosted in-browser collaborative database IDE. See [instructions](https://docs.slashbase.com/docs/server-ide/installation).
 
 # Documentation
 
