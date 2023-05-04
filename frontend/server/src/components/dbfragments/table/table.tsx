@@ -20,13 +20,13 @@ type TablePropType = {
     mName: string,
     isInteractive: boolean,
     showHeader?: boolean,
-    onRefresh:()=>void,
+    onRefresh: () => void,
     querySort?: string[],
     onFilterChanged: (newFilter: string[] | undefined) => void,
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged ,onRefresh}: TablePropType) => {
+const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged, onRefresh }: TablePropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -233,52 +233,52 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                                 <input className="input" type="text" placeholder="Value" value={filterValue[2]} onChange={e => handleFilterChange(e, 2)} />
                             </p>
                             <p className="control">
-                                <Button text='Filter' onClick={onFilter}/>
+                                <Button text='Filter' onClick={onFilter} />
                             </p>
                             {(filterValue[0] !== 'default' || filterValue[1] !== 'default') && <p className="control">
-                                <Button icon={<i className="fas fa-circle-xmark"/>} onClick={onFilterClear}/>
+                                <Button icon={<i className="fas fa-circle-xmark" />} onClick={onFilterClear} />
                             </p>}
                         </div>
                     </div>
                     {isInteractive && !isEditing && <React.Fragment>
                         <div className="column is-3 gap-3 is-flex is-justify-content-flex-end">
-                            <button className="button mr-2 " onClick={onRefresh}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-refresh" />
-                                </span>
-                                <span>Refresh</span>
-                            </button>
-                            <Button 
+                            <Button
+                                className="is-secondary mgr-medium"
+                                style={{ marginRight: 16 }}
+                                icon={<i className="fas fa-refresh" />}
+                                onClick={onRefresh}
+                            />
+                            <Button
                                 className="is-primary"
-                                icon={<i className="fas fa-pen"/>}
+                                icon={<i className="fas fa-pen" />}
                                 onClick={() => { setIsEditing(true) }}
                             />
                         </div>
                     </React.Fragment>}
-                    
+
                     {isInteractive && isEditing && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
                             <Button
-                                icon={<i className="fas fa-trash"/>} 
-                                disabled={selectedIDs.length === 0} 
+                                icon={<i className="fas fa-trash" />}
+                                disabled={selectedIDs.length === 0}
                                 onClick={() => { setIsDeleting(true) }}
                             />
                             &nbsp;&nbsp;
                             <Button
                                 className="is-secondary"
-                                icon={<i className="fas fa-plus"/>} 
+                                icon={<i className="fas fa-plus" />}
                                 onClick={() => { setIsAdding(true) }}
                             />
                             &nbsp;&nbsp;
                             <Button
                                 className="is-primary"
-                                icon={<i className="fas fa-check"/>}
+                                icon={<i className="fas fa-check" />}
                                 onClick={() => { setIsEditing(false) }}
                             />
                         </div>
                     </React.Fragment>}
 
-                    
+
                 </div>
             </div>}
 
