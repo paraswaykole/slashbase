@@ -1,3 +1,4 @@
+import Button from '../../ui/Button'
 import styles from './table.module.scss'
 import React from 'react'
 
@@ -51,18 +52,10 @@ const EditableCell = ({
             onChange={onChange} />
         </div>
         <div className="control">
-          <button className="button is-small" onClick={onSave}>
-            <span className="icon is-small">
-              <i className="fas fa-check"></i>
-            </span>
-          </button>
+          <Button className='is-small' icon={<i className="fas fa-check"/>} onClick={onSave}/>
         </div>
         <div className="control">
-          <button className="button is-small" onClick={cancelEdit}>
-            <span className="icon is-small">
-              <i className="fas fa-times"></i>
-            </span>
-          </button>
+          <Button className='is-small' icon={<i className="fas fa-times"/>} onClick={cancelEdit}/>
         </div>
 
       </div>

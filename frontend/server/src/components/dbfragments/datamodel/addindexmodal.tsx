@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { addDBDataModelIndex } from '../../../redux/dataModelSlice'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import TabContext from '../../layouts/tabcontext'
+import Button from '../../ui/Button'
 
 type AddIndexModal = {
     dbConn: DBConnection
@@ -74,8 +75,8 @@ const AddIndexModal = ({ dbConn, mSchema, mName, onAddIndex, onClose }: AddIndex
                     </div>
                 </section>
                 <footer className="modal-card-foot">
-                    <button className="button is-primary" onClick={startAdding}>Add</button>
-                    <button className="button" onClick={onClose}>Cancel</button>
+                    <Button className="is-primary" text='Add' onClick={startAdding}/>
+                    <Button text='Cancel' onClick={onClose}/>
                 </footer>
             </div>
         </div>

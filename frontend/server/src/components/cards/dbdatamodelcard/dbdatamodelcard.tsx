@@ -3,6 +3,7 @@ import { DBConnection, DBDataModel } from '../../../data/models'
 import { DBConnType, TabType } from '../../../data/defaults'
 import { useAppDispatch } from '../../../redux/hooks'
 import { updateActiveTab } from '../../../redux/tabsSlice'
+import Button from '../../ui/Button'
 
 type DBDataModelPropType = {
     dbConnection: DBConnection
@@ -33,14 +34,18 @@ const DBDataModelCard = ({ dataModel, dbConnection }: DBDataModelPropType) => {
                         <b>{dataModel.name}</b>}
                 </div>
                 <div className="buttons">
-                    <button className="button is-small is-white" onClick={updateActiveTabToData}>
-                        <span className="icon is-small"><i className="fas fa-table" /></span>
-                        <span>View Data</span>
-                    </button>
-                    <button className="button is-small is-white" onClick={updateActiveTabToModel}>
-                        <span className="icon is-small"><i className="fas fa-list-alt" /></span>
-                        <span>View Model</span>
-                    </button>
+                    <Button 
+                        className="is-small is-white"
+                        icon={<i className="fas fa-table"/>}
+                        onClick={updateActiveTabToData}
+                        text='View Data'
+                    />
+                    <Button 
+                        className="is-small is-white"
+                        icon={<i className="fas fa-list-alt"/>}
+                        onClick={updateActiveTabToModel}
+                        text='View Model'
+                    />
                 </div>
             </div>
         </div>

@@ -10,6 +10,7 @@ import AddIndexModal from './addindexmodal'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { deleteDBDataModelField, deleteDBDataModelIndex, getSingleDataModel, selectSingleDataModel } from '../../../redux/dataModelSlice'
 import TabContext from '../../layouts/tabcontext'
+import Button from '../../ui/Button'
 
 type DataModelPropType = {
     dbConn: DBConnection
@@ -77,15 +78,19 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                         <tr>
                             <th colSpan={(dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) ? 4 : 5}>
                                 {label}
-                                {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditingModel(!isEditingModel) }}>
-                                    {isEditingModel && <i className={"fas fa-check"} />}
-                                    {!isEditingModel && <i className={"fas fa-pen"} />}
-                                </button>}
+                                {isEditable && <Button 
+                                    className="is-small"
+                                    style={{ float: 'right' }}
+                                    icon={isEditingIndex ? <i className='fas fa-check'/> : <i className='fas fa-pen'/>}
+                                    onClick={() => { setIsEditingModel(!isEditingModel) }}
+                                />}
                             </th>
                             {(dbConn.type === DBConnType.POSTGRES || dbConn.type === DBConnType.MYSQL) && isEditingModel && <th>
-                                <button className="button is-primary is-small" onClick={() => { setShowingAddFieldModal(true) }}>
-                                    <i className={"fas fa-plus"} />
-                                </button>
+                                <Button 
+                                    className="is-primary is-small"
+                                    icon={<i className={"fas fa-plus"} />}
+                                    onClick={() => { setShowingAddFieldModal(true) }}
+                                />
                             </th>}
                         </tr>
                     </thead>
@@ -108,9 +113,12 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                                         )).reduce((prev, curr) => [prev, ' ', curr])}
                                     </td>}
                                     {isEditingModel && <td>
-                                        <button className="button is-danger is-small" style={{ float: 'right' }} onClick={() => { setDeletingField(field.name) }}>
-                                            <i className={"fas fa-trash"} />
-                                        </button>
+                                        <Button
+                                            className='is-danger is-small'
+                                            style={{ float: 'right' }}
+                                            onClick={() => { setDeletingField(field.name) }}
+                                            icon={<i className={"fas fa-trash"} />}
+                                        />
                                     </td>}
                                 </tr>
                             ))
@@ -123,15 +131,18 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                             <tr>
                                 <th colSpan={2}>
                                     Indexes
-                                    {isEditable && <button className="button is-small" style={{ float: 'right' }} onClick={() => { setIsEditingIndex(!isEditingIndex) }}>
-                                        {isEditingIndex && <i className={"fas fa-check"} />}
-                                        {!isEditingIndex && <i className={"fas fa-pen"} />}
-                                    </button>}
+                                    {isEditable && <Button className="is-small" 
+                                            style={{ float: 'right' }} 
+                                            onClick={() => { setIsEditingIndex(!isEditingIndex) }}
+                                            icon={isEditingIndex ? <i className='fas fa-check'/> : <i className='fas fa-pen'/>}
+                                        />
+                                    }
                                 </th>
                                 {isEditingIndex && <th>
-                                    <button className="button is-primary is-small" onClick={() => { setShowingAddIndexModal(true) }}>
-                                        <i className={"fas fa-plus"} />
-                                    </button>
+                                    <Button className="is-primary is-small" 
+                                        onClick={() => { setShowingAddIndexModal(true) }}
+                                        icon={<i className={"fas fa-plus"}/>}
+                                    />
                                 </th>}
                             </tr>
                         </thead>
@@ -142,9 +153,12 @@ const DataModel = ({ dbConn, mschema, mname, isEditable }: DataModelPropType) =>
                                         <td>{idx.name}</td>
                                         <td>{idx.indexDef}</td>
                                         {isEditingIndex && <td>
-                                            <button className="button is-danger is-small" style={{ float: 'right' }} onClick={() => { setDeletingIndex(idx.name) }}>
-                                                <i className={"fas fa-trash"} />
-                                            </button>
+                                            <Button 
+                                                className="is-danger is-small" 
+                                                style={{ float: 'right' }} 
+                                                onClick={() => { setDeletingIndex(idx.name) }}
+                                                icon={<i className={"fas fa-trash"}/>}
+                                            />
                                         </td>}
                                     </tr>
                                 ))

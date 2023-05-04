@@ -15,15 +15,6 @@ RUN apk update && apk add --no-cache ca-certificates git build-base && update-ca
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Executable builder
-FROM base as backendbuilder
-
-WORKDIR /app
-COPY . .
-RUN mkdir -p /app/frontend/desktop/dist
-RUN touch /app/frontend/desktop/dist/nofile
-RUN make build-server
-
 # Install dependencies only when needed
 FROM node:alpine AS deps
 
@@ -40,12 +31,19 @@ COPY ./frontend/server/ .
 COPY --from=deps /app/node_modules ./node_modules
 RUN yarn build
 
+# Executable builder
+FROM base as backendbuilder
+
+WORKDIR /app
+COPY . .
+COPY --from=frontendbuilder /dist /app/frontend/dist
+RUN make build-server
+
 # Production
 FROM alpine:3.14
 
 WORKDIR /slashbase
 COPY --from=backendbuilder /app/slashbase /slashbase
-COPY --from=frontendbuilder /app/dist /slashbase/web
 
 ENTRYPOINT ["/slashbase/slashbase"]
 EXPOSE 3000
