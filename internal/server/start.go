@@ -1,6 +1,8 @@
 package server
 
 import (
+	"embed"
+
 	"github.com/slashbaseide/slashbase/internal/common/analytics"
 	"github.com/slashbaseide/slashbase/internal/common/config"
 	"github.com/slashbaseide/slashbase/internal/common/tasks"
@@ -8,12 +10,12 @@ import (
 	"github.com/slashbaseide/slashbase/internal/server/setup"
 )
 
-func Start() {
+func Start(assets embed.FS) {
 	setup.SetupServer()
 	analytics.InitAnalytics()
 	tasks.InitCron()
 
 	serverApp := app.CreateFiberApp()
-	app.SetupRoutes(serverApp)
+	app.SetupRoutes(serverApp, assets)
 	serverApp.Listen(":" + config.DEFAULT_SERVER_PORT)
 }
