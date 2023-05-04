@@ -20,12 +20,13 @@ type TablePropType = {
     mName: string,
     isInteractive: boolean,
     showHeader?: boolean,
+    onRefresh:()=>void,
     querySort?: string[],
     onFilterChanged: (newFilter: string[] | undefined) => void,
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged }: TablePropType) => {
+const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged ,onRefresh}: TablePropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -105,7 +106,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
         columns,
         data,
         defaultColumn,
-        initialState: { selectedRowIds: {}},
+        initialState: { selectedRowIds: {} },
         ...{ editCell, resetEditCell, onSaveCell }
     },
         useRowSelect,
@@ -240,7 +241,13 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                         </div>
                     </div>
                     {isInteractive && !isEditing && <React.Fragment>
-                        <div className="column is-3 is-flex is-justify-content-flex-end">
+                        <div className="column is-3 gap-3 is-flex is-justify-content-flex-end">
+                            <button className="button mr-2 " onClick={onRefresh}>
+                                <span className="icon is-small">
+                                    <i className="fas fa-refresh" />
+                                </span>
+                                <span>Refresh</span>
+                            </button>
                             <Button 
                                 className="is-primary"
                                 icon={<i className="fas fa-pen"/>}
@@ -248,6 +255,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                             />
                         </div>
                     </React.Fragment>}
+                    
                     {isInteractive && isEditing && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
                             <Button
@@ -269,8 +277,11 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                             />
                         </div>
                     </React.Fragment>}
+
+                    
                 </div>
             </div>}
+
             {isAdding &&
                 <AddModal
                     queryData={queryData}
