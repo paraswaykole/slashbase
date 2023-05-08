@@ -140,6 +140,17 @@ Read our [contribution guide](CONTRIBUTING.md) for getting started on contributi
 
 If you face any issues installing or using Slashbase, send us a mail to slashbaseide@gmail.com or contact support chat on our website [slashbase.com](https://slashbase.com).
 
+# Sponsors
+This project is supported by:
+<p>
+  <a href="https://www.digitalocean.com/?utm_medium=opensource&utm_source=slashbase">
+    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/sponsors/digitalocean.svg" width="201px"/>
+  </a>
+  <a href="https://appwrite.io/oss-fund">
+    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/sponsors/appwrite.svg" width="180px"/>
+  </a>
+</p>
+
 # License
 
 See the [LICENSE file](LICENSE.txt) for license rights and limitations.
