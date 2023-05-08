@@ -153,4 +153,4 @@ This project is supported by:
 
 # License
 
-See the [LICENSE file](LICENSE.txt) for license rights and limitations.
+This project is licensed under the Apache License 2.0. See the [LICENSE file](LICENSE.txt) for license rights and limitations.
