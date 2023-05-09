@@ -147,8 +147,8 @@ const DBShowDataFragment = () => {
                     <progress className="progress is-primary" max="100">loading</progress>
                     :
                     <nav className="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
-                        <Button className="pagination-previous" text='Previous' onClick={onPreviousPage}/>
-                        <Button className="pagination-next" text='Next' onClick={onNextPage}/>
+                        <Button className="pagination-previous" text="Previous" onClick={onPreviousPage} />
+                        <Button className="pagination-next" text="Next" onClick={onNextPage} />
                         <ul className="pagination-list">
                             Showing {queryOffset} - {queryOffsetRangeEnd} of {queryCount}
                         </ul>

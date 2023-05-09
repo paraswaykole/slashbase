@@ -171,7 +171,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
     }
 
     const changeSort = (newSortIdx: string) => {
-        if (!isInteractive) {
+        if (!isInteractive || newSortIdx === "selection") {
             return
         }
         const newSortName: string = displayColumns.find((_, i) => {
