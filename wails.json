@@ -13,8 +13,8 @@
   },
   "info": {
     "productName": "Slashbase",
-    "productVersion": "v0.9.0",
+    "productVersion": "v0.9.1",
     "copyright": "Copyright © Slashbase.com",
-    "comments": "Modern database IDE"
+    "comments": "Open-source Modern database IDE"
   }
 }

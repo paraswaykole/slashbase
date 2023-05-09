@@ -10,7 +10,7 @@ import (
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
 )
 
-//go:embed all:frontend/desktop/dist
+//go:embed all:frontend/dist
 var assets embed.FS
 
 var build = config.BUILD_DESKTOP
@@ -24,6 +24,6 @@ func main() {
 	if config.IsDesktop() {
 		desktop.Start(assets)
 	} else {
-		server.Start()
+		server.Start(assets)
 	}
 }

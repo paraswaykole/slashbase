@@ -1,15 +1,17 @@
 package app
 
 import (
+	"embed"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/slashbaseide/slashbase/internal/common/config"
 	"github.com/slashbaseide/slashbase/internal/server/handlers"
 	"github.com/slashbaseide/slashbase/internal/server/middlewares"
 )
 
-func SetupRoutes(app *fiber.App) {
+func SetupRoutes(app *fiber.App, assets embed.FS) {
 	api := app.Group("/api/v1")
 	{
 		api.Get("health", healthCheck)
@@ -117,11 +119,16 @@ func SetupRoutes(app *fiber.App) {
 
 	// Serving the Frontend files in Production
 	if config.IsLive() {
-		app.Static("/", "./web")
+		app.Use("/assets", filesystem.New(filesystem.Config{
+			Root:       http.FS(assets),
+			PathPrefix: "frontend/dist/assets",
+		}))
 		app.Get("/*", func(c *fiber.Ctx) error {
 			tokenString := c.Cookies("session")
 			if tokenString != "" || c.Path() == "/" {
-				return c.SendFile("./web/index.html", true)
+				file, _ := assets.ReadFile("frontend/dist/index.html")
+				c.Set("Content-Type", "text/html; charset=utf-8")
+				return c.Send(file)
 			}
 			return c.Redirect("/", http.StatusTemporaryRedirect)
 		})

@@ -7,9 +7,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/slashbaseide/slashbase/internal/common/analytics"
 	"github.com/slashbaseide/slashbase/internal/common/utils"
-	"github.com/slashbaseide/slashbase/internal/common/views"
+	commonviews "github.com/slashbaseide/slashbase/internal/common/views"
 	"github.com/slashbaseide/slashbase/internal/server/controllers"
 	"github.com/slashbaseide/slashbase/internal/server/middlewares"
+	"github.com/slashbaseide/slashbase/internal/server/views"
 )
 
 type QueryHandlers struct{}
@@ -337,7 +338,7 @@ func (QueryHandlers) SaveDBQuery(c *fiber.Ctx) error {
 	}
 	return c.JSON(map[string]interface{}{
 		"success": true,
-		"data":    views.BuildDBQueryView(queryObj),
+		"data":    commonviews.BuildDBQueryView(queryObj),
 	})
 }
 
@@ -367,9 +368,9 @@ func (QueryHandlers) GetDBQueriesInDBConnection(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	dbQueryViews := []views.DBQueryView{}
+	dbQueryViews := []commonviews.DBQueryView{}
 	for _, dbQuery := range dbQueries {
-		dbQueryViews = append(dbQueryViews, *views.BuildDBQueryView(dbQuery))
+		dbQueryViews = append(dbQueryViews, *commonviews.BuildDBQueryView(dbQuery))
 	}
 	return c.JSON(map[string]interface{}{
 		"success": true,
@@ -389,7 +390,7 @@ func (QueryHandlers) GetSingleDBQuery(c *fiber.Ctx) error {
 	}
 	return c.JSON(map[string]interface{}{
 		"success": true,
-		"data":    views.BuildDBQueryView(dbQuery),
+		"data":    commonviews.BuildDBQueryView(dbQuery),
 	})
 }
 

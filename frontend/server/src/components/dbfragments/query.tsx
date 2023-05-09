@@ -119,6 +119,7 @@ const DBQueryFragment = () => {
                             queryData={queryData}
                             mSchema={''}
                             mName={''}
+                            onRefresh={()=>{}}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
                             isInteractive={false} />
@@ -128,6 +129,7 @@ const DBQueryFragment = () => {
                             dbConnection={dbConnection!}
                             queryData={queryData}
                             mName={''}
+                            onRefresh={()=>{}}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
                             isInteractive={false} />

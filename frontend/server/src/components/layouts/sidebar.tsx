@@ -10,6 +10,7 @@ import { DBConnType, TabType } from '../../data/defaults'
 import HomeSidebar from './sidebars/homesidebar'
 import { createTab } from '../../redux/tabsSlice'
 import { selectCurrentUser } from '../../redux/currentUserSlice'
+import Button from '../ui/Button'
 
 enum SidebarViewType {
     HOME = "HOME", // home sidebar
@@ -179,10 +180,11 @@ const Sidebar = () => {
                 }
             </div>
             <div>
-                <button className={"button " + [styles.btn, styles.sidebarHideBtn].join(' ')} onClick={toggleSidebar}>
-                    <i className={"fas fa-angle-double-left"} />
-                    {/* <span className={styles.btnMsg}>&nbsp;&nbsp;hide sidebar</span> */}
-                </button>
+            <Button
+                className={[styles.btn, styles.sidebarHideBtn].join(' ')}
+                icon={<i className={"fas fa-angle-double-left"} />}
+                onClick={toggleSidebar}
+            />
             </div>
         </aside>
     )

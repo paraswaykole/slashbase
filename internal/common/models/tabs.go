@@ -84,10 +84,12 @@ func (t *Tab) FetchMetadata() map[string]interface{} {
 	}
 	if t.Type == TAB_TYPE_QUERY {
 		queryID := metadata["queryId"].(string)
-		var dbQuery DBQuery
-		err := db.GetDB().Where(DBQuery{ID: queryID}).First(&dbQuery).Error
-		if err == nil {
-			metadata["queryName"] = dbQuery.Name
+		if queryID != "new" {
+			var dbQuery DBQuery
+			err := db.GetDB().Where(DBQuery{ID: queryID}).First(&dbQuery).Error
+			if err == nil {
+				metadata["queryName"] = dbQuery.Name
+			}
 		}
 	}
 	return metadata

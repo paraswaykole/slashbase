@@ -31,8 +31,5 @@ app.db
 # Wails
 build/bin
 node_modules
-frontend/desktop/dist
+frontend/dist
 build/darwin/gon-notarize.json
-
-# Frontend Server
-frontend/server/dist

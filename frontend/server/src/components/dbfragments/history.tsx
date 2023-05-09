@@ -7,6 +7,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import dateformat from 'dateformat'
 import { getDBQueryLogs, reset, selectDBQueryLogs, selectDBQueryLogsNext } from '../../redux/dbHistorySlice'
 import TabContext from '../layouts/tabcontext'
+import Button from '../ui/Button'
+import ProfileImage, { ProfileImageSize } from '../user/profileimage'
 
 
 type DBHistoryPropType = {
@@ -49,12 +51,11 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                 <React.Fragment>
                     <div className="is-flex is-justify-content-space-between">
                         <h1>Showing History in {dbConnection.name}</h1>
-                        <button className="button is-flex" onClick={refreshHandler}>
-                            <span className="icon is-small">
-                                <i className="fas fa-sync" />
-                            </span>
-                            <span>Refresh</span>
-                        </button>
+                        <Button
+                            text='Refresh'
+                            icon={<i className="fas fa-sync" />}
+                            onClick={refreshHandler}
+                        />
                     </div>
                     <br />
                     <InfiniteScroll
@@ -77,6 +78,10 @@ const DBHistoryFragment = ({ }: DBHistoryPropType) => {
                             <tbody>
                                 {dbQueryLogs.map((log) => (
                                     <tr key={log.id}>
+                                        {log.user && <td style={{ fontSize: '14px' }}>
+                                            <ProfileImage imageUrl={log.user.profileImageUrl} size={ProfileImageSize.TINY} /><br />
+                                            {log.user.name ? log.user.name : log.user.email}
+                                        </td>}
                                         <td>
                                             <code>{log.query}</code>
                                         </td>
