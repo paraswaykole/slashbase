@@ -6,8 +6,9 @@ import (
 	"github.com/go-co-op/gocron"
 	"github.com/slashbaseide/slashbase/internal/common/analytics"
 	"github.com/slashbaseide/slashbase/internal/common/config"
-	"github.com/slashbaseide/slashbase/internal/common/dao"
+	commondao "github.com/slashbaseide/slashbase/internal/common/dao"
 	"github.com/slashbaseide/slashbase/internal/common/models"
+	"github.com/slashbaseide/slashbase/internal/server/dao"
 	"github.com/slashbaseide/slashbase/pkg/queryengines"
 	"github.com/slashbaseide/slashbase/pkg/sshtunnel"
 )
@@ -30,13 +31,19 @@ func clearQueryEngineUnusedConnections(s *gocron.Scheduler) {
 }
 
 func clearOldLogs(s *gocron.Scheduler) {
+
+	clear := commondao.DBQueryLog.ClearOldLogs
+	if !config.IsDesktop() {
+		clear = dao.DBQueryLog.ClearOldLogs
+	}
+
 	s.Every(1).Day().Do(func() {
-		setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_LOGS_EXPIRE)
+		setting, err := commondao.Setting.GetSingleSetting(models.SETTING_NAME_LOGS_EXPIRE)
 		if err != nil {
 			return
 		}
 		days := setting.Int()
-		err = dao.DBQueryLog.ClearOldLogs(days)
+		err = clear(days)
 		if err != nil {
 			return
 		}
