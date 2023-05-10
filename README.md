@@ -108,13 +108,11 @@ yay -S slashbase
 
 To use Slashbase as a self-hosted in-browser collaborative database IDE. See [instructions](https://docs.slashbase.com/docs/server-ide/installation).
 
+To checkout demo, visit [demo.slashbase.com](https://demo.slashbase.com).
+
 # Documentation
 
 Detailed documentation is available on [docs.slashbase.com](https://docs.slashbase.com).
-
-# Community
-
-Join our community on [Discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
 
 # Roadmap
 
@@ -140,6 +138,17 @@ Read our [contribution guide](CONTRIBUTING.md) for getting started on contributi
 
 If you face any issues installing or using Slashbase, send us a mail to slashbaseide@gmail.com or contact support chat on our website [slashbase.com](https://slashbase.com).
 
+# Sponsors
+This project is supported by:
+<p>
+  <a href="https://www.digitalocean.com/?utm_medium=opensource&utm_source=slashbase">
+    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/sponsors/digitalocean.svg" width="201px"/>
+  </a>
+  <a href="https://appwrite.io/oss-fund">
+    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/sponsors/appwrite.svg" width="180px"/>
+  </a>
+</p>
+
 # License
 
-See the [LICENSE file](LICENSE.txt) for license rights and limitations.
+This project is licensed under the Apache License 2.0. See the [LICENSE file](LICENSE.txt) for license rights and limitations.
