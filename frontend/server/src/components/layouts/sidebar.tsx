@@ -5,12 +5,10 @@ import Constants from '../../constants'
 import { DBConnection, DBDataModel, DBQuery, User } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
-import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { DBConnType, TabType } from '../../data/defaults'
 import HomeSidebar from './sidebars/homesidebar'
 import { createTab } from '../../redux/tabsSlice'
 import { selectCurrentUser } from '../../redux/currentUserSlice'
-import Button from '../ui/Button'
 
 enum SidebarViewType {
     HOME = "HOME", // home sidebar
@@ -26,7 +24,6 @@ const Sidebar = () => {
         (location.pathname.startsWith("/db")) ?
             SidebarViewType.DATABASE : (location.pathname.startsWith("/settings")) ? SidebarViewType.SETTINGS : SidebarViewType.HOME
 
-    const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const dbQueries: DBQuery[] = useAppSelector(selectDBDQueries)
@@ -34,9 +31,7 @@ const Sidebar = () => {
 
     const dispatch = useAppDispatch()
 
-    const toggleSidebar = () => {
-        dispatch(setIsShowingSidebar(!isShowingSidebar))
-    }
+
 
     const openDataTab = (schema: string, name: string) => {
         dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.DATA, metadata: { schema, name } }))
@@ -178,13 +173,6 @@ const Sidebar = () => {
                         </ul>
                     </React.Fragment>
                 }
-            </div>
-            <div>
-            <Button
-                className={[styles.btn, styles.sidebarHideBtn].join(' ')}
-                icon={<i className={"fas fa-angle-double-left"} />}
-                onClick={toggleSidebar}
-            />
             </div>
         </aside>
     )
