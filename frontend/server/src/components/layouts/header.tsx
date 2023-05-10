@@ -54,9 +54,11 @@ const Header = () => {
     return (
         <header className={styles.header}>
             <div className={styles.leftBtns}>
-                {!isShowingSidebar && <button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
+            {!isShowingSidebar?(<button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
                     <i className="fas fa-bars" />
-                </button>}
+                </button>):(<button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
+                    <i className="fas fa-bars" />
+                </button>)}
                 <Link to={Constants.APP_PATHS.HOME.path}>
                     <button className={"button is-dark " + [styles.btn].join(' ')}>
                         <span className="icon">
