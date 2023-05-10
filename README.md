@@ -108,13 +108,11 @@ yay -S slashbase
 
 To use Slashbase as a self-hosted in-browser collaborative database IDE. See [instructions](https://docs.slashbase.com/docs/server-ide/installation).
 
+To checkout demo, visit [demo.slashbase.com](https://demo.slashbase.com).
+
 # Documentation
 
 Detailed documentation is available on [docs.slashbase.com](https://docs.slashbase.com).
-
-# Community
-
-Join our community on [Discord](https://discord.gg/U6fXgm3FAX) and [bip](https://bip.so/slashbase/feed).
 
 # Roadmap
 
