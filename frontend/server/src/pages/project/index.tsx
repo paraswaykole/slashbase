@@ -9,6 +9,7 @@ import emptyStateDatabaseImg from '../../assets/images/empty-state-database.svg'
 import ConfirmModal from '../../components/widgets/confirmModal'
 import Constants from '../../constants'
 import Button from '../../components/ui/Button'
+import { toast } from 'react-hot-toast'
 
 const ProjectPage: FunctionComponent<{}> = () => {
 
@@ -32,6 +33,10 @@ const ProjectPage: FunctionComponent<{}> = () => {
     }
 
     const onDeleteDB = async (dbConnId: string) => {
+        if (project.currentMember?.role.name !== Constants.ROLES.ADMIN) {
+            toast.error("you need to be admin of this project to delete the database")
+            return
+        }
         dispatch(deleteDBConnectionInProject({ dbConnId }))
         setIsDeleting(false)
     }
@@ -53,21 +58,26 @@ const ProjectPage: FunctionComponent<{}> = () => {
             {databases.map((db: DBConnection) => (
                 <DBConnCard key={db.id} dbConn={db} onDeleteDB={onDeleteDB} />
             ))}
-            {project && <NewDBConnButton project={project} />}
-            &nbsp;&nbsp;
-            {project && <Link to={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
-                <Button
-                    text='View Project Members'
-                    icon={<i className={"fas fa-users"} />} 
-                />
-            </Link>}
-            &nbsp;&nbsp;
-            <Button 
-                className="is-danger"
-                text='Delete Project'
-                icon={<i className="fas fa-trash"></i>}
-                onClick={() => { setIsDeleting(true) }}
-            />
+            {project &&
+                <>
+                    <NewDBConnButton project={project} />
+                    &nbsp;&nbsp;
+                    <Link to={Constants.APP_PATHS.PROJECT_MEMBERS.path.replace('[id]', project.id)}>
+                        <Button
+                            text='View Project Members'
+                            icon={<i className={"fas fa-users"} />}
+                        />
+                    </Link>
+                    &nbsp;&nbsp;
+                    <Button
+                        className="is-danger"
+                        text='Delete Project'
+                        disabled={project.currentMember?.role.name !== Constants.ROLES.ADMIN}
+                        icon={<i className="fas fa-trash"></i>}
+                        onClick={() => { setIsDeleting(true) }}
+                    />
+                </>
+            }
             {isDeleting && <ConfirmModal
                 message={`Are you sure you want to delete  ${project.name}?`}
                 onConfirm={onDeleteProject}
