@@ -53,9 +53,6 @@ const Sidebar = () => {
                 }
                 {sidebarView === SidebarViewType.DATABASE && dbConnection &&
                     <React.Fragment>
-                        <Link to={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection?.id)} className="nolink">
-                            <i className="fas fa-database" /> {dbConnection?.name}
-                        </Link>
                         <p className="menu-label">
                             Data Models
                         </p>
