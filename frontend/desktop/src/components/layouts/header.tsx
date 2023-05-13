@@ -70,7 +70,7 @@ const Header = () => {
                     <i className="fas fa-bars" />
                 </button>)}
                 <Link to={Constants.APP_PATHS.HOME.path}>
-                    <button className={`button is-dark ` + [styles.btn , currentProjectOption!==undefined?styles.home:'' ].join(' ')}>
+                    <button className={`button is-dark ` + [styles.btn , currentProjectOption !== undefined ? styles.home : '' ].join(' ')}>
                         <span className="icon">
                             <i className={`fas fa-home`} />
                         </span>
@@ -79,7 +79,7 @@ const Header = () => {
                 <div className={styles.headerCenter}>
              { currentProjectOption!==undefined &&  <div className={`dropdown${isShowingNavDropDown ? ' is-active' : ''}`}>
                     <div className={`dropdown-trigger`}>
-                        <button className={"button is-dark " + [styles.btn,styles.bread].join(' ') } aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingNavDropDown(!isShowingNavDropDown) }}>
+                        <button className={"button is-dark " + [styles.btn,styles.bread , currentDBOption === undefined ? styles.breadEnds : ''].join(' ') } aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingNavDropDown(!isShowingNavDropDown) }}>
                             <span className='icon'>
                             <i className="fas fa-folder" aria-hidden="true"></i>
                             </span>
@@ -108,7 +108,7 @@ const Header = () => {
                 </div>}
                 {currentProjectOption!==undefined && currentDBOption!==undefined &&<div className={`dropdown${isShowingDBDropDown ? ' is-active' : ''}`}>
                     <div className={`dropdown-trigger`}>
-                        <button className={"button is-dark " + [styles.btn,styles.bread,styles.dbBread].join(' ') } aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingDBDropdown(!isShowingDBDropDown) }}>
+                        <button className={"button is-dark " + [styles.btn,styles.bread,styles.dbBread,styles.breadEnds].join(' ') } aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingDBDropdown(!isShowingDBDropDown) }}>
                             <span className='icon'>
                             <i className="fas fa-database" aria-hidden="true"></i>
                             </span>
