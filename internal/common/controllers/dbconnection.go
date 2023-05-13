@@ -26,7 +26,8 @@ func (DBConnectionController) CreateDBConnection(
 	sshUser string,
 	sshPassword string,
 	sshKeyFile string,
-	useSSL bool) (*models.DBConnection, error) {
+	useSSL bool,
+	isTest bool) (*models.DBConnection, error) {
 
 	dbConn, err := models.NewDBConnection(projectID, name, dbtype, scheme, host, port,
 		user, password, dbName, useSSH, sshHost, sshUser, sshPassword, sshKeyFile, useSSL)
@@ -37,6 +38,10 @@ func (DBConnectionController) CreateDBConnection(
 	err = queryengines.TestConnection(dbConn.ToQEConnection(), qemodels.NewQueryConfig(false, nil))
 	if err != nil {
 		return nil, err
+	}
+
+	if isTest {
+		return nil, nil
 	}
 
 	err = dao.DBConnection.CreateDBConnection(dbConn)

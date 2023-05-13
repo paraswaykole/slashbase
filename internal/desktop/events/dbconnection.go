@@ -26,12 +26,34 @@ func (DBConnectionEventListeners) CreateDBConnection(ctx context.Context) {
 		responseEventName := args[0].(string)
 		defer recovery(ctx, responseEventName)
 		data := args[1].(map[string]interface{})
-		dbConn, err := dbConnController.CreateDBConnection(data["projectId"].(string), data["name"].(string), data["type"].(string), data["scheme"].(string), data["host"].(string), data["port"].(string),
-			data["user"].(string), data["password"].(string), data["dbname"].(string), data["useSSH"].(string), data["sshHost"].(string), data["sshUser"].(string), data["sshPassword"].(string), data["sshKeyFile"].(string), data["useSSL"].(bool))
+		dbConn, err := dbConnController.CreateDBConnection(
+			data["projectId"].(string),
+			data["name"].(string),
+			data["type"].(string),
+			data["scheme"].(string),
+			data["host"].(string),
+			data["port"].(string),
+			data["user"].(string),
+			data["password"].(string),
+			data["dbname"].(string),
+			data["useSSH"].(string),
+			data["sshHost"].(string),
+			data["sshUser"].(string),
+			data["sshPassword"].(string),
+			data["sshKeyFile"].(string),
+			data["useSSL"].(bool),
+			data["isTest"].(bool),
+		)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 				"success": false,
 				"error":   err.Error(),
+			})
+			return
+		}
+		if dbConn == nil {
+			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
+				"success": true,
 			})
 			return
 		}

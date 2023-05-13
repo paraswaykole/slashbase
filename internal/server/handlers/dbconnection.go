@@ -28,6 +28,7 @@ func (DBConnectionHandlers) CreateDBConnection(c *fiber.Ctx) error {
 		SSHUser     string `json:"sshUser"`
 		SSHPassword string `json:"sshPassword"`
 		SSHKeyFile  string `json:"sshKeyFile"`
+		IsTest      bool   `json:"isTest"`
 	}
 	if err := c.BodyParser(&createBody); err != nil {
 		return c.JSON(map[string]interface{}{
@@ -35,12 +36,33 @@ func (DBConnectionHandlers) CreateDBConnection(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	dbConn, err := dbConnController.CreateDBConnection(createBody.ProjectID, createBody.Name, createBody.Type, createBody.Scheme, createBody.Host, createBody.Port,
-		createBody.User, createBody.Password, createBody.DBName, createBody.UseSSH, createBody.SSHHost, createBody.SSHUser, createBody.SSHPassword, createBody.SSHKeyFile, createBody.UseSSL)
+	dbConn, err := dbConnController.CreateDBConnection(
+		createBody.ProjectID,
+		createBody.Name,
+		createBody.Type,
+		createBody.Scheme,
+		createBody.Host,
+		createBody.Port,
+		createBody.User,
+		createBody.Password,
+		createBody.DBName,
+		createBody.UseSSH,
+		createBody.SSHHost,
+		createBody.SSHUser,
+		createBody.SSHPassword,
+		createBody.SSHKeyFile,
+		createBody.UseSSL,
+		createBody.IsTest,
+	)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,
 			"error":   err.Error(),
+		})
+	}
+	if dbConn == nil {
+		return c.JSON(map[string]interface{}{
+			"success": true,
 		})
 	}
 	return c.JSON(map[string]interface{}{
