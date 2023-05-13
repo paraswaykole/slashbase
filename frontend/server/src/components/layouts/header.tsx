@@ -19,7 +19,7 @@ const Header = () => {
     const dispatch = useAppDispatch()
 
     const projects: Project[] = useAppSelector(selectProjects)
-    const dbConnections :DBConnection[]= useAppSelector(selectAllDBConnections)
+    const dbConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
     const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
 
@@ -44,30 +44,29 @@ const Header = () => {
         dispatch(setIsShowingSidebar(!isShowingSidebar))
     }
 
-    let currentProjectOption: String | undefined  = undefined;
-    let currentDBOption: string  | undefined =undefined;
+    let currentProjectOption: String | undefined = undefined;
+    let currentDBOption: string | undefined = undefined;
     if (location.pathname.startsWith('/project'))
-    currentProjectOption = String(params.id)
+        currentProjectOption = String(params.id)
     else if (location.pathname.startsWith('/db')) {
         if (currentDBConnection)
-        currentProjectOption = currentDBConnection?.projectId
-        currentDBOption= currentDBConnection?.id
+            currentProjectOption = currentDBConnection?.projectId
+        currentDBOption = currentDBConnection?.id
     }
     const projectOptions = [
 
         ...projects.map((x: Project) => ({ value: x.id, label: x.name, path: Constants.APP_PATHS.PROJECT.path.replace('[id]', x.id) }))
     ]
-    const dbOptions =[
-        ...dbConnections.filter((x:DBConnection)=>(x.projectId===currentProjectOption)).map((x:DBConnection)=>({value :x.id , label: x.name, path: Constants.APP_PATHS.DB.path.replace('[id]',x.id) }))
+    const dbOptions = [
+        ...dbConnections.filter((x: DBConnection) => (x.projectId === currentProjectOption)).map((x: DBConnection) => ({ value: x.id, label: x.name, path: Constants.APP_PATHS.DB.path.replace('[id]', x.id) }))
     ]
-    console.log(dbOptions);
 
     return (
         <header className={styles.header}>
             <div className={styles.leftBtns}>
-            {!isShowingSidebar?(<button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
+                {!isShowingSidebar ? (<button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
                     <i className="fas fa-bars" />
-                </button>):(<button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
+                </button>) : (<button className={"button is-dark " + [styles.btn].join(' ')} onClick={toggleSidebar}>
                     <i className="fas fa-bars" />
                 </button>)}
                 <Link to={Constants.APP_PATHS.HOME.path}>
@@ -77,65 +76,65 @@ const Header = () => {
                         </span>
                     </button>
                 </Link>
-                    <div className={styles.headerCenter}>
-                    { currentProjectOption!==undefined &&  <div className={`dropdown${isShowingNavDropDown ? ' is-active' : ''}`}>
-                    <div className={`dropdown-trigger`}>
-                        <button className={"button is-dark " + [styles.btn,styles.bread, currentDBOption === undefined ? styles.breadEnds : ''].join(' ') } aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingNavDropDown(!isShowingNavDropDown) }}>
-                            <span className='icon'>
-                            <i className="fas fa-folder" aria-hidden="true"></i>
-                            </span>
-                            <span>{projectOptions.find(x => x.value === currentProjectOption)?.label}</span>
-                            <span className="icon">
-                                <i className="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                        </button>
-                    </div>
-                    <OutsideClickHandler onOutsideClick={() => { setIsShowingNavDropDown(false) }}>
-                        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                            <div className="dropdown-content">
-                                {projectOptions.map((x) => {
-                                    return (
-                                        <React.Fragment key={x.value}>
-                                            <a onClick={() => { onNavigate(x) }} className={`dropdown-item${x.value === currentProjectOption ? ' is-active' : ''}`}>
-                                                {x.label}
-                                            </a>
-                                            {x.value === 'home' && <hr className="dropdown-divider" />}
-                                        </React.Fragment>
-                                    )
-                                })}
-                            </div>
+                <div className={styles.headerCenter}>
+                    {currentProjectOption !== undefined && <div className={`dropdown${isShowingNavDropDown ? ' is-active' : ''}`}>
+                        <div className={`dropdown-trigger`}>
+                            <button className={"button is-dark " + [styles.btn, styles.bread, currentDBOption === undefined ? styles.breadEnds : ''].join(' ')} aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingNavDropDown(!isShowingNavDropDown) }}>
+                                <span className='icon'>
+                                    <i className="fas fa-folder" aria-hidden="true"></i>
+                                </span>
+                                <span>{projectOptions.find(x => x.value === currentProjectOption)?.label}</span>
+                                <span className="icon">
+                                    <i className="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
                         </div>
-                    </OutsideClickHandler>
-                </div>}
-                {currentProjectOption!==undefined && currentDBOption!==undefined &&<div className={`dropdown${isShowingDBDropDown ? ' is-active' : ''}`}>
-                    <div className={`dropdown-trigger`}>
-                        <button className={"button is-dark " + [styles.btn,styles.bread,styles.dbBread,styles.breadEnds].join(' ') } aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingDBDropdown(!isShowingDBDropDown) }}>
-                            <span className='icon'>
-                            <i className="fas fa-database" aria-hidden="true"></i>
-                            </span>
-                            <span>{dbOptions.find(x => x.value === currentDBOption)?.label}</span>
-                            <span className="icon">
-                                <i className="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                        </button>
-                    </div>
-                    <OutsideClickHandler onOutsideClick={() => { setIsShowingDBDropdown(false) }}>
-                        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                            <div className="dropdown-content">
-                                {dbOptions.map((x) => {
-                                    return (
-                                        <React.Fragment key={x.value}>
-                                            <a onClick={() => { onNavigate(x) }} className={`dropdown-item${x.value === currentDBOption ? ' is-active' : ''}`}>
-                                                {x.label}
-                                            </a>
-                                            {x.value === 'home' && <hr className="dropdown-divider" />}
-                                        </React.Fragment>
-                                    )
-                                })}
+                        <OutsideClickHandler onOutsideClick={() => { setIsShowingNavDropDown(false) }}>
+                            <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                <div className="dropdown-content">
+                                    {projectOptions.map((x) => {
+                                        return (
+                                            <React.Fragment key={x.value}>
+                                                <a onClick={() => { onNavigate(x) }} className={`dropdown-item${x.value === currentProjectOption ? ' is-active' : ''}`}>
+                                                    {x.label}
+                                                </a>
+                                                {x.value === 'home' && <hr className="dropdown-divider" />}
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </div>
                             </div>
+                        </OutsideClickHandler>
+                    </div>}
+                    {currentProjectOption !== undefined && currentDBOption !== undefined && <div className={`dropdown${isShowingDBDropDown ? ' is-active' : ''}`}>
+                        <div className={`dropdown-trigger`}>
+                            <button className={"button is-dark " + [styles.btn, styles.bread, styles.dbBread, styles.breadEnds].join(' ')} aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingDBDropdown(!isShowingDBDropDown) }}>
+                                <span className='icon'>
+                                    <i className="fas fa-database" aria-hidden="true"></i>
+                                </span>
+                                <span>{dbOptions.find(x => x.value === currentDBOption)?.label}</span>
+                                <span className="icon">
+                                    <i className="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </button>
                         </div>
-                    </OutsideClickHandler>
-                </div>}
+                        <OutsideClickHandler onOutsideClick={() => { setIsShowingDBDropdown(false) }}>
+                            <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                <div className="dropdown-content">
+                                    {dbOptions.map((x) => {
+                                        return (
+                                            <React.Fragment key={x.value}>
+                                                <a onClick={() => { onNavigate(x) }} className={`dropdown-item${x.value === currentDBOption ? ' is-active' : ''}`}>
+                                                    {x.label}
+                                                </a>
+                                                {x.value === 'home' && <hr className="dropdown-divider" />}
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </OutsideClickHandler>
+                    </div>}
                 </div>
             </div>
             <div className={styles.headerMenu}>
