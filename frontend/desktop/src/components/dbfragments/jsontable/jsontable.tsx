@@ -16,12 +16,12 @@ type JsonTablePropType = {
     mName: string,
     isInteractive: boolean,
     showHeader?: boolean,
-    onRefresh:()=> void,
+    onRefresh: () => void,
     onFilterChanged: (newFilter: string[] | undefined) => void,
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, onFilterChanged, onSortChanged ,onRefresh}: JsonTablePropType) => {
+const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, onFilterChanged, onSortChanged, onRefresh }: JsonTablePropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -171,17 +171,17 @@ const JsonTable = ({ queryData, dbConnection, mName, isInteractive, showHeader, 
                         </div>
                     </div>
                     {isInteractive && !isEditing && <React.Fragment>
-                        <div className="column is-3 is-flex is-justify-content-flex-end">
+                        <div className="column is-3 gap-3 is-flex is-justify-content-flex-end">
+                            <button className="button is-secondary mgr-medium" onClick={onRefresh}>
+                                <span className="icon is-small">
+                                    <i className="fas fa-refresh" />
+                                </span>
+                            </button>
+                            &nbsp;&nbsp;
                             <button className="button is-primary" onClick={() => { setIsEditing(true) }}>
                                 <span className="icon is-small">
                                     <i className="fas fa-pen" />
                                 </span>
-                            </button>
-                            <button className="button is-primary" onClick={onRefresh}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-refresh" />
-                                </span>
-                                Refresh
                             </button>
                         </div>
                     </React.Fragment>}

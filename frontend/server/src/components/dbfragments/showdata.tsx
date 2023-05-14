@@ -4,7 +4,7 @@ import { DBConnection, DBDataModel, Project, Tab } from '../../data/models'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
-import { selectCurrentProject } from '../../redux/projectsSlice'
+import { ProjectPermissions, selectCurrentProject, selectProjectMemberPermissions } from '../../redux/projectsSlice'
 import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
@@ -20,6 +20,7 @@ const DBShowDataFragment = () => {
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
+    const projectMemberPermissions: ProjectPermissions = useAppSelector(selectProjectMemberPermissions)
     const currentTab: Tab = useContext(TabContext)!
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
@@ -109,6 +110,7 @@ const DBShowDataFragment = () => {
                     queryData={queryData}
                     querySort={querySort}
                     isInteractive={true}
+                    isReadOnly={projectMemberPermissions.readOnly}
                     showHeader={true}
                     onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
@@ -123,6 +125,7 @@ const DBShowDataFragment = () => {
                     queryData={queryData}
                     querySort={querySort}
                     isInteractive={true}
+                    isReadOnly={projectMemberPermissions.readOnly}
                     showHeader={true}
                     onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
@@ -135,6 +138,7 @@ const DBShowDataFragment = () => {
                     mName={String(mname)}
                     queryData={queryData}
                     isInteractive={true}
+                    isReadOnly={projectMemberPermissions.readOnly}
                     showHeader={true}
                     onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}

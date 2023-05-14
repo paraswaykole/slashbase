@@ -26,7 +26,7 @@ func (ConsoleHandlers) RunCommand(c *fiber.Ctx) error {
 	analytics.SendRunCommandEvent()
 	output := consoleController.RunCommand(authUser, body.DBConnectionID, body.CmdString)
 	return c.JSON(map[string]interface{}{
-		"success": false,
+		"success": true,
 		"data":    output,
 	})
 }

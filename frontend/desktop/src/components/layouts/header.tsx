@@ -148,12 +148,12 @@ const Header = () => {
                             <span  className="icon is-small">
                                 <i className="fas fa-sync" />
                             </span>
-
                         </button>
                         <Tooltip anchorId="refreshBtn" />
                     </div> 
                     }
-                </div>}
+                </div>
+    }
             </div>
             </div>
             <div className={styles.headerMenu}>
