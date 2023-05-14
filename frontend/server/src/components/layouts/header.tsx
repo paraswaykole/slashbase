@@ -8,8 +8,9 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { selectProjects } from '../../redux/projectsSlice'
 import { selectAllDBConnections } from '../../redux/allDBConnectionsSlice'
-import { selectDBConnection } from '../../redux/dbConnectionSlice'
-
+import { selectDBConnection,selectIsDBConnected, getDBDataModels, resetDBDataModels } from '../../redux/dbConnectionSlice'
+import { Tooltip } from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css'
 const Header = () => {
 
     let location = useLocation()
@@ -21,6 +22,7 @@ const Header = () => {
     const projects: Project[] = useAppSelector(selectProjects)
     const dbConnections :DBConnection[]= useAppSelector(selectAllDBConnections)
     const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
+    const isDBConnected = useAppSelector(selectIsDBConnected)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
 
 
@@ -60,7 +62,11 @@ const Header = () => {
     const dbOptions =[
         ...dbConnections.filter((x:DBConnection)=>(x.projectId===currentProjectOption)).map((x:DBConnection)=>({value :x.id , label: x.name, path: Constants.APP_PATHS.DB.path.replace('[id]',x.id) }))
     ]
-    console.log(dbOptions);
+
+    const refreshDataModels = () => {
+        dispatch(resetDBDataModels())
+        dispatch(getDBDataModels({ dbConnId: currentDBConnection!.id }))
+    }
 
     return (
         <header className={styles.header}>
@@ -135,6 +141,17 @@ const Header = () => {
                             </div>
                         </div>
                     </OutsideClickHandler>
+                    { isDBConnected === true && currentDBOption !== undefined &&
+                    <div>
+                        <button id="refreshBtn" data-tooltip-content="Refresh data models"  className={" button is-dark is-small" + [styles.btn].join(' ')} onClick={refreshDataModels} >
+                            <span  className="icon is-small">
+                                <i className="fas fa-sync" />
+                            </span>
+
+                        </button>
+                        <Tooltip anchorId="refreshBtn" />
+                    </div> 
+                    }
                 </div>}
                 </div>
             </div>
