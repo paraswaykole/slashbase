@@ -19,6 +19,7 @@ type TablePropType = {
     mSchema: string,
     mName: string,
     isInteractive: boolean,
+    isReadOnly: boolean,
     showHeader?: boolean,
     onRefresh: () => void,
     querySort?: string[],
@@ -26,7 +27,7 @@ type TablePropType = {
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged, onRefresh }: TablePropType) => {
+const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, isReadOnly, showHeader, querySort, onFilterChanged, onSortChanged, onRefresh }: TablePropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -248,11 +249,11 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                                 icon={<i className="fas fa-refresh" />}
                                 onClick={onRefresh}
                             />
-                            <Button
+                            {!isReadOnly && <Button
                                 className="is-primary"
                                 icon={<i className="fas fa-pen" />}
                                 onClick={() => { setIsEditing(true) }}
-                            />
+                            />}
                         </div>
                     </React.Fragment>}
 
