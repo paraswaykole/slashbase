@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { AppState } from './store'
 import apiService from '../network/apiService'
-import { stat } from 'fs'
 
 export interface OutputBlock {
     text: string

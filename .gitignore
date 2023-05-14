@@ -12,7 +12,7 @@ __debug_bin
 *.dll
 *.so
 *.dylib
-
+*.syso
 # Test binary, built with `go test -c`
 *.test
 

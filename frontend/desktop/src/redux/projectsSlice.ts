@@ -50,7 +50,6 @@ export const createNewProject = createAsyncThunk(
       }
     }
     const result = await eventService.createNewProject(payload.projectName)
-    console.log(result)
     const project = result.success ? result.data : null
     return {
       success: true,
