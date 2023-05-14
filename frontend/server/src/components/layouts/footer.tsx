@@ -33,8 +33,8 @@ const Footer = () => {
                 {showStatus && isDBConnected !== undefined &&
                     (<button className={styles.button + " is-small"}>
                         <span className="icon is-small">
-                        {!isDBConnected && <i className="fa-solid fa-circle-exclamation" style={{color:"#ff0000"}} />}
-                        {isDBConnected && <i className="fas fa-circle" style={{color:"#11ff00"}} />}
+                            {!isDBConnected && <i className="fa-solid fa-circle-exclamation" style={{ color: "#ff0000" }} />}
+                            {isDBConnected && <i className="fas fa-circle" style={{ color: "#11ff00" }} />}
                         </span>
                         <span>{(isDBConnected !== undefined && isDBConnected) ? " connected" : " not connected"}</span>
                     </button>)
