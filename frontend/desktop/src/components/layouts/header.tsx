@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { selectProjects } from '../../redux/projectsSlice'
 import { selectAllDBConnections } from '../../redux/allDBConnectionsSlice'
-import { selectDBConnection, selectIsDBConnected, getDBDataModels, resetDBDataModels } from '../../redux/dbConnectionSlice'
+import { selectDBConnection, getDBDataModels, resetDBDataModels } from '../../redux/dbConnectionSlice'
 import utils from '../../lib/utils'
 import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css'
@@ -24,7 +24,6 @@ const Header = () => {
     const projects: Project[] = useAppSelector(selectProjects)
     const dbConnections: DBConnection[] = useAppSelector(selectAllDBConnections)
     const currentDBConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
-    const isDBConnected = useAppSelector(selectIsDBConnected)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
 
 
@@ -142,7 +141,7 @@ const Header = () => {
                                 </div>
                             </div>
                         </OutsideClickHandler>
-                        {isDBConnected === true && currentDBOption !== undefined &&
+                        {currentDBOption !== undefined &&
                             <div>
                                 <button id="refreshBtn" data-tooltip-content="Refresh data models" className={" button is-dark is-small" + [styles.btn].join(' ')} onClick={refreshDataModels} >
                                     <span className="icon is-small">
