@@ -10,7 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import InputTextField from '../../components/ui/Input/InputField'
 import PasswordInputField from '../../components/ui/Input/PasswordInputField'
 import Button from '../../components/ui/Button'
-import styles from "./newdb.module.scss"
+
 const NewDBPage: FunctionComponent<{}> = () => {
 
     const { id } = useParams()
@@ -39,9 +39,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
         dbSSHPassword: "",
         dbSSHKeyFile: "",
         dbUseSSL: false,
-        // isTest:false
     })
-    const [ showAdditional, setShowAdditional] = useState<boolean>(false);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const type = e.target.type
         const name = e.target.name;
@@ -130,21 +128,8 @@ const NewDBPage: FunctionComponent<{}> = () => {
 
     return (
         <>
-            <h1 className={"" + [styles.center].join('')}>Add new database connection</h1>
-            <div className={"" + [styles.form].join('')} >
-                <div className={"field"}>
-                    <label className="label">Database Type:</label>
-                    <div className="control">
-                        <div className={"" + [styles.dbSelect].join('')}>
-                            <div className={'' + [ data.dbType === DBConnType.POSTGRES ? styles.active : styles.card].join('')} onClick={(e) => {setData((prev)=>({...prev,dbType:DBConnType.POSTGRES,dbScheme:""})) }}>
-                            <h6>POSTGRES</h6></div>
-                            <div className={'' + [ data.dbType === DBConnType.MONGO ? styles.active : styles.card].join('')} onClick={(e) => {setData((prev)=>({...prev,dbType:DBConnType.MONGO,dbScheme:""}))}}>
-                            <h6>MONGODB</h6></div>
-                            <div className={'' + [ data.dbType === DBConnType.MYSQL ? styles.active : styles.card].join('')} onClick={(e) => {setData((prev)=>({...prev,dbType:DBConnType.MYSQL,dbScheme:""}))}}>
-                            <h6>MYSQL</h6></div>
-                        </div>
-                    </div>
-                </div>
+            <h1>Add new database connection</h1>
+            <div className="form-container">
                 <InputTextField
                     label='Display Name: '
                     name='dbName'
@@ -153,6 +138,18 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     placeholder="Enter a display name for database"
                     style={inputError.error_1 ? inputStyle : normal}
                 />
+                <div className="field">
+                    <label className="label">Database Type:</label>
+                    <div className="control">
+                        <div className="select">
+                            <select name="dbType" style={normal} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { setData((prev) => ({ ...prev, [e.target.name]: e.target.value, dbScheme: "" })) }}>
+                                <option value={DBConnType.POSTGRES}>PostgreSQL</option>
+                                <option value={DBConnType.MONGO}>MongoDB</option>
+                                <option value={DBConnType.MYSQL}>MySQL</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 {data.dbType === DBConnType.MONGO && <div className="field">
                     <label className="label">Scheme:</label>
                     <div className="control">
@@ -205,9 +202,9 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     placeholder="Enter database password"
                     style={normal}
                 />
-               {showAdditional && <div className="field">
+                <div className="field">
                     <label className="label">Use SSH:</label>
-                        <div className="select">
+                    <div className="select">
                         <select
                             name='dbUseSSH'
                             value={data.dbUseSSH}
@@ -232,7 +229,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                             </option>
                         </select>
                     </div>
-                </div>}
+                </div>
                 {data.dbType === DBConnType.MONGO && <div className="field">
                     <label className="checkbox">
                         <input
@@ -245,6 +242,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         <span className="help">If you are connecting to database which enforce/require SSL connection. (Example: Azure CosmosDB)</span>
                     </label>
                 </div>}
+
                 {data.dbUseSSH !== DBConnectionUseSSHType.NONE &&
                     <>
                         <InputTextField
@@ -290,20 +288,10 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         }
                     </>
                 }
-                <div className={"" + [styles.flex].join('')}>
-                <div className={""+[styles.center].join('')}>{!adding && addingError && <span className="help is-danger" style={{ display: "inline-flex" }}>&nbsp;&nbsp;{addingError}</span>}</div>
-                    <div>
-                        <button className={"" + [styles.btn].join("")} onClick={()=>{ setShowAdditional(!showAdditional) }}>Advanced options {showAdditional ? "-" : " + "}</button>
-                    </div>
-                <div className={"" + [styles.flex,styles.reverse].join('')}>
+                <div className="control">
+                    {!adding && <Button className="is-primary" text='Add' onClick={startAddingDB}/>}
                     {adding && <Button className="is-primary" text='Adding...'/>}
-                </div>
-                <div className={"" + [styles.reverse].join('')}>
-                    {!adding && <>
-                        <Button className={"" + [styles.secondaryBtn].join('')} text='Test Connection'/>
-                        <Button className="is-primary" text='Add' onClick={startAddingDB}/>
-                    </>}
-                </div>
+                    {!adding && addingError && <span className="help is-danger" style={{ display: "inline-flex" }}>&nbsp;&nbsp;{addingError}</span>}
                 </div>
             </div>
         </>

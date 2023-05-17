@@ -61,12 +61,12 @@ code {
 .appcontainer {
   width: 100%;
   min-height: 100vh;
-  background: #fcfaf7;
+  background: white;
 }
 
 .appcontent {
   width: 100%;
-  height: calc(100vh - 60px);
+  height: 100vh;
   display: flex;
   flex-direction: row;
 }
