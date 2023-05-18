@@ -4,13 +4,14 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectProjects } from '../../redux/projectsSlice'
 import { AddDBConnPayload } from '../../events/payloads'
 import { DBConnectionUseSSHType, DBConnType } from '../../data/defaults'
-import { addNewDBConn } from '../../redux/allDBConnectionsSlice'
+import { addNewDBConn ,testNewDBConn} from '../../redux/allDBConnectionsSlice'
 import Constants from '../../constants'
 import { useNavigate, useParams } from 'react-router-dom'
 import InputTextField from '../../components/ui/Input/InputField'
 import PasswordInputField from '../../components/ui/Input/PasswordInputField'
 import Button from '../../components/ui/Button'
 import styles from "./newdb.module.scss"
+import toast, { Toaster } from 'react-hot-toast';
 const NewDBPage: FunctionComponent<{}> = () => {
 
     const { id } = useParams()
@@ -21,6 +22,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
     const project = projects.find(x => x.id === id)
     const [addingError, setAddingError] = useState(false)
     const [adding, setAdding] = useState(false)
+    const [testing , setTesting] = useState<boolean>(false)
     const [inputError, setInputError] = useState({
         error_1: false, error_2: false, error_3: false, error_4: false
     })
@@ -39,7 +41,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
         dbSSHPassword: "",
         dbSSHKeyFile: "",
         dbUseSSL: false,
-        // isTest:false
+        isTest:false
     })
     const [ showAdditional, setShowAdditional] = useState<boolean>(false);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -78,9 +80,24 @@ const NewDBPage: FunctionComponent<{}> = () => {
     // if (project.currentMember?.role.name !== Constants.ROLES.ADMIN) {
     // 	return <DefaultErrorPage statusCode={401} title="Unauthorized" />
     // }
-
+    const errorHandler = (e:any, payload:any) => {
+        var f1 = false, f2 = false, f3 = false, f4 = false;
+        (payload.name.length === 0) ? f1 = true : f1 = false;
+        (payload.host.length === 0) ? f2 = true : f2 = false;
+        (payload.port.length === 0) ? f3 = true : f3 = false;
+        (payload.dbname.length === 0) ? f4 = true : f4 = false;
+        setInputError({
+            ...inputError,
+            error_1: f1,
+            error_2: f2,
+            error_3: f3,
+            error_4: f4
+        })
+        setAddingError(e)
+    }
     const startAddingDB = async () => {
         setAdding(true)
+        setAddingError(false);
         const payload: AddDBConnPayload = {
             projectId: project.id,
             name: data.dbName,
@@ -97,27 +114,47 @@ const NewDBPage: FunctionComponent<{}> = () => {
             sshPassword: data.dbSSHPassword,
             sshKeyFile: data.dbSSHKeyFile,
             useSSL: data.dbUseSSL,
+            isTest:false
         }
         try {
             await dispatch(addNewDBConn(payload)).unwrap()
             navigate(Constants.APP_PATHS.PROJECT.path.replace('[id]', project.id))
         } catch (e: any) {
-            var f1 = false, f2 = false, f3 = false, f4 = false;
-            (payload.name.length === 0) ? f1 = true : f1 = false;
-            (payload.host.length === 0) ? f2 = true : f2 = false;
-            (payload.port.length === 0) ? f3 = true : f3 = false;
-            (payload.dbname.length === 0) ? f4 = true : f4 = false;
-            setInputError({
-                ...inputError,
-                error_1: f1,
-                error_2: f2,
-                error_3: f3,
-                error_4: f4
-            })
-            setAddingError(e)
+           errorHandler(e,payload);
         }
 
         setAdding(false)
+    }
+    const testDBConn = async () => {
+        setTesting(true)
+        setAddingError(false);
+        const payload: AddDBConnPayload = {
+            projectId: project.id,
+            name: data.dbName,
+            type: data.dbType,
+            scheme: data.dbScheme,
+            host: data.dbHost,
+            port: data.dbPort,
+            password: data.dbPassword,
+            user: data.dbUsername,
+            dbname: data.dbDatabase,
+            useSSH: data.dbUseSSH,
+            sshHost: data.dbSSHHost,
+            sshUser: data.dbSSHUser,
+            sshPassword: data.dbSSHPassword,
+            sshKeyFile: data.dbSSHKeyFile,
+            useSSL: data.dbUseSSL,
+            isTest:true
+        }
+        try {
+            await dispatch(testNewDBConn(payload)).unwrap()
+            success()
+        } catch (e: any) {
+            errorHandler(e,payload)
+        }
+       
+        setTesting(false)
+        
     }
 
     const normal = {
@@ -128,6 +165,13 @@ const NewDBPage: FunctionComponent<{}> = () => {
         border: '1px solid red'
     }
 
+    const success = ()=>{
+        toast("Testing Successful",{
+            position:"bottom-center",
+            icon:"✅"
+        })
+    }
+    
     return (
         <>
             <h1 className={"" + [styles.center].join('')}>Add new database connection</h1>
@@ -294,19 +338,14 @@ const NewDBPage: FunctionComponent<{}> = () => {
                     {!adding && addingError && <span className="help is-danger" style={{ display: "inline-flex" }}>&nbsp;&nbsp;{addingError}</span>}
                 </div>
                 <div className={"" + [styles.flex].join('')}>
-
                     <div>
                         <button className={"" + [styles.btn].join("")} onClick={()=>{ setShowAdditional(!showAdditional) }}>Advanced options {showAdditional ? "-" : " + "}</button>
                     </div>
-                <div className={"" + [styles.flex,styles.reverse].join('')}>
-                    {adding && <Button className="is-primary" text='Adding...'/>}
-                </div>
-                <div className={"" + [styles.reverse].join('')}>
-                    {!adding && <>
-                        <Button className={"" + [styles.secondaryBtn].join('')} text='Test Connection'/>
-                        <Button className="is-primary" text='Add' onClick={startAddingDB}/>
-                    </>}
-                </div>
+                    <div className={"" + [styles.reverse].join('')}>
+                        <Button onClick={()=>{testDBConn()}} className={"" + [styles.secondaryBtn].join('')} text={`${!testing ? 'Test Connection' : 'Testing...'}`}/>
+                        <Button className="is-primary" text={`${!adding ? 'Add' : 'Adding...'}`} onClick={startAddingDB}/>
+                        <Toaster/>
+                    </div>
                 </div>
             </div>
         </>
