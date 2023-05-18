@@ -67,6 +67,12 @@
         gap: 15px;
     }
 }
+.right{
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    padding: 2px;
+}
 .secondaryBtn{
     background-color: rgb(199, 199, 199);
     color: black;

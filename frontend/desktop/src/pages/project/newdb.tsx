@@ -290,8 +290,11 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         }
                     </>
                 }
+                <div className={""+[styles.right].join('')}>
+                    {!adding && addingError && <span className="help is-danger" style={{ display: "inline-flex" }}>&nbsp;&nbsp;{addingError}</span>}
+                </div>
                 <div className={"" + [styles.flex].join('')}>
-                <div className={""+[styles.center].join('')}>{!adding && addingError && <span className="help is-danger" style={{ display: "inline-flex" }}>&nbsp;&nbsp;{addingError}</span>}</div>
+
                     <div>
                         <button className={"" + [styles.btn].join("")} onClick={()=>{ setShowAdditional(!showAdditional) }}>Advanced options {showAdditional ? "-" : " + "}</button>
                     </div>
