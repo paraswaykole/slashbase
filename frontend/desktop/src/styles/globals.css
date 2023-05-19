@@ -61,7 +61,7 @@ code {
 .appcontainer {
   width: 100%;
   min-height: 100vh;
-  background: white;
+  background: #fcfaf7;
 }
 
 .appcontent {

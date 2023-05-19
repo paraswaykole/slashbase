@@ -166,7 +166,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
     }
 
     const success = ()=>{
-        toast("Testing Successful",{
+        toast("Successfully connected",{
             position:"bottom-center",
             icon:"✅"
         })
@@ -342,7 +342,7 @@ const NewDBPage: FunctionComponent<{}> = () => {
                         <button className={"" + [styles.btn].join("")} onClick={()=>{ setShowAdditional(!showAdditional) }}>Advanced options {showAdditional ? "-" : " + "}</button>
                     </div>
                     <div className={"" + [styles.reverse].join('')}>
-                        <Button onClick={()=>{testDBConn()}} className={"" + [styles.secondaryBtn].join('')} text={`${!testing ? 'Test Connection' : 'Testing...'}`}/>
+                        <Button onClick={()=>{testDBConn()}} className={"is-light" + [styles.secondaryBtn].join('')} text={`${!testing ? 'Test Connection' : 'Testing...'}`}/>
                         <Button className="is-primary" text={`${!adding ? 'Add' : 'Adding...'}`} onClick={startAddingDB}/>
                         <Toaster/>
                     </div>
