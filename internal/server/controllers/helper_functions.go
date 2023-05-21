@@ -3,7 +3,6 @@ package controllers
 import (
 	"errors"
 
-	commondao "github.com/slashbaseide/slashbase/internal/common/dao"
 	common "github.com/slashbaseide/slashbase/internal/common/models"
 	"github.com/slashbaseide/slashbase/internal/server/dao"
 	"github.com/slashbaseide/slashbase/internal/server/models"
@@ -37,7 +36,8 @@ func getIfAuthUserProjectMemberForProject(authUser *models.User, projectID strin
 func getQueryConfigsForProjectMember(projectMember *models.ProjectMember, dbConn *common.DBConnection) *qemodels.QueryConfig {
 	createLog := func(query string) {
 		queryLog := common.NewQueryLog(dbConn.ID, query)
-		go commondao.DBQueryLog.CreateDBQueryLog(queryLog)
+		userQueryLog := models.NewUserQueryLog(*queryLog, projectMember.UserID)
+		go dao.DBQueryLog.CreateDBQueryLog(userQueryLog)
 	}
 	rolePermissions, _ := dao.RolePermission.GetRolePermissionsForRole(projectMember.RoleID)
 	readOnly := false

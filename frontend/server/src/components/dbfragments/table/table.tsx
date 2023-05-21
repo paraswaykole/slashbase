@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../../redux/hooks'
 import { deleteDBData, setQueryData, updateDBSingleData } from '../../../redux/dataModelSlice'
 import { DBConnType } from '../../../data/defaults'
 import TabContext from '../../layouts/tabcontext'
+import Button from '../../ui/Button'
 
 
 type TablePropType = {
@@ -18,13 +19,15 @@ type TablePropType = {
     mSchema: string,
     mName: string,
     isInteractive: boolean,
+    isReadOnly: boolean,
     showHeader?: boolean,
+    onRefresh: () => void,
     querySort?: string[],
     onFilterChanged: (newFilter: string[] | undefined) => void,
     onSortChanged: (newSort: string[] | undefined) => void,
 }
 
-const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHeader, querySort, onFilterChanged, onSortChanged }: TablePropType) => {
+const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, isReadOnly, showHeader, querySort, onFilterChanged, onSortChanged, onRefresh }: TablePropType) => {
 
     const dispatch = useAppDispatch()
 
@@ -104,7 +107,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
         columns,
         data,
         defaultColumn,
-        initialState: { selectedRowIds: {}},
+        initialState: { selectedRowIds: {} },
         ...{ editCell, resetEditCell, onSaveCell }
     },
         useRowSelect,
@@ -169,7 +172,7 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
     }
 
     const changeSort = (newSortIdx: string) => {
-        if (!isInteractive) {
+        if (!isInteractive || newSortIdx === "selection") {
             return
         }
         const newSortName: string = displayColumns.find((_, i) => {
@@ -231,49 +234,55 @@ const Table = ({ queryData, dbConnection, mSchema, mName, isInteractive, showHea
                                 <input className="input" type="text" placeholder="Value" value={filterValue[2]} onChange={e => handleFilterChange(e, 2)} />
                             </p>
                             <p className="control">
-                                <button className="button" onClick={onFilter}>Filter</button>
+                                <Button text='Filter' onClick={onFilter} />
                             </p>
                             {(filterValue[0] !== 'default' || filterValue[1] !== 'default') && <p className="control">
-                                <button className="button" onClick={onFilterClear} >
-                                    <span className="icon is-small">
-                                        <i className="fas fa-circle-xmark" />
-                                    </span>
-                                </button>
+                                <Button icon={<i className="fas fa-circle-xmark" />} onClick={onFilterClear} />
                             </p>}
                         </div>
                     </div>
                     {isInteractive && !isEditing && <React.Fragment>
-                        <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button is-primary" onClick={() => { setIsEditing(true) }}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-pen" />
-                                </span>
-                            </button>
+                        <div className="column is-3 gap-3 is-flex is-justify-content-flex-end">
+                            <Button
+                                className="is-secondary mgr-medium"
+                                style={{ marginRight: 16 }}
+                                icon={<i className="fas fa-refresh" />}
+                                onClick={onRefresh}
+                            />
+                            {!isReadOnly && <Button
+                                className="is-primary"
+                                icon={<i className="fas fa-pen" />}
+                                onClick={() => { setIsEditing(true) }}
+                            />}
                         </div>
                     </React.Fragment>}
+
                     {isInteractive && isEditing && <React.Fragment>
                         <div className="column is-3 is-flex is-justify-content-flex-end">
-                            <button className="button" disabled={selectedIDs.length === 0} onClick={() => { setIsDeleting(true) }}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-trash" />
-                                </span>
-                            </button>
+                            <Button
+                                icon={<i className="fas fa-trash" />}
+                                disabled={selectedIDs.length === 0}
+                                onClick={() => { setIsDeleting(true) }}
+                            />
                             &nbsp;&nbsp;
-                            <button className="button is-secondary" onClick={() => { setIsAdding(true) }}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-plus" />
-                                </span>
-                            </button>
+                            <Button
+                                className="is-secondary"
+                                icon={<i className="fas fa-plus" />}
+                                onClick={() => { setIsAdding(true) }}
+                            />
                             &nbsp;&nbsp;
-                            <button className="button is-primary" onClick={() => { setIsEditing(false) }}>
-                                <span className="icon is-small">
-                                    <i className="fas fa-check" />
-                                </span>
-                            </button>
+                            <Button
+                                className="is-primary"
+                                icon={<i className="fas fa-check" />}
+                                onClick={() => { setIsEditing(false) }}
+                            />
                         </div>
                     </React.Fragment>}
+
+
                 </div>
             </div>}
+
             {isAdding &&
                 <AddModal
                     queryData={queryData}

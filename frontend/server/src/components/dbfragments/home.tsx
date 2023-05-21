@@ -7,6 +7,7 @@ import DBDataModelCard from '../cards/dbdatamodelcard/dbdatamodelcard'
 import { TabType } from '../../data/defaults'
 import { updateActiveTab } from '../../redux/tabsSlice'
 import TabContext from '../layouts/tabcontext'
+import Button from '../ui/Button'
 
 type DBHomePropType = {
 }
@@ -43,14 +44,16 @@ const DBHomeFragment = ({ }: DBHomePropType) => {
                         <DBDataModelCard key={x.schemaName + x.name} dataModel={x} dbConnection={dbConnection} />
                     ))}
                     <div className="buttons">
-                        <button className="button" onClick={updateActiveTabToQuery}>
-                            <span className="icon is-small"><i className="fas fa-circle-plus" /></span>
-                            <span>New Query</span>
-                        </button>
-                        <button className="button" onClick={updateActiveTabToHistory}>
-                            <span className="icon is-small"><i className="fas fa-history" /></span>
-                            <span>View History</span>
-                        </button>
+                        <Button
+                            text='New Query'
+                            icon={<i className="fas fa-circle-plus"/>} 
+                            onClick={updateActiveTabToQuery}
+                        />
+                        <Button
+                            text='View History'
+                            icon={<i className="fas fa-history"/>} 
+                            onClick={updateActiveTabToHistory}
+                        />
                     </div>
                 </React.Fragment>
             }

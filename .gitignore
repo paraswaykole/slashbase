@@ -12,7 +12,7 @@ __debug_bin
 *.dll
 *.so
 *.dylib
-
+*.syso
 # Test binary, built with `go test -c`
 *.test
 
@@ -31,8 +31,5 @@ app.db
 # Wails
 build/bin
 node_modules
-frontend/desktop/dist
+frontend/dist
 build/darwin/gon-notarize.json
-
-# Frontend Server
-frontend/server/dist

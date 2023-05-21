@@ -5,6 +5,7 @@ import { DBConnection, Project } from '../data/models'
 import { getAllDBConnections } from './allDBConnectionsSlice'
 import { toast } from 'react-hot-toast'
 import apiService from '../network/apiService'
+import Constants from '../constants'
 
 export interface ProjectState {
   projects: Array<Project>
@@ -50,7 +51,6 @@ export const createNewProject = createAsyncThunk(
       }
     }
     const result = await apiService.createNewProject(payload.projectName)
-    console.log(result)
     const project = result.success ? result.data : null
     return {
       success: true,
@@ -152,6 +152,14 @@ export const selectProjects = (state: AppState) => state.projects.projects
 export const selectCurrentProject = (state: AppState) => state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)
 
 export const selectDBConnectionsInProject = (state: AppState) => state.projects.dbConnectionsInProject
+
+export const selectProjectMemberPermissions = (state: AppState): ProjectPermissions => {
+  const allPermissions = state.projects.projects.find(x => x.id === state.dbConnection.dbConnection?.projectId)?.currentMember?.role.permissions
+  const permission: ProjectPermissions = {
+    readOnly: allPermissions?.find(x => x.name === Constants.ROLES_PERMISSIONS.READ_ONLY)?.value ? true : false
+  }
+  return permission
+}
 
 export interface ProjectPermissions {
   readOnly: boolean

@@ -4,12 +4,13 @@ import { DBConnection, DBDataModel, Project, Tab } from '../../data/models'
 import { selectDBConnection, selectDBDataModels } from '../../redux/dbConnectionSlice'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import Table from './table/table'
-import { selectCurrentProject } from '../../redux/projectsSlice'
+import { ProjectPermissions, selectCurrentProject, selectProjectMemberPermissions } from '../../redux/projectsSlice'
 import { DBConnType } from '../../data/defaults'
 import { selectIsShowingSidebar } from '../../redux/configSlice'
 import JsonTable from './jsontable/jsontable'
 import { getDBDataInDataModel, selectIsFetchingQueryData, selectQueryData } from '../../redux/dataModelSlice'
 import TabContext from '../layouts/tabcontext'
+import Button from '../ui/Button'
 
 const DBShowDataFragment = () => {
 
@@ -19,6 +20,7 @@ const DBShowDataFragment = () => {
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const project: Project | undefined = useAppSelector(selectCurrentProject)
+    const projectMemberPermissions: ProjectPermissions = useAppSelector(selectProjectMemberPermissions)
     const currentTab: Tab = useContext(TabContext)!
 
     const [dataModel, setDataModel] = useState<DBDataModel>()
@@ -90,6 +92,10 @@ const DBShowDataFragment = () => {
         setQuerySort(newSort)
     }
 
+    const onRefresh = () => {
+        fetchData(false);
+    }
+
     const rowsLength = queryData ? (queryData.rows ? queryData.rows.length : queryData.data.length) : 0
     const queryOffsetRangeEnd = (rowsLength ?? 0) === queryLimit ?
         queryOffset + queryLimit : queryOffset + (rowsLength ?? 0)
@@ -104,7 +110,9 @@ const DBShowDataFragment = () => {
                     queryData={queryData}
                     querySort={querySort}
                     isInteractive={true}
+                    isReadOnly={projectMemberPermissions.readOnly}
                     showHeader={true}
+                    onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
                 />
@@ -117,7 +125,9 @@ const DBShowDataFragment = () => {
                     queryData={queryData}
                     querySort={querySort}
                     isInteractive={true}
+                    isReadOnly={projectMemberPermissions.readOnly}
                     showHeader={true}
+                    onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
                 />
@@ -128,7 +138,9 @@ const DBShowDataFragment = () => {
                     mName={String(mname)}
                     queryData={queryData}
                     isInteractive={true}
+                    isReadOnly={projectMemberPermissions.readOnly}
                     showHeader={true}
+                    onRefresh={onRefresh}
                     onFilterChanged={onFilterChanged}
                     onSortChanged={onSortChanged}
                 />
@@ -139,8 +151,8 @@ const DBShowDataFragment = () => {
                     <progress className="progress is-primary" max="100">loading</progress>
                     :
                     <nav className="pagination is-centered is-rounded" role="navigation" aria-label="pagination">
-                        <button className="button pagination-previous" onClick={onPreviousPage}>Previous</button>
-                        <button className="button pagination-next" onClick={onNextPage}>Next</button>
+                        <Button className="pagination-previous" text="Previous" onClick={onPreviousPage} />
+                        <Button className="pagination-next" text="Next" onClick={onNextPage} />
                         <ul className="pagination-list">
                             Showing {queryOffset} - {queryOffsetRangeEnd} of {queryCount}
                         </ul>

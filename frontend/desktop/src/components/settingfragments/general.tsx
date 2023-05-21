@@ -13,7 +13,6 @@ const GeneralSettings: FunctionComponent<{}> = () => {
             let result = await eventService.getSingleSetting(Constants.SETTING_KEYS.TELEMETRY_ENABLED)
             setTelemetryEnabled(result.data)
             result = await eventService.getSingleSetting(Constants.SETTING_KEYS.LOGS_EXPIRE)
-            console.log(result.data)
             setLogsExpire(result.data === undefined ? 0 : result.data)
         })()
     }, [])

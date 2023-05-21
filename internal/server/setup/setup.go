@@ -30,7 +30,7 @@ func autoMigrate() {
 		&models.RolePermission{},
 		&common.DBConnection{},
 		&common.DBQuery{},
-		&common.DBQueryLog{},
+		&models.DBQueryLog{},
 		&models.Tab{},
 		&common.Setting{},
 	)

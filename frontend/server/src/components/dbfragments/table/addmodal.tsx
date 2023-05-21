@@ -6,6 +6,7 @@ import { useAppDispatch } from '../../../redux/hooks'
 import { addDBData, setQueryData } from '../../../redux/dataModelSlice'
 import { DBConnType } from '../../../data/defaults'
 import TabContext from '../../layouts/tabcontext'
+import Button from '../../ui/Button'
 
 type AddModal = {
     queryData: DBQueryData
@@ -83,8 +84,8 @@ const AddModal = ({ queryData, dbConnection, mSchema, mName, onClose }: AddModal
                     })}
                 </section>
                 <footer className="modal-card-foot">
-                    <button className="button is-primary" onClick={startAdding}>Add</button>
-                    <button className="button" onClick={onClose}>Cancel</button>
+                    <Button text='Add' className="is-primary" onClick={startAdding} />
+                    <Button text='Cancel' onClick={onClose} />
                 </footer>
             </div>
         </div>

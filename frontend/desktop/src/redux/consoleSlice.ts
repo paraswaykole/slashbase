@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { AppState } from './store'
 import eventService from '../events/eventService'
-import { stat } from 'fs'
 
 export interface OutputBlock {
     text: string

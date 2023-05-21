@@ -5,7 +5,6 @@ import Constants from '../../constants'
 import { DBConnection, DBDataModel, DBQuery, User } from '../../data/models'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { selectDBConnection, selectDBDataModels, selectDBDQueries } from '../../redux/dbConnectionSlice'
-import { selectIsShowingSidebar, setIsShowingSidebar } from '../../redux/configSlice'
 import { DBConnType, TabType } from '../../data/defaults'
 import HomeSidebar from './sidebars/homesidebar'
 import { createTab } from '../../redux/tabsSlice'
@@ -25,7 +24,6 @@ const Sidebar = () => {
         (location.pathname.startsWith("/db")) ?
             SidebarViewType.DATABASE : (location.pathname.startsWith("/settings")) ? SidebarViewType.SETTINGS : SidebarViewType.HOME
 
-    const isShowingSidebar: boolean = useAppSelector(selectIsShowingSidebar)
     const dbConnection: DBConnection | undefined = useAppSelector(selectDBConnection)
     const dbDataModels: DBDataModel[] = useAppSelector(selectDBDataModels)
     const dbQueries: DBQuery[] = useAppSelector(selectDBDQueries)
@@ -33,9 +31,7 @@ const Sidebar = () => {
 
     const dispatch = useAppDispatch()
 
-    const toggleSidebar = () => {
-        dispatch(setIsShowingSidebar(!isShowingSidebar))
-    }
+
 
     const openDataTab = (schema: string, name: string) => {
         dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.DATA, metadata: { schema, name } }))
@@ -57,9 +53,6 @@ const Sidebar = () => {
                 }
                 {sidebarView === SidebarViewType.DATABASE && dbConnection &&
                     <React.Fragment>
-                        <Link to={Constants.APP_PATHS.DB.path.replace('[id]', dbConnection?.id)} className="nolink">
-                            <i className="fas fa-database" /> {dbConnection?.name}
-                        </Link>
                         <p className="menu-label">
                             Data Models
                         </p>
@@ -177,12 +170,6 @@ const Sidebar = () => {
                         </ul>
                     </React.Fragment>
                 }
-            </div>
-            <div>
-                <button className={"button " + [styles.btn, styles.sidebarHideBtn].join(' ')} onClick={toggleSidebar}>
-                    <i className={"fas fa-angle-double-left"} />
-                    {/* <span className={styles.btnMsg}>&nbsp;&nbsp;hide sidebar</span> */}
-                </button>
             </div>
         </aside>
     )
