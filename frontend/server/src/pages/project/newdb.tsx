@@ -184,11 +184,11 @@ const startAddingDB = async () => {
                     <div className="control">
                         <div className={"" + [styles.dbSelect].join('')}>
                             <div className={'' + [ data.dbType === DBConnType.POSTGRES ? styles.active : styles.card].join('')} onClick={(e) => {setData((prev)=>({...prev,dbType:DBConnType.POSTGRES,dbScheme:""})) }}>
-                            <h6>POSTGRES</h6></div>
+                            <h6>PostgreSQL</h6></div>
                             <div className={'' + [ data.dbType === DBConnType.MONGO ? styles.active : styles.card].join('')} onClick={(e) => {setData((prev)=>({...prev,dbType:DBConnType.MONGO,dbScheme:""}))}}>
-                            <h6>MONGODB</h6></div>
+                            <h6>MongoDB</h6></div>
                             <div className={'' + [ data.dbType === DBConnType.MYSQL ? styles.active : styles.card].join('')} onClick={(e) => {setData((prev)=>({...prev,dbType:DBConnType.MYSQL,dbScheme:""}))}}>
-                            <h6>MYSQL</h6></div>
+                            <h6>MySQL</h6></div>
                         </div>
                     </div>
                 </div>
