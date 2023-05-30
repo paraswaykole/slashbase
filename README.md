@@ -98,17 +98,16 @@ Install from the Arch User Repository:
 yay -S slashbase
 ```
 
-# Screenshots
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot3.png" alt="Console view" width="100%">
-
-
-# Slashbase Server
+## Self-host Slashbase Server IDE
 
 To use Slashbase as a self-hosted in-browser collaborative database IDE. See [instructions](https://docs.slashbase.com/docs/server-ide/installation).
 
 To checkout demo, visit [demo.slashbase.com](https://demo.slashbase.com).
+
+# Screenshots
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
+<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot3.png" alt="Console view" width="100%">
 
 # Documentation
 

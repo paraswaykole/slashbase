@@ -87,8 +87,8 @@ func (mqe *MysqlQueryEngine) TestConnection(dbConn *models.DBConnection, config 
 	if err != nil {
 		return err
 	}
-	test := data["rows"].([]map[string]interface{})[0]["0"].(int64)
-	if test == 1 {
+	rows := data["rows"].([]map[string]interface{})
+	if len(rows) != 0 {
 		return nil
 	}
 	return errors.New("connection test failed")
