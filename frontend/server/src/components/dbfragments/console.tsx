@@ -21,6 +21,8 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
     const output = useAppSelector(selectBlocks)
     const [input, setInput] = useState("")
     const [nfocus, setFocus] = useState<number>(0)
+    const commands = output.filter( e => e.cmd ===  true)
+    const [pointer, setPointer] = useState<number>(commands.length-1)
 
     useEffect(() => {
         dispatch(initConsole(dbConnection!.id))
@@ -49,7 +51,7 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
         {output.map((block, idx) => {
             return <OutputBlock block={block} key={idx} />
         })}
-        <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} confirmInput={confirmInput} />
+        <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} confirmInput={confirmInput} commands={commands} pointer={pointer} setPointer={setPointer} />
         <span ref={consoleEndRef}></span>
     </div>
 }
@@ -79,12 +81,25 @@ const PromptInputWithRef = (props: any) => {
         }
     }
 
+    const setInputRef = ( cmd : string) => {
+        if(inputRef.current !== null){
+            inputRef.current.textContent = cmd;
+        }
+    }
     const handleKeyUp = (event: React.KeyboardEvent) => {
         if (props.confirmInput && event.key.toLocaleLowerCase() === 'enter') {
             props.confirmInput()
             if (inputRef.current) {
                 inputRef.current.innerText = ""
             }
+        }
+        if ( event.key.toLocaleLowerCase() === 'arrowup') {
+            props.setPointer( () => ((props.pointer + props.commands.length -1 ) % props.commands.length))
+            setInputRef(props.commands.at(props.pointer)?.text)
+        }
+        if ( event.key.toLocaleLowerCase() === 'arrowdown'){
+            props.setPointer( () => ((props.pointer + 1 ) % props.commands.length))
+            setInputRef(props.commands.at(props.pointer)?.text)
         }
     }
 
