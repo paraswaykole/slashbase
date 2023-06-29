@@ -5,12 +5,14 @@ import (
 	"github.com/slashbaseide/slashbase/internal/common/dao"
 	"github.com/slashbaseide/slashbase/internal/common/db"
 	"github.com/slashbaseide/slashbase/internal/common/models"
+	"github.com/slashbaseide/slashbase/pkg/ai"
 	"gorm.io/gorm"
 )
 
 func SetupApp() {
 	autoMigrate()
 	configureSettings()
+	initAIClient()
 }
 
 func autoMigrate() {
@@ -32,5 +34,12 @@ func configureSettings() {
 		settings = append(settings, *models.NewSetting(models.SETTING_NAME_TELEMETRY_ENABLED, "true"))
 		settings = append(settings, *models.NewSetting(models.SETTING_NAME_LOGS_EXPIRE, "30"))
 		dao.Setting.CreateSettings(&settings)
+	}
+}
+
+func initAIClient() {
+	setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_OPENAI_KEY)
+	if err == nil {
+		ai.InitClient(setting.Value)
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/slashbaseide/slashbase/internal/common/dao"
 	"github.com/slashbaseide/slashbase/internal/common/models"
 	"github.com/slashbaseide/slashbase/internal/common/utils"
+	"github.com/slashbaseide/slashbase/pkg/ai"
 )
 
 type SettingController struct{}
@@ -41,6 +42,8 @@ func (SettingController) UpdateSingleSetting(name string, value string) error {
 		if _, err := strconv.Atoi(value); err != nil {
 			return errors.New("cannot update the setting: " + name)
 		}
+	case models.SETTING_NAME_OPENAI_KEY:
+		ai.InitClient(value)
 	default:
 		return errors.New("invalid setting name: " + name)
 	}

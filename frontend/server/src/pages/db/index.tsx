@@ -12,6 +12,7 @@ import DBQueryFragment from '../../components/dbfragments/query'
 import DBConsoleFragment from '../../components/dbfragments/console'
 import TabContext from '../../components/layouts/tabcontext'
 import { Tab } from '../../data/models'
+import DBGenSQLFragment from '../../components/dbfragments/gensql'
 
 const DBPage: FunctionComponent<{}> = () => {
 
@@ -53,6 +54,7 @@ const DBPage: FunctionComponent<{}> = () => {
                         {tab.type === TabType.MODEL && <DBShowModelFragment />}
                         {tab.type === TabType.QUERY && <DBQueryFragment />}
                         {tab.type === TabType.CONSOLE && <DBConsoleFragment />}
+                        {tab.type === TabType.GENSQL && <DBGenSQLFragment />}
                     </TabContext.Provider>
                 </React.Fragment>)
             )}

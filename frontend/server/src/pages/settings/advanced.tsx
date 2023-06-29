@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from 'react'
+import AdvancedSettings from '../../components/settingfragments/advanced'
 
 const AdvancedSettingsPage: FunctionComponent<{}> = () => {
 
     return (
         <React.Fragment>
-            <h1>Advanced Settings</h1>
-            <br />
+            <AdvancedSettings />
         </React.Fragment>
     )
 }

@@ -204,6 +204,12 @@ const checkConnection = async function (dbConnId: string): Promise<ApiResult<und
     return response
 }
 
+const runGenerateSQL = async function (dbConnId: string, text: string): Promise<ApiResult<string>> {
+    const response = responseEvent<ApiResult<string>>(Events.AI_GENSQL.RESPONSE)
+    EventsEmit(Events.AI_GENSQL.REQUEST, Events.AI_GENSQL.RESPONSE, dbConnId, text)
+    return response
+}
+
 export default {
     getHealthCheck,
     getProjects,
@@ -237,5 +243,6 @@ export default {
     updateTab,
     closeTab,
     runConsoleCommand,
-    checkConnection
+    checkConnection,
+    runGenerateSQL
 }

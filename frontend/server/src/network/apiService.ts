@@ -300,6 +300,13 @@ const updateRolePermission = async function (roleId: string, name: string, value
         .then(res => res.data)
 }
 
+const generateSQL = async function (dbConnectionId: string, text: string): Promise<ApiResult<string>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<string>>>(`/ai/gensql`, { dbConnectionId, text })
+        .then(res => res.data)
+}
+
+
 
 export default {
     getHealthCheck,
@@ -348,5 +355,6 @@ export default {
     getRoles,
     addRole,
     deleteRole,
-    updateRolePermission
+    updateRolePermission,
+    generateSQL
 }

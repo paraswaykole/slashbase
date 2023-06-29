@@ -60,4 +60,7 @@ func setupEvents(ctx context.Context) {
 	if consoleEventListeners := new(events.ConsoleEventListeners); true {
 		consoleEventListeners.RunCommandEvent(ctx)
 	}
+	if aiEventListeners := new(events.AIEventListeners); true {
+		aiEventListeners.GenSQLEvent(ctx)
+	}
 }

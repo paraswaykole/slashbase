@@ -27,6 +27,8 @@ func (TabsController) CreateTab(authUserID, dbConnID, tabType, modelschema, mode
 		tab = common.NewHistoryTab(dbConnID)
 	} else if tabType == common.TAB_TYPE_CONSOLE {
 		tab = common.NewConsoleTab(dbConnID)
+	} else if tabType == common.TAB_TYPE_GENSQL {
+		tab = common.NewGenSQLTab(dbConnID)
 	}
 
 	userTab := models.NewUserTab(tab, authUserID)
@@ -60,7 +62,7 @@ func (tc TabsController) GetTabsByDBConnection(authUserID, dbConnID string) (*[]
 
 func (TabsController) UpdateTab(authUserID, dbConnID, tabID, tabType string, metadata map[string]interface{}) (*models.Tab, error) {
 
-	if !utils.ContainsString([]string{common.TAB_TYPE_BLANK, common.TAB_TYPE_DATA, common.TAB_TYPE_MODEL, common.TAB_TYPE_HISTORY, common.TAB_TYPE_CONSOLE, common.TAB_TYPE_QUERY}, tabType) {
+	if !utils.ContainsString([]string{common.TAB_TYPE_BLANK, common.TAB_TYPE_DATA, common.TAB_TYPE_MODEL, common.TAB_TYPE_HISTORY, common.TAB_TYPE_CONSOLE, common.TAB_TYPE_GENSQL, common.TAB_TYPE_QUERY}, tabType) {
 		return nil, errors.New("invalid tab type")
 	}
 

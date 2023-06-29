@@ -26,6 +26,8 @@ func (TabsController) CreateTab(dbConnID, tabType, modelschema, modelname, query
 		tab = models.NewHistoryTab(dbConnID)
 	} else if tabType == models.TAB_TYPE_CONSOLE {
 		tab = models.NewConsoleTab(dbConnID)
+	} else if tabType == models.TAB_TYPE_GENSQL {
+		tab = models.NewGenSQLTab(dbConnID)
 	}
 
 	err := dao.Tab.CreateTab(tab)

@@ -17,7 +17,8 @@ export enum TabType {
     MODEL = "MODEL",
     QUERY = "QUERY",
     HISTORY = "HISTORY",
-    CONSOLE = "CONSOLE"
+    CONSOLE = "CONSOLE",
+    GENSQL = "GENSQL",
 }
 
 export enum DBConnectionLoginType {
