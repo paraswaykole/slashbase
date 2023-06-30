@@ -12,6 +12,10 @@ import (
 
 func GenerateSQL(dbtype, text string, datamodels []*qemodels.DBDataModel) (string, error) {
 
+	if client == nil {
+		return "", errors.New("update openai key in advanced settings")
+	}
+
 	if !(dbtype == qemodels.DBTYPE_POSTGRES || dbtype == qemodels.DBTYPE_MYSQL) {
 		return "", errors.New("unsupported database type")
 	}
