@@ -119,20 +119,22 @@ const DBQueryFragment = () => {
                             queryData={queryData}
                             mSchema={''}
                             mName={''}
-                            onRefresh={()=>{}}
+                            onRefresh={() => { }}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
-                            isInteractive={false} />
+                            isInteractive={false}
+                            isReadOnly={true} />
                     }
                     {dbConnection!.type === DBConnType.MONGO &&
                         <JsonTable
                             dbConnection={dbConnection!}
                             queryData={queryData}
                             mName={''}
-                            onRefresh={()=>{}}
+                            onRefresh={() => { }}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
-                            isInteractive={false} />
+                            isInteractive={false}
+                            isReadOnly={true} />
                     }
                 </React.Fragment>
                 : null

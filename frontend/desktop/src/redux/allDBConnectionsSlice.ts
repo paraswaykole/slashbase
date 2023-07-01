@@ -43,12 +43,24 @@ export const getAllDBConnections = createAsyncThunk(
 export const addNewDBConn = createAsyncThunk(
   'allDBConnections/addNewDBConn',
   async (payload: AddDBConnPayload, { rejectWithValue }: any) => {
-    const response = await eventService.addNewDBConn(payload)
+    const response = await eventService.addNewDBConn({...payload,isTest:false})
     if (response.success) {
       const dbConn = response.success ? response.data : null
       return {
         dbConn: dbConn
       }
+    } else {
+      return rejectWithValue(response.error)
+    }
+  }
+)
+
+export const testNewDBConn = createAsyncThunk(
+  'allDBConnections/testNewDBConn',
+  async (payload: AddDBConnPayload, { rejectWithValue }: any) => {
+    const response = await eventService.addNewDBConn({...payload,isTest:true})
+    if (response.success) {
+      return true
     } else {
       return rejectWithValue(response.error)
     }
