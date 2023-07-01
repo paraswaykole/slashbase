@@ -168,9 +168,9 @@ const updateSingleSetting = async function (name: string, value: string): Promis
     return response
 }
 
-const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string): Promise<ApiResult<Tab>> {
+const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string, query: string): Promise<ApiResult<Tab>> {
     const response = responseEvent<ApiResult<Tab>>(Events.CREATE_TAB.RESPONSE)
-    EventsEmit(Events.CREATE_TAB.REQUEST, Events.CREATE_TAB.RESPONSE, dbConnectionId, tabType, mSchema, mName, queryId)
+    EventsEmit(Events.CREATE_TAB.REQUEST, Events.CREATE_TAB.RESPONSE, dbConnectionId, tabType, mSchema, mName, queryId, query)
     return response
 }
 

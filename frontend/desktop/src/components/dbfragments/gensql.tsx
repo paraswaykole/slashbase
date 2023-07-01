@@ -89,7 +89,13 @@ const DBGenSQLFragment = ({ }: DBGenSQLPropType) => {
             />
             <br />
             <div className="buttons">
-                <button className="button is-primary" onClick={copyToClipboard}>
+                <button className="button is-primary" onClick={openInQueryEditor}>
+                    <span className="icon is-small">
+                        <i className="fas fa-edit" aria-hidden="true"></i>
+                    </span>&nbsp;&nbsp;
+                    Open in Query Editor
+                </button>
+                <button className="button" onClick={copyToClipboard}>
                     <span className="icon is-small">
                         <i className="fas fa-copy" aria-hidden="true"></i>
                     </span>&nbsp;&nbsp;
