@@ -55,6 +55,17 @@ export const addNewDBConn = createAsyncThunk(
   }
 )
 
+export const testNewDBConn = createAsyncThunk(
+  'allDBConnections/testNewDBConn',
+  async (payload: AddDBConnPayload, { rejectWithValue }: any) => {
+    const response = await apiService.addNewDBConn({...payload,isTest:true})
+    if (response.success) {
+      return true
+    } else {
+      return rejectWithValue(response.error)
+    }
+  }
+)
 
 export const allDBConnectionSlice = createSlice({
   name: 'allDBConnections',

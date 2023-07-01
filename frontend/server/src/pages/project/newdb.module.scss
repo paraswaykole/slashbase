@@ -1,0 +1,80 @@
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+}
+.dbSelect{
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+    gap:1rem;
+    // padding: 50px 50px;
+    padding-right:0rem;
+    .card{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px ;
+        width: 7rem;
+        height: 3rem;
+        border: 1px solid rgb(210, 210, 210);
+        background-color: rgb(234, 234, 234);
+        cursor: pointer;
+
+    }
+    .active{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px ;
+        width: 7rem;
+        height: 3rem;
+        border: 1px solid #605f9c;        ;
+        background-color: rgb(234, 234, 234);
+        cursor: pointer;
+        // background-color: red;
+        // border: 20px purple solid;
+   }
+}
+
+.form{
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top:2rem;
+    input{
+        background-color: white;
+    }
+    
+}
+.flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    .btn{
+        all:unset;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    .reverse{
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+    }
+}
+.right{
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    padding: 2px;
+}
+.secondaryBtn{
+    background-color: rgb(199, 199, 199);
+    color: black;
+    font-weight: bold;
+}
