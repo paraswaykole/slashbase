@@ -15,6 +15,7 @@ const (
 	SETTING_NAME_APP_ID            = "APP_ID"
 	SETTING_NAME_TELEMETRY_ENABLED = "TELEMETRY_ENABLED"
 	SETTING_NAME_LOGS_EXPIRE       = "LOGS_EXPIRE"
+	SETTING_NAME_OPENAI_KEY        = "OPENAI_KEY"
 )
 
 func NewSetting(name string, value string) *Setting {

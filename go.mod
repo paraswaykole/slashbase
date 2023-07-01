@@ -13,6 +13,7 @@ require (
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/joho/godotenv v1.4.0
 	github.com/posthog/posthog-go v0.0.0-20221221115252-24dfed35d71a
+	github.com/sashabaranov/go-openai v1.9.4
 	github.com/tdewolff/parse/v2 v2.6.5
 	github.com/wailsapp/wails/v2 v2.4.1
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2

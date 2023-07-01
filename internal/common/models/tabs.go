@@ -26,6 +26,7 @@ const (
 	TAB_TYPE_QUERY   = "QUERY"
 	TAB_TYPE_HISTORY = "HISTORY"
 	TAB_TYPE_CONSOLE = "CONSOLE"
+	TAB_TYPE_GENSQL  = "GENSQL"
 )
 
 func newTab(ttype, dbConnID, metaData string) *Tab {
@@ -74,6 +75,10 @@ func NewHistoryTab(dbConnID string) *Tab {
 
 func NewConsoleTab(dbConnID string) *Tab {
 	return newTab(TAB_TYPE_CONSOLE, dbConnID, "")
+}
+
+func NewGenSQLTab(dbConnID string) *Tab {
+	return newTab(TAB_TYPE_GENSQL, dbConnID, "")
 }
 
 func (t *Tab) FetchMetadata() map[string]interface{} {

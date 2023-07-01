@@ -137,7 +137,11 @@ const Events: EventType = {
     CHECK_DBCONNECTION: {
         REQUEST: "event:check:dbconnection",
         RESPONSE: "response:check:dbconnection:[dbid]"
-    }
+    },
+    AI_GENSQL: {
+        REQUEST: "event:ai:gensql",
+        RESPONSE: "response:ai:gensql"
+    },
 }
 
 export default Events

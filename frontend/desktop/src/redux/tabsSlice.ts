@@ -25,6 +25,7 @@ export const createTab = createAsyncThunk(
         let mSchema = ""
         let mName = ""
         let queryId = ""
+        let query = ""
         if (tabType === TabType.DATA || tabType === TabType.MODEL) {
             mSchema = payload.metadata.schema
             mName = payload.metadata.name
@@ -36,6 +37,7 @@ export const createTab = createAsyncThunk(
             }
         } else if (tabType === TabType.QUERY) {
             queryId = payload.metadata.queryId
+            query = payload.metadata.query
             const tab = currentTabs.find(t => t.metadata.queryId === queryId)
             if (queryId !== "new" && tab) {
                 return {
@@ -50,7 +52,7 @@ export const createTab = createAsyncThunk(
                 }
             }
         }
-        const result = await eventService.createTab(dbConnectionId, tabType, mSchema, mName, queryId)
+        const result = await eventService.createTab(dbConnectionId, tabType, mSchema, mName, queryId, query)
         if (result.success) {
             return {
                 tab: result.data,

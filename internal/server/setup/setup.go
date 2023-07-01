@@ -10,6 +10,7 @@ import (
 	common "github.com/slashbaseide/slashbase/internal/common/models"
 	"github.com/slashbaseide/slashbase/internal/server/dao"
 	"github.com/slashbaseide/slashbase/internal/server/models"
+	"github.com/slashbaseide/slashbase/pkg/ai"
 	"gorm.io/gorm"
 )
 
@@ -18,6 +19,7 @@ func SetupServer() {
 	configureSettings()
 	configureRootUser()
 	configureRoles()
+	initAIClient()
 }
 
 func autoMigrate() {
@@ -68,5 +70,12 @@ func configureRoles() {
 	_, err := dao.Role.GetAdminRole()
 	if err != nil {
 		os.Exit(1)
+	}
+}
+
+func initAIClient() {
+	setting, err := commondao.Setting.GetSingleSetting(common.SETTING_NAME_OPENAI_KEY)
+	if err == nil {
+		ai.InitClient(setting.Value)
 	}
 }

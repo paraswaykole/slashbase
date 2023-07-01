@@ -12,7 +12,7 @@ import (
 
 type TabsController struct{}
 
-func (TabsController) CreateTab(authUserID, dbConnID, tabType, modelschema, modelname, queryID string) (*models.Tab, error) {
+func (TabsController) CreateTab(authUserID, dbConnID, tabType, modelschema, modelname, queryID, query string) (*models.Tab, error) {
 
 	var tab *common.Tab
 	if tabType == common.TAB_TYPE_BLANK {
@@ -22,11 +22,13 @@ func (TabsController) CreateTab(authUserID, dbConnID, tabType, modelschema, mode
 	} else if tabType == common.TAB_TYPE_MODEL {
 		tab = common.NewModelTab(dbConnID, modelschema, modelname)
 	} else if tabType == common.TAB_TYPE_QUERY {
-		tab = common.NewQueryTab(dbConnID, queryID, "")
+		tab = common.NewQueryTab(dbConnID, queryID, query)
 	} else if tabType == common.TAB_TYPE_HISTORY {
 		tab = common.NewHistoryTab(dbConnID)
 	} else if tabType == common.TAB_TYPE_CONSOLE {
 		tab = common.NewConsoleTab(dbConnID)
+	} else if tabType == common.TAB_TYPE_GENSQL {
+		tab = common.NewGenSQLTab(dbConnID)
 	}
 
 	userTab := models.NewUserTab(tab, authUserID)
@@ -47,7 +49,7 @@ func (tc TabsController) GetTabsByDBConnection(authUserID, dbConnID string) (*[]
 	}
 
 	if len(*tabs) == 0 {
-		tab, err := tc.CreateTab(authUserID, dbConnID, common.TAB_TYPE_BLANK, "", "", "")
+		tab, err := tc.CreateTab(authUserID, dbConnID, common.TAB_TYPE_BLANK, "", "", "", "")
 		if err != nil {
 			return nil, err
 		}
@@ -60,7 +62,7 @@ func (tc TabsController) GetTabsByDBConnection(authUserID, dbConnID string) (*[]
 
 func (TabsController) UpdateTab(authUserID, dbConnID, tabID, tabType string, metadata map[string]interface{}) (*models.Tab, error) {
 
-	if !utils.ContainsString([]string{common.TAB_TYPE_BLANK, common.TAB_TYPE_DATA, common.TAB_TYPE_MODEL, common.TAB_TYPE_HISTORY, common.TAB_TYPE_CONSOLE, common.TAB_TYPE_QUERY}, tabType) {
+	if !utils.ContainsString([]string{common.TAB_TYPE_BLANK, common.TAB_TYPE_DATA, common.TAB_TYPE_MODEL, common.TAB_TYPE_HISTORY, common.TAB_TYPE_CONSOLE, common.TAB_TYPE_GENSQL, common.TAB_TYPE_QUERY}, tabType) {
 		return nil, errors.New("invalid tab type")
 	}
 

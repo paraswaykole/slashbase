@@ -240,9 +240,9 @@ const updateSingleSetting = async function (name: string, value: string): Promis
         .then(res => res.data)
 }
 
-const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string): Promise<ApiResult<Tab>> {
+const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string, query: string): Promise<ApiResult<Tab>> {
     return await Request.apiInstance
-        .post<any, AxiosResponse<ApiResult<Tab>>>(`/tab/create`, { dbConnectionId, tabType, modelschema: mSchema, modelname: mName, queryId })
+        .post<any, AxiosResponse<ApiResult<Tab>>>(`/tab/create`, { dbConnectionId, tabType, modelschema: mSchema, modelname: mName, queryId, query })
         .then(res => res.data)
 }
 
@@ -300,6 +300,13 @@ const updateRolePermission = async function (roleId: string, name: string, value
         .then(res => res.data)
 }
 
+const generateSQL = async function (dbConnectionId: string, text: string): Promise<ApiResult<string>> {
+    return await Request.apiInstance
+        .post<any, AxiosResponse<ApiResult<string>>>(`/ai/gensql`, { dbConnectionId, text })
+        .then(res => res.data)
+}
+
+
 
 export default {
     getHealthCheck,
@@ -348,5 +355,6 @@ export default {
     getRoles,
     addRole,
     deleteRole,
-    updateRolePermission
+    updateRolePermission,
+    generateSQL
 }
