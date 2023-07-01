@@ -115,6 +115,13 @@ func SetupRoutes(app *fiber.App, assets embed.FS) {
 			consoleGroup.Use(middlewares.AuthUserMiddleware())
 			consoleGroup.Post("/runcmd", consoleHandlers.RunCommand)
 		}
+		aiGroup := api.Group("ai")
+		{
+			aiHandlers := new(handlers.AIHandlers)
+			aiGroup.Use(middlewares.FindUserMiddleware())
+			aiGroup.Use(middlewares.AuthUserMiddleware())
+			aiGroup.Post("/gensql", aiHandlers.GenerateSQL)
+		}
 	}
 
 	// Serving the Frontend files in Production

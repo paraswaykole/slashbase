@@ -45,6 +45,10 @@ const Sidebar = () => {
         dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.CONSOLE, metadata: {} }))
     }
 
+    const openGenerateSQLTab = () => {
+        dispatch(createTab({ dbConnId: dbConnection!.id, tabType: TabType.GENSQL, metadata: {} }))
+    }
+
     return (
         <aside className={"menu " + styles.sidebar}>
             <div className={styles.spacebox}>
@@ -102,6 +106,14 @@ const Sidebar = () => {
                                     &nbsp;Console
                                 </a>
                             </li>
+                            <li>
+                                <a onClick={() => openGenerateSQLTab()}>
+                                    <span className="icon">
+                                        <i className="fas fa-magic"></i>
+                                    </span>
+                                    &nbsp;Generate SQL
+                                </a>
+                            </li>
                         </ul>
                     </React.Fragment>
                 }
@@ -113,18 +125,23 @@ const Sidebar = () => {
                         <ul className={"menu-list " + styles.menuList}>
                             <li>
                                 <Link
+                                    to={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}
+                                    className={location.pathname.startsWith(Constants.APP_PATHS.SETTINGS_ACCOUNT.path) ? 'is-active' : ''}>
+                                    Account
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
                                     to={Constants.APP_PATHS.SETTINGS_GENERAL.path}
                                     className={location.pathname.startsWith(Constants.APP_PATHS.SETTINGS_GENERAL.path) ? 'is-active' : ''}>
                                     General
                                 </Link>
                             </li>
-                        </ul>
-                        <ul className={"menu-list " + styles.menuList}>
                             <li>
                                 <Link
-                                    to={Constants.APP_PATHS.SETTINGS_ACCOUNT.path}
-                                    className={location.pathname.startsWith(Constants.APP_PATHS.SETTINGS_ACCOUNT.path) ? 'is-active' : ''}>
-                                    Account
+                                    to={Constants.APP_PATHS.SETTINGS_ADVANCED.path}
+                                    className={location.pathname.startsWith(Constants.APP_PATHS.SETTINGS_ADVANCED.path) ? 'is-active' : ''}>
+                                    Advanced
                                 </Link>
                             </li>
                         </ul>

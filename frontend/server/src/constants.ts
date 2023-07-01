@@ -87,6 +87,7 @@ const Constants: ConstantsType = {
         APP_ID: "APP_ID",
         TELEMETRY_ENABLED: "TELEMETRY_ENABLED",
         LOGS_EXPIRE: "LOGS_EXPIRE",
+        OPENAI_KEY: "OPENAI_KEY",
     },
     ROLES: {
         ADMIN: "Admin"

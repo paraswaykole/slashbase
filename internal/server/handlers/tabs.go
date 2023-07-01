@@ -19,6 +19,7 @@ func (TabsHandlers) CreateNewTab(c *fiber.Ctx) error {
 		Modelschema    string `json:"modelschema"`
 		Modelname      string `json:"modelname"`
 		QueryID        string `json:"queryId"`
+		Query          string `json:"query"`
 	}
 	if err := c.BodyParser(&createBody); err != nil {
 		return c.JSON(map[string]interface{}{
@@ -26,7 +27,7 @@ func (TabsHandlers) CreateNewTab(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
-	tab, err := tabController.CreateTab(authUser.ID, createBody.DBConnectionId, createBody.TabType, createBody.Modelschema, createBody.Modelname, createBody.QueryID)
+	tab, err := tabController.CreateTab(authUser.ID, createBody.DBConnectionId, createBody.TabType, createBody.Modelschema, createBody.Modelname, createBody.QueryID, createBody.Query)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
 			"success": false,

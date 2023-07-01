@@ -168,9 +168,9 @@ const updateSingleSetting = async function (name: string, value: string): Promis
     return response
 }
 
-const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string): Promise<ApiResult<Tab>> {
+const createTab = async function (dbConnectionId: string, tabType: string, mSchema: string, mName: string, queryId: string, query: string): Promise<ApiResult<Tab>> {
     const response = responseEvent<ApiResult<Tab>>(Events.CREATE_TAB.RESPONSE)
-    EventsEmit(Events.CREATE_TAB.REQUEST, Events.CREATE_TAB.RESPONSE, dbConnectionId, tabType, mSchema, mName, queryId)
+    EventsEmit(Events.CREATE_TAB.REQUEST, Events.CREATE_TAB.RESPONSE, dbConnectionId, tabType, mSchema, mName, queryId, query)
     return response
 }
 
@@ -201,6 +201,12 @@ const runConsoleCommand = async function (dbConnId: string, cmdString: string): 
 const checkConnection = async function (dbConnId: string): Promise<ApiResult<undefined>> {
     const response = responseEvent<ApiResult<undefined>>(Events.CHECK_DBCONNECTION.RESPONSE.replaceAll("[dbid]", dbConnId))
     EventsEmit(Events.CHECK_DBCONNECTION.REQUEST, Events.CHECK_DBCONNECTION.RESPONSE.replaceAll("[dbid]", dbConnId), dbConnId)
+    return response
+}
+
+const runGenerateSQL = async function (dbConnId: string, text: string): Promise<ApiResult<string>> {
+    const response = responseEvent<ApiResult<string>>(Events.AI_GENSQL.RESPONSE)
+    EventsEmit(Events.AI_GENSQL.REQUEST, Events.AI_GENSQL.RESPONSE, dbConnId, text)
     return response
 }
 
@@ -237,5 +243,6 @@ export default {
     updateTab,
     closeTab,
     runConsoleCommand,
-    checkConnection
+    checkConnection,
+    runGenerateSQL
 }

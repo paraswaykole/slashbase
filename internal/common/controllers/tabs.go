@@ -11,7 +11,7 @@ import (
 
 type TabsController struct{}
 
-func (TabsController) CreateTab(dbConnID, tabType, modelschema, modelname, queryID string) (*models.Tab, error) {
+func (TabsController) CreateTab(dbConnID, tabType, modelschema, modelname, queryID, query string) (*models.Tab, error) {
 
 	var tab *models.Tab
 	if tabType == models.TAB_TYPE_BLANK {
@@ -21,11 +21,13 @@ func (TabsController) CreateTab(dbConnID, tabType, modelschema, modelname, query
 	} else if tabType == models.TAB_TYPE_MODEL {
 		tab = models.NewModelTab(dbConnID, modelschema, modelname)
 	} else if tabType == models.TAB_TYPE_QUERY {
-		tab = models.NewQueryTab(dbConnID, queryID, "")
+		tab = models.NewQueryTab(dbConnID, queryID, query)
 	} else if tabType == models.TAB_TYPE_HISTORY {
 		tab = models.NewHistoryTab(dbConnID)
 	} else if tabType == models.TAB_TYPE_CONSOLE {
 		tab = models.NewConsoleTab(dbConnID)
+	} else if tabType == models.TAB_TYPE_GENSQL {
+		tab = models.NewGenSQLTab(dbConnID)
 	}
 
 	err := dao.Tab.CreateTab(tab)
@@ -44,7 +46,7 @@ func (tc TabsController) GetTabsByDBConnection(dbConnID string) (*[]models.Tab, 
 	}
 
 	if len(*tabs) == 0 {
-		tab, err := tc.CreateTab(dbConnID, models.TAB_TYPE_BLANK, "", "", "")
+		tab, err := tc.CreateTab(dbConnID, models.TAB_TYPE_BLANK, "", "", "", "")
 		if err != nil {
 			return nil, err
 		}
