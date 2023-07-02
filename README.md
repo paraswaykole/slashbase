@@ -51,6 +51,7 @@ It is in beta (v0.10), help us make it better by sending your feedback and reach
 - **📺 Console**: Run commands like you do in the terminal.
 - **🗂 Projects**: Organise all database connections into various projects.
 - **📕 Query Cheatsheets**: Search and view query commands syntax right inside the IDE.
+- **✨ Generate SQL with GPT**: Write prompt to generate SQL using GPT and run it.
 - **✅ Database Support**: MySQL, PostgreSQL and MongoDB.
 
 # Installation
