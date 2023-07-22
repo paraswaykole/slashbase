@@ -20,6 +20,7 @@ func (AIHandlers) GenerateSQL(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
+	analytics.SendAISQLGeneratedEvent()
 	output, err := aiController.GenerateSQL(body.DBConnectionID, body.Text)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
