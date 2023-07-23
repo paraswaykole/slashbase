@@ -21,6 +21,7 @@ func (AIEventListeners) GenSQLEvent(ctx context.Context) {
 		defer recovery(ctx, responseEventName)
 		dbConnectionId := args[1].(string)
 		text := args[2].(string)
+		analytics.SendAISQLGeneratedEvent()
 		output, err := aiController.GenerateSQL(dbConnectionId, text)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
