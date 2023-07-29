@@ -83,5 +83,5 @@ func SendUpdatedTelemetryEvent(value bool) {
 }
 
 func SendAISQLGeneratedEvent() {
-	 sendEvent("AI SQL Generated", map[string]interface{}{}
+	sendEvent("AI SQL Generated", map[string]interface{}{})
 }
