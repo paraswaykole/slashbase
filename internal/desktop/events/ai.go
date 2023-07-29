@@ -3,6 +3,7 @@ package events
 import (
 	"context"
 
+	"github.com/slashbaseide/slashbase/internal/common/analytics"
 	"github.com/slashbaseide/slashbase/internal/common/controllers"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )

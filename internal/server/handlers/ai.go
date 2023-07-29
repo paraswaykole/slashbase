@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/slashbaseide/slashbase/internal/common/analytics"
 	"github.com/slashbaseide/slashbase/internal/common/controllers"
 )
 
