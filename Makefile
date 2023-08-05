@@ -9,6 +9,10 @@ WAILS ?= $(GOPATH)/bin/wails
 build:
 	env CGO_ENABLED=1 $(WAILS) build -trimpath -ldflags="-s -w -X 'main.envName=production' -X 'main.version=$(VERSION)'"
 
+.PHONY: build-amd64
+build-amd64:
+	env GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 $(WAILS) build -trimpath -ldflags="-s -w -X 'main.envName=production' -X 'main.version=$(VERSION)'"
+
 .PHONY: build-server
 build-server:
 	env CGO_ENABLED=1 go build -trimpath -ldflags="-s -w -X 'main.envName=production' -X 'main.build=server' -X 'main.version=$(VERSION)'"
