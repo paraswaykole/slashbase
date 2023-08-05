@@ -21,9 +21,7 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
     const output = useAppSelector(selectBlocks)
     const [input, setInput] = useState("")
     const [nfocus, setFocus] = useState<number>(0)
-    const commands = output.filter( e => e.cmd ===  true)
-    const [pointer, setPointer] = useState<number>(commands.length-1)
-
+    const history = output.filter(e => e.cmd).filter(e => e.text !== "").map(e => e.text)
     useEffect(() => {
         dispatch(initConsole(dbConnection!.id))
     }, [dbConnection])
@@ -51,7 +49,7 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
         {output.map((block, idx) => {
             return <OutputBlock block={block} key={idx} />
         })}
-        <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} confirmInput={confirmInput} commands={commands} pointer={pointer} setPointer={setPointer} />
+        <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} confirmInput={confirmInput} history={history} />
         <span ref={consoleEndRef}></span>
     </div>
 }
@@ -68,7 +66,7 @@ const PromptInputWithRef = (props: any) => {
 
     const defaultValue = useRef("")
     const inputRef = useRef<HTMLParagraphElement>(null)
-
+    const [pointer, setPointer] = useState<number>(-1)
     useEffect(() => {
         if (props.isActive) {
             inputRef.current?.focus()
@@ -81,8 +79,8 @@ const PromptInputWithRef = (props: any) => {
         }
     }
 
-    const setInputRef = ( cmd : string) => {
-        if(inputRef.current !== null){
+    const setInputRef = (cmd: string) => {
+        if (inputRef.current !== null) {
             inputRef.current.textContent = cmd;
         }
     }
@@ -92,14 +90,30 @@ const PromptInputWithRef = (props: any) => {
             if (inputRef.current) {
                 inputRef.current.innerText = ""
             }
+            setPointer(-1)
         }
-        if ( event.key.toLocaleLowerCase() === 'arrowup') {
-            props.setPointer( () => ((props.pointer + props.commands.length -1 ) % props.commands.length))
-            setInputRef(props.commands.at(props.pointer)?.text)
+        const updateInputFromPointer = (newPointer: number) => {
+            let text = props.history.at(props.history.length - 1 - newPointer)
+            if (!text) {
+                text = ""
+            }
+            setInputRef(text)
         }
-        if ( event.key.toLocaleLowerCase() === 'arrowdown'){
-            props.setPointer( () => ((props.pointer + 1 ) % props.commands.length))
-            setInputRef(props.commands.at(props.pointer)?.text)
+        if (event.key.toLocaleLowerCase() === 'arrowup') {
+            if (pointer !== props.history.length - 1) {
+                setPointer(() => (pointer + 1))
+                updateInputFromPointer(pointer + 1)
+            }
+        }
+        if (event.key.toLocaleLowerCase() === 'arrowdown') {
+            let newPointer
+            if (pointer < 0) {
+                newPointer = -1
+            } else {
+                newPointer = pointer - 1
+            }
+            setPointer(newPointer)
+            updateInputFromPointer(newPointer)
         }
     }
 
