@@ -15,7 +15,8 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
 
     const currentTab: Tab = useContext(TabContext)!
 
-    const consoleEndRef = useRef<HTMLSpanElement>(null)
+    const consoleRef = useRef<HTMLDivElement>(null)
+    const consoleEndRef = useRef<HTMLDivElement>(null)
 
     const dbConnection = useAppSelector(selectDBConnection)
     const output = useAppSelector(selectBlocks)
@@ -27,7 +28,7 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
     }, [dbConnection])
 
     useEffect(() => {
-        consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+        scrollToBottom("smooth")
     }, [output])
 
     const confirmInput = () => {
@@ -36,12 +37,18 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
     }
 
     const focus = (e: any) => {
-        if (e.target.id === "console") {
+        if (consoleRef.current?.contains(e.target)) {
             setFocus(Math.random())
         }
     }
 
-    return <div className={styles.console + " " + (currentTab.isActive ? "db-tab-active" : "db-tab")} id="console" onClick={focus}>
+    const scrollToBottom = (behavior: ScrollBehavior) => {
+        const mainContentDiv = consoleRef.current?.parentNode as HTMLDivElement
+        if (mainContentDiv.scrollTop !== consoleEndRef.current?.offsetTop)
+            mainContentDiv.scrollTo({ top: consoleEndRef.current?.offsetTop, behavior })
+    }
+
+    return <div className={styles.console + " " + (currentTab.isActive ? "db-tab-active" : "db-tab")} id="console" ref={consoleRef} onClick={focus}>
         <OutputBlock block={{
             text: "Start typing command and press enter to run it.\nType 'help' for more info on console.",
             cmd: false
@@ -49,8 +56,8 @@ const DBConsoleFragment = ({ }: DBConsolePropType) => {
         {output.map((block, idx) => {
             return <OutputBlock block={block} key={idx} />
         })}
-        <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} confirmInput={confirmInput} history={history} />
-        <span ref={consoleEndRef}></span>
+        <PromptInputWithRef onChange={setInput} isActive={currentTab.isActive} nfocus={nfocus} scrollToBottom={scrollToBottom} confirmInput={confirmInput} history={history} />
+        <div id="consoleend" className={styles.consoleend} ref={consoleEndRef}></div>
     </div>
 }
 
@@ -69,6 +76,7 @@ const PromptInputWithRef = (props: any) => {
     const [pointer, setPointer] = useState<number>(-1)
     useEffect(() => {
         if (props.isActive) {
+            props.scrollToBottom("instant")
             inputRef.current?.focus()
         }
     }, [props.isActive, props.nfocus])
