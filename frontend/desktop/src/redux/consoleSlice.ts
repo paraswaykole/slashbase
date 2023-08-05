@@ -22,6 +22,9 @@ export const runConsoleCmd = createAsyncThunk(
     async (payload: { dbConnId: string, cmdString: string }, { rejectWithValue, getState }: any) => {
         const dbConnectionId = payload.dbConnId
         const cmdString = payload.cmdString
+        if (cmdString === "") {
+            return rejectWithValue("empty command")
+        }
         const result = await eventService.runConsoleCommand(dbConnectionId, cmdString)
         if (result.success) {
             return {

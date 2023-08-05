@@ -81,3 +81,7 @@ func SendLowCodeModelViewEvent() {
 func SendUpdatedTelemetryEvent(value bool) {
 	sendEvent("Updated Telemetry Settings", map[string]interface{}{"value": value})
 }
+
+func SendAISQLGeneratedEvent() {
+	sendEvent("AI SQL Generated", map[string]interface{}{})
+}

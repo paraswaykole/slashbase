@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/slashbaseide/slashbase/internal/common/analytics"
 	"github.com/slashbaseide/slashbase/internal/common/controllers"
 )
 
@@ -20,6 +21,7 @@ func (AIHandlers) GenerateSQL(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
+	analytics.SendAISQLGeneratedEvent()
 	output, err := aiController.GenerateSQL(body.DBConnectionID, body.Text)
 	if err != nil {
 		return c.JSON(map[string]interface{}{
