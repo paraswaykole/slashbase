@@ -18,10 +18,7 @@ func (ConsoleHandlers) RunCommand(c *fiber.Ctx) error {
 		CmdString      string `json:"cmd"`
 	}
 	if err := c.BodyParser(&body); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	analytics.SendRunCommandEvent()
 	output := consoleController.RunCommand(authUser, body.DBConnectionID, body.CmdString)

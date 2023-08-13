@@ -22,10 +22,7 @@ func (TabsHandlers) CreateNewTab(c *fiber.Ctx) error {
 		Query          string `json:"query"`
 	}
 	if err := c.BodyParser(&createBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	tab, err := tabController.CreateTab(authUser.ID, createBody.DBConnectionId, createBody.TabType, createBody.Modelschema, createBody.Modelname, createBody.QueryID, createBody.Query)
 	if err != nil {
@@ -69,10 +66,7 @@ func (TabsHandlers) UpdateTab(c *fiber.Ctx) error {
 		Metadata       map[string]interface{} `json:"metadata"`
 	}
 	if err := c.BodyParser(&updateBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	tab, err := tabController.UpdateTab(authUser.ID, updateBody.DBConnectionID, updateBody.TabID, updateBody.TabType, updateBody.Metadata)
 	if err != nil {

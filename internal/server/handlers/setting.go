@@ -30,10 +30,7 @@ func (SettingHandlers) UpdateSingleSetting(c *fiber.Ctx) error {
 		Value string `json:"value"`
 	}
 	if err := c.BodyParser(&reqBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	err := settingController.UpdateSingleSetting(reqBody.Name, reqBody.Value)
 	if err != nil {

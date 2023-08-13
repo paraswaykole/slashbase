@@ -21,10 +21,7 @@ func (UserHandlers) LoginUser(c *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 	if err := c.BodyParser(&loginBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 
 	userSession, err := userController.LoginUser(loginBody.Email, loginBody.Password)
@@ -70,10 +67,7 @@ func (UserHandlers) EditAccount(c *fiber.Ctx) error {
 		ProfileImageURL string `json:"profileImageUrl"`
 	}
 	if err := c.BodyParser(&userBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	err := userController.EditAccount(authUser, userBody.Name, userBody.ProfileImageURL)
 	if err != nil {
@@ -95,10 +89,7 @@ func (UserHandlers) ChangePassword(c *fiber.Ctx) error {
 		NewPassword string `json:"newPassword"`
 	}
 	if err := c.BodyParser(&body); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	err := userController.ChangePassword(authUser, body.OldPassword, body.NewPassword)
 	if err != nil {
@@ -153,10 +144,7 @@ func (UserHandlers) AddUsers(c *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 	if err := c.BodyParser(&addUserBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	err := userController.AddUser(authUser, addUserBody.Email, addUserBody.Password)
 	if err != nil {

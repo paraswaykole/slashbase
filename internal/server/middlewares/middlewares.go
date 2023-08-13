@@ -13,7 +13,7 @@ const (
 	USER_SESSION = "USER_SESSION"
 )
 
-// FindUserMiddleware is find authenticated user before sending the request to next handler
+// FindUserMiddleware is to find authenticated user before sending the request to next handler
 func FindUserMiddleware() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		tokenString := c.Cookies(config.SESSION_COOKIE_NAME, "")
@@ -35,16 +35,13 @@ func FindUserMiddleware() func(c *fiber.Ctx) error {
 	}
 }
 
-// AuthUserMiddleware is checks if authUser is present else returns unauthorized error
+// AuthUserMiddleware is to check if authUser is present else returns unauthorized error
 func AuthUserMiddleware() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		if value := c.Context().UserValue(USER_SESSION); value != nil {
 			return c.Next()
 		}
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   "Unauthorized",
-		})
+		return fiber.ErrUnauthorized
 	}
 }
 

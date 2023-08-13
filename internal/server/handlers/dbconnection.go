@@ -31,10 +31,7 @@ func (DBConnectionHandlers) CreateDBConnection(c *fiber.Ctx) error {
 		IsTest      bool   `json:"isTest"`
 	}
 	if err := c.BodyParser(&createBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	dbConn, err := dbConnController.CreateDBConnection(
 		createBody.ProjectID,
