@@ -74,7 +74,7 @@ const AdvancedSettings: FunctionComponent<{}> = () => {
         <div className="field has-addons">
           <div className={`dropdown${isShowingNavDropDown ? " is-active" : ""}`}>
             <div className={`dropdown-trigger`}>
-              <button className={"button is-light "} aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => {setIsShowingNavDropDown(!isShowingNavDropDown)}}>
+              <button className={"button"} aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => {setIsShowingNavDropDown(!isShowingNavDropDown)}}>
                 <span>{openAIModel}</span>
                 <span className="icon">
                   <i className="fas fa-angle-down" aria-hidden="true"></i>
