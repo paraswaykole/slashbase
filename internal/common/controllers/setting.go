@@ -25,6 +25,10 @@ func (SettingController) GetSingleSetting(name string) (interface{}, error) {
 		return setting.Bool(), nil
 	case models.SETTING_NAME_LOGS_EXPIRE:
 		return setting.Int(), nil
+	case models.SETTING_NAME_OPENAI_KEY:
+		return ai.OpenAiApiKey, nil
+	case models.SETTING_NAME_OPENAI_MODEL:
+		return ai.OpenAiModel, nil
 	}
 	return setting.Value, nil
 }
@@ -44,6 +48,8 @@ func (SettingController) UpdateSingleSetting(name string, value string) error {
 		}
 	case models.SETTING_NAME_OPENAI_KEY:
 		ai.InitClient(value)
+	case models.SETTING_NAME_OPENAI_MODEL:
+		ai.SetGptModel(value)
 	default:
 		return errors.New("invalid setting name: " + name)
 	}

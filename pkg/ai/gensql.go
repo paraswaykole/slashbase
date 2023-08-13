@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-
 	openai "github.com/sashabaranov/go-openai"
 	qemodels "github.com/slashbaseide/slashbase/pkg/queryengines/models"
 )
@@ -24,7 +23,7 @@ func GenerateSQL(dbtype, text string, datamodels []*qemodels.DBDataModel) (strin
 	prompt := fmt.Sprintf("### %s SQL tables, with their properties:\n#\n#%s\n#\n### A query to %s:\n\n", dbtype, dbDataModelDescription, text)
 
 	req := openai.CompletionRequest{
-		Model:            openai.GPT3TextDavinci003,
+		Model:            OpenAiModel,
 		Temperature:      0,
 		MaxTokens:        150,
 		TopP:             1,
