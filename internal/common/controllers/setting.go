@@ -15,9 +15,21 @@ type SettingController struct{}
 
 func (SettingController) GetSingleSetting(name string) (interface{}, error) {
 	setting, err := dao.Setting.GetSingleSetting(name)
-	if err != nil {
-		return "", errors.New("there was some problem")
+
+	switch name {
+	case models.SETTING_NAME_OPENAI_KEY:
+		return setting.Value, nil
+	case models.SETTING_NAME_OPENAI_MODEL:
+		if setting.Value == "" {
+			return ai.GetOpenAiModel(), nil
+		}
+		return setting.Value, nil
 	}
+
+	if err != nil {
+		return "", errors.New("setting not found")
+	}
+
 	switch setting.Name {
 	case models.SETTING_NAME_APP_ID:
 		return setting.UUID().String(), nil
@@ -25,10 +37,6 @@ func (SettingController) GetSingleSetting(name string) (interface{}, error) {
 		return setting.Bool(), nil
 	case models.SETTING_NAME_LOGS_EXPIRE:
 		return setting.Int(), nil
-	case models.SETTING_NAME_OPENAI_KEY:
-		return ai.OpenAiApiKey, nil
-	case models.SETTING_NAME_OPENAI_MODEL:
-		return ai.OpenAiModel, nil
 	}
 	return setting.Value, nil
 }
@@ -49,7 +57,7 @@ func (SettingController) UpdateSingleSetting(name string, value string) error {
 	case models.SETTING_NAME_OPENAI_KEY:
 		ai.InitClient(value)
 	case models.SETTING_NAME_OPENAI_MODEL:
-		ai.SetGptModel(value)
+		ai.SetOpenAiModel(value)
 	default:
 		return errors.New("invalid setting name: " + name)
 	}

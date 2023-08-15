@@ -4,24 +4,26 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-var client *openai.Client
-
-var OpenAiApiKey string = ""
+var (
+	client      *openai.Client
+	openAiModel string = "text-davinci-003"
+)
 
 func InitClient(token string) {
 	if token == "" {
 		client = nil
 		return
 	}
-	OpenAiApiKey = token
 	client = openai.NewClient(token)
 }
 
-var OpenAiModel = "text-davinci-003"
+func GetOpenAiModel() string {
+	return openAiModel
+}
 
-func SetGptModel(token string) {
-	if token == "" {
+func SetOpenAiModel(model string) {
+	if model == "" {
 		return
 	}
-	OpenAiModel = token
+	openAiModel = model
 }

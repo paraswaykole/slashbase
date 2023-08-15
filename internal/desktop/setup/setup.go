@@ -41,5 +41,7 @@ func initAIClient() {
 	setting, err := dao.Setting.GetSingleSetting(models.SETTING_NAME_OPENAI_KEY)
 	if err == nil {
 		ai.InitClient(setting.Value)
+		setting, _ := dao.Setting.GetSingleSetting(models.SETTING_NAME_OPENAI_MODEL)
+		ai.SetOpenAiModel(setting.Value)
 	}
 }
