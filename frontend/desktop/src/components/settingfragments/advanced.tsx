@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useEffect, useState } from "react"
-import OutsideClickHandler from "react-outside-click-handler"
 import Constants from "../../constants"
 import eventService from "../../events/eventService"
 
@@ -27,7 +26,6 @@ const ModelOptions = [
 const AdvancedSettings: FunctionComponent<{}> = () => {
   const [openAIKey, setOpenAIKey] = useState<string>("")
   const [openAIModel, setOpenAIModel] = useState<string>("")
-  const [isShowingNavDropDown, setIsShowingNavDropDown] = useState<boolean>(false)
 
   useEffect(() => {
     (async () => {
@@ -53,6 +51,10 @@ const AdvancedSettings: FunctionComponent<{}> = () => {
       setOpenAIModel(openAIModel)
   }
 
+  const handleModelChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const value = e.target.value;
+    setOpenAIModel(value);
+  }
   return (
     <React.Fragment>
       <h1>Advanced Settings</h1>
@@ -76,35 +78,12 @@ const AdvancedSettings: FunctionComponent<{}> = () => {
       <p>Update OpenAI Model to enable Generate SQL tool.</p>
       <div className="buttons has-addons">
         <div className="field has-addons">
-          <div className={`dropdown${isShowingNavDropDown ? " is-active" : ""}`}>
-            <div className={`dropdown-trigger`}>
-              <button className={"button"} aria-haspopup="true" aria-controls="dropdown-menu" onClick={() => { setIsShowingNavDropDown(!isShowingNavDropDown) }}>
-                <span>{openAIModel}</span>
-                <span className="icon">
-                  <i className="fas fa-angle-down" aria-hidden="true"></i>
-                </span>
-              </button>
-            </div>
-            {isShowingNavDropDown && (
-              <OutsideClickHandler onOutsideClick={() => { setIsShowingNavDropDown(!isShowingNavDropDown) }}>
-                <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                  <div className="dropdown-content scrollable">
-                    {ModelOptions.map((x) => {
-                      return (
-                        <React.Fragment key={x.value}>
-                          <a onClick={() => { setOpenAIModel(x.value), setIsShowingNavDropDown(false) }} className={`dropdown-item${x.value === openAIModel ? " is-active" : ""}`}>
-                            {x.value}
-                          </a>
-                          {x.value === "home" && (
-                            <hr className="dropdown-divider" />
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                  </div>
-                </div>
-              </OutsideClickHandler>
-            )}
+          <div className="select">
+            <select value={openAIModel} onChange={(e) => {handleModelChange(e)}}>
+            {ModelOptions.map((e,idx)=>{
+              return <option value={e.value} key={idx}> {e.value} </option>
+            })}
+            </select>
           </div>
           <p id="model_update" className="control">
             <a className="button" onClick={() => updateOpenAIModel()}>
