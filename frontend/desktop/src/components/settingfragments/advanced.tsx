@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useEffect, useState } from "react"
-import Constants from "../../constants"
-import eventService from "../../events/eventService"
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import Constants from '../../constants'
+import eventService from '../../events/eventService'
 
 const ModelOptions = [
   { value: "gpt-4-32k-0314" },
@@ -64,11 +64,15 @@ const AdvancedSettings: FunctionComponent<{}> = () => {
       <div className="buttons has-addons">
         <div className="field has-addons">
           <p className="control is-expanded">
-            <input className="input" type="text" value={openAIKey}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setOpenAIKey(e.target.value) }} placeholder="Enter API key" />
+            <input
+              className="input"
+              type="text"
+              value={openAIKey}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setOpenAIKey(e.target.value) }}
+              placeholder="Enter API key" />
           </p>
-          <p id="api_key_update" className="control">
-            <a className="button" onClick={() => { updateOpenAIKey() }}>
+          <p className="control">
+            <a className="button" onClick={updateOpenAIKey}>
               <i className="fas fa-check" />
             </a>
           </p>
@@ -76,21 +80,21 @@ const AdvancedSettings: FunctionComponent<{}> = () => {
       </div>
       <h2>OpenAI Model</h2>
       <p>Update OpenAI Model to enable Generate SQL tool.</p>
-      <div className="buttons has-addons">
-        <div className="field has-addons">
-          <div className="select">
-            <select value={openAIModel} onChange={(e) => {handleModelChange(e)}}>
-            {ModelOptions.map((e,idx)=>{
-              return <option value={e.value} key={idx}> {e.value} </option>
-            })}
+      <div className="field has-addons">
+        <p className="control">
+          <span className="select">
+            <select value={openAIModel} onChange={e => handleModelChange(e)}>
+              {ModelOptions.map((e, idx) => {
+                return <option value={e.value} key={idx}> {e.value} </option>
+              })}
             </select>
-          </div>
-          <p id="model_update" className="control">
-            <a className="button" onClick={() => updateOpenAIModel()}>
-              <i className="fas fa-check" />
-            </a>
-          </p>
-        </div>
+          </span>
+        </p>
+        <p className="control">
+          <button className="button" onClick={() => updateOpenAIModel()}>
+            <i className="fas fa-check" />
+          </button>
+        </p>
       </div>
       <br />
     </React.Fragment>
