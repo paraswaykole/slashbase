@@ -28,7 +28,10 @@ func (TabsEventListeners) CreateNewTab(ctx context.Context) {
 		modelschema := args[3].(string)
 		modelname := args[4].(string)
 		queryID := args[5].(string)
-		query := args[6].(string)
+		query := ""
+		if str, ok := args[6].(string); ok {
+			query = str
+		}
 		tab, err := tabController.CreateTab(dbConnectionId, tabType, modelschema, modelname, queryID, query)
 		if err != nil {
 			runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
