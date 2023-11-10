@@ -1,60 +1,50 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import Constants from '../../constants'
 import eventService from '../../events/eventService'
-
-const ModelOptions = [
-  { value: "gpt-4-32k-0314" },
-  { value: "gpt-4-32k" },
-  { value: "gpt-4-0314" },
-  { value: "gpt-4" },
-  { value: "gpt-3.5-turbo-0301" },
-  { value: "gpt-3.5-turbo" },
-  { value: "text-davinci-003" },
-  { value: "text-davinci-002" },
-  { value: "text-curie-001" },
-  { value: "text-babbage-001" },
-  { value: "text-ada-001" },
-  { value: "text-davinci-001" },
-  { value: "davinci-instruct-beta" },
-  { value: "davinci" },
-  { value: "curie-instruct-beta" },
-  { value: "curie" },
-  { value: "ada" },
-  { value: "babbage" },
-]
+import toast from 'react-hot-toast'
 
 const AdvancedSettings: FunctionComponent<{}> = () => {
+
   const [openAIKey, setOpenAIKey] = useState<string>("")
   const [openAIModel, setOpenAIModel] = useState<string>("")
+  const [modelOptions, setModelOptions] = useState<{ value: string }[]>([])
 
   useEffect(() => {
     (async () => {
-      let result = await eventService.getSingleSetting(Constants.SETTING_KEYS.OPENAI_KEY)
+      const result = await eventService.listSupportedAIModels()
+      setModelOptions(result.data.map(model => ({ value: model })))
+    })();
+    (async () => {
+      const result = await eventService.getSingleSetting(Constants.SETTING_KEYS.OPENAI_KEY)
       setOpenAIKey(result.data)
-    })(),
-      (async () => {
-        let result = await eventService.getSingleSetting(Constants.SETTING_KEYS.OPENAI_MODEL)
-        setOpenAIModel(result.data)
-      })()
+    })();
+    (async () => {
+      const result = await eventService.getSingleSetting(Constants.SETTING_KEYS.OPENAI_MODEL)
+      setOpenAIModel(result.data)
+    })();
   }, [])
 
 
   const updateOpenAIKey = async () => {
     const result = await eventService.updateSingleSetting(Constants.SETTING_KEYS.OPENAI_KEY, openAIKey)
-    if (result.success)
+    if (result.success) {
       setOpenAIKey(openAIKey)
+      toast.success("saved")
+    }
   }
 
   const updateOpenAIModel = async () => {
     const result = await eventService.updateSingleSetting(Constants.SETTING_KEYS.OPENAI_MODEL, openAIModel)
     if (result.success)
       setOpenAIModel(openAIModel)
+    toast.success("saved")
   }
 
   const handleModelChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const value = e.target.value;
-    setOpenAIModel(value);
+    const value = e.target.value
+    setOpenAIModel(value)
   }
+
   return (
     <React.Fragment>
       <h1>Advanced Settings</h1>
@@ -62,7 +52,7 @@ const AdvancedSettings: FunctionComponent<{}> = () => {
       <h2>OpenAI Key</h2>
       <p>Update OpenAI API key to enable Generate SQL tool.</p>
       <div className="buttons has-addons">
-        <div className="field has-addons">
+        <div className="field has-addons" style={{ minWidth: 550 }}>
           <p className="control is-expanded">
             <input
               className="input"
@@ -84,7 +74,7 @@ const AdvancedSettings: FunctionComponent<{}> = () => {
         <p className="control">
           <span className="select">
             <select value={openAIModel} onChange={e => handleModelChange(e)}>
-              {ModelOptions.map((e, idx) => {
+              {modelOptions.map((e, idx) => {
                 return <option value={e.value} key={idx}> {e.value} </option>
               })}
             </select>

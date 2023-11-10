@@ -306,7 +306,11 @@ const generateSQL = async function (dbConnectionId: string, text: string): Promi
         .then(res => res.data)
 }
 
-
+const listSupportedAIModels = async function (): Promise<ApiResult<string[]>> {
+    return await Request.apiInstance
+        .get<any, AxiosResponse<ApiResult<string[]>>>(`/ai/listmodels`)
+        .then(res => res.data)
+}
 
 export default {
     getHealthCheck,
@@ -356,5 +360,6 @@ export default {
     addRole,
     deleteRole,
     updateRolePermission,
-    generateSQL
+    generateSQL,
+    listSupportedAIModels
 }

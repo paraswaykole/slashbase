@@ -57,7 +57,10 @@ func (SettingController) UpdateSingleSetting(name string, value string) error {
 	case models.SETTING_NAME_OPENAI_KEY:
 		ai.InitClient(value)
 	case models.SETTING_NAME_OPENAI_MODEL:
-		ai.SetOpenAiModel(value)
+		err := ai.SetOpenAiModel(value)
+		if err != nil {
+			return err
+		}
 	default:
 		return errors.New("invalid setting name: " + name)
 	}

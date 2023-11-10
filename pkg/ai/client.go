@@ -1,12 +1,25 @@
 package ai
 
 import (
+	"errors"
+
 	openai "github.com/sashabaranov/go-openai"
+	"github.com/slashbaseide/slashbase/internal/common/utils"
 )
 
 var (
-	client      *openai.Client
-	openAiModel string = "text-davinci-003"
+	client                *openai.Client
+	openAiModel           string = openai.GPT3Dot5Turbo
+	supportedOpenAIModels        = []string{
+		openai.GPT3Dot5TurboInstruct,
+		openai.GPT3Dot5Turbo16K,
+		openai.GPT3Dot5Turbo,
+		openai.GPT3Dot5Turbo1106,
+		openai.GPT4,
+		openai.GPT432K,
+		openai.GPT40613,
+		openai.GPT432K0613,
+	}
 )
 
 func InitClient(token string) {
@@ -21,9 +34,17 @@ func GetOpenAiModel() string {
 	return openAiModel
 }
 
-func SetOpenAiModel(model string) {
+func ListSupportedOpenAiModels() []string {
+	return supportedOpenAIModels
+}
+
+func SetOpenAiModel(model string) error {
 	if model == "" {
-		return
+		return errors.New("cannot be empty")
 	}
-	openAiModel = model
+	if utils.ContainsString(supportedOpenAIModels, model) {
+		openAiModel = model
+		return nil
+	}
+	return errors.New("invalid model")
 }

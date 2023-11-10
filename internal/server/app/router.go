@@ -121,6 +121,7 @@ func SetupRoutes(app *fiber.App, assets embed.FS) {
 			aiGroup.Use(middlewares.FindUserMiddleware())
 			aiGroup.Use(middlewares.AuthUserMiddleware())
 			aiGroup.Post("/gensql", aiHandlers.GenerateSQL)
+			aiGroup.Get("/listmodels", aiHandlers.ListSupportedAIModels)
 		}
 	}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	openai "github.com/sashabaranov/go-openai"
@@ -21,24 +22,48 @@ func GenerateSQL(dbtype, text string, datamodels []*qemodels.DBDataModel) (strin
 	}
 
 	dbDataModelDescription := generateDBDataModelsDescription(datamodels)
-	prompt := fmt.Sprintf("### %s SQL tables, with their properties:\n#\n#%s\n#\n### A query to %s:\n\n", dbtype, dbDataModelDescription, text)
+	systemMessage := "No text, just write SQL query with ```sql."
+	prompt := fmt.Sprintf("%s SQL tables, with their properties:\n%s\n\nWrite a query to %s", dbtype, dbDataModelDescription, text)
 
-	req := openai.CompletionRequest{
-		Model:            openAiModel,
-		Temperature:      0,
-		MaxTokens:        150,
-		TopP:             1,
-		FrequencyPenalty: 0,
-		PresencePenalty:  0,
-		Stop:             []string{"#", ";"},
-		Prompt:           prompt,
+	req := openai.ChatCompletionRequest{
+		Model: openAiModel,
+		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: systemMessage,
+			},
+			{
+				Role:    openai.ChatMessageRoleUser,
+				Content: prompt,
+			},
+		},
 	}
-	resp, err := client.CreateCompletion(context.Background(), req)
+	resp, err := client.CreateChatCompletion(context.Background(), req)
 	if err != nil {
 		return "", fmt.Errorf("completion error: %v", err)
 	}
 
-	return resp.Choices[0].Text, nil
+	if len(resp.Choices) == 0 {
+		return "", errors.New("empty response")
+	}
+
+	messageContent := resp.Choices[0].Message.Content
+
+	if strings.Contains(messageContent, "```sql") {
+		re, _ := regexp.Compile("```sql[\\s\\S]([\\s\\S]*)[\\s\\S]```")
+		submatches := re.FindStringSubmatch(messageContent)
+		if len(submatches) == 2 {
+			messageContent = submatches[1]
+		}
+	} else if strings.Contains(messageContent, "```") {
+		re, _ := regexp.Compile("```[\\s\\S]([\\s\\S]*)[\\s\\S]```")
+		submatches := re.FindStringSubmatch(messageContent)
+		if len(submatches) == 2 {
+			messageContent = submatches[1]
+		}
+	}
+
+	return messageContent, nil
 }
 
 func generateDBDataModelsDescription(datamodels []*qemodels.DBDataModel) string {
@@ -52,7 +77,7 @@ func generateDBDataModelsDescription(datamodels []*qemodels.DBDataModel) string 
 			}
 			fields = append(fields, fname)
 		}
-		desc += fmt.Sprintf("# %s (%s) \n", dm.Name, strings.Join(fields, ", "))
+		desc += fmt.Sprintf("- %s (%s) \n", dm.Name, strings.Join(fields, ", "))
 	}
 	return desc
 }
