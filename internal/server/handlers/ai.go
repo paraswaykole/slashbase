@@ -31,3 +31,11 @@ func (AIHandlers) GenerateSQL(c *fiber.Ctx) error {
 		"data":    output,
 	})
 }
+
+func (AIHandlers) ListSupportedAIModels(c *fiber.Ctx) error {
+	output := aiController.GetModels()
+	return c.JSON(map[string]interface{}{
+		"success": true,
+		"data":    output,
+	})
+}

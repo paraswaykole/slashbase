@@ -62,5 +62,6 @@ func setupEvents(ctx context.Context) {
 	}
 	if aiEventListeners := new(events.AIEventListeners); true {
 		aiEventListeners.GenSQLEvent(ctx)
+		aiEventListeners.ListSupportedAIModelsEvent(ctx)
 	}
 }

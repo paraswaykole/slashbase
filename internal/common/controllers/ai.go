@@ -32,3 +32,7 @@ func (AIController) GenerateSQL(dbConnectionID, text string) (string, error) {
 
 	return ai.GenerateSQL(dbConn.Type, text, datamodels)
 }
+
+func (AIController) GetModels() []string {
+	return ai.ListSupportedOpenAiModels()
+}

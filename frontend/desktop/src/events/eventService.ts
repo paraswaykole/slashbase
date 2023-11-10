@@ -210,6 +210,12 @@ const runGenerateSQL = async function (dbConnId: string, text: string): Promise<
     return response
 }
 
+const listSupportedAIModels = async function (): Promise<ApiResult<string[]>> {
+    const response = responseEvent<ApiResult<string[]>>(Events.AI_LIST_SUPPORTEDMODELS.RESPONSE)
+    EventsEmit(Events.AI_LIST_SUPPORTEDMODELS.REQUEST, Events.AI_LIST_SUPPORTEDMODELS.RESPONSE)
+    return response
+}
+
 export default {
     getHealthCheck,
     getProjects,
@@ -244,5 +250,6 @@ export default {
     closeTab,
     runConsoleCommand,
     checkConnection,
-    runGenerateSQL
+    runGenerateSQL,
+    listSupportedAIModels
 }
