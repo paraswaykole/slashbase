@@ -18,10 +18,7 @@ func (ProjectHandlers) CreateProject(c *fiber.Ctx) error {
 		Name string `json:"name"`
 	}
 	if err := c.BodyParser(&createBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	project, projectMember, err := projectController.CreateProject(authUser, createBody.Name)
 	if err != nil {
@@ -104,10 +101,7 @@ func (ProjectHandlers) AddProjectMember(c *fiber.Ctx) error {
 		RoleID string `json:"roleId"`
 	}
 	if err := c.BodyParser(&addMemberBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	newProjectMember, err := projectController.AddProjectMember(authUser, projectID, addMemberBody.Email, addMemberBody.RoleID)
 	if err != nil {

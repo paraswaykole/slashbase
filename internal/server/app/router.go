@@ -14,6 +14,7 @@ import (
 func SetupRoutes(app *fiber.App, assets embed.FS) {
 	api := app.Group("/api/v1")
 	{
+		api.Use(middlewares.APIResponseMiddleware())
 		api.Get("health", healthCheck)
 		userGroup := api.Group("user")
 		{
@@ -121,6 +122,7 @@ func SetupRoutes(app *fiber.App, assets embed.FS) {
 			aiGroup.Use(middlewares.FindUserMiddleware())
 			aiGroup.Use(middlewares.AuthUserMiddleware())
 			aiGroup.Post("/gensql", aiHandlers.GenerateSQL)
+			aiGroup.Get("/listmodels", aiHandlers.ListSupportedAIModels)
 		}
 	}
 

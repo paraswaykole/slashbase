@@ -24,10 +24,7 @@ func (QueryHandlers) RunQuery(c *fiber.Ctx) error {
 		Query          string `json:"query"`
 	}
 	if err := c.BodyParser(&runBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	analytics.SendRunQueryEvent()
 	response, err := queryController.RunQuery(authUser, runBody.DBConnectionID, runBody.Query)
@@ -128,10 +125,7 @@ func (QueryHandlers) AddSingleDataModelField(c *fiber.Ctx) error {
 		DataType       string `json:"dataType"`
 	}
 	if err := c.BodyParser(&reqBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	responseData, err := queryController.AddSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName, reqBody.DataType)
 	if err != nil {
@@ -156,10 +150,7 @@ func (QueryHandlers) DeleteSingleDataModelField(c *fiber.Ctx) error {
 		FieldName      string `json:"fieldName"`
 	}
 	if err := c.BodyParser(&reqBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	responseData, err := queryController.DeleteSingleDataModelField(authUser, authUserProjectIds, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.FieldName)
 	if err != nil {
@@ -183,10 +174,7 @@ func (QueryHandlers) AddData(c *fiber.Ctx) error {
 		Data   map[string]interface{} `json:"data"`
 	}
 	if err := c.BodyParser(&addBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	responseData, err := queryController.AddData(authUser, dbConnId, addBody.Schema, addBody.Name, addBody.Data)
 	if err != nil {
@@ -210,10 +198,7 @@ func (QueryHandlers) DeleteData(c *fiber.Ctx) error {
 		IDs    []string `json:"ids"` // ctid for postgres, _id for mongo
 	}
 	if err := c.BodyParser(&deleteBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	responseData, err := queryController.DeleteData(authUser, dbConnId, deleteBody.Schema, deleteBody.Name, deleteBody.IDs)
 	if err != nil {
@@ -239,10 +224,7 @@ func (QueryHandlers) UpdateSingleData(c *fiber.Ctx) error {
 		Value      string `json:"value"`
 	}
 	if err := c.BodyParser(&updateBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	responseData, err := queryController.UpdateSingleData(authUser, dbConnId, updateBody.Schema, updateBody.Name, updateBody.ID, updateBody.ColumnName, updateBody.Value)
 	if err != nil {
@@ -268,10 +250,7 @@ func (QueryHandlers) AddSingleDataModelIndex(c *fiber.Ctx) error {
 		IsUnique       bool     `json:"isUnique"`
 	}
 	if err := c.BodyParser(&reqBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	responseData, err := queryController.AddSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName, reqBody.FieldNames, reqBody.IsUnique)
 	if err != nil {
@@ -295,10 +274,7 @@ func (QueryHandlers) DeleteSingleDataModelIndex(c *fiber.Ctx) error {
 		IndexName      string `json:"indexName"`
 	}
 	if err := c.BodyParser(&reqBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	responseData, err := queryController.DeleteSingleDataModelIndex(authUser, reqBody.DBConnectionID, reqBody.Schema, reqBody.Name, reqBody.IndexName)
 	if err != nil {
@@ -323,10 +299,7 @@ func (QueryHandlers) SaveDBQuery(c *fiber.Ctx) error {
 		QueryID string `json:"queryId"`
 	}
 	if err := c.BodyParser(&createBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	analytics.SendSavedQueryEvent()
 	queryObj, err := queryController.SaveDBQuery(authUser, authUserProjectIds, dbConnId, createBody.Name, createBody.Query, createBody.QueryID)

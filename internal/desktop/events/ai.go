@@ -13,7 +13,8 @@ type AIEventListeners struct{}
 var aiController controllers.AIController
 
 const (
-	eventAIGenSQL = "event:ai:gensql"
+	eventAIGenSQL     = "event:ai:gensql"
+	eventAIListModels = "event:ai:listmodels"
 )
 
 func (AIEventListeners) GenSQLEvent(ctx context.Context) {
@@ -31,6 +32,18 @@ func (AIEventListeners) GenSQLEvent(ctx context.Context) {
 			})
 			return
 		}
+		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
+			"success": true,
+			"data":    output,
+		})
+	})
+}
+
+func (AIEventListeners) ListSupportedAIModelsEvent(ctx context.Context) {
+	runtime.EventsOn(ctx, eventAIListModels, func(args ...interface{}) {
+		responseEventName := args[0].(string)
+		defer recovery(ctx, responseEventName)
+		output := aiController.GetModels()
 		runtime.EventsEmit(ctx, responseEventName, map[string]interface{}{
 			"success": true,
 			"data":    output,

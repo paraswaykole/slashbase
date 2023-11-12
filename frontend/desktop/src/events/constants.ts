@@ -142,6 +142,10 @@ const Events: EventType = {
         REQUEST: "event:ai:gensql",
         RESPONSE: "response:ai:gensql"
     },
+    AI_LIST_SUPPORTEDMODELS: {
+        REQUEST: "event:ai:listmodels",
+        RESPONSE: "response:ai:listmodels"
+    },
 }
 
 export default Events

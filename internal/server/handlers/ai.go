@@ -16,10 +16,7 @@ func (AIHandlers) GenerateSQL(c *fiber.Ctx) error {
 		Text           string `json:"text"`
 	}
 	if err := c.BodyParser(&body); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	analytics.SendAISQLGeneratedEvent()
 	output, err := aiController.GenerateSQL(body.DBConnectionID, body.Text)
@@ -29,6 +26,14 @@ func (AIHandlers) GenerateSQL(c *fiber.Ctx) error {
 			"error":   err.Error(),
 		})
 	}
+	return c.JSON(map[string]interface{}{
+		"success": true,
+		"data":    output,
+	})
+}
+
+func (AIHandlers) ListSupportedAIModels(c *fiber.Ctx) error {
+	output := aiController.GetModels()
 	return c.JSON(map[string]interface{}{
 		"success": true,
 		"data":    output,

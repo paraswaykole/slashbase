@@ -88,6 +88,7 @@ const Constants: ConstantsType = {
         TELEMETRY_ENABLED: "TELEMETRY_ENABLED",
         LOGS_EXPIRE: "LOGS_EXPIRE",
         OPENAI_KEY: "OPENAI_KEY",
+        OPENAI_MODEL: "OPENAI_MODEL"
     },
     ROLES: {
         ADMIN: "Admin"

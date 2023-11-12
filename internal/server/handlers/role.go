@@ -49,10 +49,7 @@ func (RoleHandlers) AddRole(c *fiber.Ctx) error {
 		Name string `json:"name"`
 	}
 	if err := c.BodyParser(&reqBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	authUser := middlewares.GetAuthUser(c)
 	role, err := roleController.AddRole(authUser, reqBody.Name)
@@ -90,10 +87,7 @@ func (RoleHandlers) UpdateRolePermission(c *fiber.Ctx) error {
 		Value bool   `json:"value"`
 	}
 	if err := c.BodyParser(&reqBody); err != nil {
-		return c.JSON(map[string]interface{}{
-			"success": false,
-			"error":   err.Error(),
-		})
+		return fiber.ErrBadRequest
 	}
 	authUser := middlewares.GetAuthUser(c)
 	rp, err := roleController.AddOrUpdateRolePermission(authUser, roleID, reqBody.Name, reqBody.Value)
