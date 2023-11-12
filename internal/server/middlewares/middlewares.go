@@ -1,6 +1,8 @@
 package middlewares
 
 import (
+	"encoding/json"
+	"errors"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,6 +14,41 @@ import (
 const (
 	USER_SESSION = "USER_SESSION"
 )
+
+func APIResponseMiddleware() func(c *fiber.Ctx) error {
+	return func(c *fiber.Ctx) error {
+		err := c.Next()
+		if err != nil {
+			code := fiber.StatusInternalServerError
+			var e *fiber.Error
+			if errors.As(err, &e) {
+				code = e.Code
+			}
+			return c.Status(code).JSON(map[string]interface{}{
+				"success": false,
+				"error":   err.Error(),
+			})
+		}
+		if err == nil {
+			response := c.Response()
+			body := response.Body()
+			var data interface{}
+			json.Unmarshal(body, &data)
+
+			if resMap, ok := data.(map[string]interface{}); ok {
+				if _, ok := resMap["success"]; ok {
+					return c.JSON(resMap)
+				}
+			}
+
+			return c.JSON(map[string]interface{}{
+				"success": true,
+				"data":    data,
+			})
+		}
+		return nil
+	}
+}
 
 // FindUserMiddleware is to find authenticated user before sending the request to next handler
 func FindUserMiddleware() func(c *fiber.Ctx) error {
