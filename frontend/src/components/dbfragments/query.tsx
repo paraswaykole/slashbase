@@ -119,6 +119,7 @@ const DBQueryFragment = () => {
                             queryData={queryData}
                             mSchema={''}
                             mName={''}
+                            isReadOnly={true}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
                             onRefresh={() => { }}
@@ -129,6 +130,7 @@ const DBQueryFragment = () => {
                             dbConnection={dbConnection!}
                             queryData={queryData}
                             mName={''}
+                            isReadOnly={true}
                             onFilterChanged={() => { }}
                             onSortChanged={() => { }}
                             onRefresh={() => { }}
