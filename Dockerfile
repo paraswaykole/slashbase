@@ -29,7 +29,7 @@ FROM node:alpine AS frontendbuilder
 WORKDIR /app
 COPY ./frontend/server/ .
 COPY --from=deps /app/node_modules ./node_modules
-RUN yarn build
+RUN yarn build-server
 
 # Executable builder
 FROM base as backendbuilder
