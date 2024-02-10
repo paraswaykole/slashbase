@@ -20,14 +20,14 @@ FROM node:alpine AS deps
 
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY ./frontend/server/package.json ./frontend/server/yarn.lock ./
+COPY ./frontend/package.json ./frontend/yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM node:alpine AS frontendbuilder
 
 WORKDIR /app
-COPY ./frontend/server/ .
+COPY ./frontend/ .
 COPY --from=deps /app/node_modules ./node_modules
 RUN yarn build-server
 
@@ -36,7 +36,7 @@ FROM base as backendbuilder
 
 WORKDIR /app
 COPY . .
-COPY --from=frontendbuilder /dist /app/frontend/dist
+COPY --from=frontendbuilder /app/dist /app/frontend/dist
 RUN make build-server
 
 # Production
