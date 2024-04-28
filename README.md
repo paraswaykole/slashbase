@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://slashbase.com" alt="Slashbase">
-    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/banner.png" alt="Slashbase" width="100%">
+    <img src="https://raw.githubusercontent.com/paraswaykole/slashbase/main/.github/banner.png" alt="Slashbase" width="100%">
   </a>
 </p>
 <p align="center">
@@ -103,9 +103,9 @@ To use Slashbase as a self-hosted in-browser collaborative database IDE. See [in
 To checkout demo, visit [demo.slashbase.com](https://demo.slashbase.com).
 
 # Screenshots
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot.png" alt="Run query view" width="100%">
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot2.png" alt="Low-code view" width="100%">
-<img src="https://raw.githubusercontent.com/slashbaseide/.github/main/screenshot3.png" alt="Console view" width="100%">
+<img src="https://raw.githubusercontent.com/paraswaykole/slashbase/main/.github/screenshot.png" alt="Run query view" width="100%">
+<img src="https://raw.githubusercontent.com/paraswaykole/slashbase/main/.github/screenshot2.png" alt="Low-code view" width="100%">
+<img src="https://raw.githubusercontent.com/paraswaykole/slashbase/main/.github/screenshot3.png" alt="Console view" width="100%">
 
 # Documentation
 
@@ -139,10 +139,11 @@ If you face any issues installing or using Slashbase, send us a mail to slashbas
 This project is supported by:
 <p>
   <a href="https://www.digitalocean.com/?utm_medium=opensource&utm_source=slashbase">
-    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/sponsors/digitalocean.svg" width="201px"/>
+    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/SVG/DO_Logo_horizontal_blue.svg" width="201px"/>
   </a>
+  and 
   <a href="https://appwrite.io/oss-fund">
-    <img src="https://raw.githubusercontent.com/slashbaseide/.github/main/sponsors/appwrite.svg" width="180px"/>
+    Appwrite
   </a>
 </p>
 
