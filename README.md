@@ -143,7 +143,7 @@ This project is supported by:
   </a>
   and 
   <a href="https://appwrite.io/oss-fund">
-    Appwrite
+    Appwrite OSS Fund
   </a>
 </p>
 
